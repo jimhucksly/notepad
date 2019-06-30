@@ -15,7 +15,8 @@ module.exports = {
   plugins: [
     'html'
   ],
-  'rules': {
+  rules: {
+    "no-console": "off",
     // allow paren-less arrow functions
     'arrow-parens': 0,
     // allow async-await
@@ -23,6 +24,21 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     // disallows multiple blank lines (no-multiple-empty-lines)
-    "no-multiple-empty-lines": [2, {"max": 3, "maxBOF": 1, "maxEOF": 0}]
+    "no-multiple-empty-lines": [2, {"max": 3, "maxBOF": 2, "maxEOF": 0}],
+    // require or disallow a space before function parenthesis
+    "space-before-function-paren": ["error", "never"],
+    // enforce spacing before and after keywords (keyword-spacing)
+    "keyword-spacing": [2, {
+      "overrides": {
+        "if": {"after": false},
+        "for": {"after": false},
+        "while": {"after": false},
+        "import": {"after": true}
+      }
+    }],
+    // disallow or enforce spaces inside of parentheses (space-in-parens)
+    "space-in-parens": ["error", "never"],
+    // disallow trailing whitespace at the end of lines (no-trailing-spaces)
+    "no-trailing-spaces": ["error", { "skipBlankLines": true, "ignoreComments": true }]
   }
 }

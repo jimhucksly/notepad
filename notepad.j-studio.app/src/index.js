@@ -7,7 +7,7 @@ import path from 'path'
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
-if (process.env.NODE_ENV !== 'development') {
+if(process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
@@ -16,7 +16,7 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-function createWindow () {
+function createWindow() {
   /**
    * Initial window options
    */
@@ -24,8 +24,9 @@ function createWindow () {
     height: 563,
     useContentSize: true,
     width: 1000,
+    frame: false,
     toolbar: false,
-    setMenu: null
+    icon: path.join(__dirname, '/static/icon.svg')
   })
 
   mainWindow.loadURL(winURL)
@@ -35,7 +36,7 @@ function createWindow () {
   })
 
   mainWindow.webContents.on('did-frame-finish-load', () => {
-    if (process.env.NODE_ENV === 'development') {
+    if(process.env.NODE_ENV === 'development') {
       mainWindow.webContents.openDevTools()
       mainWindow.webContents.on('devtools-opened', () => {
         mainWindow.focus()
@@ -47,13 +48,18 @@ function createWindow () {
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if(process.platform !== 'darwin') {
     app.quit()
   }
 })
 
+app.on('browser-window-created', (e, window) => {
+  window.setMenu(null)
+  window.setIcon(path.join(__dirname, '../static/icon_118x118.png'))
+})
+
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if(mainWindow === null) {
     createWindow()
   }
 })

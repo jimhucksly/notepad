@@ -2,6 +2,7 @@
 
 process.env.BABEL_ENV = 'main'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
+process.env.CHUNKS_LOG = 'true'
 
 const path = require('path')
 const { dependencies } = require('../package.json')
@@ -11,7 +12,7 @@ const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
 let mainConfig = {
   entry: {
-    main: path.join(__dirname, '../src/main/index.js')
+    main: path.join(__dirname, '../src/index.js')
   },
   externals: [
     ...Object.keys(dependencies || {})
@@ -53,7 +54,7 @@ let mainConfig = {
     new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
-    extensions: ['.js', '.json', '.node']
+    extensions: ['.js', '.json', '.node', '.vue']
   },
   target: 'electron-main'
 }

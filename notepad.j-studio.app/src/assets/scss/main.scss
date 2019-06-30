@@ -1,0 +1,25 @@
+
+@import './variables.scss';
+
+
+@import '@/assets/scss/normalize.scss';
+@import '@/assets/scss/fonts.scss';
+@import './titlebar.scss';
+
+.popup {
+  position: absolute;
+  display: none;
+}
+
+.popup-about {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 50%;
+  margin-top: -75px;
+  margin-left: -75px;
+  background-color: #fff;
+}
+
+
+

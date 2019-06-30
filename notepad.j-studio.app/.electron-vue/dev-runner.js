@@ -19,7 +19,7 @@ let hotMiddleware
 function logStats (proc, data) {
   let log = ''
 
-  log += chalk.yellow.bold(`┏ ${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
+  log += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
   log += '\n\n'
 
   if (typeof data === 'object') {
@@ -33,9 +33,9 @@ function logStats (proc, data) {
     log += `  ${data}\n`
   }
 
-  log += '\n' + chalk.yellow.bold(`┗ ${new Array(28 + 1).join('-')}`) + '\n'
-
-  console.log(log)
+  log += '\n' + chalk.yellow.bold(`${new Array(28 + 1).join('-')}`) + '\n'
+  
+  if(process.env.CHUNKS_LOG === 'true') console.log(log)
 }
 
 function startRenderer () {
@@ -79,7 +79,7 @@ function startRenderer () {
 
 function startMain () {
   return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [path.join(__dirname, '../src/main/index.dev.js')].concat(mainConfig.entry.main)
+    mainConfig.entry.main = [path.join(__dirname, '../src/index.dev.js')].concat(mainConfig.entry.main)
     mainConfig.mode = 'development'
     const compiler = webpack(mainConfig)
 
@@ -115,7 +115,7 @@ function startMain () {
 
 function startElectron () {
   var args = [
-    '--inspect=5858',
+    // '--inspect=5858',
     path.join(__dirname, '../dist/electron/main.js')
   ]
 
@@ -148,10 +148,10 @@ function electronLog (data, color) {
   })
   if (/[0-9A-z]+/.test(log)) {
     console.log(
-      chalk[color].bold('┏ Electron -------------------') +
+      chalk[color].bold('Electron -------------------') +
       '\n\n' +
       log +
-      chalk[color].bold('┗ ----------------------------') +
+      chalk[color].bold('----------------------------') +
       '\n'
     )
   }
@@ -165,21 +165,23 @@ function greeting () {
   else if (cols > 76) text = 'electron-|vue'
   else text = false
 
-  if (text) {
-    say(text, {
-      colors: ['yellow'],
-      font: 'simple3d',
-      space: false
-    })
-  } else console.log(chalk.yellow.bold('\n  electron-vue'))
-  console.log(chalk.blue('  getting ready...') + '\n')
+  // if (text) {
+  //   say(text, {
+  //     colors: ['yellow'],
+  //     font: 'simple3d',
+  //     space: false
+  //   })
+  // } else console.log(chalk.yellow.bold('\n  electron-vue'))
+  // console.log(chalk.blue('  getting ready...') + '\n')
 }
 
 function init () {
-  greeting()
+  // greeting()
+  console.log(chalk.white('  initializing app...') + '\n')
 
   Promise.all([startRenderer(), startMain()])
     .then(() => {
+      console.log(chalk.green('  app ready') + '\n')
       startElectron()
     })
     .catch(err => {
