@@ -22,7 +22,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "notepad.j-studio.app",
+    "productName": "Notepad Jimhucksly Studio App",
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"

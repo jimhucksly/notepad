@@ -1,31 +1,21 @@
 import Vue from 'vue'
-import axios from 'axios'
+import vueElectron from 'vue-electron'
 
 import App from './App'
 import router from './router'
 import store from './store'
-import vueElectron from 'vue-electron'
+import Popup from '@/plugins/popup'
 
 import '@/assets/scss/main.scss'
 
 if(!process.env.IS_WEB) Vue.use(vueElectron)
-Vue.http = Vue.prototype.$http = axios
+Vue.use(Popup)
 Vue.config.productionTip = false
-
-const popup = {
-  open(name) {
-    console.log(name + 'PopupShow')
-    store.dispatch(name + 'PopupShow', true)
-  },
-  close(name) { store.dispatch(name + 'PopupShow', false) }
-}
-
-Vue.popup = Vue.prototype.$popup = popup
 
 /* eslint-disable no-new */
 new Vue({
-  components: { App },
+  el: '#app',
   router,
   store,
-  template: '<App/>'
-}).$mount('#app')
+  render: h => h(App)
+})

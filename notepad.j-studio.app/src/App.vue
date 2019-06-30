@@ -1,23 +1,20 @@
 <template>
   <div id="app">
-    <router-view></router-view>
-    <div class="popup popup-about" ref="about" v-show="aboutPopupShow">
-      sdfsdfd
-    </div>
+    <router-view id="content"></router-view>
+    <popup></popup>
   </div>
 </template>
 <script>
 
   import { remote } from 'electron'
-  import { mapGetters } from 'vuex'
-  const { Menu, MenuItem } = remote
+  import Popup from '@/components/popup'
 
+  const { Menu, MenuItem } = remote
+  
   export default {
     name: 'notepad.j-studio.app',
-    computed: {
-      ...mapGetters({
-        aboutPopupShow: 'getAboutPopupShow'
-      })
+    components: {
+      Popup
     },
     mounted() {
       const _this = this

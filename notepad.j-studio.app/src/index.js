@@ -2,6 +2,7 @@
 
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
+import pkg from '../package.json'
 
 /**
  * Set `__static` path to static files in production
@@ -26,13 +27,17 @@ function createWindow() {
     width: 1000,
     frame: false,
     toolbar: false,
-    icon: path.join(__dirname, '/static/icon.svg')
+    show: false
   })
 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
   })
 
   mainWindow.webContents.on('did-frame-finish-load', () => {
@@ -56,6 +61,7 @@ app.on('window-all-closed', () => {
 app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
   window.setIcon(path.join(__dirname, '../static/icon_118x118.png'))
+  window.setTitle(pkg.build.productName)
 })
 
 app.on('activate', () => {
