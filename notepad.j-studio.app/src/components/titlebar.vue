@@ -13,7 +13,7 @@
       <span class="titlebar-logo">
         <img src="../../static/icon_118x118.svg" alt="">
       </span>
-      <p>Notepad Jimhucksly Studio App</p>
+      <p>{{ title }}</p>
     </div>
     <div class="window-controls-container">
       <button 
@@ -30,6 +30,11 @@
 </template>
 <script>
   export default {
-    name: 'Titlebar'
+    name: 'Titlebar',
+    computed: {
+      title() {
+        return this.$electron.remote.getCurrentWindow().getTitle()
+      }
+    }
   }
 </script>
