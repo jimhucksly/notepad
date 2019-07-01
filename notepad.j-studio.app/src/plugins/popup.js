@@ -7,11 +7,11 @@ var Popup = function popup(options) {
 
 function install(Vue) {
   const open = (ref) => {
-    store.commit('setAboutPopupShow', true)
+    store.dispatch(ref + 'PopupShow', true)
   }
 
   const close = (ref) => {
-    store.commit('setAboutPopupShow', false)
+    store.dispatch(ref + 'PopupShow', false)
   }
 
   const _popup = {

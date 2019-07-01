@@ -1,7 +1,9 @@
 <template>
   <div>
     <titlebar></titlebar>
-    <h1>Hello</h1>
+    <main>
+
+    </main>
   </div>
 </template>
 <script>
@@ -12,6 +14,15 @@
     name: 'Index',
     components: {
       Titlebar
+    },
+    mounted() {
+      this.$http.get('GET_JSON')
+        .then(resp => {
+          // console.log(resp)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 </script>

@@ -17,11 +17,10 @@
       Popup
     },
     mounted() {
-      const _this = this
       const appMenu = new Menu()
       const menuItem = new MenuItem({
         label: 'About',
-        click() { _this.$popup.open('about') }
+        click: () => this.$popup.open('about')
       })
       appMenu.append(menuItem)
       Menu.setApplicationMenu(appMenu)
