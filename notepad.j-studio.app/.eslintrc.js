@@ -24,7 +24,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     // disallows multiple blank lines (no-multiple-empty-lines)
-    "no-multiple-empty-lines": [2, {"max": 3, "maxBOF": 2, "maxEOF": 0}],
+    "no-multiple-empty-lines": [2, {"max": 3, "maxBOF": 2, "maxEOF": 1}],
     // require or disallow a space before function parenthesis
     "space-before-function-paren": ["error", "never"],
     // enforce spacing before and after keywords (keyword-spacing)

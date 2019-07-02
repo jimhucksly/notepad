@@ -5,14 +5,12 @@ import App from './App'
 import router from './router'
 import store from './store'
 import Popup from '@/plugins/popup'
-import Http from '@/plugins/http'
 
 import '@/assets/scss/main.scss'
 
+Vue.config.productionTip = false
 if(!process.env.IS_WEB) Vue.use(vueElectron)
 Vue.use(Popup)
-Vue.use(Http)
-Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({

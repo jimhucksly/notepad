@@ -24,3 +24,83 @@
     padding-left: #{$i*5}px;
   }
 }
+
+.g-row {display: flex; flex-direction: row}
+.g-row-reverse{display: flex; flex-direction: row-reverse}
+.g-column {display: flex; flex-direction: column}
+.flex-start {display: flex; justify-content: flex-start}
+.flex-end {display: flex; justify-content: flex-end}
+.flex-center {display: flex; justify-content: center}
+.flex-around {display: flex; justify-content: space-around}
+.flex-between {display: flex; justify-content: space-between}
+.items-start {display: flex; align-items: flex-start}
+.items-center {display: flex; align-items: center}
+.items-end {display: flex; align-items: flex-end}
+.items-stretch {display: flex; align-items: stretch}
+.flex-wrap {display: flex; flex-wrap: wrap}
+
+.flex-start,
+.flex-end,
+.flex-center,
+.flex-around,
+.flex-between,
+.items-start,
+.items-center,
+.items-end,
+.items-stretch {
+  & > .row {
+    min-width: 100%
+  }
+}
+
+@keyframes loading {
+  0% {
+    margin-left: 0px;
+  }
+  100% {
+    margin-left: 100%;
+  }
+}
+
+.form-group {
+  margin-bottom: 15px;
+
+  .form-group-inner {
+    position: relative;
+  }
+}
+
+.form-label-error {
+  color: $red;
+  font-size: 12px;
+}
+
+input[type="text"],
+input[type="password"] {
+  border: 1px solid #ccc;
+  height: 30px;
+  font-size: 14px;
+  width: 100%;
+  padding: 0 6px;
+
+  &.error {
+    border: 1px solid $red;
+  }
+}
+
+.btn {
+  background: none;
+  border: none;
+  border-radius: 3px;
+  width: 100px;
+  height: 30px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.btn-primary {
+  background-color: $blue_light;
+  &:hover {
+    background-color: $blue;
+  }
+}

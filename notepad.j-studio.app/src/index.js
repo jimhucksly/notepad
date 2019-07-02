@@ -72,6 +72,8 @@ app.on('activate', () => {
   }
 })
 
+app.setPath('userData', path.resolve(app.getPath('userData'), '../JimhuckslyStudio/notepad-app'))
+
 /**
  * Auto Updater
  *
