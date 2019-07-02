@@ -3,6 +3,7 @@ const state = {
   isAuth: false,
   token: null,
   userDataPath: '',
+  json: null,
   aboutPopupShow: false
 }
 

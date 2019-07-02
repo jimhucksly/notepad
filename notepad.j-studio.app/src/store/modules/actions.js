@@ -1,9 +1,11 @@
 import $http from '../http'
-import path from 'path'
-import storage from 'electron-storage'
+import storage from '@/plugins/storage'
+import { userDataFileName } from '@/constants'
 
-const headers = {
-  'Content-Type': 'application/json'
+const jsonHeaders = {
+  headers: {
+    'Content-Type': 'application/json'
+  }
 }
 
 const actions = {
@@ -12,16 +14,14 @@ const actions = {
   },
   token(store, value) {
     store.commit('setToken', value)
-    const appPath = store.getters['getUserDataPath']
-    const file = path.resolve(appPath, 'app')
-    console.log(file)
-    storage.isPathExists(appPath)
+    const userDataPath = store.getters['getUserDataPath']
+    storage.isPathExists(userDataPath)
       .then(() => {
-        storage.set(file, { token: value })
-          .then(() => console.log('The file was successfully written to the storage'))
-          .catch(() => console.error('save to localStorage is failed'))
+        storage.set(userDataPath, userDataFileName, { token: value })
+          .then(() => console.log('write to file is successfully completed'))
+          .catch(() => console.error('write to the file is failed'))
       })
-      .catch(() => console.error('save to localStorage is failed'))
+      .catch(() => console.error(`${userDataPath} is don't exists`))
   },
   loading(store, flag) {
     store.commit('setLoading', flag)
@@ -29,27 +29,31 @@ const actions = {
   userDataPath(store, path) {
     store.commit('setUserDataPath', path)
   },
+  json(store, data) {
+    store.commit('setJson', data)
+  },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
   },
   async action(store, { type, data }) {
     switch (type) {
       case 'GET_JSON':
-        $http.get(type)
+        const token = store.getters['getToken']
+        jsonHeaders.headers.Authorization = token
+        $http.get(type, jsonHeaders)
           .then(resp => {
-            store.dispatch('loading', false)
-            console.log(resp)
+            store.dispatch('json', resp.data.data)
           })
           .catch(() => {
-            store.dispatch('loading', false)
             store.dispatch('auth', false)
+            store.dispatch('token', null)
           })
         break
       case 'AUTH':
         const resp = await $http.post(type, {
           login: data.login,
           password: data.password
-        }, headers)
+        }, jsonHeaders)
         if(resp instanceof Error) return Promise.reject(resp)
         return resp
     }

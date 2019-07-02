@@ -5,8 +5,15 @@
 </template>
 <script>
 
+  import { mapGetters } from 'vuex'
+
   export default {
-    name: 'Notepad'
+    name: 'Notepad',
+    computed: {
+      ...mapGetters({
+        json: 'getJson'
+      })
+    }
   }
 
 </script>

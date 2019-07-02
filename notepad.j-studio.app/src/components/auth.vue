@@ -82,6 +82,9 @@
             .then(resp => {
               this.$store.dispatch('token', resp.token)
               this.$store.dispatch('auth', true)
+              this.$store.dispatch('action', {
+                type: 'GET_JSON'
+              })
             })
             .catch(err => {
               const data = err.response.data

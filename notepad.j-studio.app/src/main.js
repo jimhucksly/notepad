@@ -9,6 +9,7 @@ import Popup from '@/plugins/popup'
 import '@/assets/scss/main.scss'
 
 Vue.config.productionTip = false
+Vue.config.devtools = true
 if(!process.env.IS_WEB) Vue.use(vueElectron)
 Vue.use(Popup)
 

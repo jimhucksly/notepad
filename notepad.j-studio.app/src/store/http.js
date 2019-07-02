@@ -2,18 +2,15 @@ import axios from 'axios'
 import { API_URL } from '@/constants'
 
 const $http = {
-  async get(action) {
+  async get(action, headers) {
     let query = `action=${action}`
-    const resp = await axios.get(API_URL + '?' + query)
+    const resp = await axios.get(API_URL + '?' + query, headers)
     if(resp instanceof Error) return Promise.reject(resp)
     return resp
   },
   async post(action, data, headers) {
     let query = `action=${action}`
-    let jsonHeaders = {
-      headers: headers
-    }
-    const resp = await axios.post(API_URL + '?' + query, data, jsonHeaders)
+    const resp = await axios.post(API_URL + '?' + query, data, headers)
     if(resp instanceof Error) return Promise.reject(resp)
     return resp.data ? resp.data : resp
   }

@@ -11,6 +11,9 @@ const mutations = {
   setUserDataPath(state, path) {
     state.userDataPath = path
   },
+  setJson(state, json) {
+    state.json = json
+  },
   setAboutPopupShow(state, flag) {
     state.aboutPopupShow = flag
   }
