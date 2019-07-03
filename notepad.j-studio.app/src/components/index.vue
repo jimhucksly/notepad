@@ -1,12 +1,17 @@
 <template>
-  <div>
+  <div id="content">
     <titlebar></titlebar>
     <main>
-      <loading v-if="loading"></loading>
-      <template v-else>
-        <auth v-if="!isAuth"></auth>
-        <notepad v-else></notepad>
-      </template>
+      <aside v-if="isAuth && !loading">
+        sdfsdf
+      </aside>
+      <section>
+        <loading v-if="loading"></loading>
+        <template v-else>
+          <auth v-if="!isAuth"></auth>
+          <notepad v-else></notepad>
+        </template>
+      </section>
     </main>
   </div>
 </template>

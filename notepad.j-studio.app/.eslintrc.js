@@ -39,6 +39,10 @@ module.exports = {
     // disallow or enforce spaces inside of parentheses (space-in-parens)
     "space-in-parens": ["error", "never"],
     // disallow trailing whitespace at the end of lines (no-trailing-spaces)
-    "no-trailing-spaces": ["error", { "skipBlankLines": true, "ignoreComments": true }]
+    "no-trailing-spaces": ["error", { "skipBlankLines": true, "ignoreComments": true }],
+    // disallow control characters in regular expressions (no-control-regex)
+    "no-control-regex": "error",
+    // disallow unnecessary escape usage (no-useless-escape)
+    "no-useless-escape": "off"
   }
 }

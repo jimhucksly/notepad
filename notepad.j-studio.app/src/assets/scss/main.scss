@@ -24,9 +24,22 @@ main {
   display: flex;
   flex-grow: 1;
   flex-basis: 100%;
-  
-  & > div {
-    width: 100%;
+
+  aside {
+    flex-grow: 0;
+    flex-basis: 250px;
+    background-color: #303d3c;
+    border-right: 1px solid #ccc;
+  }
+
+  section {
+    display: flex;
+    flex-basis: 100%;
+    flex-grow: 1;
+
+    & > div {
+      width: 100%;
+    }
   }
 }
 
@@ -186,6 +199,7 @@ main {
   flex-basis: 100%;
   flex-grow: 1;
   padding: 6px;
+  padding-bottom: 0;
   padding-right: 0;
   background-color: #eee;
   border-bottom: 1px solid #ccc;
@@ -198,7 +212,8 @@ main {
     line-height: 15px;
     background-color: #fff;
     margin-bottom: 7px;
-    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+    border: 1px solid transparent;
 
     &:last-child {
       border-bottom: none;
@@ -213,42 +228,30 @@ main {
 }
 
 .notepad_textarea {
+  position: relative;
   flex-basis: 44%;
   flex-grow: 0;
   padding: 6px;
   background-color: #eee;
-}
 
-// ===================================
-/* Скрытие - Скрол бара (ScrollBar) */
-.notepad_cont::-webkit-scrollbar-button {
-  background-image:url('');
-  background-repeat:no-repeat;
-  width:6px;
-  height:0px
-}
- 
-.notepad_cont::-webkit-scrollbar-track {
-  background-color:#ccc;
-}
- 
-.notepad_cont::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 0px;
-  border-radius: 0px;
-  background-color: $blue_light;
-}
- 
-.notepad_cont::-webkit-scrollbar-thumb:hover {
-  background-color: $blue_light;
-}
- 
-.notepad_cont::-webkit-resizer {
-  background-image:url('');
-  background-repeat:no-repeat;
-  width:6px;
-  height:0px
-}
- 
-.notepad_cont::-webkit-scrollbar {
-  width: 6px;
+  button {
+    position: absolute;
+    top: 7px;
+    bottom: 7px;
+    right: 7px;
+    width: 45px;
+    background-color: #eee;
+    background-image: url('../../../static/icon-send.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 30px 30px;
+    border-left: 1px solid #ccc;
+    opacity: 0.3;
+
+    
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

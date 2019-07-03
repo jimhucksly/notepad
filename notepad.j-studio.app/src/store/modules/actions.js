@@ -1,6 +1,7 @@
 import $http from '../http'
 import storage from '@/plugins/storage'
 import { userDataFileName } from '@/constants'
+import { isJSON } from '@/helpers'
 
 const jsonHeaders = {
   headers: {
@@ -31,11 +32,13 @@ const actions = {
   },
   json(store, data) {
     let json
-    try {
-      json = JSON.parse(data)
-    } catch (err) {
-      console.error(err)
-    }
+    if(isJSON(data)) {
+      try {
+        json = JSON.parse(data)
+      } catch (err) {
+        console.error(err)
+      }
+    } else json = data
     store.commit('setJson', json)
   },
   aboutPopupShow(store, flag) {

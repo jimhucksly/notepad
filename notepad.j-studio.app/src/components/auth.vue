@@ -36,7 +36,7 @@
           </div>
         </div>
         <div>
-          <button class="btn btn-primary" @click="submit">Go!</button>
+          <button class="btn btn-primary" @click.prevent="submit">Go!</button>
         </div>
       </form>
     </div>
