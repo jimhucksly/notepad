@@ -30,7 +30,13 @@ const actions = {
     store.commit('setUserDataPath', path)
   },
   json(store, data) {
-    store.commit('setJson', data)
+    let json
+    try {
+      json = JSON.parse(data)
+    } catch (err) {
+      console.error(err)
+    }
+    store.commit('setJson', json)
   },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
@@ -42,9 +48,13 @@ const actions = {
         jsonHeaders.headers.Authorization = token
         $http.get(type, jsonHeaders)
           .then(resp => {
+            setTimeout(() => {
+              store.dispatch('loading', false)
+            }, 2000)
             store.dispatch('json', resp.data.data)
           })
           .catch(() => {
+            store.dispatch('loading', false)
             store.dispatch('auth', false)
             store.dispatch('token', null)
           })

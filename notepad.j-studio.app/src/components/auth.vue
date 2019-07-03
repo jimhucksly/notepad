@@ -10,7 +10,10 @@
                 active: login.length > 0,
                 error: !!errors.login 
               }">Login:</label>
-            <input type="text" placeholder="Login" :class="{ error: !!errors.login }" v-model="login">
+            <input type="text" placeholder="Login" 
+              :class="{ error: !!errors.login }"
+              v-model="login"
+              @keyup.enter.prevent="submit">
           </div>
           <div>
             <span class="form-label-error" v-show="!!errors.login && !!login.length">Login is incorrect</span>
@@ -23,7 +26,10 @@
                 active: pass.length > 0,
                 error: !!errors.pass
                 }">Password:</label>
-            <input type="password" placeholder="Password" :class="{ error: !!errors.pass }" v-model="pass">
+            <input type="password" placeholder="Password" 
+              :class="{ error: !!errors.pass }"
+              v-model="pass"
+              @keyup.enter.prevent="submit">
           </div>
           <div>
             <span class="form-label-error" v-show="!!errors.pass && !!pass.length">Password is incorrect</span>

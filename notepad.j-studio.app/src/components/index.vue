@@ -47,7 +47,6 @@
           })
           .then((token) => {
             if(token) {
-              this.$store.dispatch('loading', false)
               this.$store.dispatch('auth', true)
               this.$store.dispatch('token', token)
               this.getJson()

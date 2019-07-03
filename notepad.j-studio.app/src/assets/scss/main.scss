@@ -176,3 +176,79 @@ main {
     }
   }
 }
+
+#notepad_cont {
+  display: flex;
+  flex-direction: column;
+}
+
+.notepad_cont {
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 6px;
+  padding-right: 0;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  .notepad_item {
+    padding: 10px;
+    font-size: 14px;
+    line-height: 15px;
+    background-color: #fff;
+    margin-bottom: 7px;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.1);
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+  }
+
+  .notepad_item_date {
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+}
+
+.notepad_textarea {
+  flex-basis: 44%;
+  flex-grow: 0;
+  padding: 6px;
+  background-color: #eee;
+}
+
+// ===================================
+/* Скрытие - Скрол бара (ScrollBar) */
+.notepad_cont::-webkit-scrollbar-button {
+  background-image:url('');
+  background-repeat:no-repeat;
+  width:6px;
+  height:0px
+}
+ 
+.notepad_cont::-webkit-scrollbar-track {
+  background-color:#ccc;
+}
+ 
+.notepad_cont::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  background-color: $blue_light;
+}
+ 
+.notepad_cont::-webkit-scrollbar-thumb:hover {
+  background-color: $blue_light;
+}
+ 
+.notepad_cont::-webkit-resizer {
+  background-image:url('');
+  background-repeat:no-repeat;
+  width:6px;
+  height:0px
+}
+ 
+.notepad_cont::-webkit-scrollbar {
+  width: 6px;
+}
