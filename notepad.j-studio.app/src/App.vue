@@ -18,11 +18,19 @@
     },
     mounted() {
       const appMenu = new Menu()
-      const menuItem = new MenuItem({
+      const menuItemSignOut = new MenuItem({
+        label: 'Sign Out',
+        click: () => {
+          this.$store.dispatch('auth', false)
+          this.$store.dispatch('token', null)
+        }
+      })
+      const menuItemAbout = new MenuItem({
         label: 'About',
         click: () => this.$popup.open('about')
       })
-      appMenu.append(menuItem)
+      appMenu.append(menuItemSignOut)
+      appMenu.append(menuItemAbout)
       Menu.setApplicationMenu(appMenu)
 
       document.getElementById('menu-button').addEventListener('click', (event) => {

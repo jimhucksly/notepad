@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
 
@@ -64,6 +64,14 @@ app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
   window.setIcon(path.join(__dirname, '../static/icon_118x118.png'))
   window.setTitle(pkg.build.productName)
+  ipcMain.on('authorized', () => {
+    const appMenu = Menu.getApplicationMenu()
+    appMenu.items.find(item => item.label === 'Sign Out').visible = true
+  })
+  ipcMain.on('unauthorized', () => {
+    const appMenu = Menu.getApplicationMenu()
+    appMenu.items.find(item => item.label === 'Sign Out').visible = false
+  })
 })
 
 app.on('activate', () => {

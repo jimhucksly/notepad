@@ -16,8 +16,11 @@ export const checkLinks = (message) => {
   return m.join('<br>')
 }
 
-export const now = () => {
-  let d = new Date()
+export const now = (stamp) => {
+  let d
+  if(stamp !== undefined) {
+    d = new Date(stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6'))
+  } else d = new Date()
   let y = d.getFullYear()
   let mon = d.getMonth()
   let day = d.getDate()

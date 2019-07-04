@@ -75,6 +75,10 @@
   font-size: 12px;
 }
 
+a[href] {
+  color: $blue;
+}
+
 input[type="text"],
 input[type="password"] {
   border: 1px solid #ccc;
@@ -86,6 +90,10 @@ input[type="password"] {
   &.error {
     border: 1px solid $red;
   }
+}
+
+input[type="file"] {
+  display: none;
 }
 
 textarea {

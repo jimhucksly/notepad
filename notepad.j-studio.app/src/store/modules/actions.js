@@ -2,6 +2,7 @@ import $http from '../http'
 import storage from '@/plugins/storage'
 import { userDataFileName } from '@/constants'
 import { isJSON } from '@/helpers'
+import { ipcRenderer } from 'electron'
 
 const jsonHeaders = {
   headers: {
@@ -12,6 +13,7 @@ const jsonHeaders = {
 const actions = {
   auth(store, flag) {
     store.commit('setAuth', flag)
+    ipcRenderer.send(flag ? 'authorized' : 'unauthorized')
   },
   token(store, value) {
     store.commit('setToken', value)
@@ -46,9 +48,15 @@ const actions = {
   },
   async action(store, { type, data }) {
     switch (type) {
+      case 'AUTH':
+        const authResp = await $http.post(type, {
+          login: data.login,
+          password: data.password
+        }, jsonHeaders)
+        if(authResp instanceof Error) return Promise.reject(authResp)
+        return authResp
       case 'GET_JSON':
-        const token = store.getters['getToken']
-        jsonHeaders.headers.Authorization = token
+        jsonHeaders.headers.Authorization = store.getters['getToken']
         $http.get(type, jsonHeaders)
           .then(resp => {
             setTimeout(() => {
@@ -61,14 +69,14 @@ const actions = {
             store.dispatch('auth', false)
             store.dispatch('token', null)
           })
-        break
-      case 'AUTH':
-        const resp = await $http.post(type, {
-          login: data.login,
-          password: data.password
+        return null
+      case 'MESSAGE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const postResp = await $http.post(type, {
+          json: store.getters['getJson']
         }, jsonHeaders)
-        if(resp instanceof Error) return Promise.reject(resp)
-        return resp
+        if(postResp instanceof Error) return Promise.reject(postResp)
+        return postResp
     }
   }
 }
