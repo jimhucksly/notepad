@@ -49,3 +49,19 @@ export const isJSON = (str) => {
   } catch (err) {}
   return false
 }
+
+export const getFileType = (name) => {
+  if(/\.(jpg|png|jpeg|gif)$/.test(name)) return 'image'
+  if(/\.js$/.test(name)) return 'js'
+  if(/\.json$/.test(name)) return 'json'
+  if(/\.vue$/.test(name)) return 'vue'
+  if(/\.css$/.test(name)) return 'css'
+  if(/\.(sass|scss)$/.test(name)) return 'sass'
+  if(/\.svg$/.test(name)) return 'svg'
+  if(/\.docx?$/.test(name)) return 'doc'
+  if(/\.pdf$/.test(name)) return 'pdf'
+  if(/\.txt$/.test(name)) return 'txt'
+  if(/\.zip$/.test(name)) return 'zip'
+  if(/\.rar$/.test(name)) return 'rar'
+  return 'default'
+}

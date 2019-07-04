@@ -3,7 +3,7 @@
     <titlebar></titlebar>
     <main>
       <aside v-if="isAuth && !loading">
-        sdfsdf
+        <legend>Projects</legend>
       </aside>
       <section>
         <loading v-if="loading"></loading>

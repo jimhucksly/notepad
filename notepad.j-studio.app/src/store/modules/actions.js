@@ -70,13 +70,19 @@ const actions = {
             store.dispatch('token', null)
           })
         return null
-      case 'MESSAGE':
+      case 'SEND':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const postResp = await $http.post(type, {
           json: store.getters['getJson']
         }, jsonHeaders)
         if(postResp instanceof Error) return Promise.reject(postResp)
         return postResp
+      case 'FILE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers['Content-Type'] = 'multipart/formdata'
+        const uploadResp = await $http.post(type, data.file, jsonHeaders)
+        if(uploadResp instanceof Error) return Promise.reject(uploadResp)
+        return uploadResp
     }
   }
 }

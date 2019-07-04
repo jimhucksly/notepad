@@ -122,10 +122,7 @@
         let buff = cloneDeep(this.json)
         unset(buff, `${stamp}`)
         this.$store.dispatch('json', buff)
-        this.$nextTick(() => {
-          console.log('emit post')
-          this.$emit('post')
-        })
+        this.$emit('post')
       }
     }
   }
