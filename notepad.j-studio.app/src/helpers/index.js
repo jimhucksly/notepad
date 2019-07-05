@@ -1,4 +1,8 @@
 
+import request from 'request'
+import fs from 'fs'
+import path from 'path'
+
 const REGEXP_URL = /\b(^(ftp|https?):\/\/[-\w]+(\.\w[-\w]*)+|(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+(?: com\b|edu\b|biz\b|gov\b|in(?:t|fo)\b|mil\b|net\b|org\b|[a-z][a-z]\b))(\:\d+)?(\/[^.!,?;"'<>()\[\]{}\s\x7F-\xFF]*(?:[.!,?]+[^.!,?;"'<>()\[\]{}\s\x7F-\xFF]+)*)?/
 
 export const checkLinks = (message) => {
@@ -64,4 +68,146 @@ export const getFileType = (name) => {
   if(/\.zip$/.test(name)) return 'zip'
   if(/\.rar$/.test(name)) return 'rar'
   return 'default'
+}
+
+export function dragAndDropLoader(DOMElementId, CSSClassHighlight, Callback) {
+  const id = DOMElementId
+  const cls = CSSClassHighlight
+  const cb = Callback
+
+  const dropArea = document.getElementById(id)
+
+  if(dropArea) {
+    if(!dropArea.style.position) {
+      dropArea.style.position = 'relative'
+    }
+    const overlay = document.createElement('div')
+    overlay.classList.add('drop-overlay')
+    dropArea.appendChild(overlay)
+
+    dropArea.ondragenter = function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if(!dropArea.classList.contains(cls)) {
+        dropArea.classList.add(cls)
+        overlay.style.display = 'block'
+        overlay.style.position = 'absolute'
+        overlay.style.left = 0
+        overlay.style.right = 0
+        overlay.style.width = '100%'
+        overlay.style.height = '100%'
+        overlay.style.background = 'rgba(0,0,0,0.2)'
+        overlay.style.border = '2px dashed #fff'
+      }
+    }
+
+    dropArea.ondragover = function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if(!dropArea.classList.contains(cls)) {
+        dropArea.classList.add(cls)
+        overlay.style.display = 'block'
+      }
+      dropArea.ondragleave = function(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        if(dropArea.classList.contains(cls)) {
+          dropArea.classList.remove(cls)
+          overlay.style.display = 'none'
+          dropArea.ondragleave = null
+        }
+      }
+    }
+
+    dropArea.ondrop = function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+      cb(e)
+      if(dropArea.classList.contains(cls)) {
+        dropArea.classList.remove(cls)
+        overlay.style.display = 'none'
+      }
+    }
+  }
+}
+
+export const downloadFile = (fileUrl, targetPath, loaderDOMElement) => {
+  let receivedBytes = 0
+  let totalBytes = 0
+
+  const req = request({
+    method: 'GET',
+    uri: fileUrl
+  })
+
+  const baseFileName = path.parse(targetPath).base
+  const baseFileDir = path.parse(targetPath).dir
+
+  const canSave = (targetPath) => {
+    return new Promise((resolve, reject) => {
+      fs.access(targetPath, (err) => {
+        if(err) return resolve()
+        else return reject(new Error('file exists'))
+      })
+    })
+  }
+
+  const checkTargetPath = (target) => {
+    canSave(target)
+      .then(() => {
+        req.on('response', (data) => {
+          if(data.statusCode === 200 || data.statusCode === 201) {
+            totalBytes = parseInt(data.headers['content-length'])
+            let out = fs.createWriteStream(target)
+            req.pipe(out)
+          } else {
+            showError(loaderDOMElement)
+            return null
+          }
+        })
+        req.on('data', (chunk) => {
+          if(totalBytes > 0) {
+            receivedBytes += chunk.length
+            showProgress(receivedBytes, totalBytes, loaderDOMElement)
+          }
+        })
+        req.on('end', () => {
+          
+        })
+      })
+      .catch(() => {
+        const filename = baseFileName.replace(/\./g, `(${++index}).`)
+        const final = path.resolve(baseFileDir, filename)
+        checkTargetPath(final)
+      })
+  }
+
+  let index = 0
+
+  checkTargetPath(targetPath)
+}
+
+const showError = (loaderDOMElement) => {
+  loaderDOMElement.style.display = 'block'
+  loaderDOMElement.firstElementChild.classList.add('error')
+  loaderDOMElement.firstElementChild.textContent = 'Error: file not found'
+  setTimeout(() => {
+    loaderDOMElement.style.display = 'none'
+    loaderDOMElement.firstElementChild.classList.remove('error')
+    loaderDOMElement.firstElementChild.textContent = ''
+  }, 5000)
+}
+
+const showProgress = (received, total, loaderDOMElement) => {
+  let percentage = Math.ceil((received * 100) / total)
+  loaderDOMElement.style.display = 'block'
+  loaderDOMElement.style.width = `${percentage}px`
+  loaderDOMElement.firstElementChild.textContent = `${percentage}%`
+  if(percentage === 100) {
+    setTimeout(() => {
+      loaderDOMElement.style.display = 'none'
+      loaderDOMElement.style.width = 0
+      loaderDOMElement.firstElementChild.textContent = ''
+    }, 3000)
+  }
 }

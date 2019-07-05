@@ -4,6 +4,7 @@ const getters = {
   getToken: state => state.token,
   getUserDataPath: state => state.userDataPath,
   getJson: state => state.json,
+  getFilter: state => state.filter,
   getAboutPopupShow: state => state.aboutPopupShow
 }
 

@@ -1,6 +1,7 @@
 <template>
   <div class="notepad_item_btns">
-    <button 
+    <button
+      v-if="collection.includes('save')"
       v-show="editable_items.includes(itemKey)"
       @click.prevent="save($event, itemKey)"
       >
@@ -16,7 +17,8 @@
         </g>
       </svg>
     </button>
-    <button 
+    <button
+      v-if="collection.includes('edit')"
       v-show="!editable_items.includes(itemKey)"
       @click.prevent="edit($event, itemKey)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" version="1.1">
@@ -25,7 +27,9 @@
         </g>
       </svg>    
     </button>
-    <button @click.prevent="remove($event, itemKey)">
+    <button 
+      v-if="collection.includes('remove')"
+      @click.prevent="remove($event, itemKey)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 109 90">
         <g style="fill: #FB004D">
           <path class="g1" d="m 28.751953,28 c -2.77,0 -4.759393,2.681488 -4.458984,6.011719 l 4.417969,48.976562 C 29.011347,86.318512 31.483906,89 34.253906,89 h 8.994141 25.253906 8.996094 c 2.77,0 5.240606,-2.681488 5.541015,-6.011719 L 87.457031,34.011719 C 87.75744,30.681488 85.77,28 83,28 H 63 48.751953 Z"></path>
@@ -53,7 +57,7 @@
 
   export default {
     name: 'Controls',
-    props: ['itemKey'],
+    props: ['itemKey', 'collection'],
     data() {
       return {
         editable_items: []
@@ -61,7 +65,8 @@
     },
     computed: {
       ...mapGetters({
-        json: 'getJson'
+        json: 'getJson',
+        filter: 'getFilter'
       }),
       refs() {
         return this.$parent.$refs
@@ -119,9 +124,12 @@
         })
       },
       remove(e, stamp) {
-        let buff = cloneDeep(this.json)
-        unset(buff, `${stamp}`)
-        this.$store.dispatch('json', buff)
+        let buffJson = cloneDeep(this.json)
+        let buffFilter = cloneDeep(this.filter)
+        unset(buffJson, stamp)
+        unset(buffFilter, stamp)
+        this.$store.dispatch('json', buffJson)
+        this.$store.dispatch('filter', buffFilter)
         this.$emit('post')
       }
     }

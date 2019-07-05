@@ -2,9 +2,7 @@
   <div id="content">
     <titlebar></titlebar>
     <main>
-      <aside v-if="isAuth && !loading">
-        <legend>Projects</legend>
-      </aside>
+      <sidebar v-if="isAuth && !loading"></sidebar>
       <section>
         <loading v-if="loading"></loading>
         <template v-else>
@@ -22,6 +20,7 @@
   import Loading from './loading'
   import Auth from './auth'
   import Notepad from './notepad'
+  import Sidebar from './sidebar'
   import storage from '@/plugins/storage'
   import { userDataFileName } from '@/constants'
 
@@ -31,7 +30,8 @@
       Titlebar,
       Loading,
       Auth,
-      Notepad
+      Notepad,
+      Sidebar
     },
     computed: {
       ...mapGetters({

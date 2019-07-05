@@ -1,7 +1,12 @@
 <template>
   <div id="notepad_cont">
     <div class="notepad_cont" ref="notepad_cont">
-      <div class="notepad_item" v-for="(item, index) in json" :data-stamp="item.key" :key="item.key" ref="notepad_item">
+      <div class="notepad_item"
+        v-if="!hasFilter || `${item.key}` in filter"
+        v-for="(item, index) in json" 
+        :data-stamp="item.key" 
+        :key="item.key"
+        ref="notepad_item">
         <div>
           <div class="notepad_item_date">{{ item.date }}</div>
         </div>
@@ -17,7 +22,13 @@
                 <div>{{ item.file.name }}</div>
                 <div>
                   <a :href="item.file.link" target="_blank">Открыть</a>
-                  <a :href="item.file.link" :data-filename="item.file.name" download>Скачать</a></div>
+                  <a :href="item.file.link" :data-filename="item.file.name" :data-stamp="item.key" download>Скачать</a>
+                </div>                
+              </div>
+              <div>
+                <div class="file_loader">
+                  <span>56%</span>
+                </div>
               </div>
             </div>
           </template>
@@ -25,7 +36,11 @@
             <p v-html="item.message"></p>
           </template>
         </div>
-        <controls @post="post" :item-key="item.key"></controls>
+        <controls 
+          @post="post" 
+          :item-key="item.key" 
+          :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']">
+        </controls>
       </div>
     </div>
     <div class="notepad_textarea">
@@ -41,70 +56,9 @@
 
   import $ from 'jquery'
   import { mapGetters } from 'vuex'
-  import request from 'request'
-  import fs from 'fs'
-  import path from 'path'
-  import { checkLinks, now, getFileType } from '@/helpers'
+  import { isEmpty } from 'lodash'
+  import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '@/helpers'
   import Controls from './controls'
-
-  const downloadFile = (fileUrl, targetPath) => {
-    let receivedBytes = 0
-    let totalBytes = 0
-
-    const req = request({
-      method: 'GET',
-      uri: fileUrl
-    })
-
-    const baseFileName = path.parse(targetPath).base
-    const baseFileDir = path.parse(targetPath).dir
-
-    const canSave = (targetPath) => {
-      return new Promise((resolve, reject) => {
-        fs.access(targetPath, (err) => {
-          if(err) {
-            console.log('can save')
-            return resolve()
-          } else {
-            console.log('file exists')
-            return reject(new Error('file exists'))
-          }
-        })
-      })
-    }
-
-    const checkTargetPath = (target) => {
-      canSave(target)
-        .then(() => {
-          let out = fs.createWriteStream(target)
-          req.pipe(out)
-          req.on('response', (data) => {
-            totalBytes = parseInt(data.headers['content-length'])
-          })
-          req.on('data', (chunk) => {
-            receivedBytes += chunk.length
-            showProgress(receivedBytes, totalBytes)
-          })
-          // req.on('end', () => {
-          //     alert("File succesfully downloaded")
-          // })
-        })
-        .catch(() => {
-          const filename = baseFileName.replace(/\./g, `(${++index}).`)
-          const final = path.resolve(baseFileDir, filename)
-          checkTargetPath(final)
-        })
-    }
-
-    let index = 0
-
-    checkTargetPath(targetPath)
-  }
-
-  const showProgress = (received, total) => {
-    let percentage = (received * 100) / total
-    console.log(`${percentage}% | ${received} bytes out of ${total} bytes.`)
-  }
 
   export default {
     name: 'Notepad',
@@ -116,8 +70,23 @@
     },
     computed: {
       ...mapGetters({
-        json: 'getJson'
-      })
+        json: 'getJson',
+        filter: 'getFilter'
+      }),
+      hasFilter() {
+        return !isEmpty(this.filter)
+      }
+    },
+    watch: {
+      hasFilter(flag) {
+        if(flag) {
+          this.$refs.notepad_cont.scrollTo(0, 0)
+        } else {
+          this.$nextTick(() => {
+            this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
+          })
+        }
+      }
     },
     components: {
       Controls
@@ -156,6 +125,7 @@
           [stamp]: {
             key: stamp,
             date: date,
+            name: name,
             file: {
               name: name,
               link: link,
@@ -200,14 +170,18 @@
         e.preventDefault()
         if($(e.target).is('[download]')) {
           const fileURL = e.target.href
+          const stamp = e.target.dataset.stamp
+          const item = this.$refs.notepad_item.find(item => item.dataset.stamp === stamp)
+          const loader = item.querySelector('.file_loader')
           const fileName = e.target.dataset.filename
-          const finalPath = 'C:\\Users\\Jimhucksly\\Desktop\\' + fileName
-          downloadFile(fileURL, finalPath)
+          const finalPath = this.$store.getters['getUserDataPath'] + '\\' + fileName
+          downloadFile(fileURL, finalPath, loader)
         } else {
           this.$electron.shell.openExternal(e.target.href)
         }
       })
       this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
+      dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
     }
   }
 

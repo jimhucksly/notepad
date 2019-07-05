@@ -43,6 +43,9 @@ const actions = {
     } else json = data
     store.commit('setJson', json)
   },
+  filter(store, object) {
+    store.commit('setFilter', object)
+  },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
   },

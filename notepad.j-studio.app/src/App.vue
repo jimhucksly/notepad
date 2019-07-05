@@ -9,7 +9,7 @@
   import { remote } from 'electron'
   import Popup from '@/components/popup'
 
-  const { Menu, MenuItem } = remote
+  const { Menu } = remote
   
   export default {
     name: 'notepad.j-studio.app',
@@ -17,22 +17,26 @@
       Popup
     },
     mounted() {
-      const appMenu = new Menu()
-      const menuItemSignOut = new MenuItem({
-        label: 'Sign Out',
-        click: () => {
-          this.$store.dispatch('auth', false)
-          this.$store.dispatch('token', null)
+      const MenuTemplate = [
+        {
+          label: 'File',
+          submenu: [
+            {
+              label: 'Sign Out',
+              click: () => {
+                this.$store.dispatch('auth', false)
+                this.$store.dispatch('token', null)
+              }
+            }
+          ]
+        },
+        {
+          label: 'About',
+          click: () => this.$popup.open('about')
         }
-      })
-      const menuItemAbout = new MenuItem({
-        label: 'About',
-        click: () => this.$popup.open('about')
-      })
-      appMenu.append(menuItemSignOut)
-      appMenu.append(menuItemAbout)
+      ]
+      const appMenu = Menu.buildFromTemplate(MenuTemplate)
       Menu.setApplicationMenu(appMenu)
-
       document.getElementById('menu-button').addEventListener('click', (event) => {
         appMenu.popup(this.$electron.screen, event.x, event.y)
       })

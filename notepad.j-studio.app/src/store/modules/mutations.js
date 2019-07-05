@@ -14,6 +14,9 @@ const mutations = {
   setJson(state, json) {
     state.json = json
   },
+  setFilter(state, object) {
+    state.filter = object
+  },
   setAboutPopupShow(state, flag) {
     state.aboutPopupShow = flag
   }

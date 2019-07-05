@@ -28,10 +28,104 @@ main {
   aside {
     flex-grow: 0;
     flex-basis: 250px;
-    padding: 15px;
+    padding-top: 15px;
     color: #fff;
     background-color: #303d3c;
     border-right: 1px solid #ccc;
+
+    legend {
+      padding-left: 15px;
+      margin-bottom: 15px;
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      user-select: none;      
+    }
+
+    .projects {
+
+      .projects_item {
+        position: relative;
+        height: 27px;
+        padding: 6px 35px 6px 30px;
+        margin-bottom: 5px;
+        color: $yellow_light;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        label {
+          cursor: pointer;
+          -moz-user-select: none;
+          -khtml-user-select: none;
+          user-select: none;   
+        }
+
+        &.active {
+          background-color: $magenta_light;
+
+          &:hover {
+            background-color: $magenta_light;
+          }
+        }
+
+        &.edit {
+          padding-top: 3px;
+          padding-bottom: 3px;
+
+          label {
+            display: none;
+          }
+
+          input[type="text"] {
+            display: inline-block
+          }
+
+          .projects_item_icon {
+            display: block;
+
+            svg:first-child {
+              display: none;
+            }
+            svg:last-child {
+              display: block;
+            }
+          }
+        }
+
+        .projects_item_icon {
+          display: none;
+          position: absolute;
+          top: 6px;
+          right: 15px;
+          width: 15px;
+          height: 15px;
+
+          svg:last-child {
+            display: none;
+          }
+        }
+
+        input[type="text"] {
+          display: none;
+          border: 1px solid #eee;
+          background-color: transparent;
+          color: $yellow;
+          width: 100%;
+          height: 20px;
+          margin-left: -7px;
+        }
+
+        &:hover {
+          background-color: darken(#303d3c, 3%);
+          color: $yellow;
+
+          .projects_item_icon {
+            display: inline-block;
+          }
+        }
+      }
+    }
   }
 
   section {
@@ -51,7 +145,7 @@ main {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255,255,255, 0.7);
+  background-color: rgba(255,255,255, 0);
   z-index: 100;
 }
 
@@ -288,6 +382,30 @@ main {
         display: inline-block;
         margin-right: 5px;
         font-size: 11px;
+      }
+    }
+
+    .file_loader {
+      display: none;
+      position: relative;
+      height: 13px;
+      background-color: $blue;
+      margin-left: 15px;
+
+      span {
+        display: block;
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        top: 0;
+        right: -18px;
+        font-size: 11px;
+        color: #333;
+        white-space: nowrap;
+
+        &.error {
+          color: $red;
+        }
       }
     }
   }

@@ -4,6 +4,7 @@ const state = {
   token: null,
   userDataPath: '',
   json: null,
+  filter: {},
   aboutPopupShow: false
 }
 
