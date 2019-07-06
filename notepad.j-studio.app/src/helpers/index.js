@@ -55,7 +55,9 @@ export const isJSON = (str) => {
 }
 
 export const getFileType = (name) => {
-  if(/\.(jpg|png|jpeg|gif)$/.test(name)) return 'image'
+  if(/\.jpe?g$/.test(name)) return 'jpg'
+  if(/\.png$/.test(name)) return 'png'
+  if(/\.gif$/.test(name)) return 'image'
   if(/\.js$/.test(name)) return 'js'
   if(/\.json$/.test(name)) return 'json'
   if(/\.vue$/.test(name)) return 'vue'

@@ -11,30 +11,12 @@
           <div class="notepad_item_date">{{ item.date }}</div>
         </div>
         <div class="notepad_item_content">
-          <template v-if="item.file !== undefined">
-            <div class="notepad_item_file">
-              <div class="file_icon">
-                <i class="icon">
-                  <img :src="`../../static/file_types_icons/${item.file.type}.svg`">
-                </i>
-              </div>
-              <div class="file_link">
-                <div>{{ item.file.name }}</div>
-                <div>
-                  <a :href="item.file.link" target="_blank">Открыть</a>
-                  <a :href="item.file.link" :data-filename="item.file.name" :data-stamp="item.key" download>Скачать</a>
-                </div>                
-              </div>
-              <div>
-                <div class="file_loader">
-                  <span>56%</span>
-                </div>
-              </div>
-            </div>
-          </template>
-          <template v-else>
-            <p v-html="item.message"></p>
-          </template>
+          <file 
+            v-if="item.file !== undefined"
+            :item-key="item.key" 
+            :item-file="item.file">
+          </file>
+          <p v-html="item.message" v-else></p>
         </div>
         <controls 
           @post="post" 
@@ -54,11 +36,11 @@
 </template>
 <script>
 
-  import $ from 'jquery'
   import { mapGetters } from 'vuex'
   import { isEmpty } from 'lodash'
-  import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '@/helpers'
+  import { checkLinks, now, getFileType, dragAndDropLoader } from '@/helpers'
   import Controls from './controls'
+  import File from './file'
 
   export default {
     name: 'Notepad',
@@ -67,6 +49,10 @@
         message: '',
         new_message_flag: false
       }
+    },
+    components: {
+      Controls,
+      File
     },
     computed: {
       ...mapGetters({
@@ -87,9 +73,6 @@
           })
         }
       }
-    },
-    components: {
-      Controls
     },
     methods: {
       send() {
@@ -166,20 +149,6 @@
       }
     },
     mounted() {
-      $(this.$refs.notepad_cont).on('click', 'a[href]', (e) => {
-        e.preventDefault()
-        if($(e.target).is('[download]')) {
-          const fileURL = e.target.href
-          const stamp = e.target.dataset.stamp
-          const item = this.$refs.notepad_item.find(item => item.dataset.stamp === stamp)
-          const loader = item.querySelector('.file_loader')
-          const fileName = e.target.dataset.filename
-          const finalPath = this.$store.getters['getUserDataPath'] + '\\' + fileName
-          downloadFile(fileURL, finalPath, loader)
-        } else {
-          this.$electron.shell.openExternal(e.target.href)
-        }
-      })
       this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
       dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
     }

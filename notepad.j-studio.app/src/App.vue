@@ -22,6 +22,12 @@
           label: 'File',
           submenu: [
             {
+              label: 'Preferences...',
+              click: () => {
+                this.$store.dispatch('preferences', true)
+              }
+            },
+            {
               label: 'Sign Out',
               click: () => {
                 this.$store.dispatch('auth', false)
@@ -37,11 +43,12 @@
       ]
       const appMenu = Menu.buildFromTemplate(MenuTemplate)
       Menu.setApplicationMenu(appMenu)
+
       document.getElementById('menu-button').addEventListener('click', (event) => {
         appMenu.popup(this.$electron.screen, event.x, event.y)
       })
 
-      document.getElementById('minimize-button').addEventListener('click', () => {
+      document.getElementById('minimize-button').addEventListener('click', (e) => {
         remote.getCurrentWindow().minimize()
       })
 
@@ -54,13 +61,14 @@
         }
       })
 
-      document.getElementById('close-button').addEventListener('click', () => {
-        remote.app.quit()
+      document.getElementById('close-button').addEventListener('click', (e) => {
+        // remote.app.quit()
+        if(!remote.app.isQuiting) {
+          e.preventDefault()
+          remote.getCurrentWindow().hide()
+        }
+        return false
       })
     }
   }
 </script>
-
-<style>
-  /* CSS */
-</style>

@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, Tray, ipcMain, Menu, dialog } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
 
@@ -16,6 +16,9 @@ let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
+
+const appIcon = path.join(__dirname, '../static/icon_118x118.png')
+const appIconTray = path.join(__dirname, '../static/icon_48x48.png')
 
 function createWindow() {
   /**
@@ -34,8 +37,43 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
+  const appTray = new Tray(appIconTray)
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show App',
+      click: () => mainWindow.show()
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        app.isQuiting = true
+        app.quit()
+      }
+    }
+  ])
+
+  appTray.setContextMenu(contextMenu)
+
+  appTray.on('click', () => {
+    if(mainWindow.isVisible()) {
+      mainWindow.hide()
+    } else {
+      mainWindow.show()
+    }
+  })
+
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.on('minimize', (e) => {
+    // e.preventDefault()
+    // mainWindow.hide()
+  })
+
+  mainWindow.on('show', () => {
+    // appTray.setHighlightMode('always')
   })
 
   mainWindow.once('ready-to-show', () => {
@@ -62,15 +100,35 @@ app.on('window-all-closed', () => {
 
 app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
-  window.setIcon(path.join(__dirname, '../static/icon_118x118.png'))
+  window.setIcon(appIcon)
   window.setTitle(pkg.build.productName)
+
   ipcMain.on('authorized', () => {
-    // const appMenu = Menu.getApplicationMenu()
-    // appMenu.items.find(item => item.label === 'Sign Out').visible = true
+    const appMenu = Menu.getApplicationMenu()
+    const menuItemFile = appMenu.items.find(item => item.label === 'File')
+    menuItemFile.visible = true
   })
+
   ipcMain.on('unauthorized', () => {
-    // const appMenu = Menu.getApplicationMenu()
-    // appMenu.items.find(item => item.label === 'Sign Out').visible = false
+    const appMenu = Menu.getApplicationMenu()
+    const menuItemFile = appMenu.items.find(item => item.label === 'File')
+    menuItemFile.visible = false
+  })
+
+  ipcMain.on('openFolderDialog', (event, arg) => {
+    const options = {
+      title: 'Choose folder',
+      defaultPath: arg.defaultPath,
+      // buttonLabel: 'Do it',
+      /* filters: [
+        { name: 'xml', extensions: ['xml'] }
+      ], */
+      properties: ['openDirectory']
+      // message: 'This message will only be shown on macOS'
+    }
+    dialog.showOpenDialog(null, options, (filePaths) => {
+      event.sender.send('open-dialog-paths-selected', filePaths)
+    })
   })
 })
 

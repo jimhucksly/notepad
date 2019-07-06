@@ -19,6 +19,12 @@ const mutations = {
   },
   setAboutPopupShow(state, flag) {
     state.aboutPopupShow = flag
+  },
+  setPreferencesShow(state, flag) {
+    state.preferencesShow = flag
+  },
+  setDownloadsTargetPath(state, path) {
+    state.downloadsTargetPath = path
   }
 }
 

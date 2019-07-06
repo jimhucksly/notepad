@@ -6,6 +6,7 @@ import { ipcRenderer } from 'electron'
 
 const jsonHeaders = {
   headers: {
+    'X-Honeypot': 'App',
     'Content-Type': 'application/json'
   }
 }
@@ -48,6 +49,13 @@ const actions = {
   },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
+  },
+  preferences(store) {
+    const flag = store.getters['isPreferencesShowed']
+    store.commit('setPreferencesShow', !flag)
+  },
+  downloadsTargetPath(store, path) {
+    store.commit('setDownloadsTargetPath', path)
   },
   async action(store, { type, data }) {
     switch (type) {

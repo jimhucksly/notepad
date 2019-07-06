@@ -5,7 +5,9 @@ const state = {
   userDataPath: '',
   json: null,
   filter: {},
-  aboutPopupShow: false
+  aboutPopupShow: false,
+  preferencesShow: false,
+  downloadsTargetPath: ''
 }
 
 export default state

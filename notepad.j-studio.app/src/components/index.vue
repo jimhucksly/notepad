@@ -7,6 +7,7 @@
         <loading v-if="loading"></loading>
         <template v-else>
           <auth v-if="!isAuth"></auth>
+          <preferences v-else-if="preferencesShow"></preferences>
           <notepad v-else></notepad>
         </template>
       </section>
@@ -20,6 +21,7 @@
   import Loading from './loading'
   import Auth from './auth'
   import Notepad from './notepad'
+  import Preferences from './preferences'
   import Sidebar from './sidebar'
   import storage from '@/plugins/storage'
   import { userDataFileName } from '@/constants'
@@ -31,12 +33,14 @@
       Loading,
       Auth,
       Notepad,
+      Preferences,
       Sidebar
     },
     computed: {
       ...mapGetters({
         loading: 'getLoading',
         isAuth: 'getAuth',
+        preferencesShow: 'isPreferencesShowed',
         token: 'getToken'
       })
     },
@@ -72,6 +76,15 @@
       const appPath = this.$electron.remote.app.getPath('userData')
       this.$store.dispatch('userDataPath', appPath)
       this.checkToken(appPath)
+      storage.get(appPath, 'UserPreferences')
+        .then(json => {
+          if(json['downloadsTargetPath'] !== undefined) {
+            this.$store.dispatch('downloadsTargetPath', json['downloadsTargetPath'])
+          } else return Promise.reject(new Error('preferences key in no exists'))
+        })
+        .catch(() => {
+          this.$store.dispatch('downloadsTargetPath', appPath)
+        })
     }
   }
 

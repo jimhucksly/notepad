@@ -93,13 +93,13 @@
               })
             })
             .catch(err => {
-              const data = err.response.data
-              if(!isEmpty(data.message)) {
+              const data = err.response && err.response.data ? err.response.data : (err.response || err)
+              if(data.message && !isEmpty(data.message)) {
                 this.errors = Object.assign({}, data.message)
                 this.errors.login = this.errors.login ? 1 : 0
                 this.errors.pass = this.errors.pass ? 1 : 0
                 this.validate()
-              }
+              } else console.error(data)
             })
         }
       }

@@ -1,7 +1,7 @@
 <template>
   <aside>
-    <legend>Projects</legend>
-    <div class="projects">
+    <legend>{{ legend }}</legend>
+    <div class="projects" v-if="!preferences">
       <div class="projects_item"
         v-for="item in json" 
         :data-stamp="item.key" 
@@ -46,8 +46,12 @@
     computed: {
       ...mapGetters({
         json: 'getJson',
-        filter: 'getFilter'
-      })
+        filter: 'getFilter',
+        preferences: 'isPreferencesShowed'
+      }),
+      legend() {
+        return this.preferences ? 'Preferences' : 'Projects'
+      }
     },
     methods: {
       triggerEdit(e, stamp) {
