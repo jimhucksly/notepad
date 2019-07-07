@@ -18,6 +18,7 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 const appIcon = path.join(__dirname, '../static/icon_118x118.png')
+const appIconOverlay = path.join(__dirname, '../static/icon_overlay_34x34.png')
 const appIconTray = path.join(__dirname, '../static/icon_48x48.png')
 
 function createWindow() {
@@ -101,8 +102,9 @@ app.on('window-all-closed', () => {
 app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
   window.setIcon(appIcon)
+  window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
-
+  
   ipcMain.on('authorized', () => {
     const appMenu = Menu.getApplicationMenu()
     const menuItemFile = appMenu.items.find(item => item.label === 'File')
@@ -120,15 +122,19 @@ app.on('browser-window-created', (e, window) => {
       title: 'Choose folder',
       defaultPath: arg.defaultPath,
       // buttonLabel: 'Do it',
-      /* filters: [
-        { name: 'xml', extensions: ['xml'] }
-      ], */
+      filters: [
+        { name: 'exe', extensions: ['exe'] }
+      ],
       properties: ['openDirectory']
       // message: 'This message will only be shown on macOS'
     }
     dialog.showOpenDialog(null, options, (filePaths) => {
       event.sender.send('open-dialog-paths-selected', filePaths)
     })
+  })
+
+  ipcMain.on('set-icon-notification', () => {
+    mainWindow.setOverlayIcon(appIconOverlay, 'You have an unread message')
   })
 })
 

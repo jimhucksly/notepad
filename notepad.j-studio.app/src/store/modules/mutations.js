@@ -17,6 +17,12 @@ const mutations = {
   setFilter(state, object) {
     state.filter = object
   },
+  setInterval(state, int) {
+    state.interval = int
+  },
+  setNotification(state, flag) {
+    state.notification = flag
+  },
   setAboutPopupShow(state, flag) {
     state.aboutPopupShow = flag
   },

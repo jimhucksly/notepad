@@ -6,6 +6,7 @@
 </template>
 <script>
 
+  import { mapGetters } from 'vuex'
   import { remote } from 'electron'
   import Popup from '@/components/popup'
 
@@ -15,6 +16,18 @@
     name: 'notepad.j-studio.app',
     components: {
       Popup
+    },
+    computed: {
+      ...mapGetters({
+        notification: 'getNotification'
+      })
+    },
+    watch: {
+      notification(flag) {
+        if(flag) {
+          this.$electron.ipcRenderer.send('set-icon-notification')
+        }
+      }
     },
     mounted() {
       const MenuTemplate = [
@@ -63,12 +76,12 @@
 
       document.getElementById('close-button').addEventListener('click', (e) => {
         // remote.app.quit()
-        if(!remote.app.isQuiting) {
-          e.preventDefault()
-          remote.getCurrentWindow().hide()
-        }
+        remote.getCurrentWindow().hide()
         return false
       })
+    },
+    beforeDestroy() {
+      this.$store.dispatch('interval', null)
     }
   }
 </script>

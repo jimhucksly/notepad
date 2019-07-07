@@ -1,7 +1,7 @@
 <template>
   <aside>
     <legend>{{ legend }}</legend>
-    <div class="projects" v-if="!preferences">
+    <div class="projects" v-show="!preferences">
       <div class="projects_item"
         v-for="item in json" 
         :data-stamp="item.key" 

@@ -15,6 +15,7 @@ const actions = {
   auth(store, flag) {
     store.commit('setAuth', flag)
     ipcRenderer.send(flag ? 'authorized' : 'unauthorized')
+    store.dispatch('interval', null)
   },
   token(store, value) {
     store.commit('setToken', value)
@@ -38,14 +39,30 @@ const actions = {
     if(isJSON(data)) {
       try {
         json = JSON.parse(data)
+        const currentJSON = store.getters['getJson']
+        Object.keys(json).forEach(key => {
+          if(!currentJSON[key]) {
+            json[key].unreadable = true
+          }
+        })
       } catch (err) {
         console.error(err)
+        store.dispatch('interval', null)
       }
     } else json = data
     store.commit('setJson', json)
   },
   filter(store, object) {
     store.commit('setFilter', object)
+  },
+  interval(store, int) {
+    if(int) {
+      store.commit('setInterval', int)
+    } else {
+      let interval = store.getters['getInterval']
+      if(interval) clearInterval(interval)
+      store.commit('setInterval', null)
+    }
   },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
@@ -74,11 +91,29 @@ const actions = {
               store.dispatch('loading', false)
             }, 2000)
             store.dispatch('json', resp.data.data)
+            let interval = store.getters['getInterval']
+            if(interval) store.commit('setInterval', null)
+            interval = setInterval(() => {
+              store.dispatch('action', {
+                type: 'CHECK'
+              })
+                .then(resp => {
+                  if(resp.status !== 204) {
+                    store.dispatch('json', resp.data.data)
+                    store.commit('setNotification', true)
+                  }
+                })
+                .catch(err => {
+                  console.error(err)
+                })
+            }, 5000)
+            store.commit('setInterval', interval)
           })
           .catch(() => {
             store.dispatch('loading', false)
             store.dispatch('auth', false)
             store.dispatch('token', null)
+            store.dispatch('interval', null)
           })
         return null
       case 'SEND':
@@ -90,10 +125,15 @@ const actions = {
         return postResp
       case 'FILE':
         jsonHeaders.headers.Authorization = store.getters['getToken']
-        jsonHeaders.headers['Content-Type'] = 'multipart/formdata'
+        jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
         const uploadResp = await $http.post(type, data.file, jsonHeaders)
         if(uploadResp instanceof Error) return Promise.reject(uploadResp)
         return uploadResp
+      case 'CHECK':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const checkResp = await $http.get(type, jsonHeaders)
+        if(checkResp instanceof Error) return Promise.reject(checkResp)
+        return checkResp
     }
   }
 }

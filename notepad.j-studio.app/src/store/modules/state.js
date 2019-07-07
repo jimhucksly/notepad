@@ -7,7 +7,9 @@ const state = {
   filter: {},
   aboutPopupShow: false,
   preferencesShow: false,
-  downloadsTargetPath: ''
+  downloadsTargetPath: '',
+  interval: null,
+  notification: false
 }
 
 export default state
