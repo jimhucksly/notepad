@@ -1,8 +1,9 @@
+import { ipcRenderer } from 'electron'
+import { isEmpty } from 'lodash'
 import $http from '../http'
 import storage from '@/plugins/storage'
 import { userDataFileName } from '@/constants'
 import { isJSON } from '@/helpers'
-import { ipcRenderer } from 'electron'
 
 const jsonHeaders = {
   headers: {
@@ -40,11 +41,16 @@ const actions = {
       try {
         json = JSON.parse(data)
         const currentJSON = store.getters['getJson']
-        Object.keys(json).forEach(key => {
-          if(!currentJSON[key]) {
-            json[key].unreadable = true
-          }
-        })
+        const unread = store.getters['getUnread']
+        if(currentJSON) {
+          Object.keys(json).forEach(key => {
+            if(!currentJSON[key]) {
+              store.dispatch('unread', Object.assign({}, unread, {
+                [key]: true
+              }))
+            }
+          })
+        }
       } catch (err) {
         console.error(err)
         store.dispatch('interval', null)
@@ -54,6 +60,10 @@ const actions = {
   },
   filter(store, object) {
     store.commit('setFilter', object)
+  },
+  unread(store, object) {
+    store.commit('setUnread', object)
+    if(isEmpty(object)) ipcRenderer.send('hide-icon-notification')
   },
   interval(store, int) {
     if(int) {

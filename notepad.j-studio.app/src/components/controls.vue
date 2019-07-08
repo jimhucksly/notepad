@@ -53,7 +53,7 @@
   import $ from 'jquery'
   import { mapGetters } from 'vuex'
   import { cloneDeep, unset } from 'lodash'
-  import { checkLinks, now } from '@/helpers'
+  import { checkLinks } from '@/helpers'
 
   export default {
     name: 'Controls',
@@ -115,7 +115,8 @@
         this.$store.dispatch('json', Object.assign({}, this.json, {
           [stamp]: {
             key: stamp,
-            date: now(stamp).date,
+            date: this.json[stamp].date,
+            name: this.json[stamp].name,
             message: p.innerHTML
           }
         }))

@@ -1,4 +1,6 @@
 aside {
+  display: flex;
+  flex-direction: column;
   flex-grow: 0;
   flex-basis: 250px;
   padding-top: 15px;
@@ -7,6 +9,9 @@ aside {
   border-right: 1px solid #ccc;
 
   legend {
+    flex-basis: 25px;
+    flex-grow: 0;
+    flex-shrink: 0;
     padding-left: 15px;
     margin-bottom: 15px;
     -moz-user-select: none;
@@ -15,6 +20,10 @@ aside {
   }
 
   .projects {
+    flex-basis: 100%;
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .projects_item {
       position: relative;

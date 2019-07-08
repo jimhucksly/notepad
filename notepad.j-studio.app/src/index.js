@@ -104,38 +104,6 @@ app.on('browser-window-created', (e, window) => {
   window.setIcon(appIcon)
   window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
-  
-  ipcMain.on('authorized', () => {
-    const appMenu = Menu.getApplicationMenu()
-    const menuItemFile = appMenu.items.find(item => item.label === 'File')
-    menuItemFile.visible = true
-  })
-
-  ipcMain.on('unauthorized', () => {
-    const appMenu = Menu.getApplicationMenu()
-    const menuItemFile = appMenu.items.find(item => item.label === 'File')
-    menuItemFile.visible = false
-  })
-
-  ipcMain.on('openFolderDialog', (event, arg) => {
-    const options = {
-      title: 'Choose folder',
-      defaultPath: arg.defaultPath,
-      // buttonLabel: 'Do it',
-      filters: [
-        { name: 'exe', extensions: ['exe'] }
-      ],
-      properties: ['openDirectory']
-      // message: 'This message will only be shown on macOS'
-    }
-    dialog.showOpenDialog(null, options, (filePaths) => {
-      event.sender.send('open-dialog-paths-selected', filePaths)
-    })
-  })
-
-  ipcMain.on('set-icon-notification', () => {
-    mainWindow.setOverlayIcon(appIconOverlay, 'You have an unread message')
-  })
 })
 
 app.on('activate', () => {
@@ -145,6 +113,44 @@ app.on('activate', () => {
 })
 
 app.setPath('userData', path.resolve(app.getPath('userData'), '../JimhuckslyStudio/notepad-app'))
+
+ipcMain.on('authorized', () => {
+  const appMenu = Menu.getApplicationMenu()
+  const menuItemFile = appMenu.items.find(item => item.label === 'File')
+  menuItemFile.visible = true
+})
+
+ipcMain.on('unauthorized', () => {
+  const appMenu = Menu.getApplicationMenu()
+  const menuItemFile = appMenu.items.find(item => item.label === 'File')
+  menuItemFile.visible = false
+})
+
+ipcMain.on('open-folder-dialog', (event, arg) => {
+  const options = {
+    title: 'Choose folder',
+    defaultPath: arg.defaultPath,
+    // buttonLabel: 'Do it',
+    filters: [
+      { name: 'exe', extensions: ['exe'] }
+    ],
+    properties: ['openDirectory']
+    // message: 'This message will only be shown on macOS'
+  }
+  dialog.showOpenDialog(null, options, (filePaths) => {
+    event.sender.send('open-dialog-paths-selected', filePaths)
+  })
+})
+
+ipcMain.on('set-icon-notification', () => {
+  mainWindow.setOverlayIcon(appIconOverlay, 'You have an unread message')
+})
+
+ipcMain.on('hide-icon-notification', () => {
+  setTimeout(() => {
+    mainWindow.setOverlayIcon(null, '')
+  }, 2000)
+})
 
 /**
  * Auto Updater

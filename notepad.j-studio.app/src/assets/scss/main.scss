@@ -186,6 +186,10 @@ main {
       background-color: $yellow_light;
     }
 
+    &.unread {
+      background-color: lighten($blue_light, 50%);
+    }
+
     &:last-child {
       border-bottom: none;
       margin-bottom: 0;

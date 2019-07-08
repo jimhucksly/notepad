@@ -66,6 +66,8 @@ a[href] {
   color: $blue;
 }
 
+// notepad cont scrollbar styling
+
 .notepad_cont::-webkit-scrollbar-button {
   background-image:url('');
   background-repeat:no-repeat;
@@ -74,7 +76,7 @@ a[href] {
 }
  
 .notepad_cont::-webkit-scrollbar-track {
-  background-color:#ccc;
+  background-color:#eee;
 }
  
 .notepad_cont::-webkit-scrollbar-thumb {
@@ -95,5 +97,39 @@ a[href] {
 }
  
 .notepad_cont::-webkit-scrollbar {
+  width: 6px;
+}
+
+// projects scrollbar styling
+
+.projects::-webkit-scrollbar-button {
+  background-image:url('');
+  background-repeat:no-repeat;
+  width:6px;
+  height:0px
+}
+ 
+.projects::-webkit-scrollbar-track {
+  background-color:#eee;
+}
+ 
+.projects::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  background-color: lighten(#303d3c, 35%);
+}
+ 
+.projects::-webkit-scrollbar-thumb:hover {
+  background-color: lighten(#303d3c, 35%);
+  border: 2px solid #eee}
+ 
+.projects::-webkit-resizer {
+  background-image:url('');
+  background-repeat:no-repeat;
+  width:6px;
+  height:0px
+}
+ 
+.projects::-webkit-scrollbar {
   width: 6px;
 }

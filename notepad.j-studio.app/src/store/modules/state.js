@@ -5,6 +5,7 @@ const state = {
   userDataPath: '',
   json: null,
   filter: {},
+  unread: {},
   aboutPopupShow: false,
   preferencesShow: false,
   downloadsTargetPath: '',

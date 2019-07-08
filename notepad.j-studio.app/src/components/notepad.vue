@@ -6,7 +6,8 @@
         v-for="(item, index) in json" 
         :data-stamp="item.key" 
         :key="item.key"
-        ref="notepad_item">
+        ref="notepad_item"
+        :class="{ unread: unread[item.key] }">
         <div>
           <div class="notepad_item_date">{{ item.date }}</div>
         </div>
@@ -36,9 +37,10 @@
 </template>
 <script>
 
+  import $ from 'jquery'
   import { mapGetters } from 'vuex'
-  import { isEmpty } from 'lodash'
-  import { checkLinks, now, getFileType, dragAndDropLoader } from '@/helpers'
+  import { isEmpty, unset } from 'lodash'
+  import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '@/helpers'
   import Controls from './controls'
   import File from './file'
 
@@ -57,7 +59,8 @@
     computed: {
       ...mapGetters({
         json: 'getJson',
-        filter: 'getFilter'
+        filter: 'getFilter',
+        unread: 'getUnread'
       }),
       hasFilter() {
         return !isEmpty(this.filter)
@@ -83,6 +86,7 @@
           [stamp]: {
             key: stamp,
             date: date,
+            name: '',
             message: checkLinks(this.message)
           }
         })
@@ -149,8 +153,43 @@
       }
     },
     mounted() {
-      this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
+      // this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
       dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
+
+      $(this.$refs.notepad_cont).on('click', 'a[href]', (e) => {
+        e.preventDefault()
+        if(e.target.download) {
+          const href = e.target.href
+          const stamp = e.target.dataset.stamp
+          const item = this.$refs.notepad_item.find(item => item.dataset.stamp === stamp)
+          if(item) {
+            const loader = item.querySelector('.file_loader')
+            const fileName = e.target.dataset.filename
+            const finalPath = this.$store.getters['getDownloadsTargetPath'] + '\\' + fileName
+            downloadFile(href, finalPath, loader)
+          }
+        } else {
+          this.$electron.shell.openExternal(e.target.href)
+        }
+      })
+
+      $(this.$refs.notepad_cont).on('scroll', (e) => {
+        const self = e.target
+        const rect = self.getBoundingClientRect()
+        const viewportHeight = rect.top + rect.height
+        const buff = this.$store.getters['getUnread']
+        const $unread = $('.unread', self)
+        $unread.each((i, el) => {
+          if($(el).offset().top < viewportHeight) {
+            $(el).css({transition: 'all 0.5s'})
+            setTimeout(() => {
+              $(el).removeClass('unread').removeAttr('style')
+            }, 2000)
+            if(!isEmpty(buff)) unset(buff, el.dataset.stamp)
+            this.$store.dispatch('unread', buff)
+          }
+        })
+      })
     }
   }
 
