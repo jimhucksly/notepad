@@ -1,6 +1,6 @@
 {
   "name": "notepad.j-studio.app",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Jimhucksly Studio <admin@.jimhucksly-studio.ru>",
   "description": "An electron-vue project",
   "license": null,
@@ -23,7 +23,8 @@
   },
   "build": {
     "productName": "Notepad Jimhucksly Studio App",
-    "appId": "com.example.yourapp",
+    "appId": "com.example.NotepadJimhuckslyStudioApp",
+    "copyright": "Copyright © 2019 ${author}",
     "directories": {
       "output": "build"
     },
@@ -49,15 +50,15 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "static/icon_1024x1024.ico"
     },
     "linux": {
       "icon": "build/icons"
     }
   },
   "dependencies": {
-    "vue": "^2.5.16",
     "axios": "^0.18.0",
+    "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
@@ -117,6 +118,8 @@
     "sass-loader": "^7.0.3",
     "spectron": "^3.8.0",
     "style-loader": "^0.21.0",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.2",
     "url-loader": "^1.0.1",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.2.4",

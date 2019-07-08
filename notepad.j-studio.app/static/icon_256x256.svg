@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="48"
-   height="48"
-   viewBox="0 0 48 48"
+   width="256"
+   height="256"
+   viewBox="0 0 256 256"
    version="1.1"
    id="svg4497"
    sodipodi:docname="icon_48x48.svg"
@@ -44,9 +44,9 @@
      inkscape:window-height="705"
      id="namedview4499"
      showgrid="false"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="5.8334399"
-     inkscape:cy="53.191778"
+     inkscape:zoom="1"
+     inkscape:cx="36.395795"
+     inkscape:cy="69.303357"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -60,48 +60,48 @@
      inkscape:groupmode="layer"
      id="layer1"
      inkscape:label="Layer 1"
-     transform="translate(0,23)">
+     transform="translate(0,231)">
     <rect
-       style="fill:#6a3480;fill-opacity:1;stroke:none;stroke-width:0.08763764;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       style="fill:#6a3480;fill-opacity:1;stroke:none;stroke-width:0.51844198;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect4509"
-       width="17.9835"
-       height="6.4775758"
+       width="106.38581"
+       height="38.319691"
        x="2.3330269"
-       y="-2.2672107" />
+       y="-122.51164" />
     <rect
-       style="fill:#ffe66a;fill-opacity:1;stroke:none;stroke-width:0.08763764;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       style="fill:#ffe66a;fill-opacity:1;stroke:none;stroke-width:0.51844198;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect4509-5"
-       width="17.9835"
-       height="6.4775758"
-       x="-20.250711"
-       y="-26.7941"
+       width="106.38581"
+       height="38.319691"
+       x="-228.89746"
+       y="-147.03851"
        transform="rotate(90)" />
     <rect
-       style="fill:#286ac5;fill-opacity:1;stroke:none;stroke-width:0.08763764;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       style="fill:#286ac5;fill-opacity:1;stroke:none;stroke-width:0.51844198;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect4509-5-8"
-       width="17.9835"
-       height="6.4775758"
-       x="4.2103653"
-       y="-26.7941"
+       width="106.38581"
+       height="38.319691"
+       x="-84.191948"
+       y="-147.03851"
        transform="rotate(90)" />
     <rect
-       style="fill:#86ff00;fill-opacity:1;stroke:none;stroke-width:0.08763764;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       style="fill:#86ff00;fill-opacity:1;stroke:none;stroke-width:0.51844198;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect4509-1"
-       width="17.9835"
-       height="6.4775758"
-       x="26.7941"
-       y="-2.2672095" />
+       width="106.38581"
+       height="38.319691"
+       x="147.03851"
+       y="-122.51163" />
     <rect
-       style="fill:#ff2255;fill-opacity:1;stroke:none;stroke-width:0.09329177;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
+       style="fill:#ff2255;fill-opacity:1;stroke:none;stroke-width:0.55189037;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
        id="rect4556"
-       width="6.4775753"
-       height="6.4775758"
-       x="20.316526"
-       y="-2.2672107" />
+       width="38.319687"
+       height="38.319691"
+       x="108.71884"
+       y="-122.51164" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer 2"
-     transform="translate(0,-72)" />
+     transform="translate(0,136)" />
 </svg>

@@ -153,7 +153,7 @@
       }
     },
     mounted() {
-      // this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
+      this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
       dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
 
       $(this.$refs.notepad_cont).on('click', 'a[href]', (e) => {

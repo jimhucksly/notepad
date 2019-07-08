@@ -17,9 +17,9 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-const appIcon = path.join(__dirname, '../static/icon_118x118.png')
+const appIcon = path.join(__dirname, '../static/icon_1024x1024.ico')
 const appIconOverlay = path.join(__dirname, '../static/icon_overlay_34x34.png')
-const appIconTray = path.join(__dirname, '../static/icon_48x48.png')
+const appIconTray = path.join(__dirname, '../static/icon_256x256.ico')
 
 function createWindow() {
   /**
@@ -65,7 +65,7 @@ function createWindow() {
   })
 
   mainWindow.on('closed', () => {
-    mainWindow = null
+    // mainWindow = null
   })
 
   mainWindow.on('minimize', (e) => {
