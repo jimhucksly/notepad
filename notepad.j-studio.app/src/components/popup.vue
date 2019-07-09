@@ -5,7 +5,7 @@
         <close-btn @click="$popup.close('about')"></close-btn>
       </popup-title>
       <div class="m-b-20">
-        <img src="../../static/icon_1024x1024.svg" alt="">
+        <img src="../../static/icon.svg" alt="">
       </div>
       <div class="m-b-5">
         <p>{{ appName }}</p>

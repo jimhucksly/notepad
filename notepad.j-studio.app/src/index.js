@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, BrowserWindow, Tray, ipcMain, Menu, dialog } from 'electron'
+import { app, BrowserWindow, Tray, ipcMain, Menu, dialog, nativeImage, globalShortcut } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
 
@@ -10,6 +10,8 @@ import pkg from '../package.json'
  */
 if(process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
+} else {
+  global.__static = path.join(__dirname, '../static').replace(/\\/g, '\\\\')
 }
 
 let mainWindow
@@ -17,9 +19,12 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-const appIcon = path.join(__dirname, '../static/icon_1024x1024.ico')
-const appIconOverlay = path.join(__dirname, '../static/icon_overlay_34x34.png')
-const appIconTray = path.join(__dirname, '../static/icon_256x256.ico')
+const appIcon = path.resolve(__static, 'icon.png')
+let icon = nativeImage.createFromPath(appIcon)
+const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
+let iconOverlay = nativeImage.createFromPath(appIconOverlay)
+const appIconTray = path.resolve(__static, 'iconTray.png')
+let iconTray = nativeImage.createFromPath(appIconTray)
 
 function createWindow() {
   /**
@@ -38,7 +43,8 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
-  const appTray = new Tray(appIconTray)
+  const appTray = new Tray(iconTray)
+  appTray.setToolTip('Notepad Jimhucksly Studio')
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -101,7 +107,7 @@ app.on('window-all-closed', () => {
 
 app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
-  window.setIcon(appIcon)
+  window.setIcon(icon)
   window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
 })
@@ -110,6 +116,16 @@ app.on('activate', () => {
   if(mainWindow === null) {
     createWindow()
   }
+})
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll()
+})
+
+app.on('before-quit', () => {
+  mainWindow.removeAllListeners('close')
+  globalShortcut.unregisterAll()
+  mainWindow.close()
 })
 
 app.setPath('userData', path.resolve(app.getPath('userData'), '../JimhuckslyStudio/notepad-app'))
@@ -143,7 +159,7 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
 })
 
 ipcMain.on('set-icon-notification', () => {
-  mainWindow.setOverlayIcon(appIconOverlay, 'You have an unread message')
+  mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
 })
 
 ipcMain.on('hide-icon-notification', () => {

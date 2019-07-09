@@ -11,7 +11,7 @@
     </div>
     <div class="app-name-container">
       <span class="titlebar-logo">
-        <img src="../../static/icon_1024x1024.svg" alt="">
+        <img src="../../static/icon.svg" alt="">
       </span>
       <p>{{ title }}</p>
     </div>
