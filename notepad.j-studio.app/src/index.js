@@ -5,10 +5,6 @@ import { app, BrowserWindow, Tray, ipcMain, Menu, dialog,
 import path from 'path'
 import pkg from '../package.json'
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
 if(process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 } else {
@@ -16,6 +12,7 @@ if(process.env.NODE_ENV !== 'development') {
 }
 
 let mainWindow
+let appTray
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -24,13 +21,10 @@ const appIcon = path.resolve(__static, 'icon.png')
 let icon = nativeImage.createFromPath(appIcon)
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
-const appIconTray = path.resolve(__static, 'iconTray.png')
-let iconTray = nativeImage.createFromPath(appIconTray)
+iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
+let iconTray = path.resolve(__static, 'iconTray.ico')
 
 function createWindow() {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 563,
@@ -39,12 +33,15 @@ function createWindow() {
     useContentSize: true,
     frame: false,
     toolbar: false,
-    show: false
+    show: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
 
   mainWindow.loadURL(winURL)
 
-  const appTray = new Tray(iconTray)
+  appTray = new Tray(iconTray)
   appTray.setToolTip('Notepad Jimhucksly Studio')
 
   const contextMenu = Menu.buildFromTemplate([
@@ -119,7 +116,7 @@ app.on('activate', () => {
   }
 })
 
-app.on('will-quit', () => {
+app.on('will-quit', (e) => {
   globalShortcut.unregisterAll()
 })
 
@@ -161,6 +158,11 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
 
 ipcMain.on('set-icon-notification', () => {
   mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
+  appTray.displayBalloon({
+    icon: iconOverlay,
+    title: 'my app',
+    content: 'Access app settings from tray menu.'
+  })
 })
 
 ipcMain.on('hide-icon-notification', () => {
