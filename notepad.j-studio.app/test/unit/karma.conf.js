@@ -5,7 +5,7 @@ const merge = require('webpack-merge')
 const webpack = require('webpack')
 
 const baseConfig = require('../../.electron-vue/webpack.renderer.config')
-const projectRoot = path.resolve(__dirname, '../../src/renderer')
+const projectRoot = path.resolve(__dirname, '../../src')
 
 // Set BABEL_ENV to use proper preset config
 process.env.BABEL_ENV = 'test'
@@ -30,6 +30,7 @@ webpackConfig.module.rules
 
 module.exports = config => {
   config.set({
+    mode: 'development',
     browsers: ['visibleElectron'],
     client: {
       useIframe: false
@@ -49,6 +50,11 @@ module.exports = config => {
     },
     frameworks: ['mocha', 'chai'],
     files: ['./index.js'],
+    resolve: {
+      alias: {
+        '@': '../../src'
+      }
+    },
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },

@@ -2,11 +2,12 @@
   "name": "notepad.j-studio.app",
   "version": "1.0.0",
   "author": "Jimhucksly Studio <admin@.jimhucksly-studio.ru>",
+  "url": "https://jimhucksly-studio.ru",
   "description": "An electron-vue project",
-  "license": null,
+  "license": "",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "build": "node .electron-vue/build.js && electron-builder",
+    "build": "node .electron-vue/build.js && electron-builder -w",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -29,6 +30,7 @@
       "output": "build"
     },
     "files": [
+      "**/*",
       "dist/electron/**/*"
     ],
     "dmg": {
@@ -50,14 +52,23 @@
       "icon": "build/icons/icon.icns"
     },
     "win": {
-      "icon": "static/icon_1024x1024.ico"
+      "icon": "static/icon.ico",
+      "target": [
+        "squirrel"
+      ]
+    },
+    "squirrelWindows": {
+      "iconUrl": "https://raw.githubusercontent.com/matiastucci/electron-auto-updater-example/master/icons/icon.ico"
     },
     "linux": {
       "icon": "build/icons"
     }
   },
   "dependencies": {
+    "auto-updater": "^1.0.2",
     "axios": "^0.18.0",
+    "electron-updater": "^4.0.14",
+    "minimatch": "^3.0.4",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
