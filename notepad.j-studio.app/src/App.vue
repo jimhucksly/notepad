@@ -58,7 +58,7 @@
       Menu.setApplicationMenu(appMenu)
 
       document.getElementById('menu-button').addEventListener('click', (event) => {
-        appMenu.popup(this.$electron.screen, event.x, event.y)
+        appMenu.popup(this.$electron.remote.screen, event.x, event.y)
       })
 
       document.getElementById('minimize-button').addEventListener('click', (e) => {

@@ -25,7 +25,10 @@ const actions = {
       .then(() => {
         storage.set(userDataPath, userDataFileName, { token: value })
           .then(() => console.log('write to file is successfully completed'))
-          .catch(() => console.error('write to the file is failed'))
+          .catch(() => {
+            ipcRenderer.send('open-error-dialog', 'write to the file is failed')
+            console.error('write to the file is failed')
+          })
       })
       .catch(() => console.error(`${userDataPath} is don't exists`))
   },
@@ -54,6 +57,7 @@ const actions = {
       } catch (err) {
         console.error(err)
         store.dispatch('interval', null)
+        ipcRenderer.send('open-error-dialog', 'json parse is failed')
       }
     } else json = data
     store.commit('setJson', json)
@@ -76,6 +80,9 @@ const actions = {
   },
   aboutPopupShow(store, flag) {
     store.commit('setAboutPopupShow', flag)
+  },
+  uploadingPopupShow(store, flag) {
+    store.commit('setUploadingPopupShow', flag)
   },
   preferences(store) {
     const flag = store.getters['isPreferencesShowed']
@@ -114,6 +121,7 @@ const actions = {
                   }
                 })
                 .catch(err => {
+                  ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
                   console.error(err)
                 })
             }, 5000)
@@ -131,19 +139,30 @@ const actions = {
         const postResp = await $http.post(type, {
           json: store.getters['getJson']
         }, jsonHeaders)
-        if(postResp instanceof Error) return Promise.reject(postResp)
+        if(postResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'send message is failed')
+          return Promise.reject(postResp)
+        }
         return postResp
-      case 'FILE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
-        jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
-        const uploadResp = await $http.post(type, data.file, jsonHeaders)
-        if(uploadResp instanceof Error) return Promise.reject(uploadResp)
-        return uploadResp
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const checkResp = await $http.get(type, jsonHeaders)
-        if(checkResp instanceof Error) return Promise.reject(checkResp)
+        if(checkResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'dispacth CHECK is failed')
+          return Promise.reject(checkResp)
+        }
         return checkResp
+      case 'FILE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
+        store.dispatch('uploadingPopupShow', true)
+        const uploadResp = await $http.post(type, data.file, jsonHeaders)
+        if(uploadResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'file upload is failed')
+          return Promise.reject(uploadResp)
+        }
+        store.dispatch('uploadingPopupShow', false)
+        return uploadResp
     }
   }
 }

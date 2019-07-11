@@ -22,7 +22,8 @@ let icon = nativeImage.createFromPath(appIcon)
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
 iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
-let iconTray = path.resolve(__static, 'iconTray.ico')
+const appIconTray = path.resolve(__static, 'iconTray.ico')
+let iconTray = nativeImage.createFromPath(appIconTray)
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -71,20 +72,20 @@ function createWindow() {
   mainWindow.on('closed', () => {
     // mainWindow = null
   })
-
+  
   mainWindow.on('minimize', (e) => {
     // e.preventDefault()
     // mainWindow.hide()
   })
-
+  
   mainWindow.on('show', () => {
     // appTray.setHighlightMode('always')
   })
-
+  
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-
+  
   mainWindow.webContents.on('did-frame-finish-load', () => {
     if(process.env.NODE_ENV === 'development') {
       mainWindow.webContents.openDevTools()
@@ -95,7 +96,21 @@ function createWindow() {
   })
 }
 
-app.on('ready', createWindow)
+const gotTheLock = app.requestSingleInstanceLock()
+
+if(!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', () => {
+    if(mainWindow) {
+      if(mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+      mainWindow.show()
+    }
+  })
+
+  app.on('ready', createWindow)
+}
 
 app.on('window-all-closed', () => {
   if(process.platform !== 'darwin') {
@@ -154,6 +169,16 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
   dialog.showOpenDialog(null, options, (filePaths) => {
     event.sender.send('open-dialog-paths-selected', filePaths)
   })
+})
+
+ipcMain.on('open-error-dialog', (event, msg) => {
+  dialog.showMessageBox(null, {
+    type: 'error',
+    buttons: ['Cancel'],
+    defaultId: 2,
+    title: 'Error',
+    message: msg
+  }, () => {})
 })
 
 ipcMain.on('set-icon-notification', () => {

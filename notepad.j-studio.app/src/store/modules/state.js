@@ -7,6 +7,7 @@ const state = {
   filter: {},
   unread: {},
   aboutPopupShow: false,
+  uploadingPopupShow: false,
   preferencesShow: false,
   downloadsTargetPath: '',
   interval: null,

@@ -1,6 +1,6 @@
 <template>
-  <div class="popup" v-show="aboutPopupShow">
-    <div class="popup-about">
+  <div class="popup" v-show="showPopup">
+    <div class="popup-about" v-if="aboutPopupShow">
       <popup-title>
         <close-btn @click="$popup.close('about')"></close-btn>
       </popup-title>
@@ -15,6 +15,17 @@
       </div>
       <div>
         <p><small>&copy; Jimhucksly-Studio, {{ new Date().getFullYear() }}</small></p>
+      </div>
+    </div>
+    <div class="popup-uploading" v-if="uploadingPopupShow">
+      <popup-title>
+        <close-btn @click="$popup.close('uploading')"></close-btn>
+      </popup-title>
+      <div class="uploading-label">
+        Uploading file...
+      </div>
+      <div class="uploading-progress">
+        <span></span>
       </div>
     </div>
   </div>
@@ -36,8 +47,13 @@
     name: 'Popup',
     computed: {
       ...mapGetters({
-        aboutPopupShow: 'getAboutPopupShow'
+        aboutPopupShow: 'getAboutPopupShow',
+        uploadingPopupShow: 'getUploadingPopupShow'
       }),
+      showPopup() {
+        let flags = ['aboutPopupShow', 'uploadingPopupShow']
+        return flags.map(key => this[key]).reduce((res, el) => res || Boolean(el))
+      },
       appName() {
         return this.$electron.remote.getCurrentWindow().getTitle()
       }

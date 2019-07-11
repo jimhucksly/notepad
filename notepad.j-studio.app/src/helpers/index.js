@@ -213,3 +213,16 @@ const showProgress = (received, total, loaderDOMElement) => {
     }, 3000)
   }
 }
+
+export const uploadingFile = (received, total) => {
+  let percentage = Math.ceil((received * 100) / total)
+  const cont = document.querySelector('.popup-uploading')
+  if(cont) {
+    const progress = cont.querySelector('.uploading-progress')
+    if(progress) {
+      const text = progress.firstElementChild
+      progress.style.width = `${percentage}px`
+      text && (text.textContent = `${percentage}%`)
+    }
+  }
+}

@@ -24,7 +24,7 @@
   },
   "build": {
     "productName": "Notepad Jimhucksly Studio App",
-    "appId": "com.example.NotepadJimhuckslyStudioApp",
+    "appId": "com.example.notepad-jimhucksly-studioApp",
     "copyright": "Copyright © 2019 ${author}",
     "directories": {
       "output": "build"
@@ -54,7 +54,7 @@
     "win": {
       "icon": "static/icon.ico",
       "target": [
-        "squirrel"
+        "nsis"
       ]
     },
     "squirrelWindows": {
@@ -98,6 +98,7 @@
     "electron-builder": "^20.19.2",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.4",
+    "electron-squirrel-startup": "^1.0.0",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
     "eslint-friendly-formatter": "^4.0.1",

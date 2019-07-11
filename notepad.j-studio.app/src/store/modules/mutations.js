@@ -29,6 +29,9 @@ const mutations = {
   setAboutPopupShow(state, flag) {
     state.aboutPopupShow = flag
   },
+  setUploadingPopupShow(state, flag) {
+    state.uploadingPopupShow = flag
+  },
   setPreferencesShow(state, flag) {
     state.preferencesShow = flag
   },
