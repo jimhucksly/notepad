@@ -4,6 +4,7 @@
     <div class="projects" v-show="!preferences">
       <div class="projects_item"
         v-for="item in json" 
+        :key="item.key"
         :data-stamp="item.key" 
         ref="projects_item"
         @click.prevent="triggerfilter($event, item.key)">
