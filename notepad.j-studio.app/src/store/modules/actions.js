@@ -91,6 +91,30 @@ const actions = {
   downloadsTargetPath(store, path) {
     store.commit('setDownloadsTargetPath', path)
   },
+  setInterval(store) {
+    let interval = store.getters['getInterval']
+    if(interval) store.dispatch('interval', null)
+    interval = setInterval(() => {
+      store.dispatch('action', {
+        type: 'CHECK'
+      })
+        .then(resp => {
+          if(resp.status !== 204) {
+            store.dispatch('json', resp.data.data)
+            store.commit('setNotification', true)
+          }
+        })
+        .catch(err => {
+          ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
+          if(interval) store.dispatch('interval', null)
+          console.error(err)
+          ipcRenderer.on('dialog-error-callback', () => {
+            store.dispatch('setInterval')
+          })
+        })
+    }, 5000)
+    store.dispatch('interval', interval)
+  },
   async action(store, { type, data }) {
     switch (type) {
       case 'AUTH':
@@ -108,24 +132,7 @@ const actions = {
               store.dispatch('loading', false)
             }, 2000)
             store.dispatch('json', resp.data.data)
-            let interval = store.getters['getInterval']
-            if(interval) store.commit('setInterval', null)
-            interval = setInterval(() => {
-              store.dispatch('action', {
-                type: 'CHECK'
-              })
-                .then(resp => {
-                  if(resp.status !== 204) {
-                    store.dispatch('json', resp.data.data)
-                    store.commit('setNotification', true)
-                  }
-                })
-                .catch(err => {
-                  ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
-                  console.error(err)
-                })
-            }, 5000)
-            store.commit('setInterval', interval)
+            store.dispatch('setInterval')
           })
           .catch(() => {
             store.dispatch('loading', false)

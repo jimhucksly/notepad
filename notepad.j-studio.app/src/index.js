@@ -171,16 +171,6 @@ ipcMain.on('open-folder-dialog', (event, arg) => {
   })
 })
 
-ipcMain.on('open-error-dialog', (event, msg) => {
-  dialog.showMessageBox(null, {
-    type: 'error',
-    buttons: ['Cancel'],
-    defaultId: 2,
-    title: 'Error',
-    message: msg
-  }, () => {})
-})
-
 ipcMain.on('set-icon-notification', () => {
   mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
   appTray.displayBalloon({
@@ -194,4 +184,16 @@ ipcMain.on('hide-icon-notification', () => {
   setTimeout(() => {
     mainWindow.setOverlayIcon(null, '')
   }, 2000)
+})
+
+ipcMain.on('open-error-dialog', (event, msg) => {
+  dialog.showMessageBox(null, {
+    type: 'error',
+    buttons: ['Cancel'],
+    defaultId: 2,
+    title: 'Error',
+    message: msg
+  }, () => {
+    event.sender.send('dialog-error-callback')
+  })
 })
