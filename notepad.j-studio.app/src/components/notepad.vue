@@ -87,6 +87,7 @@
             key: stamp,
             date: date,
             name: '',
+            lock: false,
             message: checkLinks(this.message)
           }
         })
@@ -113,6 +114,7 @@
             key: stamp,
             date: date,
             name: name,
+            lock: false,
             file: {
               name: name,
               link: link,

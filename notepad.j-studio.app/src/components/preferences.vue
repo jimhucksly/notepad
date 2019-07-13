@@ -82,14 +82,12 @@
           })
           this.$store.dispatch('downloadsTargetPath', this.preferences.downloadsTargetPath)
         }
-
         this.$store.dispatch('preferences')
       },
       cancel() {
         this.$store.dispatch('preferences')
       },
       openFolderDialog() {
-        console.log('call open dialog')
         this.$electron.ipcRenderer.send('open-folder-dialog', {
           defaultPath: this.downloadsTargetPath
         })

@@ -69,6 +69,7 @@
     "axios": "^0.18.0",
     "electron-updater": "^4.0.14",
     "minimatch": "^3.0.4",
+    "run-electron": "^1.0.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",

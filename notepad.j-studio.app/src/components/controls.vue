@@ -117,6 +117,7 @@
             key: stamp,
             date: this.json[stamp].date,
             name: this.json[stamp].name,
+            lock: false,
             message: p.innerHTML
           }
         }))
@@ -124,7 +125,7 @@
           this.$emit('post')
         })
       },
-      remove(e, stamp) {
+      removeHandler(stamp) {
         let buffJson = cloneDeep(this.json)
         let buffFilter = cloneDeep(this.filter)
         unset(buffJson, stamp)
@@ -132,6 +133,16 @@
         this.$store.dispatch('json', buffJson)
         this.$store.dispatch('filter', buffFilter)
         this.$emit('post')
+      },
+      remove(e, stamp) {
+        const isLocked = this.json[stamp].lock
+        !isLocked && this.removeHandler(stamp)
+        if(isLocked) {
+          this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
+          this.$electron.ipcRenderer.on('remove-is-confimed', () => {
+            this.removeHandler(stamp)
+          })
+        }
       }
     }
   }

@@ -17,8 +17,9 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-const appIcon = path.resolve(__static, 'icon.png')
+const appIcon = path.resolve(__static, 'icon.ico')
 let icon = nativeImage.createFromPath(appIcon)
+icon = icon.resize({ width: 32, height: 32 })
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
 iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
@@ -195,5 +196,19 @@ ipcMain.on('open-error-dialog', (event, msg) => {
     message: msg
   }, () => {
     event.sender.send('dialog-error-callback')
+  })
+})
+
+ipcMain.on('open-dialog-remove-confirm', (event) => {
+  dialog.showMessageBox(null, {
+    type: 'question',
+    buttons: ['Yes', 'No'],
+    defaultId: 1,
+    title: 'Confirm',
+    message: 'Remove record?'
+  }, (response) => {
+    if(response === 0) {
+      event.sender.send('remove-is-confimed')
+    }
   })
 })
