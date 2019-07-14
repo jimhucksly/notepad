@@ -7,9 +7,10 @@
         :key="item.key"
         :data-stamp="item.key" 
         ref="projects_item"
-        :class="{ lock: item.lock }"
-        @click.prevent="triggerfilter($event, item.key)">
-        <span class="projects_item_icon item_icon_lock" @click="triggerLock($event, item.key)">
+        :class="{ lock: item.lock, active: filter[item.key] }"
+        @click="triggerfilter($event, item.key)">
+        <span class="projects_item_icon item_icon_lock" 
+          @click="triggerLock($event, item.key)">
           <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="50" height="70" viewBox="0 0 13.229166 18.520834" version="1.1" id="svg8">
             <g transform="translate(0,-278.47915)">
               <path
@@ -132,12 +133,10 @@
         const item = this.$refs.projects_item.find(item => item.dataset.stamp === stamp)
         if(e.target.tagName === 'DIV' || e.target.tagName === 'LABEL') {
           if(item.classList.contains('active')) {
-            item.classList.remove('active')
             const buff = cloneDeep(this.filter)
             unset(buff, stamp)
             this.$store.dispatch('filter', Object.assign({}, buff))
           } else {
-            item.classList.add('active')
             this.$store.dispatch('filter', Object.assign({}, this.filter, {
               [stamp]: true
             }))

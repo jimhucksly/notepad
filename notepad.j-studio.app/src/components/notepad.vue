@@ -95,7 +95,6 @@
         this.$store.dispatch('json', o)
         this.$nextTick(() => {
           this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
-          this.$refs.notepad_item[this.$refs.notepad_item.length - 1].classList.add('is-pending')
           this.post()
         })
       },
@@ -124,7 +123,6 @@
         }))
         this.$nextTick(() => {
           this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
-          this.$refs.notepad_item[this.$refs.notepad_item.length - 1].classList.add('is-pending')
           this.post()
         })
       },
@@ -133,7 +131,6 @@
           type: 'SEND'
         })
           .then(() => {
-            this.$refs.notepad_item[this.$refs.notepad_item.length - 1].classList.remove('is-pending')
           })
           .catch(err => {
             console.error(err)

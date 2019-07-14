@@ -37,7 +37,17 @@
             {
               label: 'Preferences...',
               click: () => {
+                this.$electron.ipcRenderer.send('preferences-show')
                 this.$store.dispatch('preferences', true)
+              }
+            },
+            {
+              label: 'Reload',
+              click: () => {
+                this.$store.dispatch('loading', true)
+                this.$store.dispatch('action', {
+                  type: 'GET_JSON'
+                })
               }
             },
             {

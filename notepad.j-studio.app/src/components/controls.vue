@@ -117,7 +117,7 @@
             key: stamp,
             date: this.json[stamp].date,
             name: this.json[stamp].name,
-            lock: false,
+            lock: this.json[stamp].lock,
             message: p.innerHTML
           }
         }))

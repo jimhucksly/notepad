@@ -5,12 +5,20 @@ import path from 'path'
 
 const REGEXP_URL = /\b(^(ftp|https?):\/\/[-\w]+(\.\w[-\w]*)+|(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+(?: com\b|edu\b|biz\b|gov\b|in(?:t|fo)\b|mil\b|net\b|org\b|[a-z][a-z]\b))(\:\d+)?(\/[^.!,?;"'<>()\[\]{}\s\x7F-\xFF]*(?:[.!,?]+[^.!,?;"'<>()\[\]{}\s\x7F-\xFF]+)*)?/
 
+const REGEXP_EMAIL = /.+@.+\..+/i
+
 export const checkLinks = (message) => {
   let m = message.replace(/\n/g, '<br>').split('<br>')
   m.forEach((str, i) => {
     let p = str.split(' ')
     p.forEach((item, k) => {
-      if((new RegExp(REGEXP_URL)).test(item)) {
+      const isEmail = new RegExp(REGEXP_EMAIL).test(item)
+      if(isEmail) {
+        p[k] = item
+        return
+      }
+      const isURL = new RegExp(REGEXP_URL).test(item)
+      if(isURL) {
         item = '<a href="' + (item.indexOf('http') < 0 ? 'http://' : '') + item + '" target="_blank">' + item + '</a>'
         p[k] = item
       }

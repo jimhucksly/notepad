@@ -156,6 +156,20 @@ ipcMain.on('unauthorized', () => {
   menuItemFile.visible = false
 })
 
+ipcMain.on('preferences-show', () => {
+  const appMenu = Menu.getApplicationMenu()
+  const menuItemFile = appMenu.items.find(item => item.label === 'File')
+  const menuItemReload = menuItemFile.submenu.items.find(item => item.label === 'Reload')
+  menuItemReload.visible = false
+})
+
+ipcMain.on('preferences-hide', () => {
+  const appMenu = Menu.getApplicationMenu()
+  const menuItemFile = appMenu.items.find(item => item.label === 'File')
+  const menuItemReload = menuItemFile.submenu.items.find(item => item.label === 'Reload')
+  menuItemReload.visible = true
+})
+
 ipcMain.on('open-folder-dialog', (event, arg) => {
   const options = {
     title: 'Choose folder',

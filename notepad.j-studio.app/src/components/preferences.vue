@@ -82,9 +82,11 @@
           })
           this.$store.dispatch('downloadsTargetPath', this.preferences.downloadsTargetPath)
         }
+        this.$electron.ipcRenderer.send('preferences-hide')
         this.$store.dispatch('preferences')
       },
       cancel() {
+        this.$electron.ipcRenderer.send('preferences-hide')
         this.$store.dispatch('preferences')
       },
       openFolderDialog() {
