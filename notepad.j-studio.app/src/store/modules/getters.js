@@ -5,7 +5,6 @@ const getters = {
   getUserDataPath: state => state.userDataPath,
   getJson: state => state.json,
   getFilter: state => state.filter,
-  getUnread: state => state.unread,
   getInterval: state => state.interval,
   getNotification: state => state.notification,
   getAboutPopupShow: state => state.aboutPopupShow,

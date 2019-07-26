@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import $http from '../http'
 import storage from '@/plugins/storage'
 import { userDataFileName } from '@/constants'
@@ -43,17 +43,13 @@ const actions = {
     if(isJSON(data)) {
       try {
         json = JSON.parse(data)
-        const currentJSON = store.getters['getJson']
-        const unread = store.getters['getUnread']
-        if(currentJSON) {
-          Object.keys(json).forEach(key => {
-            if(!currentJSON[key]) {
-              store.dispatch('unread', Object.assign({}, unread, {
-                [key]: true
-              }))
-            }
-          })
-        }
+        const currentJson = store.getters['getJson']
+        Object.keys(json).forEach(key => {
+          if(currentJson && currentJson[key] === undefined) json[key]['unread'] = true
+        })
+        const haveUnread = Object.keys(json).find(key => json[key].unread) !== undefined
+        if(haveUnread) ipcRenderer.send('set-icon-notification')
+        else ipcRenderer.send('hide-icon-notification')
       } catch (err) {
         console.error(err)
         store.dispatch('interval', null)
@@ -62,12 +58,16 @@ const actions = {
     } else json = data
     store.commit('setJson', json)
   },
+  read(store, key) {
+    const json = cloneDeep(store.getters['getJson'])
+    delete json[key]['unread']
+    const haveUnread = Object.keys(json).find(k => json[k].unread) !== undefined
+    if(haveUnread) ipcRenderer.send('set-icon-notification')
+    else ipcRenderer.send('hide-icon-notification')
+    store.commit('setJson', json)
+  },
   filter(store, object) {
     store.commit('setFilter', object)
-  },
-  unread(store, object) {
-    store.commit('setUnread', object)
-    if(isEmpty(object)) ipcRenderer.send('hide-icon-notification')
   },
   interval(store, int) {
     if(int) {
@@ -101,7 +101,6 @@ const actions = {
         .then(resp => {
           if(resp.status !== 204) {
             store.dispatch('json', resp.data.data)
-            store.commit('setNotification', true)
           }
         })
         .catch(err => {

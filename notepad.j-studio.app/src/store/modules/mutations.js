@@ -17,9 +17,6 @@ const mutations = {
   setFilter(state, object) {
     state.filter = object
   },
-  setUnread(state, object) {
-    state.unread = object
-  },
   setInterval(state, int) {
     state.interval = int
   },

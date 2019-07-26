@@ -7,7 +7,7 @@
         :data-stamp="item.key" 
         :key="item.key"
         ref="notepad_item"
-        :class="{ unread: unread[item.key] }">
+        :class="{ unread: item.unread }">
         <div>
           <div class="notepad_item_date">{{ item.date }}</div>
         </div>
@@ -39,7 +39,7 @@
 
   import $ from 'jquery'
   import { mapGetters } from 'vuex'
-  import { isEmpty, unset } from 'lodash'
+  import { isEmpty } from 'lodash'
   import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '@/helpers'
   import Controls from './controls'
   import File from './file'
@@ -59,8 +59,7 @@
     computed: {
       ...mapGetters({
         json: 'getJson',
-        filter: 'getFilter',
-        unread: 'getUnread'
+        filter: 'getFilter'
       }),
       hasFilter() {
         return !isEmpty(this.filter)
@@ -149,7 +148,28 @@
           .catch(err => {
             console.error(err)
           })
+      },
+      read() {
+        const self = this.$refs.notepad_cont
+        const rect = self.getBoundingClientRect()
+        const viewportHeight = rect.top + rect.height
+        const $unread = $('.unread', self)
+        $unread.each((i, el) => {
+          if($(el).offset().top < viewportHeight) {
+            if(!$(el).is('.will-be-marked')) {
+              setTimeout(() => {
+                this.$store.dispatch('read', el.dataset.stamp)
+                $(el).removeClass('unread will-be-marked').removeAttr('style')
+              }, 2000)
+            }
+            $(el).addClass('will-be-marked')
+            $(el).css({transition: 'all 0.5s'})
+          }
+        })
       }
+    },
+    updated() {
+      this.read()
     },
     mounted() {
       this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
@@ -172,23 +192,7 @@
         }
       })
 
-      $(this.$refs.notepad_cont).on('scroll', (e) => {
-        const self = e.target
-        const rect = self.getBoundingClientRect()
-        const viewportHeight = rect.top + rect.height
-        const buff = this.$store.getters['getUnread']
-        const $unread = $('.unread', self)
-        $unread.each((i, el) => {
-          if($(el).offset().top < viewportHeight) {
-            $(el).css({transition: 'all 0.5s'})
-            setTimeout(() => {
-              $(el).removeClass('unread').removeAttr('style')
-            }, 2000)
-            if(!isEmpty(buff)) unset(buff, el.dataset.stamp)
-            this.$store.dispatch('unread', buff)
-          }
-        })
-      })
+      $(this.$refs.notepad_cont).on('scroll', (e) => this.read())
     }
   }
 
