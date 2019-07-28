@@ -95,7 +95,7 @@
         area.style.height = area.scrollHeight * 1.1 + 'px'
         area.style.visibility = 'visible'
         $(area).on('keydown', (e) => {
-          if((e.code === 'Enter' || e.key === 'Enter') && e.ctrlKey) {
+          if((e.code === 'Enter' || e.key === 'Enter' || e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
             e.preventDefault()
             this.save(e, stamp)
           }

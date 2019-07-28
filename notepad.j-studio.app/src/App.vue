@@ -64,11 +64,27 @@
           click: () => this.$popup.open('about')
         }
       ]
+      const ContextMenuTemplate = [
+        {
+          label: 'Copy',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy'
+        }
+      ]
       const appMenu = Menu.buildFromTemplate(MenuTemplate)
+      const contextMenu = Menu.buildFromTemplate(ContextMenuTemplate)
       Menu.setApplicationMenu(appMenu)
 
       document.getElementById('menu-button').addEventListener('click', (event) => {
         appMenu.popup(this.$electron.remote.screen, event.x, event.y)
+      })
+
+      window.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
+        const hasSelection = window.getSelection().toString().length > 0
+        if(hasSelection) {
+          contextMenu.popup(this.$electron.remote.screen, event.x, event.y)
+        }
       })
 
       document.getElementById('minimize-button').addEventListener('click', (e) => {
