@@ -19,7 +19,6 @@ const winURL = process.env.NODE_ENV === 'development'
 
 const appIcon = path.resolve(__static, 'icon.ico')
 let icon = nativeImage.createFromPath(appIcon)
-icon = icon.resize({ width: 32, height: 32 })
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
 iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
