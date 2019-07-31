@@ -81,7 +81,7 @@
         if(!this.message.length) return null
         this.new_message_flag = true
         const {date, stamp} = now()
-        const o = Object.assign({}, this.json, {
+        const o = {
           [stamp]: {
             key: stamp,
             date: date,
@@ -89,12 +89,15 @@
             lock: false,
             message: checkLinks(this.message)
           }
-        })
+        }
         this.message = ''
-        this.$store.dispatch('json', o)
+        this.$store.dispatch('json', Object.assign({}, this.json, o))
         this.$nextTick(() => {
           this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
-          this.post()
+          this.$store.dispatch('action', {
+            type: 'CREATE',
+            data: o
+          })
         })
       },
       onFileChange(e) {

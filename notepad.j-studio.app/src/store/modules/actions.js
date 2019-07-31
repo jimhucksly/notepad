@@ -150,6 +150,16 @@ const actions = {
           return Promise.reject(postResp)
         }
         return postResp
+      case 'CREATE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const createResp = await $http.post(type, {
+          json: data
+        }, jsonHeaders)
+        if(createResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'send message is failed')
+          return Promise.reject(createResp)
+        }
+        return createResp
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const checkResp = await $http.get(type, jsonHeaders)
