@@ -17,9 +17,6 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-const appIcon = path.resolve(__static, 'icon.ico')
-let icon = nativeImage.createFromPath(appIcon)
-icon = icon.resize({ width: 32, height: 32 })
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
 iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
@@ -38,7 +35,8 @@ function createWindow() {
     show: false,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    icon: path.resolve(__static, 'icons/64x64.png')
   })
 
   mainWindow.loadURL(winURL)
@@ -121,7 +119,7 @@ app.on('window-all-closed', () => {
 
 app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
-  window.setIcon(icon)
+  // window.setIcon(icon)
   window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
 })
