@@ -2,29 +2,15 @@
 @import 'variables';
 
 @for $i from 1 through 10 {
-  .m-t-#{$i*5}{
-    margin-top: #{$i*5}px;
-  }
-  .m-r-#{$i*5}{
-    margin-right: #{$i*5}px;
-  }
-  .m-b-#{$i*5}{
-    margin-bottom: #{$i*5}px;
-  }
-  .m-l-#{$i*5}{
-    margin-left: #{$i*5}px;
-  }
-  .p-t-#{$i*5}{
-    padding-top: #{$i*5}px;
-  }
-  .p-r-#{$i*5}{
-    padding-right: #{$i*5}px;
-  }
-  .p-b-#{$i*5}{
-    padding-bottom: #{$i*5}px;
-  }
-  .p-l-#{$i*5}{
-    padding-left: #{$i*5}px;
+  @each $n, $name in ('m': 'margin', 'p':'padding') {
+    @each $t, $type in ('t': 'top', 'r': 'right', 'b': 'bottom', 'l': 'left') {
+      .#{$n}-#{$t}-#{$i*5} {
+        #{$name}-#{$type}: #{$i*5}px;
+      }
+      .#{$n}-#{$t}-#{$i*5}i {
+        #{$name}-#{$type}: #{$i*5}px !important;
+      }
+    }
   }
 }
 
