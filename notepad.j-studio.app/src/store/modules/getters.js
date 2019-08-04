@@ -3,6 +3,7 @@ const getters = {
   getAuth: state => state.isAuth,
   getToken: state => state.token,
   getUserDataPath: state => state.userDataPath,
+  getError: state => state.error,
   getJson: state => state.json,
   getFilter: state => state.filter,
   getInterval: state => state.interval,

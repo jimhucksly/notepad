@@ -11,7 +11,8 @@ const state = {
   preferencesShow: false,
   downloadsTargetPath: '',
   interval: null,
-  notification: false
+  notification: false,
+  error: false
 }
 
 export default state

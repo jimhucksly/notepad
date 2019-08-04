@@ -10,6 +10,7 @@
           <preferences v-else-if="preferencesShow"></preferences>
           <notepad v-else></notepad>
         </template>
+        <error v-if="isError"></error>
       </section>
     </main>
   </div>
@@ -19,6 +20,7 @@
   import { mapGetters } from 'vuex'
   import Titlebar from './titlebar'
   import Loading from './loading'
+  import Error from './error'
   import Auth from './auth'
   import Notepad from './notepad'
   import Preferences from './preferences'
@@ -32,6 +34,7 @@
       Titlebar,
       Loading,
       Auth,
+      Error,
       Notepad,
       Preferences,
       Sidebar
@@ -41,7 +44,8 @@
         loading: 'getLoading',
         isAuth: 'getAuth',
         preferencesShow: 'isPreferencesShowed',
-        token: 'getToken'
+        token: 'getToken',
+        isError: 'getError'
       })
     },
     methods: {

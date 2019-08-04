@@ -78,6 +78,7 @@
       },
       submit() {
         if(this.validate()) {
+          this.$store.dispatch('loading', true)
           this.$store.dispatch('action', {
             type: 'AUTH',
             data: {
@@ -93,6 +94,7 @@
               })
             })
             .catch(err => {
+              this.$store.dispatch('loading', false)
               const data = err.response && err.response.data ? err.response.data : (err.response || err)
               if(data.message && !isEmpty(data.message)) {
                 this.errors = Object.assign({}, data.message)

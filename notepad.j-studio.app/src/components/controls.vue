@@ -112,7 +112,7 @@
         const p = document.createElement('p')
         p.innerHTML = checkLinks(value)
         content.appendChild(p)
-        this.$store.dispatch('json', Object.assign({}, this.json, {
+        const o = {
           [stamp]: {
             key: stamp,
             date: this.json[stamp].date,
@@ -120,9 +120,13 @@
             lock: this.json[stamp].lock,
             message: p.innerHTML
           }
-        }))
+        }
+        this.$store.dispatch('json', Object.assign({}, this.json, o))
         this.$nextTick(() => {
-          this.$emit('post')
+          this.$store.dispatch('action', {
+            type: 'UPDATE',
+            data: o
+          })
         })
       },
       removeHandler(stamp) {

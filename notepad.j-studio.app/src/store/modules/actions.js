@@ -38,6 +38,9 @@ const actions = {
   userDataPath(store, path) {
     store.commit('setUserDataPath', path)
   },
+  error(store, flag) {
+    store.commit('setError', flag)
+  },
   json(store, data) {
     let json
     if(isJSON(data)) {
@@ -99,17 +102,18 @@ const actions = {
         type: 'CHECK'
       })
         .then(resp => {
+          store.dispatch('error', false)
           if(resp.status !== 204) {
             store.dispatch('json', resp.data.data)
           }
         })
-        .catch(err => {
-          ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
-          if(interval) store.dispatch('interval', null)
-          console.error(err)
-          ipcRenderer.on('dialog-error-callback', () => {
-            store.dispatch('setInterval')
-          })
+        .catch(() => {
+          store.dispatch('error', true)
+          // ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
+          // if(interval) store.dispatch('interval', null)
+          // ipcRenderer.on('dialog-error-callback', () => {
+          //   store.dispatch('setInterval')
+          // })
         })
     }, 5000)
     store.dispatch('interval', interval)
@@ -160,11 +164,20 @@ const actions = {
           return Promise.reject(createResp)
         }
         return createResp
+      case 'UPDATE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const updateResp = await $http.post(type, {
+          json: data
+        }, jsonHeaders)
+        if(updateResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'send message is failed')
+          return Promise.reject(updateResp)
+        }
+        return updateResp
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const checkResp = await $http.get(type, jsonHeaders)
         if(checkResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'dispacth CHECK is failed')
           return Promise.reject(checkResp)
         }
         return checkResp

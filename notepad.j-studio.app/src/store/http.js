@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { API_URL } from '@/constants'
 import { uploadingFile } from '@/helpers'
+import store from '@/store'
+
+let interval
 
 const $http = {
   async get(action, headers) {
@@ -20,9 +23,24 @@ const $http = {
       })
       resp = await axios.post(API_URL + '?' + query, data, config)
     } else {
-      resp = await axios.post(API_URL + '?' + query, data, headers)
+      try {
+        resp = await axios.post(API_URL + '?' + query, data, headers)
+      } catch (e) {
+        if(e.response === undefined) {
+          store.dispatch('error', true)
+          if(interval === undefined) {
+            interval = setInterval(() => {
+              this.post(action, data, headers)
+            }, 2000)
+          }
+        } else {
+          interval && clearInterval(interval)
+        }
+        return Promise.reject(e)
+      }
     }
-    if(resp instanceof Error) return Promise.reject(resp)
+    store.dispatch('error', false)
+    interval && clearInterval(interval)
     return resp.data ? resp.data : resp
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="notepad_cont">
+  <div id="notepad_cont" :class="{ 'is-error' : error }">
     <div class="notepad_cont" ref="notepad_cont">
       <div class="notepad_item"
         v-if="!hasFilter || `${item.key}` in filter"
@@ -59,7 +59,8 @@
     computed: {
       ...mapGetters({
         json: 'getJson',
-        filter: 'getFilter'
+        filter: 'getFilter',
+        error: 'getError'
       }),
       hasFilter() {
         return !isEmpty(this.filter)

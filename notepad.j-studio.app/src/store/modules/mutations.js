@@ -11,6 +11,9 @@ const mutations = {
   setUserDataPath(state, path) {
     state.userDataPath = path
   },
+  setError(state, flag) {
+    state.error = flag
+  },
   setJson(state, json) {
     state.json = json
   },
