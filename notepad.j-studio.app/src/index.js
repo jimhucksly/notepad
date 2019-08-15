@@ -137,6 +137,7 @@ app.on('will-quit', (e) => {
 app.on('before-quit', () => {
   mainWindow.removeAllListeners('close')
   globalShortcut.unregisterAll()
+  appTray.destroy()
   mainWindow.close()
 })
 
