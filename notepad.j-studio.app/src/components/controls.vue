@@ -136,7 +136,10 @@
         unset(buffFilter, stamp)
         this.$store.dispatch('json', buffJson)
         this.$store.dispatch('filter', buffFilter)
-        this.$emit('post')
+        this.$store.dispatch('action', {
+          type: 'DELETE',
+          data: stamp
+        })
       },
       remove(e, stamp) {
         const isLocked = this.json[stamp].lock

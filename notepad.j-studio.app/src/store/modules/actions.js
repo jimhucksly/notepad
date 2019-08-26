@@ -144,16 +144,6 @@ const actions = {
             store.dispatch('interval', null)
           })
         return null
-      case 'SEND':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
-        const postResp = await $http.post(type, {
-          json: store.getters['getJson']
-        }, jsonHeaders)
-        if(postResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'send message is failed')
-          return Promise.reject(postResp)
-        }
-        return postResp
       case 'CREATE':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const createResp = await $http.post(type, {
@@ -174,6 +164,16 @@ const actions = {
           return Promise.reject(updateResp)
         }
         return updateResp
+      case 'DELETE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const deleteResp = await $http.post(type, {
+          key: data
+        }, jsonHeaders)
+        if(deleteResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'delete message is failed')
+          return Promise.reject(deleteResp)
+        }
+        return deleteResp
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const checkResp = await $http.get(type, jsonHeaders)

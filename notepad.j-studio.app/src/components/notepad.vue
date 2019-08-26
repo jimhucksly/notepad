@@ -20,7 +20,6 @@
           <p v-html="item.message" v-else></p>
         </div>
         <controls 
-          @post="post" 
           :item-key="item.key" 
           :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']">
         </controls>
@@ -111,7 +110,7 @@
       addFile(name, link, type) {
         this.new_message_flag = true
         const {date, stamp} = now()
-        this.$store.dispatch('json', Object.assign({}, this.json, {
+        const o = {
           [stamp]: {
             key: stamp,
             date: date,
@@ -123,21 +122,15 @@
               type: type
             }
           }
-        }))
+        }
+        this.$store.dispatch('json', Object.assign({}, this.json, o))
         this.$nextTick(() => {
           this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
-          this.post()
-        })
-      },
-      post() {
-        this.$store.dispatch('action', {
-          type: 'SEND'
-        })
-          .then(() => {
+          this.$store.dispatch('action', {
+            type: 'CREATE',
+            data: o
           })
-          .catch(err => {
-            console.error(err)
-          })
+        })
       },
       upload(file, fileType) {
         this.$store.dispatch('action', {

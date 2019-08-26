@@ -15,10 +15,12 @@ const mutations = {
     state.error = flag
   },
   setJson(state, json) {
-    state.json = json
+    state.json = {}
+    state.json = Object.assign({}, json)
   },
   setFilter(state, object) {
-    state.filter = object
+    state.filter = {}
+    state.filter = Object.assign({}, object)
   },
   setInterval(state, int) {
     state.interval = int
