@@ -27,10 +27,12 @@
     </div>
     <div class="notepad_textarea">
       <textarea placeholder="Сообщение" v-model="message" v-on:keydown.enter.ctrl="send"></textarea>
-      <button @click.prevent="send"></button>
-      <label class="notepad_attachments">
-        <input type="file" @change="onFileChange">
-      </label>
+      <div class="notepad_btns">
+        <label class="notepad_attachments">
+          <input type="file" @change="onFileChange">
+        </label>
+        <button @click.prevent="send"></button>
+      </div>
     </div>
   </div>
 </template>
@@ -102,6 +104,7 @@
       },
       onFileChange(e) {
         const files = e.target.files || e.dataTransfer.files
+        if(files.length === 0) return null
         const formData = new FormData()
         formData.append('file', files[0])
         formData.set('file', files[0])
