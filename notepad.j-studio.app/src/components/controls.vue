@@ -146,7 +146,7 @@
         !isLocked && this.removeHandler(stamp)
         if(isLocked) {
           this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
-          this.$electron.ipcRenderer.on('remove-is-confimed', () => {
+          this.$electron.ipcRenderer.once('remove-is-confimed', () => {
             this.removeHandler(stamp)
           })
         }

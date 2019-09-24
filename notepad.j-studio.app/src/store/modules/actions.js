@@ -41,6 +41,10 @@ const actions = {
   error(store, flag) {
     store.commit('setError', flag)
   },
+  isDevelopment(store, flag) {
+    store.commit('setIsDevelopment', flag)
+    store.commit('setInterval', null)
+  },
   json(store, data) {
     let json
     if(isJSON(data)) {
@@ -78,7 +82,6 @@ const actions = {
     } else {
       let interval = store.getters['getInterval']
       if(interval) clearInterval(interval)
-      store.commit('setInterval', null)
     }
   },
   aboutPopupShow(store, flag) {
@@ -97,6 +100,11 @@ const actions = {
   setInterval(store) {
     let interval = store.getters['getInterval']
     if(interval) store.dispatch('interval', null)
+    const isDevelopment = store.getters['getIsDevelopment']
+    if(isDevelopment) {
+      store.dispatch('interval', null)
+      return null
+    }
     interval = setInterval(() => {
       store.dispatch('action', {
         type: 'CHECK'

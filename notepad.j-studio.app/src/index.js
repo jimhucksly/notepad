@@ -225,3 +225,17 @@ ipcMain.on('open-dialog-remove-confirm', (event) => {
     }
   })
 })
+
+ipcMain.on('open-dialog-unlock-confirm', (event) => {
+  dialog.showMessageBox(null, {
+    type: 'question',
+    buttons: ['Yes', 'No'],
+    defaultId: 1,
+    title: 'Confirm',
+    message: 'Remove the protection?'
+  }, (response) => {
+    if(response === 0) {
+      event.sender.send('unlock-is-confimed')
+    }
+  })
+})

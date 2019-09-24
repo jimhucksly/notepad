@@ -8,10 +8,10 @@
         :data-stamp="item.key" 
         ref="projects_item"
         :class="{ lock: item.lock, active: filter[item.key] }"
-        @click="triggerfilter($event, item.key)">
+        @click="triggerFilter($event, item.key)">
         <span class="projects_item_icon item_icon_lock" 
           @click="triggerLock($event, item.key)">
-          <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="50" height="70" viewBox="0 0 13.229166 18.520834" version="1.1" id="svg8">
+          <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" width="50" height="70" viewBox="0 0 13.229166 18.520834" version="1.1" id="svg8">
             <g transform="translate(0,-278.47915)">
               <path
                 style="fill:#FB404F;fill-opacity:1;stroke:none;stroke-width:2.78949332;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
@@ -21,7 +21,7 @@
                 d="m 6.6072684,279.01518 c -2.2776928,0 -4.1111481,2.02112 -4.1111481,4.53194 v 2.86787 c 0.088466,-0.01 0.1777317,-0.0149 0.2685091,-0.0149 h 1.1851669 v -2.42601 c 0,-1.67388 1.124762,-3.3769 2.6432252,-3.3769 1.5184605,0 2.8380937,1.70302 2.8380937,3.3769 v 2.42601 h 1.2879468 v -2.85301 c 0,-2.51082 -1.8341008,-4.53194 -4.1117936,-4.53194 z" />
             </g>
           </svg>
-          <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="65" height="75" viewBox="0 0 17.197916 18.520834" version="1.1">
+          <svg xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" width="65" height="75" viewBox="0 0 17.197916 18.520834" version="1.1">
             <g transform="translate(0,-277.15623)">
               <path
                 style="fill:#ffe680;fill-opacity:1;stroke:none;stroke-width:2.78949332;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke markers fill"
@@ -83,7 +83,7 @@
         const item = this.$refs.projects_item.find(item => item.dataset.stamp === stamp)
         if(item.classList.contains('edit')) {
           item.classList.remove('edit')
-          this.$store.dispatch('json', Object.assign({}, this.json, {
+          const o = {
             [stamp]: {
               key: stamp,
               date: this.json[stamp]['date'],
@@ -92,11 +92,11 @@
               message: this.json[stamp]['message'],
               file: this.json[stamp]['file']
             }
-          }))
-          this.$nextTick(() => {
-            this.$store.dispatch('action', {
-              type: 'SEND'
-            })
+          }
+          this.$store.dispatch('json', Object.assign({}, this.json, o))
+          this.$store.dispatch('action', {
+            type: 'UPDATE',
+            data: o
           })
         } else {
           item.classList.add('edit')
@@ -108,28 +108,35 @@
       triggerLock(e, stamp) {
         const item = this.$refs.projects_item.find(item => item.dataset.stamp === stamp)
         const isLocked = item.classList.contains('lock')
+        const updateJson = () => {
+          const o = {
+            [stamp]: {
+              key: stamp,
+              date: this.json[stamp]['date'],
+              name: this.json[stamp]['name'],
+              lock: !isLocked,
+              message: this.json[stamp]['message'],
+              file: this.json[stamp]['file']
+            }
+          }
+          this.$store.dispatch('json', Object.assign({}, this.json, o))
+          this.$store.dispatch('action', {
+            type: 'UPDATE',
+            data: o
+          })
+        }
         if(isLocked) {
-          item.classList.remove('lock')
+          this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
+          this.$electron.ipcRenderer.once('unlock-is-confimed', () => {
+            item.classList.remove('lock')
+            updateJson()
+          })
         } else {
           item.classList.add('lock')
+          updateJson()
         }
-        this.$store.dispatch('json', Object.assign({}, this.json, {
-          [stamp]: {
-            key: stamp,
-            date: this.json[stamp]['date'],
-            name: this.json[stamp]['name'],
-            lock: !isLocked,
-            message: this.json[stamp]['message'],
-            file: this.json[stamp]['file']
-          }
-        }))
-        this.$nextTick(() => {
-          this.$store.dispatch('action', {
-            type: 'SEND'
-          })
-        })
       },
-      triggerfilter(e, stamp) {
+      triggerFilter(e, stamp) {
         const item = this.$refs.projects_item.find(item => item.dataset.stamp === stamp)
         if(e.target.tagName === 'DIV' || e.target.tagName === 'LABEL') {
           if(item.classList.contains('active')) {

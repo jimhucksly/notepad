@@ -3,6 +3,7 @@ const state = {
   isAuth: false,
   token: null,
   userDataPath: '',
+  isDevelopment: false,
   json: null,
   filter: {},
   unread: {},

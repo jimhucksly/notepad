@@ -105,6 +105,7 @@
         remote.getCurrentWindow().hide()
         return false
       })
+      this.$store.dispatch('isDevelopment', process.env.NODE_ENV === 'development')
     },
     beforeDestroy() {
       this.$store.dispatch('interval', null)
