@@ -14,6 +14,9 @@ const mutations = {
   setError(state, flag) {
     state.error = flag
   },
+  setIsDevelopment(state, flag) {
+    state.isDevelopment = flag
+  },
   setJson(state, json) {
     state.json = {}
     state.json = Object.assign({}, json)
