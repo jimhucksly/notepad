@@ -65,6 +65,12 @@ const actions = {
     } else json = data
     store.commit('setJson', json)
   },
+  md(store, data) {
+    store.commit('setMd', data)
+  },
+  mdTree(store, tree) {
+    store.commit('setMdTree', tree)
+  },
   read(store, key) {
     const json = cloneDeep(store.getters['getJson'])
     delete json[key]['unread']
@@ -93,6 +99,14 @@ const actions = {
   preferences(store) {
     const flag = store.getters['isPreferencesShowed']
     store.commit('setPreferencesShow', !flag)
+  },
+  projects(store) {
+    const flag = store.getters['isProjectsShowed']
+    store.commit('setProjectsShow', !flag)
+  },
+  markdown(store) {
+    const flag = store.getters['isMarkdownShowed']
+    store.commit('setMarkdownShow', !flag)
   },
   downloadsTargetPath(store, path) {
     store.commit('setDownloadsTargetPath', path)
@@ -151,6 +165,14 @@ const actions = {
             store.dispatch('token', null)
             store.dispatch('interval', null)
           })
+        return null
+      case 'GET_MD':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        $http.get(type, jsonHeaders)
+          .then(resp => {
+            store.dispatch('md', resp.data.data)
+          })
+          .catch(() => {})
         return null
       case 'CREATE':
         jsonHeaders.headers.Authorization = store.getters['getToken']

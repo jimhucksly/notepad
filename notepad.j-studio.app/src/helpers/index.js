@@ -78,6 +78,8 @@ export const getFileType = (name) => {
   if(/\.txt$/.test(name)) return 'txt'
   if(/\.zip$/.test(name)) return 'zip'
   if(/\.rar$/.test(name)) return 'rar'
+  if(/\.md$/.test(name)) return 'md'
+
   return 'default'
 }
 
@@ -183,7 +185,7 @@ export const downloadFile = (fileUrl, targetPath, loaderDOMElement) => {
           }
         })
         req.on('end', () => {
-          
+
         })
       })
       .catch(() => {
@@ -234,4 +236,39 @@ export const uploadingFile = (received, total) => {
       text && (text.textContent = `${percentage}%`)
     }
   }
+}
+
+export const translit = (val) => {
+  const space = '_'
+  /* eslint-disable object-property-newline */
+  const transl = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
+    'з': 'z', 'и': 'i', 'й': 'j', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+    'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh',
+    'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'ju',
+    'я': 'ja', ' ': space, '_': space, '`': space, '~': space, '!': space, '@': space,
+    '#': space, '$': space, '%': space, '^': space, '&': space, '*': space,
+    '(': space, ')': space, '-': space, '\=': space, '+': space, '[': space,
+    ']': space, '\\': space, '|': space, '/': space, '.': space, ',': space,
+    '{': space, '}': space, '\'': space, '"': space, '': space, ':': space,
+    '?': space, '<': space, '>': space, '№': space
+  }
+  /* eslint-enable object-property-newline */
+  let result = ''
+  let curentSim = ''
+  const text = val.toLowerCase()
+
+  text.split('').forEach((s, i) => {
+    if(transl[text[i]] !== undefined) {
+      if(curentSim !== transl[text[i]] || curentSim !== space) {
+        result += transl[text[i]]
+        curentSim = transl[text[i]]
+      }
+    } else {
+      result += text[i]
+      curentSim = text[i]
+    }
+  })
+
+  return result.trim()
 }

@@ -21,6 +21,12 @@ const mutations = {
     state.json = {}
     state.json = Object.assign({}, json)
   },
+  setMd(state, data) {
+    state.md = data
+  },
+  setMdTree(state, tree) {
+    state.mdTree = tree
+  },
   setFilter(state, object) {
     state.filter = {}
     state.filter = Object.assign({}, object)
@@ -39,6 +45,12 @@ const mutations = {
   },
   setPreferencesShow(state, flag) {
     state.preferencesShow = flag
+  },
+  setProjectsShow(state, flag) {
+    state.projectsShow = flag
+  },
+  setMarkdownShow(state, flag) {
+    state.markdownShow = flag
   },
   setDownloadsTargetPath(state, path) {
     state.downloadsTargetPath = path

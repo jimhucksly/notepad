@@ -18,7 +18,7 @@
       transition: all 0.3s;
 
       &.error {
-        color: $red; 
+        color: $red;
       }
     }
   }
@@ -133,4 +133,10 @@ textarea {
   &:hover {
     background-color: #ccc;
   }
+}
+
+.btn-sm {
+  width: 85px;
+  height: 20px;
+  font-size: 12px;
 }

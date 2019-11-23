@@ -34,7 +34,7 @@ function logStats (proc, data) {
   }
 
   log += '\n' + chalk.yellow.bold(`${new Array(28 + 1).join('-')}`) + '\n'
-  
+
   if(process.env.CHUNKS_LOG === 'true') console.log(log)
 }
 
@@ -64,6 +64,7 @@ function startRenderer () {
       {
         contentBase: path.join(__dirname, '../'),
         quiet: true,
+        openPage: '',
         before (app, ctx) {
           app.use(hotMiddleware)
           ctx.middleware.waitUntilValid(() => {
@@ -127,7 +128,7 @@ function startElectron () {
   }
 
   electronProcess = spawn(electron, args)
-  
+
   electronProcess.stdout.on('data', data => {
     electronLog(data, 'blue')
   })

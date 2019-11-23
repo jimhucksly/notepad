@@ -34,6 +34,8 @@
 </template>
 <script>
   import { mapGetters } from 'vuex'
+  import { remote } from 'electron'
+
   export default {
     name: 'Titlebar',
     computed: {
@@ -52,6 +54,30 @@
           type: 'GET_JSON'
         })
       }
+    },
+    mounted() {
+      document.getElementById('menu-button').addEventListener('click', (event) => {
+        window.appMenu.popup(this.$electron.remote.screen, event.x, event.y)
+      })
+
+      document.getElementById('minimize-button').addEventListener('click', (e) => {
+        remote.getCurrentWindow().minimize()
+      })
+
+      document.getElementById('min-max-button').addEventListener('click', () => {
+        const currentWindow = remote.getCurrentWindow()
+        if(currentWindow.isMaximized()) {
+          currentWindow.unmaximize()
+        } else {
+          currentWindow.maximize()
+        }
+      })
+
+      document.getElementById('close-button').addEventListener('click', (e) => {
+        // remote.app.quit()
+        remote.getCurrentWindow().hide()
+        return false
+      })
     }
   }
 </script>

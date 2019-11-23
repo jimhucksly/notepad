@@ -19,7 +19,6 @@ const winURL = process.env.NODE_ENV === 'development'
 
 const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
 let iconOverlay = nativeImage.createFromPath(appIconOverlay)
-iconOverlay = iconOverlay.resize({ width: 16, height: 16 })
 const appIconTray = path.resolve(__static, 'iconTray.ico')
 let iconTray = nativeImage.createFromPath(appIconTray)
 
@@ -71,20 +70,20 @@ function createWindow() {
   mainWindow.on('closed', () => {
     // mainWindow = null
   })
-  
+
   mainWindow.on('minimize', (e) => {
     // e.preventDefault()
     // mainWindow.hide()
   })
-  
+
   mainWindow.on('show', () => {
     // appTray.setHighlightMode('always')
   })
-  
+
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-  
+
   mainWindow.webContents.on('did-frame-finish-load', () => {
     if(process.env.NODE_ENV === 'development') {
       mainWindow.webContents.openDevTools()

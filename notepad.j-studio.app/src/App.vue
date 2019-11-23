@@ -11,7 +11,7 @@
   import Popup from '@/components/popup'
 
   const { Menu } = remote
-  
+
   export default {
     name: 'notepad.j-studio.app',
     components: {
@@ -72,12 +72,9 @@
         }
       ]
       const appMenu = Menu.buildFromTemplate(MenuTemplate)
+      window.appMenu = appMenu
       const contextMenu = Menu.buildFromTemplate(ContextMenuTemplate)
       Menu.setApplicationMenu(appMenu)
-
-      document.getElementById('menu-button').addEventListener('click', (event) => {
-        appMenu.popup(this.$electron.remote.screen, event.x, event.y)
-      })
 
       window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
@@ -87,24 +84,6 @@
         }
       })
 
-      document.getElementById('minimize-button').addEventListener('click', (e) => {
-        remote.getCurrentWindow().minimize()
-      })
-
-      document.getElementById('min-max-button').addEventListener('click', () => {
-        const currentWindow = remote.getCurrentWindow()
-        if(currentWindow.isMaximized()) {
-          currentWindow.unmaximize()
-        } else {
-          currentWindow.maximize()
-        }
-      })
-
-      document.getElementById('close-button').addEventListener('click', (e) => {
-        // remote.app.quit()
-        remote.getCurrentWindow().hide()
-        return false
-      })
       this.$store.dispatch('isDevelopment', process.env.NODE_ENV === 'development')
     },
     beforeDestroy() {

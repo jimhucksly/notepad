@@ -3,8 +3,8 @@
     <div class="notepad_cont" ref="notepad_cont">
       <div class="notepad_item"
         v-if="!hasFilter || `${item.key}` in filter"
-        v-for="(item, index) in json" 
-        :data-stamp="item.key" 
+        v-for="(item, index) in json"
+        :data-stamp="item.key"
         :key="item.key"
         ref="notepad_item"
         :class="{ unread: item.unread }">
@@ -12,15 +12,15 @@
           <div class="notepad_item_date">{{ item.date }}</div>
         </div>
         <div class="notepad_item_content">
-          <file 
+          <file
             v-if="item.file !== undefined"
-            :item-key="item.key" 
+            :item-key="item.key"
             :item-file="item.file">
           </file>
           <p v-html="item.message" v-else></p>
         </div>
-        <controls 
-          :item-key="item.key" 
+        <controls
+          :item-key="item.key"
           :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']">
         </controls>
       </div>

@@ -7,6 +7,7 @@ import store from './store'
 import Popup from '@/plugins/popup'
 
 import '@/assets/scss/main.scss'
+import '@/assets/css/simplemde.css'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true

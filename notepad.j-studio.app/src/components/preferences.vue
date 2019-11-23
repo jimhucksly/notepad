@@ -11,9 +11,9 @@
               Downloads target path:</label>
             <input type="text"
               :class="{ error: errors.downloadsTargetPath }"
-              v-model="preferences.downloadsTargetPath" 
+              v-model="preferences.downloadsTargetPath"
               name="downloadsTargetPath"
-              readonly 
+              readonly
               required>
             <span class="form-label-error"
               v-show="errors.downloadsTargetPath">
@@ -94,7 +94,8 @@
           defaultPath: this.downloadsTargetPath
         })
         this.$electron.ipcRenderer.on('open-dialog-paths-selected', (event, response) => {
-          this.preferences.downloadsTargetPath = response && response[0] ? response[0] : this.userDataPath
+          const currentPath = this.preferences.downloadsTargetPath || this.userDataPath
+          this.preferences.downloadsTargetPath = response && response[0] ? response[0] : currentPath
         })
       }
     },

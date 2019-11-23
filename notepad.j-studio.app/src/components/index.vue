@@ -7,8 +7,10 @@
         <loading v-if="loading"></loading>
         <template v-else>
           <auth v-if="!isAuth"></auth>
-          <preferences v-else-if="preferencesShow"></preferences>
-          <notepad v-else></notepad>
+          <preferences v-else-if="isPreferences" />
+          <notepad v-else-if="isProjects" />
+          <markdown v-else-if="isMarkdown"/>
+          <div v-else></div>
         </template>
         <error v-if="isError"></error>
       </section>
@@ -23,6 +25,7 @@
   import Error from './error'
   import Auth from './auth'
   import Notepad from './notepad'
+  import Markdown from './markdown'
   import Preferences from './preferences'
   import Sidebar from './sidebar'
   import storage from '@/plugins/storage'
@@ -36,6 +39,7 @@
       Auth,
       Error,
       Notepad,
+      Markdown,
       Preferences,
       Sidebar
     },
@@ -43,7 +47,9 @@
       ...mapGetters({
         loading: 'getLoading',
         isAuth: 'getAuth',
-        preferencesShow: 'isPreferencesShowed',
+        isPreferences: 'isPreferencesShowed',
+        isProjects: 'isProjectsShowed',
+        isMarkdown: 'isMarkdownShowed',
         token: 'getToken',
         isError: 'getError'
       })
@@ -63,6 +69,7 @@
               this.$store.dispatch('auth', true)
               this.$store.dispatch('token', token)
               this.getJson()
+              this.getMd()
             } else throw new Error()
           })
           .catch(() => {
@@ -73,6 +80,11 @@
       getJson() {
         this.$store.dispatch('action', {
           type: 'GET_JSON'
+        })
+      },
+      getMd() {
+        this.$store.dispatch('action', {
+          type: 'GET_MD'
         })
       }
     },

@@ -31,18 +31,22 @@ let webConfig = {
       },
       {
         test: /\.scss$/,
+        exclude: /node_modules/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.sass$/,
+        exclude: /node_modules/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
       },
       {
         test: /\.less$/,
+        exclude: /node_modules/,
         use: ['vue-style-loader', 'css-loader', 'less-loader']
       },
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         use: ['vue-style-loader', 'css-loader']
       },
       {

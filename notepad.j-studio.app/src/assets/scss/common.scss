@@ -63,62 +63,68 @@ a[href] {
   width:6px;
   height:0px
 }
- 
+
 .notepad_cont::-webkit-scrollbar-track {
   background-color:#eee;
 }
- 
+
 .notepad_cont::-webkit-scrollbar-thumb {
   -webkit-border-radius: 0px;
   border-radius: 0px;
   background-color: $blue_light;
 }
- 
+
 .notepad_cont::-webkit-scrollbar-thumb:hover {
   background-color: $blue_light;
 }
- 
+
 .notepad_cont::-webkit-resizer {
   background-image:url('');
   background-repeat:no-repeat;
   width:6px;
   height:0px
 }
- 
+
 .notepad_cont::-webkit-scrollbar {
   width: 6px;
 }
 
-// projects scrollbar styling
+// projects|markdown scrollbar styling
 
-.projects::-webkit-scrollbar-button {
+.projects::-webkit-scrollbar-button,
+.markdown::-webkit-scrollbar-button {
   background-image:url('');
   background-repeat:no-repeat;
   width:6px;
   height:0px
 }
- 
-.projects::-webkit-scrollbar-track {
+
+.projects::-webkit-scrollbar-track,
+.markdown::-webkit-scrollbar-track {
   background-color:#eee;
 }
- 
-.projects::-webkit-scrollbar-thumb {
+
+.projects::-webkit-scrollbar-thumb,
+.markdown::-webkit-scrollbar-thumb {
   -webkit-border-radius: 0px;
   border-radius: 0px;
   background-color: lighten(#303d3c, 35%);
 }
- 
-.projects::-webkit-scrollbar-thumb:hover {
+
+.projects::-webkit-scrollbar-thumb:hover,
+.markdown::-webkit-scrollbar-thumb:hover {
   background-color: lighten(#303d3c, 35%);
   border: 2px solid #eee}
- 
-.projects::-webkit-resizer {
+
+.projects::-webkit-resizer,
+.markdown::-webkit-resizer {
   background-image:url('');
   background-repeat:no-repeat;
   width:6px;
   height:0px
 }
- 
-.projects::-webkit-scrollbar {
+
+.projects::-webkit-scrollbar,
+.markdown::-webkit-scrollbar {
   width: 6px;
 }
