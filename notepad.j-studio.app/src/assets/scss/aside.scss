@@ -168,19 +168,39 @@ aside {
 
     ul {
       li {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 6px 15px 6px 15px;
-        white-space: nowrap;
-        cursor: pointer;
-        color: #b7c5ca;
+        display: flex;
+        flex-direction: column;
 
-        &:hover {
-          background-color: darken(#303d3c, 3%);
+        span {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          padding: 6px 15px 6px 30px;
+          cursor: pointer;
+          color: #b7c5ca;
+
+          &:hover {
+            background-color: darken(#303d3c, 3%);
+          }
+        }
+
+        &.level-1 {
+          font-size: 14px;
+        }
+        &.level-2 {
+          font-size: 13px;
+          span {
+            padding-left: 40px;
+          }
+        }
+        &.level-3 {
+          font-size: 12px;
+          span {
+            padding-left: 50px;
+          }
         }
       }
     }
-
   }
 }

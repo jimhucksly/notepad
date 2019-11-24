@@ -141,7 +141,7 @@ const actions = {
     store.dispatch('interval', interval)
   },
   async action(store, { type, data }) {
-    switch (type) {
+    switch(type) {
       case 'AUTH':
         const authResp = await $http.post(type, {
           login: data.login,

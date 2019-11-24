@@ -56,17 +56,7 @@
       </div>
     </div>
     <div class="markdown" v-show="!isPreferences && isMarkdown">
-      <ul v-if="mdTree.length">
-        <li
-          v-for="(item, index) in mdTree"
-          v-if="item.name.trim() && item.slug.trim()"
-          :key="index"
-          :title="item.name"
-          @click="markdownLinkClick(item)"
-          >
-          {{ item.name }}
-        </li>
-      </ul>
+      <sidebar-tree :tree="mdTree" />
     </div>
   </aside>
 </template>
@@ -75,6 +65,7 @@
   import { mapGetters } from 'vuex'
   import { cloneDeep, unset } from 'lodash'
   import SidebarSwitcher from '@/components/sidebarSwitcher'
+  import SidebarTree from '@/components/sidebarTree'
 
   export default {
     name: 'Sidebar',
@@ -84,7 +75,8 @@
       }
     },
     components: {
-      SidebarSwitcher
+      SidebarSwitcher,
+      SidebarTree
     },
     computed: {
       ...mapGetters({
@@ -166,13 +158,6 @@
               [stamp]: true
             }))
           }
-        }
-      },
-      markdownLinkClick(item) {
-        const editor = document.querySelector('.editor-preview')
-        if(editor) {
-          const link = editor.querySelector(`a[href*=${item.slug}]`)
-          link && link.click()
         }
       }
     }

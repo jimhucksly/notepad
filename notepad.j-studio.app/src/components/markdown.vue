@@ -5,12 +5,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { cloneDeep } from 'lodash'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import { translit } from '@/helpers'
 
-const tree = []
+const nodes = []
 
 const md = new MarkdownIt({
   html: false,
@@ -26,13 +27,13 @@ const md = new MarkdownIt({
 md.use(MarkdownItAnchor, {
   slugify: s => {
     const slug = translit(s)
-    tree.push({
+    nodes.push({
       name: s || '',
       slug: slug || ''
     })
     return slug
   },
-  level: 1,
+  level: [1, 2, 3],
   permalink: true,
   permalinkClass: 'md-anchor',
   permalinkBefore: false
@@ -71,11 +72,11 @@ const config = {
   //   ]
   // },
   // lineWrapping: false,
-  // parsingConfig: {
-  //   allowAtxHeaderWithoutSpace: true,
-  //   strikethrough: false,
-  //   underscoresBreakWords: true
-  // }
+  parsingConfig: {
+    allowAtxHeaderWithoutSpace: true,
+    strikethrough: false,
+    underscoresBreakWords: true
+  },
   // placeholder: 'Type here...',
   previewRender(plainText) {
     return md.render(plainText)
@@ -129,14 +130,42 @@ export default {
     })
   },
   mounted() {
-    this.editor = new SimpleMDE({
-      element: document.getElementById('editor'),
-      ...config
-    })
-    this.editor.value(this.initialValue)
-    this.editor.togglePreview()
-    this.isRendered = true
-    this.$store.dispatch('mdTree', tree)
+    const editor = document.getElementById('editor')
+    if(editor) {
+      this.editor = new SimpleMDE({
+        element: document.getElementById('editor'),
+        ...config
+      })
+      this.editor.value(this.initialValue)
+      this.editor.togglePreview()
+      this.isRendered = true
+      const tree = []
+      let index = -1
+      nodes.forEach(item => {
+        const node = document.getElementById(item.slug)
+        if(node) {
+          const level = +node.tagName.slice(-1)
+          switch(level) {
+            case 1:
+              item.children = []
+              tree.push(item)
+              index++
+              break
+            case 2:
+              item.children = []
+              tree[index].children.push(item)
+              break
+            case 3:
+              const lastIndex = tree[index].children.length - 1
+              tree[index].children[lastIndex].children.push(item)
+          }
+        }
+      })
+      this.$store.dispatch('mdTree', cloneDeep(nodes))
+    }
+  },
+  beforeDestroy() {
+    this.$store.dispatch('mdTree', [])
   }
 }
 </script>
