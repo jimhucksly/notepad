@@ -1,5 +1,5 @@
 <template>
-  <div id="content">
+  <div>
     <titlebar></titlebar>
     <main>
       <sidebar v-if="isAuth && !loading"></sidebar>

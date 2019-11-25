@@ -8,7 +8,7 @@ aside {
   flex-basis: 250px;
   padding-top: 15px;
   color: #fff;
-  background-color: #303d3c;
+  background-color: $dark;
   border-right: 1px solid #ccc;
 
   legend,
@@ -147,7 +147,7 @@ aside {
       }
 
       &:hover {
-        background-color: darken(#303d3c, 3%);
+        background-color: darken($dark, 3%);
         color: $yellow;
 
         .item_icon_edit {
@@ -172,16 +172,58 @@ aside {
         flex-direction: column;
 
         span {
+          position: relative;
           display: block;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
           padding: 6px 15px 6px 30px;
           cursor: pointer;
-          color: #b7c5ca;
+          color: $blue-gray;
 
           &:hover {
-            background-color: darken(#303d3c, 3%);
+            background-color: darken($dark, 3%);
+            color: lighten($blue-gray, 9%);
+            &.tree_item_plus,
+            &.tree_item_minus {
+              &:before {
+                opacity: 0.9;
+              }
+            }
+          }
+
+          &.tree_item_plus {
+            &:before {
+              position: absolute;
+              top: 7px;
+              left: 10px;
+              content: '+';
+              display: flex;
+              justify-content: center;
+              width: 12px;
+              height: 12px;
+              color: $yellow_light;
+              border: 1px solid $yellow_light;
+              line-height: 8px;
+              opacity: 0.7;
+            }
+          }
+          &.tree_item_minus {
+            &:before {
+              position: absolute;
+              top: 7px;
+              left: 10px;
+              content: '-';
+              display: flex;
+              justify-content: center;
+              width: 12px;
+              height: 12px;
+              font-weight: 700;
+              color: $yellow_light;
+              border: 1px solid $yellow_light;
+              line-height: 8px;
+              opacity: 0.7;
+            }
           }
         }
 

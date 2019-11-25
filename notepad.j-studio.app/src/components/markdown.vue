@@ -11,6 +11,8 @@ import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import { translit } from '@/helpers'
 
+let autosaveTimeout = null
+
 const nodes = []
 
 const md = new MarkdownIt({
@@ -89,10 +91,10 @@ const config = {
   //   return 'Loading...'
   // },
   // promptURLs: true,
-  // renderingConfig: {
-  //   singleLineBreaks: false,
-  //   codeSyntaxHighlighting: true
-  // },
+  renderingConfig: {
+    singleLineBreaks: false,
+    codeSyntaxHighlighting: true
+  },
   // shortcuts: {
   //   drawTable: 'Cmd-Alt-T'
   // },
@@ -129,16 +131,8 @@ export default {
       initialValue: 'getMd'
     })
   },
-  mounted() {
-    const editor = document.getElementById('editor')
-    if(editor) {
-      this.editor = new SimpleMDE({
-        element: document.getElementById('editor'),
-        ...config
-      })
-      this.editor.value(this.initialValue)
-      this.editor.togglePreview()
-      this.isRendered = true
+  methods: {
+    buildTree() {
       const tree = []
       let index = -1
       nodes.forEach(item => {
@@ -162,6 +156,27 @@ export default {
         }
       })
       this.$store.dispatch('mdTree', cloneDeep(nodes))
+    }
+  },
+  mounted() {
+    const editor = document.getElementById('editor')
+    if(editor) {
+      this.editor = new SimpleMDE({
+        element: document.getElementById('editor'),
+        ...config
+      })
+      this.editor.value(this.initialValue)
+      this.editor.togglePreview()
+      this.isRendered = true
+      this.buildTree()
+      autosaveTimeout = null
+      this.editor.codemirror.on('change', () => {
+        clearTimeout(autosaveTimeout)
+        autosaveTimeout = setTimeout(() => {
+          this.$store.dispatch('md', this.editor.value())
+          console.log('save it!!!!!!!!!!!!')
+        }, 2000)
+      })
     }
   },
   beforeDestroy() {
