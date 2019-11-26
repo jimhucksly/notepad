@@ -9,7 +9,7 @@ import { cloneDeep } from 'lodash'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
-import { translit } from '@/helpers'
+import { translit, uniqueid } from '@/helpers'
 
 let autosaveTimeout = null
 
@@ -31,7 +31,8 @@ md.use(MarkdownItAnchor, {
     const slug = translit(s)
     nodes.push({
       name: s || '',
-      slug: slug || ''
+      slug: slug || '',
+      id: uniqueid(8)
     })
     return slug
   },
@@ -93,7 +94,7 @@ const config = {
   // promptURLs: true,
   renderingConfig: {
     singleLineBreaks: false,
-    codeSyntaxHighlighting: true
+    codeSyntaxHighlighting: false
   },
   // shortcuts: {
   //   drawTable: 'Cmd-Alt-T'

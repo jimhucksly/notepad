@@ -38,7 +38,6 @@
 </template>
 <script>
 
-  import $ from 'jquery'
   import { mapGetters } from 'vuex'
   import { isEmpty } from 'lodash'
   import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '@/helpers'
@@ -153,17 +152,21 @@
         const self = this.$refs.notepad_cont
         const rect = self.getBoundingClientRect()
         const viewportHeight = rect.top + rect.height
-        const $unread = $('.unread', self)
-        $unread.each((i, el) => {
-          if($(el).offset().top < viewportHeight) {
-            if(!$(el).is('.will-be-marked')) {
+        const unread = self.querySelectorAll('.unread')
+        unread.forEach((el, i) => {
+          const elRect = el.getBoundingClientRect()
+          if(elRect.top < viewportHeight) {
+            if(!el.classList.contains('.will-be-marked')) {
               setTimeout(() => {
                 this.$store.dispatch('read', el.dataset.stamp)
-                $(el).removeClass('unread will-be-marked').removeAttr('style')
+                el.classList.remove('unread')
+                el.classList.remove('will-be-marked')
+                const hasStyle = el.attributes.getNamedItem('style')
+                hasStyle && el.attributes.removeNamedItem('style')
               }, 2000)
             }
-            $(el).addClass('will-be-marked')
-            $(el).css({transition: 'all 0.5s'})
+            el.classList.add('will-be-marked')
+            el.style.transition = 'all 0.5s'
           }
         })
       }
@@ -175,9 +178,11 @@
       this.$refs.notepad_cont.scrollTop = this.$refs.notepad_cont.scrollHeight
       dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
 
-      $(this.$refs.notepad_cont).on('click', 'a[href]', (e) => {
-        e.preventDefault()
-        if(e.target.download) {
+      this.$refs.notepad_cont.addEventListener('click', (e) => {
+        const isLink = e.target.tagName === 'A'
+        const hasHref = e.target.href && e.target.href.length
+        if(isLink && hasHref) {
+          e.preventDefault()
           const href = e.target.href
           const stamp = e.target.dataset.stamp
           const item = this.$refs.notepad_item.find(item => item.dataset.stamp === stamp)
@@ -186,15 +191,16 @@
             const fileName = e.target.dataset.filename
             const finalPath = this.$store.getters['getDownloadsTargetPath'] + '\\' + fileName
             downloadFile(href, finalPath, loader)
+          } else {
+            this.$electron.shell.openExternal(e.target.href)
           }
-        } else {
-          this.$electron.shell.openExternal(e.target.href)
         }
       })
 
-      $(this.$refs.notepad_cont).on('scroll', (e) => this.read())
+      this.$refs.notepad_cont.addEventListener('scroll', (e) => {
+        this.read()
+      })
     }
   }
 
 </script>
-

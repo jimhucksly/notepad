@@ -11,6 +11,12 @@ if(process.env.NODE_ENV !== 'development') {
   global.__static = path.join(__dirname, '../static').replace(/\\/g, '\\\\')
 }
 
+process.on('uncaughtException', (err) => {
+  console.log(err)
+})
+
+app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
+
 let mainWindow
 let appTray
 const winURL = process.env.NODE_ENV === 'development'

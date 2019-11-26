@@ -5,8 +5,8 @@
       v-show="editable_items.includes(itemKey)"
       @click.prevent="save($event, itemKey)"
       >
-      <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" 
-        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" 
+      <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
         viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
         <g style="fill: #2766BA">
           <path d="M26,0h-2v13H8V0H0v32h32V6L26,0z M28,30H4V16h24V30z"/>
@@ -25,9 +25,9 @@
         <g class="g1" style="fill: #2766BA">
           <path style=" " d="M 20.09375 0.25 C 19.5 0.246094 18.917969 0.457031 18.46875 0.90625 L 17.46875 1.9375 L 24.0625 8.5625 L 25.0625 7.53125 C 25.964844 6.628906 25.972656 5.164063 25.0625 4.25 L 21.75 0.9375 C 21.292969 0.480469 20.6875 0.253906 20.09375 0.25 Z M 16.34375 2.84375 L 14.78125 4.34375 L 21.65625 11.21875 L 23.25 9.75 Z M 13.78125 5.4375 L 2.96875 16.15625 C 2.71875 16.285156 2.539063 16.511719 2.46875 16.78125 L 0.15625 24.625 C 0.0507813 24.96875 0.144531 25.347656 0.398438 25.601563 C 0.652344 25.855469 1.03125 25.949219 1.375 25.84375 L 9.21875 23.53125 C 9.582031 23.476563 9.882813 23.222656 10 22.875 L 20.65625 12.3125 L 19.1875 10.84375 L 8.25 21.8125 L 3.84375 23.09375 L 2.90625 22.15625 L 4.25 17.5625 L 15.09375 6.75 Z M 16.15625 7.84375 L 5.1875 18.84375 L 6.78125 19.1875 L 7 20.65625 L 18 9.6875 Z "/>
         </g>
-      </svg>    
+      </svg>
     </button>
-    <button 
+    <button
       v-if="collection.includes('remove')"
       @click.prevent="remove($event, itemKey)">
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 109 90">
@@ -50,7 +50,6 @@
 </template>
 <script>
 
-  import $ from 'jquery'
   import { mapGetters } from 'vuex'
   import { cloneDeep, unset } from 'lodash'
   import { checkLinks } from '@/helpers'
@@ -94,7 +93,7 @@
         area.value = div.innerHTML.replace(/<br\/?>/g, '\n').replace(/<\/?p\/?>/g, '')
         area.style.height = area.scrollHeight * 1.1 + 'px'
         area.style.visibility = 'visible'
-        $(area).on('keydown', (e) => {
+        area.addEventListener('keydown', (e) => {
           if((e.code === 'Enter' || e.key === 'Enter' || e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
             e.preventDefault()
             this.save(e, stamp)

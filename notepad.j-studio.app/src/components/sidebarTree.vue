@@ -4,13 +4,14 @@
     :style="level > 1 ? 'display: none;' : false"
     >
     <li
-      v-for="(item, index) in tree"
+      v-for="item in tree"
       v-if="item.name.trim() && item.slug.trim()"
-      :key="index"
+      :key="item.id"
       :class="`level-${level}`"
       >
       <span
         :title="item.name"
+        :ref="item.id"
         :class="{
           'tree_item_plus': item.children && item.children.length,
           'tree_item_minus' : !item.children || !item.children.length
@@ -50,6 +51,18 @@ export default {
       if(editor) {
         const link = editor.querySelector(`a[href*=${item.slug}]`)
         link && link.click()
+        if(item.children && item.children.length) {
+          const node = this.$refs[item.id][0]
+          const ul = node.nextElementSibling
+          const isExpanded = node.classList.contains('expanded')
+          if(isExpanded) {
+            node.classList.remove('expanded')
+            this.$slideUp(ul, 200)
+          } else {
+            node.classList.add('expanded')
+            this.$slideDown(ul, 200)
+          }
+        }
       }
     }
   }

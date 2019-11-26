@@ -234,12 +234,50 @@ aside {
           font-size: 13px;
           span {
             padding-left: 40px;
+            &.tree_item_plus,
+            &.tree_item_minus {
+              &:before {
+                left: 16px;
+              }
+            }
+
+            &:after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 10px;
+              display: block;
+              width: 1px;
+              height: 100%;
+              background-color: $green_light;
+              opacity: 0.5;
+            }
           }
         }
         &.level-3 {
           font-size: 12px;
           span {
             padding-left: 50px;
+            &.tree_item_plus,
+            &.tree_item_minus {
+              &:before {
+                left: 22px;
+              }
+            }
+
+            &:after {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 10px;
+              display: block;
+              width: 6px;
+              height: 100%;
+              border-left: 1px solid $green_light;
+              border-right: 1px solid $green_light;
+              background-color: transparent;
+              opacity: 0.5;
+            }
           }
         }
       }
