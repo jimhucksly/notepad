@@ -41,7 +41,9 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true
     },
-    icon: path.resolve(__static, 'icons/64x64.png')
+    icon: path.resolve(__static, 'icons/64x64.png'),
+    headless: true,
+    args: ['--no-sandbox']
   })
 
   mainWindow.loadURL(winURL)

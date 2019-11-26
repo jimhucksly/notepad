@@ -185,7 +185,7 @@ aside {
             background-color: darken($dark, 3%);
             color: lighten($blue-gray, 9%);
             &.tree_item_plus,
-            &.tree_item_minus {
+            &.tree_item_minus:not(.tree_item_empty) {
               &:before {
                 opacity: 0.9;
               }
@@ -225,6 +225,25 @@ aside {
               opacity: 0.7;
             }
           }
+          &.tree_item_empty {
+            &:before {
+              color: $red_light;
+              border-color: $red_light;
+              opacity: 0.4;
+            }
+          }
+          &.tree_item_node {
+            &:before {
+              content: '';
+              position: absolute;
+              top: 12px;
+              display: block;
+              height: 1px;
+              width: 21px;
+              background-color: $green_light;
+              opacity: 0.7;
+            }
+          }
         }
 
         &.level-1 {
@@ -238,6 +257,11 @@ aside {
             &.tree_item_minus {
               &:before {
                 left: 16px;
+              }
+            }
+            &.tree_item_node {
+              &:before {
+                left: 11px;
               }
             }
 
@@ -262,6 +286,11 @@ aside {
             &.tree_item_minus {
               &:before {
                 left: 22px;
+              }
+            }
+            &.tree_item_node {
+              &:before {
+                left: 17px;
               }
             }
 

@@ -11,6 +11,13 @@ import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import { translit, uniqueid } from '@/helpers'
 
+SimpleMDE.prototype.togglePreviewHandler = function(cb) {
+  this.togglePreview()
+  setTimeout(() => {
+    cb(this.isPreviewActive())
+  }, 2)
+}
+
 let autosaveTimeout = null
 
 const nodes = []
@@ -49,7 +56,14 @@ const config = {
     'heading-1', 'heading-2', 'heading-3', '|',
     'unordered-list', 'ordered-list', '|',
     'code', 'link', '|',
-    'preview', '|',
+    {
+      action: SimpleMDE.togglePreviewHandler,
+      className: 'fa fa-eye no-disable',
+      default: true,
+      name: 'preview',
+      title: 'Toggle Preview'
+    },
+    '|',
     'guide'
   ],
   autosave: {
@@ -82,6 +96,7 @@ const config = {
   },
   // placeholder: 'Type here...',
   previewRender(plainText) {
+    console.log('call render!!!!')
     return md.render(plainText)
   },
   // previewRender: function(plainText, preview) {
@@ -167,7 +182,13 @@ export default {
         ...config
       })
       this.editor.value(this.initialValue)
-      this.editor.togglePreview()
+      console.log(this.editor)
+      this.editor.togglePreviewHandler((isActive) => {
+        console.log(isActive)
+      })
+      console.log(this.editor.toolbar)
+      const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
+      console.log(toolbarItemPreview)
       this.isRendered = true
       this.buildTree()
       autosaveTimeout = null

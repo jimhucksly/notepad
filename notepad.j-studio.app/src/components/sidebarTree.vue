@@ -14,7 +14,8 @@
         :ref="item.id"
         :class="{
           'tree_item_plus': item.children && item.children.length,
-          'tree_item_minus' : !item.children || !item.children.length
+          'tree_item_minus tree_item_empty' : (!item.children || !item.children.length) && level === 1,
+          'tree_item_node': (!item.children || !item.children.length) && level > 1
         }"
         @click="selectNode(item)"
         >
@@ -57,9 +58,13 @@ export default {
           const isExpanded = node.classList.contains('expanded')
           if(isExpanded) {
             node.classList.remove('expanded')
+            node.classList.remove('tree_item_minus')
+            node.classList.add('tree_item_plus')
             this.$slideUp(ul, 200)
           } else {
             node.classList.add('expanded')
+            node.classList.add('tree_item_minus')
+            node.classList.remove('tree_item_plus')
             this.$slideDown(ul, 200)
           }
         }

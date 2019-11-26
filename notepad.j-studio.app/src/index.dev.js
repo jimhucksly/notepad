@@ -8,14 +8,15 @@
 /* eslint-disable */
 
 // Install `electron-debug` with `devtron`
-const electronDebug = require('electron-debug')
+import electronDebug from 'electron-debug'
+import { app } from 'electron'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+
 electronDebug()
 
 // Install `vue-devtools`
-const { app } = require('electron')
 app.on('ready', () => {
-  let installExtension = require('electron-devtools-installer')
-  installExtension.default(installExtension.VUEJS_DEVTOOLS)
+  installExtension(VUEJS_DEVTOOLS)
     .then(() => {})
     .catch(err => {
       console.log('Unable to install `vue-devtools`: \n', err)
