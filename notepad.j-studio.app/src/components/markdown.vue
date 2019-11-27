@@ -14,13 +14,19 @@ import { translit, uniqueid } from '@/helpers'
 SimpleMDE.prototype.togglePreviewHandler = function(cb) {
   this.togglePreview()
   setTimeout(() => {
-    cb(this.isPreviewActive())
+    if(cb instanceof Function) {
+      cb(this.isPreviewActive())
+    }
   }, 2)
+}
+
+SimpleMDE.prototype.saveContent = function() {
+  this.saveContentHandler()
 }
 
 let autosaveTimeout = null
 
-const nodes = []
+let nodes = []
 
 const md = new MarkdownIt({
   html: false,
@@ -56,15 +62,14 @@ const config = {
     'heading-1', 'heading-2', 'heading-3', '|',
     'unordered-list', 'ordered-list', '|',
     'code', 'link', '|',
+    'preview', '|',
     {
-      action: SimpleMDE.togglePreviewHandler,
-      className: 'fa fa-eye no-disable',
+      action: function(editor) {},
+      className: 'fa fa-save no-disable',
       default: true,
-      name: 'preview',
-      title: 'Toggle Preview'
-    },
-    '|',
-    'guide'
+      name: 'save',
+      title: 'Save'
+    }
   ],
   autosave: {
     enabled: true,
@@ -96,7 +101,7 @@ const config = {
   },
   // placeholder: 'Type here...',
   previewRender(plainText) {
-    console.log('call render!!!!')
+    nodes = []
     return md.render(plainText)
   },
   // previewRender: function(plainText, preview) {
@@ -147,6 +152,14 @@ export default {
       initialValue: 'getMd'
     })
   },
+  watch: {
+    initialValue(value) {
+      this.editor.value(value)
+      this.editor.togglePreviewHandler()
+      this.editor.togglePreviewHandler()
+      this.buildTree()
+    }
+  },
   methods: {
     buildTree() {
       const tree = []
@@ -171,7 +184,7 @@ export default {
           }
         }
       })
-      this.$store.dispatch('mdTree', cloneDeep(nodes))
+      this.$store.dispatch('mdTree', Object.assign([], cloneDeep(nodes)))
     }
   },
   mounted() {
@@ -182,13 +195,21 @@ export default {
         ...config
       })
       this.editor.value(this.initialValue)
-      console.log(this.editor)
-      this.editor.togglePreviewHandler((isActive) => {
-        console.log(isActive)
-      })
-      console.log(this.editor.toolbar)
+      this.editor.togglePreviewHandler()
       const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
-      console.log(toolbarItemPreview)
+      if(toolbarItemPreview) {
+        toolbarItemPreview.action = () => {
+          this.editor.togglePreviewHandler(isActive => { isActive && this.buildTree() })
+        }
+      }
+      const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
+      if(toolbarItemSave) {
+        toolbarItemSave.action = () => {
+          this.$store.dispatch('action', {
+            type: 'SAVE'
+          })
+        }
+      }
       this.isRendered = true
       this.buildTree()
       autosaveTimeout = null
@@ -196,8 +217,7 @@ export default {
         clearTimeout(autosaveTimeout)
         autosaveTimeout = setTimeout(() => {
           this.$store.dispatch('md', this.editor.value())
-          console.log('save it!!!!!!!!!!!!')
-        }, 2000)
+        }, 1000)
       })
     }
   },
@@ -213,8 +233,12 @@ export default {
   flex-basis: 100;
 
   .editor-toolbar {
-    flex-basis: 50px;
-    flex-shrink: 0
+    flex-basis: 54px;
+    flex-shrink: 0;
+
+    .fa-save {
+      cursor: pointer;
+    }
   }
 
   .CodeMirror {

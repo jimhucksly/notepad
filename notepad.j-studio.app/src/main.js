@@ -11,7 +11,7 @@ import '@/assets/scss/main.scss'
 import '@/assets/css/simplemde.css'
 
 Vue.config.productionTip = false
-Vue.config.devtools = true
+// Vue.config.devtools = true
 if(!process.env.IS_WEB) Vue.use(vueElectron)
 Vue.use(Popup)
 Vue.use(Anime)

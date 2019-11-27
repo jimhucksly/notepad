@@ -48,6 +48,9 @@
                 this.$store.dispatch('action', {
                   type: 'GET_JSON'
                 })
+                this.$store.dispatch('action', {
+                  type: 'GET_MD'
+                })
               }
             },
             {

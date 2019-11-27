@@ -12,6 +12,14 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 
+const express = require('express')
+const server = express()
+
+const host = process.env.HOST || 'localhost'
+const port = process.env.PORT || 9080
+
+server.set('port', port)
+
 let electronProcess = null
 let manualRestart = false
 let hotMiddleware
@@ -58,6 +66,19 @@ function startRenderer () {
     compiler.hooks.done.tap('done', stats => {
       logStats('Renderer', stats)
     })
+
+    // function startServer() {
+
+    //   server.get('/', function(req, res) {
+    //     res.render(path.join(__dirname, '../dist/electron/index.html'))
+    //   })
+
+    //   server.use(hotMiddleware)
+    //   server.listen(port, host)
+    //   resolve()
+    // }
+
+    // startServer()
 
     const server = new WebpackDevServer(
       compiler,

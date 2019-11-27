@@ -5,12 +5,12 @@
         <div class="title">Sign In</div>
         <div class="form-group">
           <div class="form-group-inner">
-            <label 
-              :class="{ 
+            <label
+              :class="{
                 active: login.length > 0,
-                error: !!errors.login 
+                error: !!errors.login
               }">Login:</label>
-            <input type="text" placeholder="Login" 
+            <input type="text" placeholder="Login"
               :class="{ error: !!errors.login }"
               v-model="login"
               @keyup.enter.prevent="submit">
@@ -21,12 +21,12 @@
         </div>
         <div class="form-group">
           <div class="form-group-inner">
-            <label 
-              :class="{ 
+            <label
+              :class="{
                 active: pass.length > 0,
                 error: !!errors.pass
                 }">Password:</label>
-            <input type="password" placeholder="Password" 
+            <input type="password" placeholder="Password"
               :class="{ error: !!errors.pass }"
               v-model="pass"
               @keyup.enter.prevent="submit">
@@ -91,6 +91,9 @@
               this.$store.dispatch('auth', true)
               this.$store.dispatch('action', {
                 type: 'GET_JSON'
+              })
+              this.$store.dispatch('action', {
+                type: 'GET_MD'
               })
             })
             .catch(err => {

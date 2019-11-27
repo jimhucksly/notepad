@@ -42,8 +42,8 @@ function createWindow() {
       nodeIntegration: true
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
-    headless: true,
-    args: ['--no-sandbox']
+    headless: true, // undiscovered param
+    args: ['--no-sandbox'] // undiscovered param
   })
 
   mainWindow.loadURL(winURL)
@@ -94,10 +94,11 @@ function createWindow() {
 
   mainWindow.webContents.on('did-frame-finish-load', () => {
     if(process.env.NODE_ENV === 'development') {
-      mainWindow.webContents.openDevTools()
-      mainWindow.webContents.on('devtools-opened', () => {
-        mainWindow.focus()
-      })
+      mainWindow.focus()
+      // mainWindow.webContents.openDevTools()
+      // mainWindow.webContents.on('devtools-opened', () => {
+      //   mainWindow.focus()
+      // })
     }
   })
 }

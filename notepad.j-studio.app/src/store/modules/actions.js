@@ -114,11 +114,11 @@ const actions = {
   setInterval(store) {
     let interval = store.getters['getInterval']
     if(interval) store.dispatch('interval', null)
-    const isDevelopment = store.getters['getIsDevelopment']
-    if(isDevelopment) {
-      store.dispatch('interval', null)
-      return null
-    }
+    // const isDevelopment = store.getters['getIsDevelopment']
+    // if(isDevelopment) {
+    //   store.dispatch('interval', null)
+    //   return null
+    // }
     interval = setInterval(() => {
       store.dispatch('action', {
         type: 'CHECK'
@@ -127,6 +127,7 @@ const actions = {
           store.dispatch('error', false)
           if(resp.status !== 204) {
             store.dispatch('json', resp.data.data)
+            store.dispatch('md', resp.data.md)
           }
         })
         .catch(() => {
@@ -222,6 +223,16 @@ const actions = {
         }
         store.dispatch('uploadingPopupShow', false)
         return uploadResp
+      case 'SAVE':
+        jsonHeaders.headers.Authorization = store.getters['getToken']
+        const saveResp = await $http.post(type, {
+          body: store.getters['getMd']
+        }, jsonHeaders)
+        if(saveResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'save markdown failed')
+          return Promise.reject(saveResp)
+        }
+        return saveResp
     }
   }
 }
