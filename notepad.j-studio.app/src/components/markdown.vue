@@ -24,7 +24,7 @@ SimpleMDE.prototype.saveContent = function() {
   this.saveContentHandler()
 }
 
-let autosaveTimeout = null
+// let autosaveTimeout = null
 
 let nodes = []
 
@@ -184,7 +184,7 @@ export default {
           }
         }
       })
-      this.$store.dispatch('mdTree', Object.assign([], cloneDeep(nodes)))
+      this.$store.dispatch('mdTree', Object.assign([], cloneDeep(tree)))
     }
   },
   mounted() {
@@ -206,19 +206,20 @@ export default {
       if(toolbarItemSave) {
         toolbarItemSave.action = () => {
           this.$store.dispatch('action', {
-            type: 'SAVE'
+            type: 'SAVE',
+            data: this.editor.value()
           })
         }
       }
       this.isRendered = true
       this.buildTree()
-      autosaveTimeout = null
-      this.editor.codemirror.on('change', () => {
-        clearTimeout(autosaveTimeout)
-        autosaveTimeout = setTimeout(() => {
-          this.$store.dispatch('md', this.editor.value())
-        }, 1000)
-      })
+      // autosaveTimeout = null
+      // this.editor.codemirror.on('change', () => {
+      //   clearTimeout(autosaveTimeout)
+      //   autosaveTimeout = setTimeout(() => {
+      //     this.$store.dispatch('md', this.editor.value())
+      //   }, 1000)
+      // })
     }
   },
   beforeDestroy() {

@@ -226,7 +226,7 @@ const actions = {
       case 'SAVE':
         jsonHeaders.headers.Authorization = store.getters['getToken']
         const saveResp = await $http.post(type, {
-          body: store.getters['getMd']
+          body: data
         }, jsonHeaders)
         if(saveResp instanceof Error) {
           ipcRenderer.send('open-error-dialog', 'save markdown failed')
