@@ -114,11 +114,11 @@ const actions = {
   setInterval(store) {
     let interval = store.getters['getInterval']
     if(interval) store.dispatch('interval', null)
-    // const isDevelopment = store.getters['getIsDevelopment']
-    // if(isDevelopment) {
-    //   store.dispatch('interval', null)
-    //   return null
-    // }
+    const isDevelopment = store.getters['getIsDevelopment']
+    if(isDevelopment) {
+      store.dispatch('interval', null)
+      return null
+    }
     interval = setInterval(() => {
       store.dispatch('action', {
         type: 'CHECK'

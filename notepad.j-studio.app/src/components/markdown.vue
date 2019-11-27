@@ -123,18 +123,14 @@ const config = {
   // spellChecker: false,
   // status: false,
   // status: ['autosave', 'lines', 'words', 'cursor'],
-  // status: ['autosave', 'lines', 'words', 'cursor', {
-  //   className: 'keystrokes',
-  //   defaultValue: function(el) {
-  //     this.keystrokes = 0;
-  //     el.innerHTML = '0 Keystrokes'
-  //   },
-  //   onUpdate: function(el) {
-  //     el.innerHTML = ++this.keystrokes + ' Keystrokes'
-  //   }
-  // }],
+  status: [
+    {
+      className: 'saved-status'
+    },
+    'autosave', 'lines', 'words', 'cursor'
+  ],
   // styleSelectedText: false,
-  tabSize: 2
+  tabSize: 4
   // toolbar: true,
   // toolbarTips: true
 }
@@ -205,10 +201,24 @@ export default {
       const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
       if(toolbarItemSave) {
         toolbarItemSave.action = () => {
-          this.$store.dispatch('action', {
+          const sRequest = this.$store.dispatch('action', {
             type: 'SAVE',
             data: this.editor.value()
           })
+          Promise
+            .all([sRequest])
+            .then(data => {
+              const statusBar = document.querySelector('.editor-statusbar')
+              if(statusBar) {
+                const savedSatus = statusBar.querySelector('.saved-status')
+                const message = 'Markdown is successfully saved!'
+                savedSatus && (savedSatus.innerHTML = message)
+
+                setTimeout(() => {
+                  savedSatus && (savedSatus.innerHTML = '')
+                }, 3000)
+              }
+            })
         }
       }
       this.isRendered = true
@@ -224,6 +234,15 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch('mdTree', [])
+    this.$store.dispatch('action', {
+      type: 'SAVE',
+      data: this.editor.value()
+    })
+  },
+  created() {
+    this.$store.dispatch('action', {
+      type: 'GET_MD'
+    })
   }
 }
 </script>

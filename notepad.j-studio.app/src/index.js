@@ -215,7 +215,7 @@ ipcMain.on('open-error-dialog', (event, msg) => {
     defaultId: 2,
     title: 'Error',
     message: msg
-  }, () => {
+  }).then(() => {
     event.sender.send('dialog-error-callback')
   })
 })
@@ -227,8 +227,8 @@ ipcMain.on('open-dialog-remove-confirm', (event) => {
     defaultId: 1,
     title: 'Confirm',
     message: 'Remove record?'
-  }, (response) => {
-    if(response === 0) {
+  }).then(data => {
+    if(data.response === 0) {
       event.sender.send('remove-is-confimed')
     }
   })
@@ -241,8 +241,8 @@ ipcMain.on('open-dialog-unlock-confirm', (event) => {
     defaultId: 1,
     title: 'Confirm',
     message: 'Remove the protection?'
-  }, (response) => {
-    if(response === 0) {
+  }).then(data => {
+    if(data.response === 0) {
       event.sender.send('unlock-is-confimed')
     }
   })
