@@ -19,13 +19,12 @@
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
     "test": "npm run unit && npm run e2e",
-    "unit": "karma start test/unit/karma.conf.js",
-    "postinstall": "npm run lint:fix"
+    "unit": "karma start test/unit/karma.conf.js"
   },
   "build": {
-    "productName": "Notepad Jimhucksly Studio App",
+    "productName": "Notepad App",
     "appId": "com.example.notepad-jimhucksly-studioApp",
-    "copyright": "Copyright © 2019 ${author}",
+    "copyright": "Copyright © 2019-2020 ${author}",
     "directories": {
       "output": "build"
     },
@@ -65,6 +64,7 @@
     }
   },
   "dependencies": {
+    "@types/lodash": "^4.14.149",
     "animejs": "^3.1.0",
     "auto-updater": "^1.0.2",
     "axios": "^0.18.0",
@@ -82,6 +82,8 @@
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.16.0",
+    "@typescript-eslint/parser": "^2.16.0",
     "ajv": "^6.5.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.3",
@@ -135,11 +137,14 @@
     "sass-loader": "^7.0.3",
     "spectron": "^3.8.0",
     "style-loader": "^0.21.0",
-    "ts-loader": "^6.0.4",
-    "typescript": "^3.5.2",
+    "ts-loader": "^6.2.1",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.5",
     "url-loader": "^1.0.1",
+    "vue-class-component": "^7.2.2",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.2.4",
+    "vue-property-decorator": "^8.3.0",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.15.1",

@@ -1,17 +1,35 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
     "moduleResolution": "node",
-    "declaration": true,
+    "module": "commonjs",
+    "target": "es6",
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["*"]
+    },
+    "outDir": "./dist",
     "newLine": "LF",
     "preserveConstEnums": true,
-    "pretty": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules",
-    "typings"
+    "typings",
+    "./dist/**/*"
   ]
 }

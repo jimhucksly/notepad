@@ -1,16 +1,16 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-interface iStorage {
-  isPathExists(_path: string): Promise<void>;
-  isFileExists(_path: string, _file: string): Promise<void>;
-  append(_path: string, fileName: string, json: object): Promise<void>;
-  set(_path:string, fileName:string, json: object): Promise<void>;
-  get(_path: string, _file: string, key: string): Promise<void>;
-}
+// interface IStorage {
+//   isPathExists(_path: string): Promise<void>;
+//   isFileExists(_path: string, _file: string): Promise<void>;
+//   append(_path: string, fileName: string, json: object): Promise<void>;
+//   set(_path:string, fileName:string, json: object): Promise<void>;
+//   get(_path: string, _file: string, key: string): Promise<void>;
+// }
 
-class Storage<iStorage>  {
-  isPathExists(_path: string) {
+class Storage  {
+  public isPathExists(_path: string): Promise<object> {
     return new Promise((resolve, reject) => {
       fs.access(_path, (err) => {
         if(err) {
@@ -22,7 +22,7 @@ class Storage<iStorage>  {
     })
   }
 
-  isFileExists(_path: string, _file?: string) {
+  public isFileExists(_path: string, _file?: string): Promise<object> {
     return new Promise((resolve, reject) => {
       let filePath = _path
       if(_file !== undefined) filePath = path.resolve(_path, _file)
@@ -36,7 +36,7 @@ class Storage<iStorage>  {
     })
   }
 
-  append(_path: string, fileName: string, json: object) {
+  public append(_path: string, fileName: string, json: object): Promise<object> {
     return new Promise((resolve, reject) => {
       const fullPath = path.resolve(_path, fileName)
       this.isFileExists(fullPath)
@@ -56,7 +56,7 @@ class Storage<iStorage>  {
     })
   }
 
-  set(_path: string, fileName: string, json: object){
+  public set(_path: string, fileName: string, json: object): Promise<object> {
     return new Promise((resolve, reject) => {
       let data
       try {
@@ -78,7 +78,7 @@ class Storage<iStorage>  {
     })
   }
 
-  get(_path: string, _file: string, key: string){
+  public get(_path: string, _file: string, key?: string): Promise<object> {
     return new Promise((resolve, reject) => {
       let fullPath = _path
       if(_file !== undefined) fullPath = path.resolve(_path, _file)
@@ -91,7 +91,7 @@ class Storage<iStorage>  {
           } catch (err) {
             return reject(err)
           }
-          if(json[key] !== undefined) resolve(json[key])
+          if(key && json[key] !== undefined) resolve(json[key])
           else resolve(json)
         })
         .catch((err:any) => {
@@ -101,4 +101,5 @@ class Storage<iStorage>  {
   }
 }
 
-export default new Storage()
+const instance = new Storage()
+export default instance

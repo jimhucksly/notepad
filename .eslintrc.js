@@ -1,14 +1,15 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: "babel-eslint",
   parserOptions: {
+    ecmaVersion: 2019,
     sourceType: 'module'
   },
   env: {
     browser: true,
     node: true
   },
-  extends: 'standard',
+  extends: "standard",
   globals: {
     __static: true
   },
