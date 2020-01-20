@@ -1,49 +1,50 @@
 import { Vue, Component } from 'vue-property-decorator'
-// import Titlebar from './titlebar'
-// import Loading from './loading'
-// import Error from './error'
+import Titlebar from '~/components/titlebar'
+import Loading from '~/components/loading'
+import Error from '~/components/error'
 import Auth from '~/components/auth'
-// import Notepad from './notepad'
-// import Markdown from './markdown'
-// import Preferences from './preferences'
-// import Sidebar from './sidebar'
+import Notepad from '~/components/notepad'
+// import Markdown from '~/components/markdown'
+// import Preferences from '~/components/preferences'
+// import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
-import { userDataFileName } from '~/constants.ts'
+import { userDataFileName } from '~/constants'
 
 @Component({
   name: 'Index',
   components: {
-    // Titlebar,
-    // Loading,
-    Auth
-    // Error,
-    // Notepad,
-    // Markdown,
-    // Preferences,
-    // Sidebar
+    Titlebar,
+    Loading,
+    Auth,
+    Error,
+    Notepad,
+    Markdown,
+    Preferences,
+    Sidebar
   }
 })
 export default class Index extends Vue {
+  [x: string]: any
   get loading() {
-    return this.$store.getters['loading']
+    return this.$store.getters.loading
   }
   get isAuth() {
-    return this.$store.getters['getAuth']
+    return this.$store.getters.getAuth
   }
   get isPreferences() {
-    return this.$store.getters['isPreferencesShowed']
+    return this.$store.getters.isPreferencesShowed
   }
   get isProjects() {
-    return this.$store.getters['isProjectsShowed']
+    return this.$store.getters.isProjectsShowed
   }
   get isMarkdown() {
-    return this.$store.getters['isMarkdownShowed']
+    return this.$store.getters.isMarkdownShowed
   }
   get token() {
-    return this.$store.getters['getToken']
+    return this.$store.getters.getToken
   }
   get isError() {
-    return this.$store.getters['getError']
+    return this.$store.getters.getError
   }
 
   protected checkToken(p: string) {
@@ -87,8 +88,8 @@ export default class Index extends Vue {
     this.checkToken(appPath)
     storage.get(appPath, 'UserPreferences')
       .then((json: any) => {
-        if(json['downloadsTargetPath'] !== undefined) {
-          this.$store.dispatch('downloadsTargetPath', json['downloadsTargetPath'])
+        if(json.downloadsTargetPath !== undefined) {
+          this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
         } else return Promise.reject(new Error('preferences key in no exists'))
         return null
       })

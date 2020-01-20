@@ -15,8 +15,8 @@
     "experimentalDecorators": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
     "sourceMap": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
@@ -31,5 +31,10 @@
     "node_modules",
     "typings",
     "./dist/**/*"
+  ],
+  "include": [
+    "src",
+    "src/**/*.ts",
+    "@types/**/*.d.ts"
   ]
 }

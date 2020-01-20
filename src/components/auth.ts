@@ -10,8 +10,9 @@ interface IErrors {
   name: 'Auth'
 })
 export default class Auth extends Vue {
+  [$store: string]: any
   protected login: string = ''
-  protected pass:string = ''
+  protected pass: string = ''
   protected errors: IErrors = {
     login: 0,
     pass: 0
@@ -37,7 +38,7 @@ export default class Auth extends Vue {
     if(this.pass.length === 0) {
       this.errors.pass = 1
     }
-    return Object.keys(this.errors).map(key => this.errors[key]).reduce((a, b) => a + b) === 0
+    return Object.keys(this.errors).map((key: string) => this.errors[key]).reduce((a, b) => a + b) === 0
   }
 
   protected submit() {
@@ -50,7 +51,7 @@ export default class Auth extends Vue {
           password: this.pass
         }
       })
-        .then(resp => {
+        .then((resp: any) => {
           this.$store.dispatch('token', resp.token)
           this.$store.dispatch('auth', true)
           this.$store.dispatch('action', {
@@ -60,15 +61,17 @@ export default class Auth extends Vue {
             type: 'GET_MD'
           })
         })
-        .catch(err => {
+        .catch((err: any) => {
           this.$store.dispatch('loading', false)
           const data = err.response && err.response.data ? err.response.data : (err.response || err)
           if(data.message && !_.isEmpty(data.message)) {
-            this.errors = Object.assign({}, data.message)
+            this.errors = { ...data.message }
             this.errors.login = this.errors.login ? 1 : 0
             this.errors.pass = this.errors.pass ? 1 : 0
             this.validate()
-          } else console.error(data)
+          } else {
+            console.error(data)
+          }
         })
     }
   }
