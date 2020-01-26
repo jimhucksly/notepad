@@ -30,33 +30,4 @@
     </div>
   </div>
 </template>
-<script>
-
-  import Vue from 'vue'
-  import { mapGetters } from 'vuex'
-
-  Vue.component('CloseBtn', {
-    template: `<div class="popup-close-btn" @click="$emit('click')"></div>`
-  })
-
-  Vue.component('PopupTitle', {
-    template: '<div class="popup-title-bar"><slot></slot></div>'
-  })
-
-  export default {
-    name: 'Popup',
-    computed: {
-      ...mapGetters({
-        aboutPopupShow: 'getAboutPopupShow',
-        uploadingPopupShow: 'getUploadingPopupShow'
-      }),
-      showPopup() {
-        let flags = ['aboutPopupShow', 'uploadingPopupShow']
-        return flags.map(key => this[key]).reduce((res, el) => res || Boolean(el))
-      },
-      appName() {
-        return this.$electron.remote.getCurrentWindow().getTitle()
-      }
-    }
-  }
-</script>
+<script src="./popup.ts" lang="ts"></script>

@@ -1,11 +1,11 @@
-
-@import './variables.scss';
-@import './normalize.scss';
-@import './fonts.scss';
-@import './common.scss';
-@import './forms.scss';
-@import './titlebar.scss';
-@import './aside.scss';
+@import './variables';
+@import './normalize';
+@import './fonts';
+@import './common';
+@import './forms';
+@import './titlebar';
+@import './aside';
+@import './markdown';
 
 html {
   font-family: $regular;

@@ -42,4 +42,4 @@
     </div>
   </div>
 </template>
-<script src="auth.ts" lang="ts"></script>
+<script src="./auth.ts" lang="ts"></script>

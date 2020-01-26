@@ -1,33 +1,28 @@
-<template>
-  <div id="app">
-    <router-view id="content"></router-view>
-    <popup></popup>
-  </div>
-</template>
-<script>
-import { mapGetters } from 'vuex'
+/// <reference path="../vue-shim.d.ts" />
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { remote } from 'electron'
-import Popup from '@/components/popup'
+import Popup from './components/popup'
 
 const { Menu } = remote
 
-export default {
-  name: 'notepad.j-studio.app',
+@Component({
+  name: 'App',
   components: {
     Popup
-  },
-  computed: {
-    ...mapGetters({
-      notification: 'getNotification'
-    })
-  },
-  watch: {
-    notification(flag) {
-      if(flag) {
-        this.$electron.ipcRenderer.send('set-icon-notification')
-      }
+  }
+})
+export default class App extends Vue {
+  [x: string]: any
+  get notification() {
+    return this.$store.getters['getNotification']
+  }
+
+  @Watch('notification')
+  onNotificationChanged(flag: boolean) {
+    if(flag) {
+      this.$electron.ipcRenderer.send('set-icon-notification')
     }
-  },
+  }
   mounted() {
     const MenuTemplate = [
       {
@@ -66,7 +61,7 @@ export default {
         click: () => this.$popup.open('about')
       }
     ]
-    const ContextMenuTemplate = [
+    const ContextMenuTemplate: any = [
       {
         label: 'Copy',
         accelerator: 'CmdOrCtrl+C',
@@ -75,21 +70,43 @@ export default {
     ]
     const appMenu = Menu.buildFromTemplate(MenuTemplate)
     window.appMenu = appMenu
-    const contextMenu = Menu.buildFromTemplate(ContextMenuTemplate)
+    const contextMenu: any = Menu.buildFromTemplate(ContextMenuTemplate)
     Menu.setApplicationMenu(appMenu)
-
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault()
-      const hasSelection = window.getSelection().toString().length > 0
+      let selection: any = null
+      let hasSelection: boolean = false
+      if(window.getSelection()) {
+        selection = window!.getSelection()!.toString()
+        hasSelection = selection !== null ? !!selection.length : false
+      }
       if(hasSelection) {
         contextMenu.popup(this.$electron.remote.screen, event.x, event.y)
       }
     })
 
     this.$store.dispatch('isDevelopment', process.env.NODE_ENV === 'development')
-  },
+  }
   beforeDestroy() {
     this.$store.dispatch('interval', null)
   }
+  render(h: any) {
+    return h(
+      'div',
+      {
+        id: 'app'
+      },
+      [
+        h(
+          'router-view',
+          {
+            id: 'content'
+          }
+        ),
+        h(
+          'popup'
+        )
+      ]
+    )
+  }
 }
-</script>

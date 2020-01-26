@@ -1,6 +1,6 @@
 <template>
   <div>
-    <titlebar></titlebar>
+    <titlebar />
     <main>
       <sidebar v-if="isAuth && !loading"></sidebar>
       <section>

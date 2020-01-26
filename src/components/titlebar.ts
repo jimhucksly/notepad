@@ -1,4 +1,4 @@
-/// <reference path="./index.d.ts" />
+/// <reference path="../../vue-shim.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
 import { remote } from 'electron'
 

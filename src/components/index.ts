@@ -4,9 +4,9 @@ import Loading from '~/components/loading'
 import Error from '~/components/error'
 import Auth from '~/components/auth'
 import Notepad from '~/components/notepad'
-// import Markdown from '~/components/markdown'
-// import Preferences from '~/components/preferences'
-// import Sidebar from '~/components/sidebar'
+import Markdown from '~/components/markdown'
+import Preferences from '~/components/preferences'
+import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
 
@@ -82,19 +82,18 @@ export default class Index extends Vue {
     })
   }
 
-  created() {
+  async created(): Promise<void> {
     const appPath = this.$electron.remote.app.getPath('userData')
-    this.$store.dispatch('userDataPath', appPath)
-    this.checkToken(appPath)
-    storage.get(appPath, 'UserPreferences')
-      .then((json: any) => {
-        if(json.downloadsTargetPath !== undefined) {
-          this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
-        } else return Promise.reject(new Error('preferences key in no exists'))
-        return null
-      })
-      .catch(() => {
-        this.$store.dispatch('downloadsTargetPath', appPath)
-      })
+    try {
+      this.$store.dispatch('userDataPath', appPath)
+      this.checkToken(appPath)
+      const json: any = await storage.get(appPath, 'UserPreferences')
+      if(json.downloadsTargetPath !== undefined) {
+        this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
+      }
+    } catch(e) {
+      console.error(e)
+      this.$store.dispatch('downloadsTargetPath', appPath)
+    }
   }
 }

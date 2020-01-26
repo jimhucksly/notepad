@@ -10,32 +10,11 @@
       <div>
         <a :href="href" target="_blank">Открыть</a>
         <a :href="href" :data-filename="fileName" :data-stamp="stamp" download="download">Скачать</a>
-      </div>                
+      </div>
     </div>
     <div>
       <div class="file_loader" ref="loader"><span></span></div>
     </div>
   </div>
 </template>
-<script>
-
-  export default {
-    name: 'File',
-    props: ['itemKey', 'itemFile'],
-    computed: {
-      stamp() {
-        return this.itemKey
-      },
-      href() {
-        return this.itemFile.link
-      },
-      fileName() {
-        return this.itemFile.name
-      },
-      type() {
-        return this.itemFile.type
-      }
-    }
-  }
-
-</script>
+<script src="./file.ts" lang="ts"></script>

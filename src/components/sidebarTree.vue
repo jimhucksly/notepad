@@ -28,48 +28,4 @@
   </ul>
   <div v-else></div>
 </template>
-<script>
-import SidebarTree from '@/components/sidebarTree'
-
-export default {
-  name: 'SidebarTree',
-  props: {
-    tree: {
-      type: Array,
-      default: () => []
-    },
-    level: {
-      type: Number,
-      default: 1
-    }
-  },
-  componens: {
-    SidebarTree
-  },
-  methods: {
-    selectNode(item) {
-      const editor = document.querySelector('.editor-preview')
-      if(editor) {
-        const link = editor.querySelector(`a[href*=${item.slug}]`)
-        link && link.click()
-        if(item.children && item.children.length) {
-          const node = this.$refs[item.id][0]
-          const ul = node.nextElementSibling
-          const isExpanded = node.classList.contains('expanded')
-          if(isExpanded) {
-            node.classList.remove('expanded')
-            node.classList.remove('tree_item_minus')
-            node.classList.add('tree_item_plus')
-            this.$slideUp(ul, 200)
-          } else {
-            node.classList.add('expanded')
-            node.classList.add('tree_item_minus')
-            node.classList.remove('tree_item_plus')
-            this.$slideDown(ul, 200)
-          }
-        }
-      }
-    }
-  }
-}
-</script>
+<script src="./sidebarTree.ts" lang="ts"></script>

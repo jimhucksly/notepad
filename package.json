@@ -65,6 +65,9 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.149",
+    "@types/markdown-it": "^0.0.9",
+    "@types/markdown-it-anchor": "^4.0.3",
+    "@types/simplemde": "^1.11.7",
     "animejs": "^3.1.0",
     "auto-updater": "^1.0.2",
     "axios": "^0.18.0",

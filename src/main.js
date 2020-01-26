@@ -16,9 +16,12 @@ if(!process.env.IS_WEB) Vue.use(vueElectron)
 Vue.use(Popup)
 Vue.use(Anime)
 
+window.Vue = Vue
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  template: '<App/>',
   router,
   store,
   render: h => h(App)
