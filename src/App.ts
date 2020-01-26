@@ -94,13 +94,17 @@ export default class App extends Vue {
     return h(
       'div',
       {
-        id: 'app'
+        attrs: {
+          id: 'app'
+        }
       },
       [
         h(
           'router-view',
           {
-            id: 'content'
+            attrs: {
+              id: 'content'
+            }
           }
         ),
         h(

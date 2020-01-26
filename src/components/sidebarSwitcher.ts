@@ -4,12 +4,11 @@ import { Vue, Component } from 'vue-property-decorator'
   name: 'SidebarSwitcher',
 })
 export default class SidebarSwitcher extends Vue {
-  [x: string]: any
   get isProjects() {
     return this.$store.getters['isProjectsShowed']
   }
   get isMarkdown() {
-    return this.$store.getters['isMarkdown']
+    return this.$store.getters['isMarkdownShowed']
   }
   get legend() {
     if(this.isProjects) return 'Projects'

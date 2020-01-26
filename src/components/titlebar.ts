@@ -1,4 +1,4 @@
-/// <reference path="../../vue-shim.d.ts" />
+/// <reference path="../../window.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
 import { remote } from 'electron'
 
@@ -6,7 +6,6 @@ import { remote } from 'electron'
   name: 'Titlebar'
 })
 export default class Titlebar extends Vue {
-  [x: string]: any
   get isAuth() {
     return this.$store.getters.getAuth
   }

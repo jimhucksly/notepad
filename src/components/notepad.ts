@@ -12,7 +12,6 @@ import File from '~/components/file'
   }
 })
 export default class Notepad extends Vue {
-  [x: string]: any
   message: string = ''
   new_message_flag: boolean = false
 
@@ -22,7 +21,7 @@ export default class Notepad extends Vue {
   get filter() {
     return this.$store.getters['getFilter']
   }
-  get error() {
+  get isError() {
     return this.$store.getters['getError']
   }
   get hasFilter() {

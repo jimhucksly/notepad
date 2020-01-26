@@ -1,5 +1,5 @@
 <template>
-  <div id="notepad_cont" :class="{ 'is-error' : error }">
+  <div id="notepad_cont" :class="{ 'is-error' : isError }">
     <div class="notepad_cont" ref="notepad_cont">
       <div class="notepad_item"
         v-if="!hasFilter || `${item.key}` in filter"

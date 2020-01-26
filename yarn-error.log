@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add eslint-plugin-@typescript-eslint -D
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/vuex
 
 PATH: 
   C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files (x86)\Yarn\bin\;C:\Users\Jimhucksly\.windows-build-tools\python27\;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\.bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\Jimhucksly\AppData\Local\Microsoft\WindowsApps;C:\Users\Jimhucksly\AppData\Roaming\npm;C:\Users\Jimhucksly\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Jimhucksly\AppData\Local\Yarn\bin
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/eslint-plugin-: Not found
+  Error: https://registry.yarnpkg.com/@types%2fvuex: Not found
       at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66027:18)
       at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140539:22)
       at emitTwo (events.js:126:13)
@@ -94,6 +94,10 @@ npm manifest:
     },
     "dependencies": {
       "@types/lodash": "^4.14.149",
+      "@types/markdown-it": "^0.0.9",
+      "@types/markdown-it-anchor": "^4.0.3",
+      "@types/simplemde": "^1.11.7",
+      "@types/vue": "^2.0.0",
       "animejs": "^3.1.0",
       "auto-updater": "^1.0.2",
       "axios": "^0.18.0",
@@ -112,7 +116,6 @@ npm manifest:
     },
     "devDependencies": {
       "@typescript-eslint/eslint-plugin": "^2.16.0",
-      "@typescript-eslint/eslint-plugin-tslint": "^2.16.0",
       "@typescript-eslint/parser": "^2.16.0",
       "ajv": "^6.5.0",
       "babel-core": "^6.26.3",
@@ -365,10 +368,29 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.4.tgz#38fd73ddfd9b55abb1e1b2ed578cb55bd7b7d339"
     integrity sha512-8+KAKzEvSUdeo+kmqnKrqgeE+LcA0tjYWFY7RPProVYwnqDjukzO+3b6dLD56rYX5TdWejnEOLJYOIeh4CXKuA==
   
+  "@types/linkify-it@*":
+    version "2.1.0"
+    resolved "https://registry.yarnpkg.com/@types/linkify-it/-/linkify-it-2.1.0.tgz#ea3dd64c4805597311790b61e872cbd1ed2cd806"
+    integrity sha512-Q7DYAOi9O/+cLLhdaSvKdaumWyHbm7HAk/bFwwyTuU0arR5yyCeW5GOoqt4tJTpDRxhpx9Q8kQL6vMpuw9hDSw==
+  
   "@types/lodash@^4.14.149":
     version "4.14.149"
     resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.149.tgz#1342d63d948c6062838fbf961012f74d4e638440"
     integrity sha512-ijGqzZt/b7BfzcK9vTrS6MFljQRPn5BFWOx8oE0GYxribu6uV+aA9zZuXI1zc/etK9E8nrgdoF2+LgUw7+9tJQ==
+  
+  "@types/markdown-it-anchor@^4.0.3":
+    version "4.0.3"
+    resolved "https://registry.yarnpkg.com/@types/markdown-it-anchor/-/markdown-it-anchor-4.0.3.tgz#426c31d1e0dffcc133cde297053b81cdbc07a20e"
+    integrity sha512-L0NDW75vkovFradOQiPsodVkmJhA11LTDOgkJL0bsRvDo7uMWAwJWpC3oDCBCrP4mBJurP+adKZm0FP3GoGnmw==
+    dependencies:
+      "@types/markdown-it" "*"
+  
+  "@types/markdown-it@*", "@types/markdown-it@^0.0.9":
+    version "0.0.9"
+    resolved "https://registry.yarnpkg.com/@types/markdown-it/-/markdown-it-0.0.9.tgz#a5d552f95216c478e0a27a5acc1b28dcffd989ce"
+    integrity sha512-IFSepyZXbF4dgSvsk8EsgaQ/8Msv1I5eTL0BZ0X3iGO9jw6tCVtPG8HchIPm3wrkmGdqZOD42kE0zplVi1gYDA==
+    dependencies:
+      "@types/linkify-it" "*"
   
   "@types/minimatch@*":
     version "3.0.3"
@@ -390,13 +412,17 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/semver/-/semver-6.2.0.tgz#d688d574400d96c5b0114968705366f431831e1a"
     integrity sha512-1OzrNb4RuAzIT7wHSsgZRlMBlNsJl+do6UblR7JMW4oB7bbR+uBEYtUh7gEc/jM84GGilh68lSOokyM/zNUlBA==
   
-  "@typescript-eslint/eslint-plugin-tslint@^2.16.0":
-    version "2.16.0"
-    resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin-tslint/-/eslint-plugin-tslint-2.16.0.tgz#8e8573cc2560ddae5a8a30fc2eb6af10f1ff9658"
-    integrity sha512-F+In2z6VCWiI0J4P4OzUQY9UzT5y/0Xg6bHM6twoK5XmPdbR7zT9JzIZKLcXyr80XT5LbgHjnW6oPGp1O3W36g==
+  "@types/simplemde@^1.11.7":
+    version "1.11.7"
+    resolved "https://registry.yarnpkg.com/@types/simplemde/-/simplemde-1.11.7.tgz#c8bd9f54ff46db7f311a989004eb5815acedf429"
+    integrity sha512-b3yirBar1gqb9clgJJKpx+Or3txkOOkm5sffhRKaBUfh7+1D2Aimx2RKXGS1LK9S5KyNmug3lwpGJtaID9cOnA==
+  
+  "@types/vue@^2.0.0":
+    version "2.0.0"
+    resolved "https://registry.yarnpkg.com/@types/vue/-/vue-2.0.0.tgz#ec77b3d89591deb9ca5cb052368aa9c32be088e7"
+    integrity sha1-7Hez2JWR3rnKXLBSNoqpwyvgiOc=
     dependencies:
-      "@typescript-eslint/experimental-utils" "2.16.0"
-      lodash "^4.17.15"
+      vue "*"
   
   "@typescript-eslint/eslint-plugin@^2.16.0":
     version "2.16.0"
@@ -11786,6 +11812,11 @@ Lockfile:
     version "1.9.1"
     resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
     integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+  
+  vue@*:
+    version "2.6.11"
+    resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
+    integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
   
   vue@^2.5.16:
     version "2.6.10"

@@ -24,27 +24,26 @@ import { userDataFileName } from '~/constants'
   }
 })
 export default class Index extends Vue {
-  [x: string]: any
   get loading() {
-    return this.$store.getters.loading
+    return this.$store.getters['getLoading']
   }
   get isAuth() {
-    return this.$store.getters.getAuth
+    return this.$store.getters['getAuth']
   }
   get isPreferences() {
-    return this.$store.getters.isPreferencesShowed
+    return this.$store.getters['isPreferencesShowed']
   }
   get isProjects() {
-    return this.$store.getters.isProjectsShowed
+    return this.$store.getters['isProjectsShowed']
   }
   get isMarkdown() {
-    return this.$store.getters.isMarkdownShowed
+    return this.$store.getters['isMarkdownShowed']
   }
   get token() {
-    return this.$store.getters.getToken
+    return this.$store.getters['getToken']
   }
   get isError() {
-    return this.$store.getters.getError
+    return this.$store.getters['getError']
   }
 
   protected checkToken(p: string) {

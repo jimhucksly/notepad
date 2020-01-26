@@ -9,7 +9,6 @@ interface IPreferences {
   name: 'Preferences'
 })
 export default class Preferences extends Vue {
-  [x: string]: any
   preferences: IPreferences = {
     downloadsTargetPath: ''
   }

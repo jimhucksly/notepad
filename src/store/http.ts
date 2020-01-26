@@ -1,23 +1,27 @@
 import axios from 'axios'
-import { API_URL } from '@/constants'
-import { uploadingFile } from '@/helpers'
-import store from '@/store'
+import { API_URL } from '../constants'
+import { uploadingFile } from '../helpers'
+import store from '../store'
 
-let interval
+let interval: any = null
 
-const $http = {
-  async get(action, headers) {
+class Http {
+  constructor() {
+  }
+
+  public async get(action: string, headers: object) {
     let query = `action=${action}`
     const resp = await axios.get(API_URL + '?' + query, headers)
     if(resp instanceof Error) return Promise.reject(resp)
     return resp
-  },
-  async post(action, data, headers) {
+  }
+
+  public async post(action: string, data: object, headers: object) {
     let query = `action=${action}`
-    let resp
+    let resp: any
     if(action === 'FILE') {
       const config = Object.assign({}, headers, {
-        onUploadProgress: ({ loaded, total }) => {
+        onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
           uploadingFile(loaded, total)
         }
       })
@@ -45,4 +49,5 @@ const $http = {
   }
 }
 
+const $http = new Http()
 export default $http

@@ -7,7 +7,6 @@ import { checkLinks } from '~/helpers'
 })
 
 export default class Controls extends Vue {
-  [x: string]: any
   @Prop()
   itemKey!: string
 

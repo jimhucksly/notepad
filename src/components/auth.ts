@@ -10,7 +10,6 @@ interface IErrors {
   name: 'Auth'
 })
 export default class Auth extends Vue {
-  [$store: string]: any
   protected login: string = ''
   protected pass: string = ''
   protected errors: IErrors = {

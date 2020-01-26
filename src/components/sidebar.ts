@@ -1,4 +1,4 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
 import SidebarSwitcher from '~/components/sidebarSwitcher'
 import SidebarTree from '~/components/sidebarTree'
@@ -11,7 +11,6 @@ import SidebarTree from '~/components/sidebarTree'
   }
 })
 export default class Sidebar extends Vue {
-  [x: string]: any
   names = {}
 
   get json() {
@@ -27,7 +26,7 @@ export default class Sidebar extends Vue {
     return this.$store.getters['isProjectsShowed']
   }
   get isMarkdown() {
-    return this.$store.getters['isMarkdown']
+    return this.$store.getters['isMarkdownShowed']
   }
   get mdTree() {
     return this.$store.getters['getMdTree']

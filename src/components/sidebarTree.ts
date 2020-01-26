@@ -1,14 +1,13 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
-import SidebarTreeComponent from '~/components/sidebarTree'
+import SidebarTree from '~/components/sidebarTree'
 
 @Component({
   name: 'SidebarTree',
   components: {
-    'sidebar-tree': SidebarTreeComponent
+    SidebarTree
   }
 })
-export default class SidebarTree extends Vue {
-  [x: string]: any
+export default class SidebarTreeComponent extends Vue {
   @Prop({
     type: Array,
     default: () => []

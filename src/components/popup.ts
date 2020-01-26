@@ -12,7 +12,6 @@ Vue.component('PopupTitle', {
   name: 'Popup'
 })
 export default class Popup extends Vue {
-  [x: string]: any
   get aboutPopupShow() {
     return this.$store.getters['getAboutPopupShow']
   }

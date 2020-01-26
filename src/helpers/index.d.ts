@@ -13,6 +13,7 @@ declare function downloadFile(
   targetPath: string,
   loaderDOMElement: any
 )
+declare function uploadingFile(received: number, total: number)
 
 export {
   translit,
@@ -21,5 +22,6 @@ export {
   now,
   getFileType,
   dragAndDropLoader,
-  downloadFile
+  downloadFile,
+  uploadingFile
 }

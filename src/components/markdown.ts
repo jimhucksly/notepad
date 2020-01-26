@@ -146,7 +146,6 @@ const config: any = {
 })
 
 export default class Markdown extends Vue {
-  [x: string]: any
   editor: any = null
   isRendered: boolean = false
 
