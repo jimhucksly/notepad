@@ -6,6 +6,7 @@ import Auth from '~/components/auth'
 import Notepad from '~/components/notepad'
 import Markdown from '~/components/markdown'
 import Preferences from '~/components/preferences'
+import JsonViewer from '~/components/jsonViewer'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
@@ -20,30 +21,34 @@ import { userDataFileName } from '~/constants'
     Notepad,
     Markdown,
     Preferences,
+    JsonViewer,
     Sidebar
   }
 })
 export default class Index extends Vue {
   get loading() {
-    return this.$store.getters['getLoading']
+    return this.$store.getters.getLoading
   }
   get isAuth() {
-    return this.$store.getters['getAuth']
+    return this.$store.getters.getAuth
   }
   get isPreferences() {
-    return this.$store.getters['isPreferencesShowed']
+    return this.$store.getters.isPreferencesShowed
   }
   get isProjects() {
-    return this.$store.getters['isProjectsShowed']
+    return this.$store.getters.isProjectsShowed
   }
   get isMarkdown() {
-    return this.$store.getters['isMarkdownShowed']
+    return this.$store.getters.isMarkdownShowed
+  }
+  get isJsonViewer() {
+    return this.$store.getters.isJsonViewerShowed
   }
   get token() {
-    return this.$store.getters['getToken']
+    return this.$store.getters.getToken
   }
   get isError() {
-    return this.$store.getters['getError']
+    return this.$store.getters.getError
   }
 
   protected checkToken(p: string) {

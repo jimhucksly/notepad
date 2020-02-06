@@ -30,7 +30,7 @@ let iconTray = nativeImage.createFromPath(appIconTray)
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1000,
+    width: 1100,
     height: 563,
     minWidth: 1000,
     minHeight: 563,

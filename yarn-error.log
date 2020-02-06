@@ -1,30 +1,30 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/vuex
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/vue2-ace-editor
 
 PATH: 
-  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Program Files (x86)\Yarn\bin\;C:\Users\Jimhucksly\.windows-build-tools\python27\;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Jimhucksly\AppData\Roaming\npm\node_modules\.bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\nodejs\;C:\Users\Jimhucksly\AppData\Local\Microsoft\WindowsApps;C:\Users\Jimhucksly\AppData\Roaming\npm;C:\Users\Jimhucksly\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Jimhucksly\AppData\Local\Yarn\bin
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\PuTTY\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Users\it3\AppData\Local\Microsoft\WindowsApps;C:\Users\it3\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\it3\.dotnet\tools;C:\Users\it3\AppData\Local\Yarn\bin;C:\Users\it3\AppData\Roaming\npm
 
 Yarn version: 
   1.19.0
 
 Node version: 
-  8.12.0
+  10.16.3
 
 Platform: 
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fvuex: Not found
+  Error: https://registry.yarnpkg.com/@types%2fvue2-ace-editor: Not found
       at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66027:18)
       at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140539:22)
-      at emitTwo (events.js:126:13)
-      at Request.emit (events.js:214:7)
+      at Request.emit (events.js:198:13)
       at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141511:10)
-      at emitOne (events.js:116:13)
-      at Request.emit (events.js:211:7)
+      at Request.emit (events.js:198:13)
       at IncomingMessage.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141433:12)
-      at Object.onceWrapper (events.js:313:30)
-      at emitNone (events.js:111:20)
+      at Object.onceWrapper (events.js:286:20)
+      at IncomingMessage.emit (events.js:203:15)
+      at endReadableNT (_stream_readable.js:1145:12)
+      at process._tickCallback (internal/process/next_tick.js:63:19)
 
 npm manifest: 
   {
@@ -180,6 +180,7 @@ npm manifest:
       "vue-property-decorator": "^8.3.0",
       "vue-style-loader": "^4.1.0",
       "vue-template-compiler": "^2.5.16",
+      "vue2-ace-editor": "^0.0.15",
       "webpack": "^4.15.1",
       "webpack-cli": "^3.0.8",
       "webpack-dev-server": "^3.1.4",
@@ -2302,6 +2303,11 @@ Lockfile:
     dependencies:
       balanced-match "^1.0.0"
       concat-map "0.0.1"
+  
+  brace@^0.11.0:
+    version "0.11.1"
+    resolved "https://registry.yarnpkg.com/brace/-/brace-0.11.1.tgz#4896fcc9d544eef45f4bb7660db320d3b379fe58"
+    integrity sha1-SJb8ydVE7vRfS7dmDbMg07N5/lg=
   
   braces@^0.1.2:
     version "0.1.5"
@@ -11812,6 +11818,13 @@ Lockfile:
     version "1.9.1"
     resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
     integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
+  
+  vue2-ace-editor@^0.0.15:
+    version "0.0.15"
+    resolved "https://registry.yarnpkg.com/vue2-ace-editor/-/vue2-ace-editor-0.0.15.tgz#569b208e54ae771ae1edd3b8902ac42f0edc74e3"
+    integrity sha512-e3TR9OGXc71cGpvYcW068lNpRcFt3+OONCC81oxHL/0vwl/V3OgqnNMw2/RRolgQkO/CA5AjqVHWmANWKOtNnQ==
+    dependencies:
+      brace "^0.11.0"
   
   vue@*:
     version "2.6.11"

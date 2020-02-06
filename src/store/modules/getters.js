@@ -16,6 +16,7 @@ const getters = {
   isPreferencesShowed: state => state.preferencesShow,
   isProjectsShowed: state => state.projectsShow,
   isMarkdownShowed: state => state.markdownShow,
+  isJsonViewerShowed: state => state.jsonViewerShow,
   getDownloadsTargetPath: state => state.downloadsTargetPath
 }
 

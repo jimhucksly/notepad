@@ -52,6 +52,9 @@ const mutations = {
   setMarkdownShow(state, flag) {
     state.markdownShow = flag
   },
+  setJsonViewerShow(state, flag) {
+    state.jsonViewerShow = flag
+  },
   setDownloadsTargetPath(state, path) {
     state.downloadsTargetPath = path
   }

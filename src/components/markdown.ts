@@ -12,8 +12,10 @@ interface ITree {
   id: string
 }
 
+/* tslint-disable object-literal-shorthand */
+
 Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
-  value: function(cb: Function) {
+  value(cb: (arg: any) => void) {
     this.togglePreview()
     setTimeout(() => {
       if(cb instanceof Function) {
@@ -24,7 +26,7 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
 })
 
 Object.defineProperty(SimpleMDE.prototype, 'saveContent', {
-  value: function() {
+  value() {
     this.saveContentHandler()
   }
 })
@@ -70,7 +72,7 @@ const config: any = {
     'code', 'link', '|',
     'preview', '|',
     {
-      action: function() {},
+      action: () => false,
       className: 'fa fa-save no-disable',
       default: true,
       name: 'save',
@@ -82,75 +84,37 @@ const config: any = {
     uniqueId: 'MyUniqueID',
     delay: 1000
   },
-  // blockStyles: {
-  //   bold: '__',
-  //   italic: '_'
-  // },
-  // forceSync: true,
-  // hideIcons: ['guide', 'heading'],
-  // indentWithTabs: false,
-  // initialValue: '',
-  // insertTexts: {
-  //   horizontalRule: ['', '\n\n-----\n\n'],
-  //   image: ['![](http://', ')'],
-  //   link: ['[', '](http://)'],
-  //   table: [
-  //     '',
-  //     '\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n'
-  //   ]
-  // },
-  // lineWrapping: false,
   parsingConfig: {
     allowAtxHeaderWithoutSpace: true,
     strikethrough: false,
     underscoresBreakWords: true
   },
-  // placeholder: 'Type here...',
   previewRender(plainText: string) {
     nodes = []
     return md.render(plainText)
   },
-  // previewRender: function(plainText, preview) {
-  //   setTimeout(function(){
-  //     preview.innerHTML = customMarkdownParser(plainText)
-  //   }, 250)
-
-  //   return 'Loading...'
-  // },
-  // promptURLs: true,
   renderingConfig: {
     singleLineBreaks: false,
     codeSyntaxHighlighting: false
   },
-  // shortcuts: {
-  //   drawTable: 'Cmd-Alt-T'
-  // },
-  // showIcons: ['code', 'table'],
-  // spellChecker: false,
-  // status: false,
-  // status: ['autosave', 'lines', 'words', 'cursor'],
   status: [
     {
       className: 'saved-status'
     },
     'autosave', 'lines', 'words', 'cursor'
   ],
-  // styleSelectedText: false,
   tabSize: 4
-  // toolbar: true,
-  // toolbarTips: true
 }
 
 @Component({
   name: 'Markdown',
 })
-
 export default class Markdown extends Vue {
   editor: any = null
   isRendered: boolean = false
 
   get initialValue() {
-    return this.$store.getters['getMd']
+    return this.$store.getters.getMd
   }
 
   @Watch('initialValue')
@@ -164,7 +128,7 @@ export default class Markdown extends Vue {
   protected buildTree() {
     const tree: ITree[] = []
     let index = -1
-    nodes.forEach(item => {
+    nodes.forEach((item: any) => {
       const node = document.getElementById(item.slug)
       if(node) {
         const level = +node.tagName.slice(-1)
@@ -182,7 +146,7 @@ export default class Markdown extends Vue {
         }
       }
     })
-    this.$store.dispatch('mdTree', Object.assign([], cloneDeep(tree)))
+    this.$store.dispatch('mdTree', [ ...cloneDeep(tree) ])
   }
 
   mounted() {
@@ -211,7 +175,7 @@ export default class Markdown extends Vue {
           })
           Promise
             .all([sRequest])
-            .then(data => {
+            .then((data: any) => {
               const statusBar = document.querySelector('.editor-statusbar')
               if(statusBar) {
                 const savedSatus = statusBar.querySelector('.saved-status')

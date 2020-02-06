@@ -96,17 +96,17 @@ const actions = {
   uploadingPopupShow(store, flag) {
     store.commit('setUploadingPopupShow', flag)
   },
-  preferences(store) {
-    const flag = store.getters['isPreferencesShowed']
-    store.commit('setPreferencesShow', !flag)
+  preferences(store, flag) {
+    store.commit('setPreferencesShow', flag)
   },
-  projects(store) {
-    const flag = store.getters['isProjectsShowed']
-    store.commit('setProjectsShow', !flag)
+  projects(store, flag) {
+    store.commit('setProjectsShow', flag)
   },
-  markdown(store) {
-    const flag = store.getters['isMarkdownShowed']
-    store.commit('setMarkdownShow', !flag)
+  markdown(store, flag) {
+    store.commit('setMarkdownShow', flag)
+  },
+  jsonViewer(store, flag) {
+    store.commit('setJsonViewerShow', flag)
   },
   downloadsTargetPath(store, path) {
     store.commit('setDownloadsTargetPath', path)

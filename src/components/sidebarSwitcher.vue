@@ -1,7 +1,17 @@
 <template>
-  <div class="switcher">
-    <span>{{ legend }}</span>
-    <button class="btn btn-default btn-sm" @click="swicth">{{ btnLegend }}</button>
+  <div
+    class="switcher"
+    :class="{
+      'switcher--expanded': isExpand,
+      'switcher--not-clickable': !!legend
+    }"
+  >
+    <span class="switcher__legend" @click="toggle">{{ legendInternal }}</span>
+    <div class="switcher__menu">
+      <ul>
+        <li v-for="item in menu" @click="select(item.id)">{{ item.nameAlt }}</li>
+      </ul>
+    </div>
   </div>
 </template>
 <script src="./sidebarSwitcher.ts" lang="ts"></script>
