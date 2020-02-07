@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/vue2-ace-editor
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add @types/json-formatter-js
 
 PATH: 
   C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Git\cmd;C:\Program Files\PuTTY\;C:\Program Files\dotnet\;C:\Program Files (x86)\dotnet\;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\nodejs\;C:\Users\it3\AppData\Local\Microsoft\WindowsApps;C:\Users\it3\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\it3\.dotnet\tools;C:\Users\it3\AppData\Local\Yarn\bin;C:\Users\it3\AppData\Roaming\npm
@@ -14,7 +14,7 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2fvue2-ace-editor: Not found
+  Error: https://registry.yarnpkg.com/@types%2fjson-formatter-js: Not found
       at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:66027:18)
       at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:140539:22)
       at Request.emit (events.js:198:13)
@@ -103,6 +103,7 @@ npm manifest:
       "axios": "^0.18.0",
       "electron-updater": "^4.0.14",
       "express": "^4.17.1",
+      "json-formatter-js": "^2.3.3",
       "markdown-it": "^10.0.0",
       "markdown-it-anchor": "^5.2.5",
       "minimatch": "^3.0.4",
@@ -6869,6 +6870,11 @@ Lockfile:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
     integrity sha1-Wx85evx11ne96Lz8Dkfh+aPZqJg=
+  
+  json-formatter-js@^2.3.3:
+    version "2.3.3"
+    resolved "https://registry.yarnpkg.com/json-formatter-js/-/json-formatter-js-2.3.3.tgz#2517e28b1b0ce07d318bb2e9fb66c53da0e90601"
+    integrity sha512-6JpHBCm6a+YB7cLye7b2Rxsim37pxpsP5674ASRZYaFiLK+397c7CLOENru2gtiBwMz6s2NCuHVENn4fC42oeQ==
   
   json-parse-better-errors@^1.0.2:
     version "1.0.2"

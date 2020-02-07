@@ -178,19 +178,48 @@ ipcMain.on('preferences-hide', () => {
 })
 
 ipcMain.on('open-folder-dialog', (event, arg) => {
-  const options = {
+  dialog.showOpenDialog({
     title: 'Choose folder',
     defaultPath: arg.defaultPath,
-    // buttonLabel: 'Do it',
     filters: [
       { name: 'exe', extensions: ['exe'] }
     ],
     properties: ['openDirectory']
-    // message: 'This message will only be shown on macOS'
-  }
-  dialog.showOpenDialog(null, options, (filePaths) => {
+  }).then((filePaths) => {
     event.sender.send('open-dialog-paths-selected', filePaths)
   })
+})
+
+ipcMain.on('open-file-dialog', (event, arg) => {
+  dialog.showOpenDialog({
+    title: 'Choose file',
+    properties: ['openFile'],
+    filters: [
+      { name: 'txt', extensions: ['txt'] },
+      { name: 'json', extensions: ['json'] }
+    ]
+  }).then((file) => {
+    event.sender.send('open-dialog-file-selected', file)
+  })
+})
+
+ipcMain.on('save-file-dialog', (event, arg) => {
+  dialog.showSaveDialog({
+    title: 'Save file',
+    buttonLabel: 'Save',
+    filters: [
+      {name: 'json', extensions: ['json']}
+    ]
+  }).then((file) => {
+    event.sender.send('save-dialog-file-selected', file)
+  })
+})
+
+ipcMain.on('json-viewer-src-set', (event, txt) => {
+  event.sender.send('json-viewer-src-set', txt)
+})
+ipcMain.on('json-viewer-save', (event, fileName) => {
+  event.sender.send('json-viewer-save', fileName)
 })
 
 ipcMain.on('set-icon-notification', () => {

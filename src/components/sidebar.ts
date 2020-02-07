@@ -2,13 +2,15 @@ import { Vue, Component } from 'vue-property-decorator'
 import SidebarSwitcher from '~/components/sidebarSwitcher'
 import Projects from '~/components/projects'
 import SidebarTree from '~/components/sidebarTree'
+import JsonViewerBtns from '~/components/JsonViewerBtns'
 
 @Component({
   name: 'Sidebar',
   components: {
     SidebarSwitcher,
     Projects,
-    SidebarTree
+    SidebarTree,
+    JsonViewerBtns
   }
 })
 export default class Sidebar extends Vue {
@@ -22,6 +24,9 @@ export default class Sidebar extends Vue {
   }
   get isMarkdown() {
     return this.$store.getters.isMarkdownShowed
+  }
+  get isJsonViewer() {
+    return this.$store.getters.isJsonViewerShowed
   }
   get mdTree() {
     return this.$store.getters.getMdTree

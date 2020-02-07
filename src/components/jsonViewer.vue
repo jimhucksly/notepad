@@ -1,17 +1,19 @@
 <template>
   <div class="json_viewer">
-    <section>
+    <div class="json_viewer_src">
       <editor
         v-model="content"
         @init="editorInit"
-        :options="options"
         lang="javascript"
         theme="twilight"
         width="100%"
         height="100%"
       />
-    </section>
-    <section></section>
+    </div>
+    <div class="json_viewer_res"></div>
+    <div class="json_viewer_notice">
+      Json parse successed!
+    </div>
   </div>
 </template>
 <script src="./jsonViewer.ts" lang="ts"></script>
