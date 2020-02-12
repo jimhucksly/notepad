@@ -285,3 +285,17 @@ export const uniqueid = (len) => {
   } while(idstr.length < len)
   return (idstr)
 }
+
+export const upperFirst = (s) => {
+  if(s.toString === undefined) return ''
+  s = s.toString()
+  if(!s.length) return ''
+  return s.charAt(0).toUpperCase() + s.slice((s.length - 1) * -1)
+}
+
+export const lowerFirst = (s) => {
+  if(s.toString === undefined) return ''
+  s = s.toString()
+  if(!s.length) return ''
+  return s.charAt(0).toLowerCase() + s.slice((s.length - 1) * -1)
+}

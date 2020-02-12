@@ -7,7 +7,7 @@ import { remote } from 'electron'
 })
 export default class Titlebar extends Vue {
   get isAuth() {
-    return this.$store.getters.getAuth
+    return this.$store.getters.getIsAuth
   }
   get preferencesShow() {
     return this.$store.getters.isPreferencesShowed

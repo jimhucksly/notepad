@@ -14,7 +14,7 @@ const jsonHeaders = {
 
 const actions = {
   auth(store, flag) {
-    store.commit('setAuth', flag)
+    store.commit('setIsAuth', flag)
     ipcRenderer.send(flag ? 'authorized' : 'unauthorized')
     store.dispatch('interval', null)
   },
@@ -86,35 +86,35 @@ const actions = {
     if(int) {
       store.commit('setInterval', int)
     } else {
-      let interval = store.getters['getInterval']
+      let interval = store.getters.getInterval
       if(interval) clearInterval(interval)
     }
   },
   aboutPopupShow(store, flag) {
-    store.commit('setAboutPopupShow', flag)
+    store.commit('setIsAboutPopupShow', flag)
   },
   uploadingPopupShow(store, flag) {
-    store.commit('setUploadingPopupShow', flag)
+    store.commit('setIsUploadingPopupShow', flag)
   },
   preferences(store, flag) {
-    store.commit('setPreferencesShow', flag)
+    store.commit('setIsPreferencesShow', flag)
   },
   projects(store, flag) {
-    store.commit('setProjectsShow', flag)
+    store.commit('setIsProjectsShow', flag)
   },
   markdown(store, flag) {
-    store.commit('setMarkdownShow', flag)
+    store.commit('setIsMarkdownShow', flag)
   },
   jsonViewer(store, flag) {
-    store.commit('setJsonViewerShow', flag)
+    store.commit('setIsJsonViewerShow', flag)
   },
   downloadsTargetPath(store, path) {
     store.commit('setDownloadsTargetPath', path)
   },
   setInterval(store) {
-    let interval = store.getters['getInterval']
+    let interval = store.getters.getInterval
     if(interval) store.dispatch('interval', null)
-    const isDevelopment = store.getters['getIsDevelopment']
+    const isDevelopment = store.getters.getIsDevelopment
     if(isDevelopment) {
       store.dispatch('interval', null)
       return null
@@ -168,7 +168,7 @@ const actions = {
           })
         return null
       case 'GET_MD':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         $http.get(type, jsonHeaders)
           .then(resp => {
             store.dispatch('md', resp.data.data)
@@ -176,7 +176,7 @@ const actions = {
           .catch(() => {})
         return null
       case 'CREATE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         const createResp = await $http.post(type, {
           json: data
         }, jsonHeaders)
@@ -186,7 +186,7 @@ const actions = {
         }
         return createResp
       case 'UPDATE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         const updateResp = await $http.post(type, {
           json: data
         }, jsonHeaders)
@@ -196,7 +196,7 @@ const actions = {
         }
         return updateResp
       case 'DELETE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         const deleteResp = await $http.post(type, {
           key: data
         }, jsonHeaders)
@@ -206,14 +206,14 @@ const actions = {
         }
         return deleteResp
       case 'CHECK':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         const checkResp = await $http.get(type, jsonHeaders)
         if(checkResp instanceof Error) {
           return Promise.reject(checkResp)
         }
         return checkResp
       case 'FILE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
         store.dispatch('uploadingPopupShow', true)
         const uploadResp = await $http.post(type, data.file, jsonHeaders)
@@ -224,7 +224,7 @@ const actions = {
         store.dispatch('uploadingPopupShow', false)
         return uploadResp
       case 'SAVE':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         const saveResp = await $http.post(type, {
           body: data
         }, jsonHeaders)

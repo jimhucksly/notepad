@@ -30,19 +30,19 @@ export default class Index extends Vue {
     return this.$store.getters.getLoading
   }
   get isAuth() {
-    return this.$store.getters.getAuth
+    return this.$store.getters.getIsAuth
   }
   get isPreferences() {
-    return this.$store.getters.isPreferencesShowed
+    return this.$store.getters.getIsPreferencesShow
   }
   get isProjects() {
-    return this.$store.getters.isProjectsShowed
+    return this.$store.getters.getIsProjectsShow
   }
   get isMarkdown() {
-    return this.$store.getters.isMarkdownShowed
+    return this.$store.getters.getIsMarkdownShow
   }
   get isJsonViewer() {
-    return this.$store.getters.isJsonViewerShowed
+    return this.$store.getters.getIsJsonViewerShow
   }
   get token() {
     return this.$store.getters.getToken
