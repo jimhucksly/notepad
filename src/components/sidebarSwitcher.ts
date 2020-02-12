@@ -59,7 +59,8 @@ export default class SidebarSwitcher extends Vue {
     }
   }
 
-  protected toggle() {
+  protected toggle(): any {
+    if(!!this.legend) return null
     this.isExpand = !this.isExpand
     if(this.isExpand) this.$emit('onExpand')
     else this.$emit('onHide')
