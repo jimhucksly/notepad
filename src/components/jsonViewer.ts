@@ -18,11 +18,11 @@ export default class JsonViewer extends Vue {
   editor: any = null
   content: string = ''
 
-  protected editorInit(editor: any) {
+  protected editorInit(instance: any) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
 
     const debounced = debounce((): void | null => {
-      const value = editor.getValue()
+      const value = instance.getValue()
       if(!value.length) {
         if(res) {
           res.innerHTML = ''
@@ -54,8 +54,8 @@ export default class JsonViewer extends Vue {
       }
     }, 3000)
 
-    editor.on('change', debounced)
-    this.editor = editor
+    instance.on('change', debounced)
+    this.editor = instance
   }
 
   mounted() {
@@ -71,5 +71,57 @@ export default class JsonViewer extends Vue {
     this.$electron.ipcRenderer.on('json-viewer-save', (a: any, fileName: string) => {
       fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
     })
+  }
+
+  render(h: any) {
+    return h(
+      'div',
+      {
+        staticClass: 'json_viewer'
+      },
+      [
+        h(
+          'div',
+          {
+            staticClass: 'json_viewer_src'
+          },
+          [
+            h(
+              'editor',
+              {
+                domProps: {
+                  value: this.content
+                },
+                props: {
+                  lang: 'javascript',
+                  theme: 'twilight',
+                  width: '100%',
+                  height: '100%'
+                },
+                on: {
+                  init: (event: any) => { this.editorInit(event) },
+                  input: (event: any) => {
+                    this.$emit('input', event.target.value)
+                  }
+                }
+              }
+            )
+          ]
+        ),
+        h(
+          'div',
+          {
+            staticClass: 'json_viewer_res'
+          }
+        ),
+        h(
+          'div',
+          {
+            staticClass: 'json_viewer_notice'
+          },
+          'Json parse successed!'
+        )
+      ]
+    )
   }
 }

@@ -200,6 +200,7 @@ export default class Markdown extends Vue {
       // })
     }
   }
+
   beforeDestroy() {
     this.$store.dispatch('mdTree', [])
     this.$store.dispatch('action', {
@@ -207,9 +208,33 @@ export default class Markdown extends Vue {
       data: this.editor.value()
     })
   }
+
   created() {
     this.$store.dispatch('action', {
       type: 'GET_MD'
     })
+  }
+
+  render(h: any) {
+    return h(
+      'div',
+      {
+        staticClass: 'editor_wrapper',
+        style: {
+          display: this.isRendered ? 'flex' : false
+        }
+      },
+      [
+        h(
+          'textarea',
+          {
+            attrs: {
+              name: 'editor',
+              id: 'editor'
+            }
+          }
+        )
+      ]
+    )
   }
 }

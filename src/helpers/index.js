@@ -67,6 +67,8 @@ export const getFileType = (name) => {
   if(/\.gif$/.test(name)) return 'image'
   if(/\.html?$/.test(name)) return 'html'
   if(/\.js$/.test(name)) return 'js'
+  if(/\.d\.ts$/.test(name)) return 'dts'
+  if(/\.ts$/.test(name)) return 'ts'
   if(/\.json$/.test(name)) return 'json'
   if(/\.vue$/.test(name)) return 'vue'
   if(/\.css$/.test(name)) return 'css'

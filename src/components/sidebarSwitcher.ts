@@ -34,13 +34,13 @@ export default class SidebarSwitcher extends Vue {
   private isExpand: boolean = false
 
   get isProjects() {
-    return this.$store.getters.isProjectsShowed
+    return this.$store.getters.getIsProjectsShow
   }
   get isMarkdown() {
-    return this.$store.getters.isMarkdownShowed
+    return this.$store.getters.getIsMarkdownShow
   }
   get isJsonViewer() {
-    return this.$store.getters.isJsonViewerShowed
+    return this.$store.getters.getIsJsonViewerShow
   }
   get current() {
     if(this.isProjects) return 1

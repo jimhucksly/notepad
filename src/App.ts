@@ -12,9 +12,8 @@ const { Menu } = remote
   }
 })
 export default class App extends Vue {
-  [x: string]: any
   get notification() {
-    return this.$store.getters['getNotification']
+    return this.$store.getters.getNotification
   }
 
   @Watch('notification')
@@ -58,7 +57,7 @@ export default class App extends Vue {
       },
       {
         label: 'About',
-        click: () => this.$popup.open('about')
+        click: () => { this.$popup.open('about') }
       }
     ]
     const ContextMenuTemplate: any = [
@@ -76,9 +75,10 @@ export default class App extends Vue {
       event.preventDefault()
       let selection: any = null
       let hasSelection: boolean = false
-      if(window.getSelection()) {
-        selection = window!.getSelection()!.toString()
-        hasSelection = selection !== null ? !!selection.length : false
+      if(window.getSelection) {
+        const s = window.getSelection()
+        selection = s ? s.toString() : ''
+        hasSelection = selection ? !!selection.length : false
       }
       if(hasSelection) {
         contextMenu.popup(this.$electron.remote.screen, event.x, event.y)
