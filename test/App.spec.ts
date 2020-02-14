@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils'
-import App from '~/App.js'
+import App from '../src/App'
 
-escribe('App.js', () => {
+describe('App', () => {
   test('render App', () => {
     const wrapper = shallowMount(App)
-    expect(wrapper.text()).toMatch(msg)
+    expect(wrapper.text()).toEqual('A')
   })
 })
