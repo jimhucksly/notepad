@@ -119,8 +119,6 @@ export default class Markdown extends Vue {
 
   @Watch('initialValue')
   onInitialValueCahnged() {
-    this.editor.value()
-    this.editor.togglePreviewHandler()
     this.editor.togglePreviewHandler()
     this.buildTree()
   }
@@ -163,7 +161,9 @@ export default class Markdown extends Vue {
       const toolbarItemPreview = this.editor.toolbar.find((item: any) => item.name === 'preview')
       if(toolbarItemPreview) {
         toolbarItemPreview.action = () => {
-          this.editor.togglePreviewHandler((isActive: boolean) => { isActive && this.buildTree() })
+          this.editor.togglePreviewHandler((isActive: boolean) => {
+            isActive && this.buildTree()
+          })
         }
       }
       const toolbarItemSave = this.editor.toolbar.find((item: any) => item.name === 'save')
@@ -181,7 +181,6 @@ export default class Markdown extends Vue {
                 const savedSatus = statusBar.querySelector('.saved-status')
                 const message = 'Markdown is successfully saved!'
                 savedSatus && (savedSatus.innerHTML = message)
-
                 setTimeout(() => {
                   savedSatus && (savedSatus.innerHTML = '')
                 }, 3000)
@@ -189,8 +188,10 @@ export default class Markdown extends Vue {
             })
         }
       }
-      this.isRendered = true
       this.buildTree()
+      setTimeout(() => {
+        this.isRendered = true
+      }, 300)
       // autosaveTimeout = null
       // this.editor.codemirror.on('change', () => {
       //   clearTimeout(autosaveTimeout)
@@ -221,7 +222,7 @@ export default class Markdown extends Vue {
       {
         staticClass: 'editor_wrapper',
         style: {
-          display: this.isRendered ? 'flex' : false
+          display: this.isRendered ? 'flex' : 'none'
         }
       },
       [

@@ -32,6 +32,9 @@ export default class JsonViewer extends Vue {
       let json: any = {}
       try {
         json = JSON.parse(value)
+        if(window.localStorage) {
+          localStorage.setItem('json_viewer', JSON.stringify(json))
+        }
       } catch(e) {
         this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
         if(res) {
@@ -58,6 +61,62 @@ export default class JsonViewer extends Vue {
     this.editor = instance
   }
 
+  protected drag(event?: any): void | null {
+    const src: HTMLElement | null = document.querySelector('.json_viewer_src')
+    const res: HTMLElement | null = document.querySelector('.json_viewer_res')
+    const container = document.querySelector('.json_viewer_cont')
+
+    if(event === undefined) {
+      if(container && src && res) {
+        const srcW = src.clientWidth
+        const resW = res.clientWidth
+        const contW = container.clientWidth
+        console.log(contW)
+      }
+      return null
+    }
+
+    if(event.which !== 1) {
+      // если клик правой кнопкой мыши
+      return null // то он не запускает перенос
+    }
+    const startX = event.screenX
+    const minW = 17
+
+    if(container && src && res) {
+      const srcW = src.clientWidth
+      const resW = res.clientWidth
+      const contW = container.clientWidth
+      document.onmousemove = (e: any) => {
+        if(e.screenX < startX) {
+          const w: number = srcW - (startX - e.screenX)
+          const p: number = w * 100 / contW
+          if(p > minW) {
+            src.style.maxWidth = p + '%'
+            src.style.minWidth = p + '%'
+            res.style.maxWidth = 100 - p + '%'
+            res.style.minWidth = 100 - p + '%'
+          }
+        }
+        if(e.screenX > startX) {
+          const w: number = resW - (e.screenX - startX)
+          const p: number = w * 100 / contW
+          if(p > minW) {
+            res.style.maxWidth = p + '%'
+            res.style.minWidth = p + '%'
+            src.style.maxWidth = 100 - p + '%'
+            src.style.minWidth = 100 - p + '%'
+          }
+        }
+      }
+
+      document.onmouseup = (e: any) => {
+        document.onmousemove = null
+        document.onmouseup = null
+      }
+    }
+  }
+
   mounted() {
     this.$electron.ipcRenderer.on('json-viewer-src-set', (e: any, value: any) => {
       let json: any = {}
@@ -71,13 +130,28 @@ export default class JsonViewer extends Vue {
     this.$electron.ipcRenderer.on('json-viewer-save', (a: any, fileName: string) => {
       fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
     })
+
+    if(window.localStorage) {
+      const value = localStorage.getItem('json_viewer')
+      let json: any = {}
+      if(value) {
+        try {
+          json = JSON.parse(value)
+          this.editor.setValue(JSON.stringify(json, null, 2))
+        } catch(e) {}
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      this.drag()
+    })
   }
 
   render(h: any) {
     return h(
       'div',
       {
-        staticClass: 'json_viewer'
+        staticClass: 'json_viewer json_viewer_cont'
       },
       [
         h(
@@ -100,8 +174,19 @@ export default class JsonViewer extends Vue {
                 },
                 on: {
                   init: (event: any) => { this.editorInit(event) },
-                  input: (event: any) => {
-                    this.$emit('input', event.target.value)
+                  input: (value: any) => {
+                    this.$emit('input', value)
+                  }
+                }
+              }
+            ),
+            h(
+              'div',
+              {
+                staticClass: 'json_viewer_separator',
+                on: {
+                  mousedown: (event: any) => {
+                    this.drag(event)
                   }
                 }
               }
