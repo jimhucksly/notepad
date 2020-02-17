@@ -66,16 +66,6 @@ export default class JsonViewer extends Vue {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
     const container = document.querySelector('.json_viewer_cont')
 
-    if(event === undefined) {
-      if(container && src && res) {
-        const srcW = src.clientWidth
-        const resW = res.clientWidth
-        const contW = container.clientWidth
-        console.log(contW)
-      }
-      return null
-    }
-
     if(event.which !== 1) {
       // если клик правой кнопкой мыши
       return null // то он не запускает перенос
@@ -108,11 +98,16 @@ export default class JsonViewer extends Vue {
             src.style.minWidth = 100 - p + '%'
           }
         }
+
+        src.classList.add('non-selectable')
+        res.classList.add('non-selectable')
       }
 
       document.onmouseup = (e: any) => {
         document.onmousemove = null
         document.onmouseup = null
+        src.classList.remove('non-selectable')
+        res.classList.remove('non-selectable')
       }
     }
   }
@@ -138,13 +133,11 @@ export default class JsonViewer extends Vue {
         try {
           json = JSON.parse(value)
           this.editor.setValue(JSON.stringify(json, null, 2))
-        } catch(e) {}
+        } catch(e) {
+          console.log(e)
+        }
       }
     }
-
-    window.addEventListener('resize', () => {
-      this.drag()
-    })
   }
 
   render(h: any) {

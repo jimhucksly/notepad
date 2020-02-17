@@ -21,6 +21,13 @@ html {
   z-index: 1;
 }
 
+.non-selectable {
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+}
+
 main {
   display: flex;
   flex-grow: 1;
