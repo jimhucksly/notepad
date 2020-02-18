@@ -264,6 +264,9 @@ ipcMain.on('json-viewer-src-set', (event, txt) => {
 ipcMain.on('json-viewer-save', (event, fileName) => {
   event.sender.send('json-viewer-save', fileName)
 })
+ipcMain.on('json-viewer-clear', (event) => {
+  event.sender.send('json-viewer-clear')
+})
 
 ipcMain.on('set-icon-notification', () => {
   mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')

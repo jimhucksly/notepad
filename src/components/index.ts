@@ -6,6 +6,7 @@ import Auth from '~/components/auth'
 import Notepad from '~/components/notepad'
 import Markdown from '~/components/markdown'
 import Preferences from '~/components/preferences'
+import Events from '~/components/events'
 import JsonViewer from '~/components/jsonViewer'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
@@ -21,6 +22,7 @@ import { userDataFileName } from '~/constants'
     Notepad,
     Markdown,
     Preferences,
+    Events,
     JsonViewer,
     Sidebar
   }
@@ -40,6 +42,9 @@ export default class Index extends Vue {
   }
   get isMarkdown() {
     return this.$store.getters.getIsMarkdownShow
+  }
+  get isEvents() {
+    return this.$store.getters.getIsEventsShow
   }
   get isJsonViewer() {
     return this.$store.getters.getIsJsonViewerShow

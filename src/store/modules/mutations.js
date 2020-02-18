@@ -4,7 +4,11 @@ import { upperFirst } from '~/helpers'
 const mutations = {
   setJson(state, json) {
     state.json = {}
-    state.json = Object.assign({}, json)
+    state.json = { ...json }
+  },
+  setEvents(state, data) {
+    state.events = {}
+    state.events = { ...data }
   },
   setFilter(state, object) {
     state.filter = {}

@@ -125,6 +125,16 @@ export default class JsonViewer extends Vue {
     this.$electron.ipcRenderer.on('json-viewer-save', (a: any, fileName: string) => {
       fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
     })
+    this.$electron.ipcRenderer.on('json-viewer-clear', (e: any) => {
+      this.editor.setValue('')
+      const res: HTMLElement | null = document.querySelector('.json_viewer_res')
+      if(res) {
+        res.innerHTML = ''
+      }
+      if(window.localStorage) {
+        localStorage.removeItem('json_viewer')
+      }
+    })
 
     if(window.localStorage) {
       const value = localStorage.getItem('json_viewer')

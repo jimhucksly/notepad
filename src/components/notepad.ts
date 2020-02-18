@@ -143,6 +143,8 @@ export default class Notepad extends Vue {
     notepad_cont.scrollTop = notepad_cont.scrollHeight
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
 
+    window.ondragstart = () => false
+
     notepad_cont.addEventListener('click', (e: any) => {
       const isLink = e.target.tagName === 'A'
       const hasHref = e.target.href && e.target.href.length

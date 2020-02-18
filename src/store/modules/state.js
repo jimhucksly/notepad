@@ -2,7 +2,8 @@ import { stateKeys } from './index'
 
 const state = {
   loading: true,
-  isProjectsShow: true,
+  isProjectsShow: false,
+  isEventsShow: true,
   userDataPath: '',
   downloadsTargetPath: '',
   md: '',

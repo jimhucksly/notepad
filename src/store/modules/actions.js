@@ -16,7 +16,7 @@ const actions = {
   auth(store, flag) {
     store.commit('setIsAuth', flag)
     ipcRenderer.send(flag ? 'authorized' : 'unauthorized')
-    store.dispatch('interval', null)
+    store.dispatch('timeout', null)
   },
   token(store, value) {
     store.commit('setToken', value)
@@ -43,7 +43,7 @@ const actions = {
   },
   isDevelopment(store, flag) {
     store.commit('setIsDevelopment', flag)
-    store.commit('setInterval', null)
+    store.commit('setTimeout', null)
   },
   json(store, data) {
     let json
@@ -59,7 +59,7 @@ const actions = {
         else ipcRenderer.send('hide-icon-notification')
       } catch (err) {
         console.error(err)
-        store.dispatch('interval', null)
+        store.dispatch('timeout', null)
         ipcRenderer.send('open-error-dialog', 'json parse is failed')
       }
     } else json = data
@@ -67,6 +67,17 @@ const actions = {
   },
   md(store, data) {
     store.commit('setMd', data)
+  },
+  eventsJson(store, data) {
+    let json
+    if(isJSON(data)) {
+      try {
+        json = JSON.parse(data)
+      } catch (e) {
+        console.log(e)
+      }
+    } else json = data
+    store.commit('setEvents', json)
   },
   mdTree(store, tree) {
     store.commit('setMdTree', tree)
@@ -82,12 +93,12 @@ const actions = {
   filter(store, object) {
     store.commit('setFilter', object)
   },
-  interval(store, int) {
+  timeout(store, int) {
     if(int) {
-      store.commit('setInterval', int)
+      store.commit('setTimeout', int)
     } else {
-      let interval = store.getters.getInterval
-      if(interval) clearInterval(interval)
+      let timeout = store.getters.getTimeout
+      if(timeout) clearTimeout(timeout)
     }
   },
   aboutPopupShow(store, flag) {
@@ -105,41 +116,46 @@ const actions = {
   markdown(store, flag) {
     store.commit('setIsMarkdownShow', flag)
   },
+  events(store, flag) {
+    store.commit('setIsEventsShow', flag)
+  },
   jsonViewer(store, flag) {
     store.commit('setIsJsonViewerShow', flag)
   },
   downloadsTargetPath(store, path) {
     store.commit('setDownloadsTargetPath', path)
   },
-  setInterval(store) {
-    let interval = store.getters.getInterval
-    if(interval) store.dispatch('interval', null)
+  setTimeout(store) {
+    let timeout = store.getters.getTimeout
+    if(timeout) store.dispatch('timeout', null)
+    clearTimeout(timeout)
     const isDevelopment = store.getters.getIsDevelopment
-    if(isDevelopment) {
-      store.dispatch('interval', null)
+    if(isDevelopment && 0) {
+      store.dispatch('timeout', null)
+      clearTimeout(timeout)
       return null
     }
-    interval = setInterval(() => {
+    timeout = setTimeout(() => {
       store.dispatch('action', {
         type: 'CHECK'
       })
         .then(resp => {
           store.dispatch('error', false)
+          store.dispatch('setTimeout')
           if(resp.status !== 204) {
             store.dispatch('json', resp.data.data)
             store.dispatch('md', resp.data.md)
+            store.dispatch('eventsJson', resp.data.events)
+          } else {
+            return null
           }
         })
         .catch(() => {
           store.dispatch('error', true)
-          // ipcRenderer.send('open-error-dialog', 'dispatch CHECK is failed')
-          // if(interval) store.dispatch('interval', null)
-          // ipcRenderer.on('dialog-error-callback', () => {
-          //   store.dispatch('setInterval')
-          // })
+          store.dispatch('setTimeout')
         })
     }, 5000)
-    store.dispatch('interval', interval)
+    store.dispatch('timeout', timeout)
   },
   async action(store, { type, data }) {
     switch(type) {
@@ -158,13 +174,13 @@ const actions = {
               store.dispatch('loading', false)
             }, 2000)
             store.dispatch('json', resp.data.data)
-            store.dispatch('setInterval')
+            store.dispatch('setTimeout')
           })
           .catch(() => {
             store.dispatch('loading', false)
             store.dispatch('auth', false)
             store.dispatch('token', null)
-            store.dispatch('interval', null)
+            store.dispatch('timeout', null)
           })
         return null
       case 'GET_MD':
@@ -233,6 +249,27 @@ const actions = {
           return Promise.reject(saveResp)
         }
         return saveResp
+      case 'EVENTS':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        const eventsResp = await $http.get(type, jsonHeaders)
+        if(eventsResp.data) {
+          try {
+            store.dispatch('eventsJson', JSON.parse(eventsResp.data.data))
+          } catch (e) {
+            console.log(e)
+          }
+        }
+        return eventsResp
+      case 'EVENT':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        const eventResp = await $http.post(type, {
+          body: data
+        }, jsonHeaders)
+        if(eventResp instanceof Error) {
+          ipcRenderer.send('open-error-dialog', 'save markdown failed')
+          return Promise.reject(eventResp)
+        }
+        return eventResp
     }
   }
 }

@@ -11,6 +11,7 @@ const stateKeys = [
   'isDevelopment',
   'json',
   'md',
+  'events',
   'mdTree',
   'filter',
   'unread',
@@ -19,9 +20,10 @@ const stateKeys = [
   'isPreferencesShow',
   'isProjectsShow',
   'isMarkdownShow',
+  'isEventsShow',
   'isJsonViewerShow',
   'downloadsTargetPath',
-  'interval',
+  'timeout',
   'notification',
   'error'
 ]
