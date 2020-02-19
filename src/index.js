@@ -322,3 +322,7 @@ ipcMain.on('open-dialog-unlock-confirm', (event) => {
     }
   })
 })
+
+ipcMain.on('codemirror-link-click', (event, text) => {
+  event.sender.send('codemirror-link-click', text)
+})

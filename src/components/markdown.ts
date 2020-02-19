@@ -80,7 +80,7 @@ const config: any = {
     }
   ],
   autosave: {
-    enabled: true,
+    enabled: false,
     uniqueId: 'MyUniqueID',
     delay: 1000
   },
@@ -112,6 +112,7 @@ const config: any = {
 export default class Markdown extends Vue {
   editor: any = null
   isRendered: boolean = false
+  links: string[] = []
 
   get initialValue() {
     return this.$store.getters.getMd
@@ -189,16 +190,49 @@ export default class Markdown extends Vue {
         }
       }
       this.buildTree()
-      setTimeout(() => {
-        this.isRendered = true
-      }, 300)
-      // autosaveTimeout = null
-      // this.editor.codemirror.on('change', () => {
-      //   clearTimeout(autosaveTimeout)
-      //   autosaveTimeout = setTimeout(() => {
-      //     this.$store.dispatch('md', this.editor.value())
-      //   }, 1000)
-      // })
+      this.isRendered = true
+      const cm: any = this.editor.codemirror
+      const doc: any = cm.getDoc()
+      const count = doc.lineCount()
+      const linkedDoc = doc.linkedDoc({
+        from: 0,
+        to: count
+      })
+
+      const result: any = []
+
+      const linked = (o: any) => {
+        if(o.children) {
+          const arr = o.children
+          arr.forEach((item: any) => {
+            if(item.lines) {
+              item.lines.forEach((line: any) => {
+                result.push(line.text)
+              })
+            }
+            if(item.children) {
+              linked(item)
+            }
+          })
+        }
+      }
+      linked(linkedDoc)
+      this.links = result
+
+      this.$electron.ipcRenderer.on('codemirror-link-click', (event: any, text: string) => {
+        let scrolling: boolean = false
+        this.links.forEach((link: string, index: number): void | null => {
+          if(scrolling) return null
+          if(link.indexOf(text) > -1) {
+            scrolling = true
+            this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
+            if(index > 0) {
+              const scrollInfo = this.editor.codemirror.getScrollInfo()
+              this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
+            }
+          }
+        })
+      })
     }
   }
 
