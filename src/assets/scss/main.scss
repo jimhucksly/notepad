@@ -793,6 +793,10 @@ main {
           border: none;
           background: none;
           padding: 0;
+          opacity: 0.4;
+          &:hover {
+            opacity: 0.9;
+          }
           svg {
             display: block;
             width: 100%;

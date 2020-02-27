@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { uniqueid } from '~/helpers'
 
 Vue.component('CloseBtn', {
@@ -30,6 +30,13 @@ export default class Popup extends Vue {
     return this.$electron.remote.getCurrentWindow().getTitle()
   }
 
+  @Watch('showPopup')
+  onShowPopupChanged(v: boolean) {
+    if(!v) {
+      this.clear()
+    }
+  }
+
   protected linkUrl: string = ''
   protected linkName: string = ''
   protected linkId: string = ''
@@ -45,10 +52,14 @@ export default class Popup extends Vue {
         }
       })
       this.$popup.close('linkAdd')
-      this.linkUrl = ''
-      this.linkName = ''
-      this.linkId = ''
+      this.clear()
     }
+  }
+
+  protected clear() {
+    this.linkUrl = ''
+    this.linkName = ''
+    this.linkId = ''
   }
 
   mounted() {

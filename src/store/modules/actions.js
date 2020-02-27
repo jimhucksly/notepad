@@ -147,7 +147,7 @@ const actions = {
     if(timeout) store.dispatch('timeout', null)
     clearTimeout(timeout)
     const isDevelopment = store.getters.getIsDevelopment
-    if(isDevelopment && 0) {
+    if(isDevelopment) {
       store.dispatch('timeout', null)
       clearTimeout(timeout)
       return null
