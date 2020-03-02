@@ -32,7 +32,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 563,
-    minWidth: 1000,
+    minWidth: 1100,
     minHeight: 563,
     useContentSize: true,
     frame: false,
@@ -42,8 +42,8 @@ function createWindow() {
       nodeIntegration: true
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
-    headless: true, // undiscovered param
-    args: ['--no-sandbox'] // undiscovered param
+    headless: true,
+    args: ['--no-sandbox']
   })
 
   mainWindow.loadURL(winURL)

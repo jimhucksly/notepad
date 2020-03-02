@@ -24,6 +24,12 @@ export default class Titlebar extends Vue {
     this.$store.dispatch('action', {
       type: 'GET_MD'
     })
+    this.$store.dispatch('action', {
+      type: 'EVENTS'
+    })
+    this.$store.dispatch('action', {
+      type: 'LINKS'
+    })
   }
 
   mounted() {
