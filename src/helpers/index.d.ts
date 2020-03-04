@@ -16,6 +16,7 @@ declare function downloadFile(
 declare function uploadingFile(received: number, total: number)
 declare function upperFirst(s: string): string
 declare function lowerFirst(s: string): string
+declare function indexOf(el: any): number
 
 export {
   translit,
@@ -27,5 +28,6 @@ export {
   downloadFile,
   uploadingFile,
   upperFirst,
-  lowerFirst
+  lowerFirst,
+  indexOf
 }

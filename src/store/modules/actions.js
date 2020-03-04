@@ -127,6 +127,9 @@ const actions = {
   projects(store, flag) {
     store.commit('setIsProjectsShow', flag)
   },
+  todo(store, flag) {
+    store.commit('setIsTodoShow', flag)
+  },
   markdown(store, flag) {
     store.commit('setIsMarkdownShow', flag)
   },

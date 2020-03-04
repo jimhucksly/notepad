@@ -25,19 +25,24 @@ export default class SidebarSwitcher extends Vue {
       id: 2
     },
     {
-      name: 'events',
-      nameAlt: 'Events',
+      name: 'todo',
+      nameAlt: 'Todo',
       id: 3
     },
     {
-      name: 'jsonViewer',
-      nameAlt: 'Json Viewer',
+      name: 'events',
+      nameAlt: 'Events',
       id: 4
     },
     {
       name: 'links',
       nameAlt: 'Links',
       id: 5
+    },
+    {
+      name: 'jsonViewer',
+      nameAlt: 'Json Viewer',
+      id: 6
     }
   ]
 
@@ -45,6 +50,9 @@ export default class SidebarSwitcher extends Vue {
 
   get isProjects() {
     return this.$store.getters.getIsProjectsShow
+  }
+  get isTodo() {
+    return this.$store.getters.getIsTodoShow
   }
   get isMarkdown() {
     return this.$store.getters.getIsMarkdownShow
@@ -61,9 +69,10 @@ export default class SidebarSwitcher extends Vue {
   get current() {
     if(this.isProjects) return 1
     if(this.isMarkdown) return 2
-    if(this.isEvents) return 3
-    if(this.isJsonViewer) return 4
+    if(this.isTodo) return 3
+    if(this.isEvents) return 4
     if(this.isLinks) return 5
+    if(this.isJsonViewer) return 6
     return 1
   }
   get legendInternal() {

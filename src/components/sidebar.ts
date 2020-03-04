@@ -4,6 +4,7 @@ import Projects from '~/components/projects'
 import SidebarTree from '~/components/sidebarTree'
 import JsonViewerBtns from '~/components/JsonViewerBtns'
 import LinksBtns from '~/components/LinksBtns'
+import TodoBtns from '~/components/TodoBtns'
 
 @Component({
   name: 'Sidebar',
@@ -12,7 +13,8 @@ import LinksBtns from '~/components/LinksBtns'
     Projects,
     SidebarTree,
     JsonViewerBtns,
-    LinksBtns
+    LinksBtns,
+    TodoBtns
   }
 })
 export default class Sidebar extends Vue {
@@ -32,6 +34,9 @@ export default class Sidebar extends Vue {
   }
   get isLinks() {
     return this.$store.getters.getIsLinksShow
+  }
+  get isTodo() {
+    return this.$store.getters.getIsTodoShow
   }
   get mdTree() {
     return this.$store.getters.getMdTree

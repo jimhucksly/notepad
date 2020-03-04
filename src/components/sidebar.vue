@@ -27,6 +27,11 @@
       v-show="!isPreferences && isLinks"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
+    <todo-btns
+      class="todo"
+      v-show="!isPreferences && isTodo"
+      :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
+    />
   </aside>
 </template>
 <script src="./sidebar.ts" lang="ts"></script>

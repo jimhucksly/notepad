@@ -327,6 +327,9 @@ ipcMain.on('codemirror-link-click', (event, text) => {
   event.sender.send('codemirror-link-click', text)
 })
 
+ipcMain.on('todo-add', (event, text) => {
+  event.sender.send('todo-add')
+})
 
 ipcMain.on('data-transfer', (event, data) => {
   event.sender.send('data-transfer', data)

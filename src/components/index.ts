@@ -4,6 +4,7 @@ import Loading from '~/components/loading'
 import Error from '~/components/error'
 import Auth from '~/components/auth'
 import Notepad from '~/components/notepad'
+import Todo from '~/components/todo'
 import Markdown from '~/components/markdown'
 import Preferences from '~/components/preferences'
 import Events from '~/components/events'
@@ -21,6 +22,7 @@ import { userDataFileName } from '~/constants'
     Auth,
     Error,
     Notepad,
+    Todo,
     Markdown,
     Preferences,
     Events,
@@ -41,6 +43,9 @@ export default class Index extends Vue {
   }
   get isProjects() {
     return this.$store.getters.getIsProjectsShow
+  }
+  get isTodo() {
+    return this.$store.getters.getIsTodoShow
   }
   get isMarkdown() {
     return this.$store.getters.getIsMarkdownShow

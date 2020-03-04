@@ -53,7 +53,7 @@ export const now = (stamp) => {
 
 export const isJSON = (str) => {
   try {
-    var obj = JSON.parse(str)
+    let obj = JSON.parse(str)
     if(obj && typeof obj === 'object' && obj !== null) {
       return true
     }
@@ -300,4 +300,30 @@ export const lowerFirst = (s) => {
   s = s.toString()
   if(!s.length) return ''
   return s.charAt(0).toLowerCase() + s.slice((s.length - 1) * -1)
+}
+
+export const indexOf = (DOMElement) => {
+  let result = -1
+  if(!DOMElement) return -1
+  if(DOMElement.classList) {
+    DOMElement.classList.add('index-of-element-search-proc')
+  } else return -1
+  const parent = DOMElement.parentNode
+  if(!parent) return -1
+  if(!parent.childNodes) return -1
+  if(parent.childNodes.length === 1) return 0
+  const children = []
+  parent.childNodes.forEach(el => {
+    if(el.tagName) children.push(el)
+  })
+  if(!children.length) return -1
+  children.forEach((elem, i) => {
+    if(elem.classList) {
+      if(elem.classList.contains('index-of-element-search-proc')) {
+        elem.classList.remove('index-of-element-search-proc')
+        result = i
+      }
+    }
+  })
+  return result
 }

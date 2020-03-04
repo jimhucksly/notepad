@@ -14,7 +14,7 @@ export default class Projects extends Vue {
     return this.$store.getters.getFilter
   }
 
-  protected triggerEdit(e: any, stamp: string) {
+  protected toggleEdit(e: any, stamp: string) {
     const items: any = this.$refs.projects_item
     const item = items.find((el: any) => el.dataset.stamp === stamp)
     if(item.classList.contains('edit')) {
@@ -42,7 +42,7 @@ export default class Projects extends Vue {
       }
     }
   }
-  protected triggerLock(e: any, stamp: string) {
+  protected toggleLock(e: any, stamp: string) {
     const items: any = this.$refs.projects_item
     const item = items.find((el: any) => el.dataset.stamp === stamp)
     const isLocked = item.classList.contains('lock')
@@ -74,7 +74,7 @@ export default class Projects extends Vue {
       updateJson()
     }
   }
-  protected triggerFilter(e: any, stamp: string) {
+  protected toggleFilter(e: any, stamp: string) {
     const items: any = this.$refs.projects_item
     const item = items.find((el: any) => el.dataset.stamp === stamp)
     if(e.target.tagName === 'DIV' || e.target.tagName === 'LABEL') {
