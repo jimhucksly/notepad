@@ -9,7 +9,8 @@ class Http {
   public async get(action: string, headers: object) {
     const query = `action=${action}`
     const resp = await axios.get(API_URL + '?' + query, headers)
-    if(resp instanceof Error) return Promise.reject(resp)
+    // if(resp instanceof Error) return Promise.reject(resp)
+    if(resp instanceof Error) return null
     return resp
   }
 
@@ -38,7 +39,7 @@ class Http {
         } else {
           interval && clearInterval(interval)
         }
-        return Promise.reject(e)
+        return null
       }
     }
     store.dispatch('error', false)

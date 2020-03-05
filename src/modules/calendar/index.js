@@ -318,13 +318,13 @@ function install(Vue) {
               h(
                 'div',
                 {
-                  staticClass: 'flex-end shrink-0'
+                  staticClass: 'flex-between shrink-0'
                 },
                 [
                   h(
                     'button',
                     {
-                      staticClass: 'btn btn-default m-r-15',
+                      staticClass: 'btn btn-danger m-r-15',
                       on: {
                         click: (e) => {
                           e.preventDefault()

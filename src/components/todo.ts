@@ -17,28 +17,13 @@ const sortByOrder = (a: ITodo, b: ITodo) => {
   name: 'Todo'
 })
 export default class Todo extends Vue {
-  protected json = {
-    '20200304115151': {
-      text: 'Сделать все красиво',
-      order: 1
-    },
-    '20200304122626': {
-      text: 'AAAAAAAAAAA',
-      order: 2
-    },
-    '20200304123333': {
-      text: 'BBBBBBBBBBBBB',
-      order: 3
-    },
-    '20200304125253': {
-      text: 'CCCCCCCCCCCCCC',
-      order: 4
-    }
-  }
-
   protected items: ITodo[] = []
   protected isPopupShow: boolean = false
   protected itemSelected: ITodo | null = null
+
+  get json() {
+    return this.$store.getters.getTodo
+  }
 
   get keys() {
     return this.items.map((item: ITodo) => item.id)
@@ -52,17 +37,24 @@ export default class Todo extends Vue {
 
     const container: HTMLElement | null = document.querySelector('.todo_cont')
     const elemsClassName = 'todo_item'
-    if(!container || container.childElementCount < 3) return null
+    if(!container || container.childElementCount === 1) return null
     const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
     if(!elem) return null
+
+    document.onmouseup = () => {
+      elem.style.transform = 'scale(1)'
+      this.edit(id)
+      setTimeout(() => {
+        elem.removeAttribute('style')
+      }, 100)
+    }
+
+    elem.style.transition = 'all 0.1s'
+    elem.style.transform = 'scale(0.95)'
 
     const startPos = {
       x: event.clientX,
       y: event.clientY
-    }
-
-    document.onmouseup = () => {
-      this.edit(id)
     }
 
     document.onmousemove = (ev: MouseEvent) => {
@@ -99,6 +91,7 @@ export default class Todo extends Vue {
             if(!isAvatar && !isSelf && el.classList.contains(elemsClassName)) el.classList.add('dropable')
           }
         })
+
         const dragItem: HTMLElement = elem
 
         const finishDrag = () => {
@@ -172,16 +165,25 @@ export default class Todo extends Vue {
     elems.forEach((el: any, index: number) => {
       const id = el.dataset.id
       result[id] = index + 1
-      this.items[index].order = index + 1
+      const item = this.items.find((o: ITodo) => o.id === el.dataset.id)
+      item && (item.order = index + 1)
     })
     this.items = [ ...this.items ]
-    console.log(result)
+    this.$store.dispatch('action', {
+      type: 'TODO_SET_ORDER',
+      data: result
+    })
   }
 
   protected edit(id: string) {
     document.onmousemove = null
     document.onmouseup = null
     const o = this.items.find((item: ITodo) => item.id === id)
+    // const elem = document.querySelector(`[data-id="${id}"]`)
+    // elem && elem.classList.add('editable')
+    // setTimeout(() => {
+    //   elem && elem.classList.remove('editable')
+    // }, 100)
     this.itemSelected = o ? cloneDeep(o) : null
     if(this.itemSelected) {
       this.isPopupShow = true
@@ -189,7 +191,17 @@ export default class Todo extends Vue {
   }
 
   protected save() {
-    console.log(this.itemSelected)
+    if(this.itemSelected) {
+      const id = this.itemSelected.id
+      const o: ITodo | null = this.items.find((item: ITodo) => item.id === id) || null
+      o && (o.text = this.itemSelected.text)
+      this.items = [ ...this.items ]
+      this.cancel()
+      this.$store.dispatch('action', {
+        type: 'TODO',
+        data: o
+      })
+    }
   }
 
   protected cancel() {
@@ -197,7 +209,26 @@ export default class Todo extends Vue {
     this.itemSelected = null
   }
 
-  mounted() {
+  protected async remove() {
+    if(this.itemSelected) {
+      const id = this.itemSelected.id
+      this.items = this.items.filter((item: ITodo) => item.id !== id)
+      this.cancel()
+      await this.$store.dispatch('action', {
+        type: 'TODO',
+        data: {
+          remove: id
+        }
+      })
+      this.setOrder()
+    }
+  }
+
+  async mounted() {
+    await this.$store.dispatch('action', {
+      type: 'GET_TODO'
+    })
+
     this.items = Object.keys(this.json).map((key: string): ITodo => {
       const o: ITodo = {
         id: key,
@@ -214,11 +245,16 @@ export default class Todo extends Vue {
       while(this.keys.includes(_stamp)) {
         _stamp += 1
       }
-      this.items.push({
+      const o = {
         id: _stamp,
         date,
         text: '',
-        order: this.items.length
+        order: this.items.length + 1
+      }
+      this.items.push(o)
+      this.$store.dispatch('action', {
+        type: 'TODO',
+        data: o
       })
     })
   }

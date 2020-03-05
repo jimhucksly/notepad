@@ -57,7 +57,7 @@ const actions = {
         const haveUnread = Object.keys(json).find(key => json[key].unread) !== undefined
         if(haveUnread) ipcRenderer.send('set-icon-notification')
         else ipcRenderer.send('hide-icon-notification')
-      } catch (err) {
+      } catch(err) {
         console.error(err)
         store.dispatch('timeout', null)
         ipcRenderer.send('open-error-dialog', 'json parse is failed')
@@ -73,7 +73,7 @@ const actions = {
     if(isJSON(data)) {
       try {
         json = JSON.parse(data)
-      } catch (e) {
+      } catch(e) {
         console.log(e)
       }
     } else json = data
@@ -84,11 +84,22 @@ const actions = {
     if(isJSON(data)) {
       try {
         json = JSON.parse(data)
-      } catch (e) {
+      } catch(e) {
         console.log(e)
       }
     } else json = data
     store.commit('setLinks', json)
+  },
+  todoJson(store, data) {
+    let json
+    if(isJSON(data)) {
+      try {
+        json = JSON.parse(data)
+      } catch(e) {
+        console.log(e)
+      }
+    } else json = data
+    store.commit('setTodo', json)
   },
   mdTree(store, tree) {
     store.commit('setMdTree', tree)
@@ -167,6 +178,7 @@ const actions = {
             store.dispatch('md', resp.data.md)
             store.dispatch('eventsJson', resp.data.events)
             store.dispatch('linksJson', resp.data.links)
+            store.dispatch('todoJson', resp.data.todo)
           } else {
             return null
           }
@@ -179,6 +191,7 @@ const actions = {
     store.dispatch('timeout', timeout)
   },
   async action(store, { type, data }) {
+    let resp
     switch(type) {
       case 'AUTH':
         const authResp = await $http.post(type, {
@@ -189,129 +202,210 @@ const actions = {
         return authResp
       case 'GET_JSON':
         jsonHeaders.headers.Authorization = store.getters['getToken']
-        $http.get(type, jsonHeaders)
-          .then(resp => {
-            setTimeout(() => {
-              store.dispatch('loading', false)
-            }, 2000)
-            store.dispatch('json', resp.data.data)
-            store.dispatch('setTimeout')
-          })
-          .catch(() => {
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
             store.dispatch('loading', false)
             store.dispatch('auth', false)
             store.dispatch('token', null)
             store.dispatch('timeout', null)
-          })
-        return null
+            throw new Error('error')
+          }
+          setTimeout(() => {
+            store.dispatch('loading', false)
+          }, 2000)
+          store.dispatch('json', resp.data.data)
+          store.dispatch('setTimeout')
+          $http.get(type, jsonHeaders)
+          return resp.data.data
+        } catch(e) {
+          console.log(e)
+          return e
+        }
       case 'GET_MD':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        $http.get(type, jsonHeaders)
-          .then(resp => {
-            store.dispatch('md', resp.data.data)
-          })
-          .catch(() => {})
-        return null
-      case 'CREATE':
-        jsonHeaders.headers.Authorization = store.getters.getToken
-        const createResp = await $http.post(type, {
-          json: data
-        }, jsonHeaders)
-        if(createResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'send message is failed')
-          return Promise.reject(createResp)
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          store.dispatch('md', resp.data.data)
+          return resp.data.data
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return createResp
+      case 'GET_TODO':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          store.dispatch('todoJson', resp.data.data)
+          return resp.data.data
+        } catch(e) {
+          console.log(e)
+          return e
+        }
+      case 'CREATE':
       case 'UPDATE':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const updateResp = await $http.post(type, {
-          json: data
-        }, jsonHeaders)
-        if(updateResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'send message is failed')
-          return Promise.reject(updateResp)
+        try {
+          resp = await $http.post(type, {
+            json: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'send message is failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return updateResp
       case 'DELETE':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const deleteResp = await $http.post(type, {
-          key: data
-        }, jsonHeaders)
-        if(deleteResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'delete message is failed')
-          return Promise.reject(deleteResp)
+        try {
+          resp = await $http.post(type, {
+            key: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'delete message is failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return deleteResp
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const checkResp = await $http.get(type, jsonHeaders)
-        if(checkResp instanceof Error) {
-          return Promise.reject(checkResp)
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return checkResp
       case 'FILE':
         jsonHeaders.headers.Authorization = store.getters.getToken
         jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
         store.dispatch('uploadingPopupShow', true)
-        const uploadResp = await $http.post(type, data.file, jsonHeaders)
-        if(uploadResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'file upload is failed')
-          return Promise.reject(uploadResp)
+        try {
+          resp = await $http.post(type, data.file, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          store.dispatch('uploadingPopupShow', false)
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        store.dispatch('uploadingPopupShow', false)
-        return uploadResp
       case 'SAVE':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const saveResp = await $http.post(type, {
-          body: data
-        }, jsonHeaders)
-        if(saveResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'save markdown failed')
-          return Promise.reject(saveResp)
+        try {
+          resp = await $http.post(type, {
+            body: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'save markdown failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return saveResp
       case 'EVENTS':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const eventsResp = await $http.get(type, jsonHeaders)
-        if(eventsResp.data) {
-          try {
-            store.dispatch('eventsJson', JSON.parse(eventsResp.data.data))
-          } catch (e) {
-            console.log(e)
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
           }
+          store.dispatch('eventsJson', resp.data.data)
+          return resp.data.data
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return eventsResp
       case 'EVENT':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const eventResp = await $http.post(type, {
-          body: data
-        }, jsonHeaders)
-        if(eventResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'save event failed')
-          return Promise.reject(eventResp)
+        try {
+          resp = await $http.post(type, {
+            body: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'save event failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return eventResp
       case 'LINKS':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const linksResp = await $http.get(type, jsonHeaders)
-        if(linksResp.data) {
-          try {
-            store.dispatch('linksJson', JSON.parse(linksResp.data.data))
-          } catch (e) {
-            console.log(e)
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
           }
+          store.dispatch('linksJson', resp.data.data)
+          return resp.data.data
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return linksResp
       case 'LINK':
         jsonHeaders.headers.Authorization = store.getters.getToken
-        const linkResp = await $http.post(type, {
-          body: data
-        }, jsonHeaders)
-        if(linkResp instanceof Error) {
-          ipcRenderer.send('open-error-dialog', 'save link failed')
-          return Promise.reject(linkResp)
+        try {
+          resp = await $http.post(type, {
+            body: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'save link failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
         }
-        return linkResp
+      case 'TODO':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.post(type, {
+            body: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'todo item add failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
+        }
+      case 'TODO_SET_ORDER':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.post(type, {
+            body: data
+          }, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
+        }
     }
   }
 }

@@ -14,6 +14,7 @@ const stateKeys = [
   'md',
   'events',
   'links',
+  'todo',
   'mdTree',
   'filter',
   'unread',

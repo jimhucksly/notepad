@@ -57,7 +57,7 @@ export const isJSON = (str) => {
     if(obj && typeof obj === 'object' && obj !== null) {
       return true
     }
-  } catch (err) {}
+  } catch(err) {}
   return false
 }
 

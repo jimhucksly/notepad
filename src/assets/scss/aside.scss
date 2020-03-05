@@ -91,6 +91,9 @@ aside {
           background-color: $editor_dark;
           padding: 12px 0 12px 15px;
           &:hover {
+            background-color: lighten($magenta_light, 10%);
+          }
+          &.active {
             background-color: $magenta_light;
           }
         }

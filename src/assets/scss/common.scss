@@ -96,7 +96,7 @@ a[href] {
 @each $elem in (
   '.notepad_cont', '.editor-preview',
   '.CodeMirror-scroll', '.events__calendar',
-  'textarea', '.links_area'
+  'textarea', '.links_area', '.todo_cont'
 ) {
   #{$elem}::-webkit-scrollbar-button {
     background-image: url('') !important;

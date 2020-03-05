@@ -11,7 +11,9 @@
         {{ item.date }}
       </div>
       <div class="todo_item-content">
-        {{ item.text }}
+        <p>
+          {{ item.text }}
+        </p>
       </div>
     </div>
     <template v-if="isPopupShow">
@@ -22,8 +24,11 @@
           <textarea v-model="itemSelected.text" placeholder="New record"></textarea>
         </div>
         <div class="todo_popup-footer">
-          <button class="btn btn-primary" @click="save">Save</button>
-          <button class="btn btn-default m-l-15" @click="cancel">Cancel</button>
+          <button class="btn btn-danger" @click="remove">Remove</button>
+          <div>
+            <button class="btn btn-primary" @click="save">Save</button>
+            <button class="btn btn-default m-l-15" @click="cancel">Cancel</button>
+          </div>
         </div>
       </div>
     </template>
