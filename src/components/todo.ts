@@ -179,11 +179,6 @@ export default class Todo extends Vue {
     document.onmousemove = null
     document.onmouseup = null
     const o = this.items.find((item: ITodo) => item.id === id)
-    // const elem = document.querySelector(`[data-id="${id}"]`)
-    // elem && elem.classList.add('editable')
-    // setTimeout(() => {
-    //   elem && elem.classList.remove('editable')
-    // }, 100)
     this.itemSelected = o ? cloneDeep(o) : null
     if(this.itemSelected) {
       this.isPopupShow = true
