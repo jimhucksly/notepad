@@ -11,7 +11,7 @@ interface IMenu {
 })
 export default class SidebarSwitcher extends Vue {
   @Prop({ type: String, default: '' })
-  legend!: string
+  readonly legend!: string
 
   protected menu: IMenu[] = [
     {
