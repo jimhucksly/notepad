@@ -37,9 +37,9 @@ class Storage  {
           try {
             targetJson = JSON.parse(targetJson)
           } catch (err) {
-            return reject(err)
+            targetJson = {}
           }
-          let data = Object.assign({}, targetJson, json)
+          const data = { ...targetJson, ...json }
           this.set(_path, fileName, data)
         })
         .catch(() => {
@@ -52,13 +52,9 @@ class Storage  {
     return new Promise((resolve, reject) => {
       let data
       try {
-        if(json) {
-          data = JSON.stringify(json)
-        } else {
-          data = null
-        }
+        data = json ? JSON.stringify(json) : '{}'
       } catch (err) {
-        return reject(err)
+        data = '{}'
       }
       const fullPath = path.resolve(_path, fileName)
       try {
@@ -81,7 +77,7 @@ class Storage  {
           try {
             json = JSON.parse(data)
           } catch (err) {
-            return reject(err)
+            json = {}
           }
           if(key && json[key] !== undefined) resolve(json[key])
           else resolve(json)

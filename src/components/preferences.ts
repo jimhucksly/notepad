@@ -61,8 +61,9 @@ export default class Preferences extends Vue {
       defaultPath: this.downloadsTargetPath
     })
     this.$electron.ipcRenderer.on('open-dialog-paths-selected', (event: any, response: any) => {
+      const path = response && response.filePaths && response.filePaths[0] ? response.filePaths[0] : null
       const currentPath = this.preferences.downloadsTargetPath || this.userDataPath
-      this.preferences.downloadsTargetPath = response && response[0] ? response[0] : currentPath
+      this.preferences.downloadsTargetPath = path ? path : currentPath
     })
   }
 

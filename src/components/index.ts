@@ -89,14 +89,14 @@ export default class Index extends Vue {
       })
   }
 
-  protected getJson() {
-    this.$store.dispatch('action', {
+  protected async getJson() {
+    const response = await this.$store.dispatch('action', {
       type: 'GET_JSON'
     })
   }
 
-  protected getMd() {
-    this.$store.dispatch('action', {
+  protected async getMd() {
+    const response = await this.$store.dispatch('action', {
       type: 'GET_MD'
     })
   }
@@ -109,6 +109,9 @@ export default class Index extends Vue {
       const json: any = await storage.get(appPath, 'UserPreferences')
       if(json.downloadsTargetPath !== undefined) {
         this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
+      } else {
+        json.downloadsTargetPath = appPath
+        this.$store.dispatch('downloadsTargetPath', appPath)
       }
     } catch(e) {
       console.error(e)

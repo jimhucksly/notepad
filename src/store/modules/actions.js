@@ -20,7 +20,7 @@ const actions = {
   },
   token(store, value) {
     store.commit('setToken', value)
-    const userDataPath = store.getters['getUserDataPath']
+    const userDataPath = store.getters.getUserDataPath
     storage.isPathExists(userDataPath)
       .then(() => {
         storage.set(userDataPath, userDataFileName, { token: value })
@@ -201,14 +201,10 @@ const actions = {
         if(authResp instanceof Error) return Promise.reject(authResp)
         return authResp
       case 'GET_JSON':
-        jsonHeaders.headers.Authorization = store.getters['getToken']
+        jsonHeaders.headers.Authorization = store.getters.getToken
         try {
           resp = await $http.get(type, jsonHeaders)
           if(!resp) {
-            store.dispatch('loading', false)
-            store.dispatch('auth', false)
-            store.dispatch('token', null)
-            store.dispatch('timeout', null)
             throw new Error('error')
           }
           setTimeout(() => {
@@ -220,6 +216,10 @@ const actions = {
           return resp.data.data
         } catch(e) {
           console.log(e)
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
           return e
         }
       case 'GET_MD':
@@ -233,6 +233,10 @@ const actions = {
           return resp.data.data
         } catch(e) {
           console.log(e)
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
           return e
         }
       case 'GET_TODO':
@@ -246,6 +250,10 @@ const actions = {
           return resp.data.data
         } catch(e) {
           console.log(e)
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
           return e
         }
       case 'CREATE':
