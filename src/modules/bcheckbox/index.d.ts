@@ -1,0 +1,2 @@
+import './bcheckbox';
+export = BCheckbox;

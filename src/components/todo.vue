@@ -21,7 +21,7 @@
       <div class="todo_popup">
         <div class="todo_popup-header">{{ itemSelected.date }}</div>
         <div class="todo_popup-content">
-          <textarea v-model="itemSelected.text" placeholder="New record"></textarea>
+          <textarea v-model="itemSelected.text" placeholder="New record" ref="textarea"></textarea>
         </div>
         <div class="todo_popup-footer">
           <button class="btn btn-danger" @click="remove">Remove</button>

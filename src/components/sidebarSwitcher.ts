@@ -89,8 +89,30 @@ export default class SidebarSwitcher extends Vue {
   protected toggle(): any {
     if(!!this.legend) return null
     this.isExpand = !this.isExpand
-    if(this.isExpand) this.$emit('onExpand')
-    else this.$emit('onHide')
+    if(this.isExpand) {
+      this.$emit('onExpand')
+      const switcher: any = this.$refs.switcher
+      document.onclick = (e: any) => {
+        if(!e.target.closest('.switcher')) {
+          this.isExpand = !this.isExpand
+          this.$emit('onHide')
+          document.onclick = null
+        }
+      }
+      document.onkeydown = (e) => {
+        if(e.keyCode === 27 || e.code === 'Escape') {
+          this.isExpand = !this.isExpand
+          this.$emit('onHide')
+          document.onclick = null
+          document.onkeydown = null
+        }
+      }
+    }
+    else {
+      document.onclick = null
+      document.onkeydown = null
+      this.$emit('onHide')
+    }
   }
 
   protected select(id: number) {

@@ -3,7 +3,6 @@
 const chalk = require('chalk')
 const electron = require('electron')
 const path = require('path')
-const { say } = require('cfonts')
 const { spawn } = require('child_process')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
@@ -30,6 +29,10 @@ function logStats (proc, data) {
   log += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
   log += '\n\n'
 
+  let p = '\n'
+  p += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
+  p += '\n'
+
   if (typeof data === 'object') {
     data.toString({
       colors: true,
@@ -43,7 +46,49 @@ function logStats (proc, data) {
 
   log += '\n' + chalk.yellow.bold(`${new Array(28 + 1).join('-')}`) + '\n'
 
-  if(process.env.CHUNKS_LOG === 'true') console.log(log)
+  if(
+    process.env.CHUNKS_LOG === 'true' ||
+    process.env.NODE_ENV === 'production'
+  ) {
+    console.log(log)
+  } else console.log(p)
+}
+
+function startMain () {
+  return new Promise((resolve, reject) => {
+    mainConfig.entry.main = [path.join(__dirname, '../src/index.dev.js')].concat(mainConfig.entry.main)
+    mainConfig.mode = 'development'
+    const compiler = webpack(mainConfig)
+
+    compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
+      console.log(chalk.white.bold('compiling...'))
+      // logStats('Main', chalk.white.bold('compiling...'))
+      hotMiddleware.publish({ action: 'compiling' })
+      done()
+    })
+
+    compiler.watch({}, (err, stats) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+
+      logStats('Main', stats)
+
+      if (electronProcess && electronProcess.kill) {
+        manualRestart = true
+        process.kill(electronProcess.pid)
+        electronProcess = null
+        startElectron()
+
+        setTimeout(() => {
+          manualRestart = false
+        }, 5000)
+      }
+
+      resolve()
+    })
+  })
 }
 
 function startRenderer () {
@@ -64,7 +109,8 @@ function startRenderer () {
     })
 
     compiler.hooks.done.tap('done', stats => {
-      logStats('Renderer', stats)
+      // logStats('Renderer', stats)
+      console.log(chalk.yellow.bold('app is updated') + '\n')
     })
 
     // function startServer() {
@@ -96,42 +142,6 @@ function startRenderer () {
     )
 
     server.listen(9080)
-  })
-}
-
-function startMain () {
-  return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [path.join(__dirname, '../src/index.dev.js')].concat(mainConfig.entry.main)
-    mainConfig.mode = 'development'
-    const compiler = webpack(mainConfig)
-
-    compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      logStats('Main', chalk.white.bold('compiling...'))
-      hotMiddleware.publish({ action: 'compiling' })
-      done()
-    })
-
-    compiler.watch({}, (err, stats) => {
-      if (err) {
-        console.log(err)
-        return
-      }
-
-      logStats('Main', stats)
-
-      if (electronProcess && electronProcess.kill) {
-        manualRestart = true
-        process.kill(electronProcess.pid)
-        electronProcess = null
-        startElectron()
-
-        setTimeout(() => {
-          manualRestart = false
-        }, 5000)
-      }
-
-      resolve()
-    })
   })
 }
 
@@ -199,11 +209,13 @@ function greeting () {
 
 function init () {
   // greeting()
-  console.log(chalk.white('  initializing app...') + '\n')
+  process.env.CHUNKS_LOG = 'true'
+  console.log(chalk.white('initializing app...') + '\n')
 
   Promise.all([startRenderer(), startMain()])
     .then(() => {
-      console.log(chalk.green('  app ready') + '\n')
+      console.log(chalk.green('app is sucessfully running') + '\n')
+      process.env.CHUNKS_LOG = 'false'
       startElectron()
     })
     .catch(err => {

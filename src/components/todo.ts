@@ -182,6 +182,22 @@ export default class Todo extends Vue {
     this.itemSelected = o ? cloneDeep(o) : null
     if(this.itemSelected) {
       this.isPopupShow = true
+      this.$nextTick(() => {
+        const textarea: any = this.$refs.textarea
+        textarea.focus()
+        textarea.addEventListener('keydown', (e: any) => {
+          if(
+            (
+            e.code === 'KeyS' ||
+            e.key === 's' ||
+            e.key === 'ы') &&
+            e.ctrlKey
+          ) {
+            e.preventDefault()
+            this.save()
+          }
+        })
+      })
     }
   }
 
