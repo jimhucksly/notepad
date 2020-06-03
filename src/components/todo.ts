@@ -252,12 +252,12 @@ export default class Todo extends Vue {
 
     this.$electron.ipcRenderer.on('todo-add', (event: any) => {
       const { date, stamp } = now()
-      let _stamp = stamp
-      while(this.keys.includes(_stamp)) {
-        _stamp += 1
+      let sstamp: number = +stamp
+      while(this.keys.includes(sstamp.toString())) {
+        sstamp += 1
       }
-      const o = {
-        id: _stamp,
+      const o: any = {
+        id: sstamp.toString(),
         date,
         text: '',
         order: this.items.length + 1
