@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { now, indexOf } from '~/helpers'
 import { cloneDeep } from 'lodash'
 
@@ -27,6 +27,11 @@ export default class Todo extends Vue {
 
   get keys() {
     return this.items.map((item: ITodo) => item.id)
+  }
+
+  @Watch('json')
+  onJsonChanged(json: any) {
+    this.setItems()
   }
 
   protected move(event: MouseEvent, id: string): void | null {
@@ -235,11 +240,7 @@ export default class Todo extends Vue {
     }
   }
 
-  async mounted() {
-    await this.$store.dispatch('action', {
-      type: 'GET_TODO'
-    })
-
+  protected setItems() {
     this.items = Object.keys(this.json).map((key: string): ITodo => {
       const o: ITodo = {
         id: key,
@@ -249,6 +250,12 @@ export default class Todo extends Vue {
       }
       return o
     }).sort(sortByOrder)
+  }
+
+  async mounted() {
+    await this.$store.dispatch('action', {
+      type: 'GET_TODO'
+    })
 
     this.$electron.ipcRenderer.on('todo-add', (event: any) => {
       const { date, stamp } = now()
