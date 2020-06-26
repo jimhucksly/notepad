@@ -7,10 +7,10 @@ import { checkLinks } from '~/helpers'
 })
 
 export default class Controls extends Vue {
-  @Prop()
+  @Prop({ type: String, default: '' })
   readonly itemKey!: string
 
-  @Prop()
+  @Prop({ type: Array, default: () => [] })
   readonly collection!: string[]
 
   editableItems: string[] = []
