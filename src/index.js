@@ -39,7 +39,13 @@ function createWindow() {
     toolbar: false,
     show: false,
     webPreferences: {
-      nodeIntegration: true
+      webSecurity: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+      nativeWindowOpen: true,
+      enableRemoteModule: false,
+      sandbox: true,
+      partition: 'persist:tmp'
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
     headless: true,
@@ -319,6 +325,8 @@ ipcMain.on('open-dialog-unlock-confirm', (event) => {
   }).then(data => {
     if(data.response === 0) {
       event.sender.send('unlock-is-confimed')
+    } else {
+      event.sender.send('unlock-is-unconfimed')
     }
   })
 })

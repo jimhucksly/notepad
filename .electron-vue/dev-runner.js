@@ -61,7 +61,7 @@ function startMain () {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      console.log(chalk.white.bold('compiling...'))
+      console.log(chalk.white.bold('compiling...' + '\n'))
       // logStats('Main', chalk.white.bold('compiling...'))
       hotMiddleware.publish({ action: 'compiling' })
       done()
