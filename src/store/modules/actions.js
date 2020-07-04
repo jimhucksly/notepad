@@ -287,6 +287,21 @@ const actions = {
           console.log(e)
           return e
         }
+      case 'ARCHIVE':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.post(type, {
+            key: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'archive project is failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          console.log(e)
+          return e
+        }
       case 'CHECK':
         jsonHeaders.headers.Authorization = store.getters.getToken
         try {

@@ -2,10 +2,11 @@
 @import 'variables';
 
 aside {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex-grow: 0;
-  flex-basis: 250px;
+  flex-basis: 280px;
   color: #fff;
   background-color: $dark;
   border-right: 1px solid #ccc;
@@ -15,12 +16,13 @@ aside {
     display: block;
     flex-shrink: 0;
     flex-basis: 54px;
-    // margin-bottom: 5px;
     cursor: pointer;
+    background-color: $dark;
     border-bottom: 1px solid lighten($dark, 15%);
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+    z-index: 10;
 
     &:hover {
       .switcher__legend {
@@ -102,24 +104,36 @@ aside {
   }
 
   .projects {
+    position: relative;
     flex-basis: 100%;
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
     padding-top: 5px;
+    background-color: $dark;
+    z-index: 9;
 
     .projects_item {
       position: relative;
-      height: 27px;
-      padding: 6px 35px 6px 30px;
-      margin-bottom: 5px;
+      padding: 3px 0;
       color: $yellow_light;
       cursor: pointer;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      transition: 0.2s;
+
+      & > div {
+        width: 100%;
+        height: 100%;
+        padding: 6px 35px 6px 35px;
+      }
 
       label {
+        display: block;
+        max-width: 100%;
+        height: 17px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         position: relative;
         cursor: pointer;
         -moz-user-select: none;
@@ -140,14 +154,6 @@ aside {
         z-index: 10;
       }
 
-      &.active {
-        background-color: $magenta_light;
-
-        &:hover {
-          background-color: $magenta_light;
-        }
-      }
-
       .projects_item_icon {
         position: absolute;
         z-index: 10;
@@ -157,50 +163,47 @@ aside {
           height: 100%;
         }
 
-        &.item_icon_edit {
-          display: none;
-          top: 6px;
-          right: 15px;
-          width: 15px;
-          height: 15px;
-
-          svg:last-child {
-            display: none;
-          }
-        }
-
         &.item_icon_lock {
           display: none;
-          top: 7px;
-          left: 10px;
+          top: 9px;
+          right: 15px;
           width: 12px;
           height: 12px;
-
-          svg:first-child {
-            display: none;
-          }
         }
       }
 
-      &.edit {
-        padding-top: 3px;
-        padding-bottom: 3px;
+      .projects_item_check {
+        display: none;
+        position: absolute;
+        top: 9px;
+        left: 15px;
+        width: 13px;
+        height: 13px;
+        border: 1px solid #888;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: 0.2s;
 
-        label {
+        input[type="checkbox"] {
           display: none;
         }
 
-        input[type="text"] {
-          display: inline-block
+        label {
+          display: block;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &.active {
+        & > div {
+          background-color: $magenta_light;
         }
 
-        .item_icon_edit {
-          display: block;
-          svg:first-child {
-            display: none;
-          }
-          svg:last-child {
-            display: block;
+        &:hover {
+          background-color: transparent;
+          & > div {
+            background-color: $magenta_light;
           }
         }
       }
@@ -208,12 +211,17 @@ aside {
       &.lock {
         .item_icon_lock {
           display: block;
-          svg:first-child {
-            display: block;
-          }
-          svg:last-child {
-            display: none;
-          }
+        }
+      }
+
+      &.checked {
+        &:not(.active) {
+          background-color: darken($dark, 5%);
+        }
+
+        .projects_item_check {
+          display: block;
+          background-color: $yellow;
         }
       }
 
@@ -221,13 +229,94 @@ aside {
         background-color: darken($dark, 3%);
         color: $yellow;
 
-        .item_icon_edit {
-          display: block;
-        }
-        .item_icon_lock {
+        .projects_item_check {
           display: block;
         }
       }
+    }
+  }
+
+  .projects_editor {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-left: 15px;
+    background-color: darken($dark, 5%);
+    z-index: 8;
+    transition: 0.3s;
+
+    &.expanded {
+      transform: translateX(100%);
+    }
+
+    .projects_editor_title {
+      display: flex;
+      align-items: center;
+      flex-basis: 54px;
+      flex-shrink: 0;
+    }
+
+    .projects_editor_inner {
+      flex-basis: 100%;
+      flex-grow: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding-right: 15px;
+
+      a {
+        display: flex;
+        text-decoration: none;
+        color: #fff;
+        font-size: 13px;
+
+        &.--remove {
+          color: $editor_red;
+
+          span {
+            border-color: $editor_red;
+          }
+        }
+
+        span {
+          display: block;
+          border-bottom: 1px dashed #fff;
+        }
+      }
+
+      .icon {
+        display: block;
+        width: 15px;
+        height: 15px;
+        margin-right: 6px;
+      }
+    }
+
+    .form-group {
+      .form-group-inner {
+        label {
+          color: #fff;
+        }
+      }
+    }
+
+    form {
+      input[type="text"] {
+        height: 20px;
+        font-size: 13px;
+      }
+    }
+
+    .projects_editor_footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-basis: 54px;
+      flex-shrink: 0;
+      padding-right: 15px;
     }
   }
 
@@ -249,7 +338,7 @@ aside {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          padding: 6px 15px 6px 30px;
+          padding: 6px 15px 6px 35px;
           cursor: pointer;
           color: $blue-gray;
 
@@ -269,7 +358,7 @@ aside {
               content: '+';
               position: absolute;
               top: 7px;
-              left: 10px;
+              left: 15px;
               display: flex;
               justify-content: center;
               width: 12px;
@@ -284,7 +373,7 @@ aside {
             &:before {
               position: absolute;
               top: 7px;
-              left: 10px;
+              left: 15px;
               content: '-';
               display: flex;
               justify-content: center;
@@ -324,7 +413,7 @@ aside {
         &.level-2 {
           font-size: 13px;
           span {
-            padding-left: 40px;
+            padding-left: 46px;
             &.tree_item_plus,
             &.tree_item_minus {
               &:before {
@@ -333,7 +422,7 @@ aside {
             }
             &.tree_item_node {
               &:before {
-                left: 11px;
+                left: 21px;
               }
             }
 
@@ -341,7 +430,7 @@ aside {
               content: '';
               position: absolute;
               top: 0;
-              left: 10px;
+              left: 21px;
               display: block;
               width: 1px;
               height: 100%;

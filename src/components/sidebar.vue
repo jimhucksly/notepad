@@ -6,9 +6,15 @@
       @onHide="isSwitcherMenuExpanded = false"
     />
     <projects
+      ref="projects"
       class="projects"
       v-show="!isPreferences && isProjects"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
+      @onEdit="(stamp) => { projectEditedItemKey = stamp }"
+    />
+    <projectsEditor
+      v-if="!isPreferences && isProjects"
+      :item-stamp.sync="projectEditedItemKey"
     />
     <div
       class="markdown"

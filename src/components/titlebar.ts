@@ -1,6 +1,5 @@
 /// <reference path="../../window.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
-import { remote } from 'electron'
 
 @Component({
   name: 'Titlebar'
@@ -33,6 +32,8 @@ export default class Titlebar extends Vue {
   }
 
   mounted() {
+    const remote = this.$electron.remote
+
     if(document && document.getElementById) {
       const menuBtn = document.getElementById('menu-button')
       menuBtn && menuBtn.addEventListener('click', (event) => {

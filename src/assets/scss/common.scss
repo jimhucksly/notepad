@@ -130,7 +130,7 @@ a[href] {
 
 // projects|markdown scrollbar styling
 
-@each $elem in ('projects', 'markdown') {
+@each $elem in ('projects', 'markdown', 'projects_editor_inner') {
   .#{$elem}::-webkit-scrollbar-button {
     background-image:url('');
     background-repeat:no-repeat;
