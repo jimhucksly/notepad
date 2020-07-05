@@ -28,12 +28,6 @@ export default class ProjectsEditor extends Vue {
     return this.item && !!this.item.file
   }
 
-  @Watch('itemStamp')
-  onItemStampChanged(itemStamp: string) {
-    console.log(itemStamp)
-    console.log(this.item)
-  }
-
   @Watch('item')
   onItemChanged(o: any) {
     if(o) {

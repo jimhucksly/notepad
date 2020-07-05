@@ -93,9 +93,12 @@ function startMain () {
 
 function startRenderer () {
   return new Promise((resolve, reject) => {
-    rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
+    rendererConfig.entry.renderer = [
+      path.join(__dirname, 'dev-client')
+    ].concat(rendererConfig.entry.renderer)
     rendererConfig.mode = 'development'
     const compiler = webpack(rendererConfig)
+
     hotMiddleware = webpackHotMiddleware(compiler, {
       log: false,
       heartbeat: 2500
@@ -189,30 +192,12 @@ function electronLog (data, color) {
   }
 }
 
-function greeting () {
-  const cols = process.stdout.columns
-  let text = ''
-
-  if (cols > 104) text = 'electron-vue'
-  else if (cols > 76) text = 'electron-|vue'
-  else text = false
-
-  // if (text) {
-  //   say(text, {
-  //     colors: ['yellow'],
-  //     font: 'simple3d',
-  //     space: false
-  //   })
-  // } else console.log(chalk.yellow.bold('\n  electron-vue'))
-  // console.log(chalk.blue('  getting ready...') + '\n')
-}
-
 function init () {
-  // greeting()
   process.env.CHUNKS_LOG = 'true'
   console.log(chalk.white('initializing app...') + '\n')
 
-  Promise.all([startRenderer(), startMain()])
+  Promise
+    .all([startRenderer(), startMain()])
     .then(() => {
       console.log(chalk.green('app is sucessfully running') + '\n')
       process.env.CHUNKS_LOG = 'false'

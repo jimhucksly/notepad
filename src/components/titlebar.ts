@@ -5,14 +5,13 @@ import { Vue, Component } from 'vue-property-decorator'
   name: 'Titlebar'
 })
 export default class Titlebar extends Vue {
+  title: string = ''
+
   get isAuth() {
     return this.$store.getters.getIsAuth
   }
   get preferencesShow() {
     return this.$store.getters.isPreferencesShowed
-  }
-  get title() {
-    return this.$electron.remote.getCurrentWindow().getTitle()
   }
 
   protected reload() {
@@ -32,8 +31,10 @@ export default class Titlebar extends Vue {
   }
 
   mounted() {
-    const remote = this.$electron.remote
-
+    this.$electron.ipcRenderer.send('get-window-title')
+    this.$electron.ipcRenderer.on('set-window-title', (e: any, title: string) => {
+      this.title = title
+    })
     if(document && document.getElementById) {
       const menuBtn = document.getElementById('menu-button')
       menuBtn && menuBtn.addEventListener('click', (event) => {
@@ -44,24 +45,17 @@ export default class Titlebar extends Vue {
 
       const minimizeBtn = document.getElementById('minimize-button')
       minimizeBtn && minimizeBtn.addEventListener('click', (e) => {
-        remote.getCurrentWindow().minimize()
+        this.$electron.ipcRenderer.send('minimize')
       })
 
       const minMaxBtn = document.getElementById('min-max-button')
       minMaxBtn && minMaxBtn.addEventListener('click', () => {
-        const currentWindow = remote.getCurrentWindow()
-        if(currentWindow.isMaximized()) {
-          currentWindow.unmaximize()
-        } else {
-          currentWindow.maximize()
-        }
+        this.$electron.ipcRenderer.send('min-max')
       })
 
       const closebtn = document.getElementById('close-button')
       closebtn && closebtn.addEventListener('click', (e) => {
-        // remote.app.quit()
-        remote.getCurrentWindow().hide()
-        return false
+        this.$electron.ipcRenderer.send('hide')
       })
     }
   }

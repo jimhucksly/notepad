@@ -3,6 +3,7 @@ import { stateKeys } from './index'
 const state = {
   loading: true,
   isProjectsShow: true,
+  params: {},
   userDataPath: '',
   downloadsTargetPath: '',
   md: '',

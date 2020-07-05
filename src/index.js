@@ -40,11 +40,9 @@ function createWindow() {
     show: false,
     webPreferences: {
       webSecurity: true,
-      contextIsolation: true,
-      nodeIntegration: false,
+      nodeIntegration: true,
       nativeWindowOpen: true,
       enableRemoteModule: false,
-      sandbox: true,
       partition: 'persist:tmp'
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
@@ -191,6 +189,30 @@ app.on('before-quit', () => {
 })
 
 app.setPath('userData', path.resolve(app.getPath('userData'), '../JimhuckslyStudio/notepad-app'))
+
+ipcMain.on('get-app-path', (event) => {
+  event.sender.send('set-app-path', app.getPath('userData'))
+})
+
+ipcMain.on('get-window-title', (event) => {
+  event.sender.send('set-window-title', mainWindow.getTitle())
+})
+
+ipcMain.on('minimize', (event) => {
+  mainWindow.minimize()
+})
+
+ipcMain.on('min-max', (event) => {
+  if(mainWindow.isMaximized()) {
+    mainWindow.unmaximize()
+  } else {
+    mainWindow.maximize()
+  }
+})
+
+ipcMain.on('hide', (event) => {
+  mainWindow.hide()
+})
 
 ipcMain.on('menu-popup', (event, { window }) => {
   const appMenu = Menu.getApplicationMenu()

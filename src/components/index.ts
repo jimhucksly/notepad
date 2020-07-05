@@ -32,6 +32,9 @@ import { userDataFileName } from '~/constants'
   }
 })
 export default class Index extends Vue {
+  get params() {
+    return this.$store.getters.getParams
+  }
   get loading() {
     return this.$store.getters.getLoading
   }
@@ -96,16 +99,14 @@ export default class Index extends Vue {
   }
 
   protected async getMd() {
-    const response = await this.$store.dispatch('action', {
+    await this.$store.dispatch('action', {
       type: 'GET_MD'
     })
   }
 
-  async created(): Promise<void> {
-    const appPath = this.$electron.remote.app.getPath('userData')
+  protected async setPath(appPath: string) {
     try {
       this.$store.dispatch('userDataPath', appPath)
-      this.checkToken(appPath)
       const json: any = await storage.get(appPath, 'UserPreferences')
       if(json.downloadsTargetPath !== undefined) {
         this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
@@ -117,5 +118,13 @@ export default class Index extends Vue {
       console.error(e)
       this.$store.dispatch('downloadsTargetPath', appPath)
     }
+  }
+
+  async created(): Promise<void> {
+    this.$electron.ipcRenderer.send('get-app-path')
+    await this.$electron.ipcRenderer.on('set-app-path', (e: any, appPath: any) => {
+      this.checkToken(appPath)
+      this.setPath(appPath)
+    })
   }
 }

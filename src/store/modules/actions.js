@@ -35,6 +35,11 @@ const actions = {
   loading(store, flag) {
     store.commit('setLoading', flag)
   },
+  params(store, data) {
+    console.log('BBBBBBBBBBB')
+    console.log(data)
+    store.commit('setParams', data)
+  },
   userDataPath(store, path) {
     store.commit('setUserDataPath', path)
   },
