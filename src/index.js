@@ -16,6 +16,7 @@ process.on('uncaughtException', (err) => {
 })
 
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
+app.allowRendererProcessReuse = true
 
 let mainWindow
 let appTray
@@ -99,10 +100,6 @@ function createWindow() {
   mainWindow.webContents.on('did-frame-finish-load', () => {
     if(process.env.NODE_ENV === 'development') {
       mainWindow.focus()
-      // mainWindow.webContents.openDevTools()
-      // mainWindow.webContents.on('devtools-opened', () => {
-      //   mainWindow.focus()
-      // })
     }
   })
 }

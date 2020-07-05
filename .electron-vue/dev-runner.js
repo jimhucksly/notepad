@@ -23,6 +23,8 @@ let electronProcess = null
 let manualRestart = false
 let hotMiddleware
 
+let isRunning = false
+
 function logStats (proc, data) {
   let log = ''
 
@@ -56,13 +58,16 @@ function logStats (proc, data) {
 
 function startMain () {
   return new Promise((resolve, reject) => {
-    mainConfig.entry.main = [path.join(__dirname, '../src/index.dev.js')].concat(mainConfig.entry.main)
+    mainConfig.entry.main = [
+      path.join(__dirname, '../src/index.dev.js')
+    ].concat(mainConfig.entry.main)
+
     mainConfig.mode = 'development'
+
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
       console.log(chalk.white.bold('compiling...' + '\n'))
-      // logStats('Main', chalk.white.bold('compiling...'))
       hotMiddleware.publish({ action: 'compiling' })
       done()
     })
@@ -73,7 +78,9 @@ function startMain () {
         return
       }
 
-      logStats('Main', stats)
+      if(!isRunning) {
+        logStats('Main', stats)
+      }
 
       if (electronProcess && electronProcess.kill) {
         manualRestart = true
@@ -112,22 +119,17 @@ function startRenderer () {
     })
 
     compiler.hooks.done.tap('done', stats => {
-      // logStats('Renderer', stats)
-      console.log(chalk.yellow.bold('app is updated') + '\n')
+      if(!isRunning) {
+        logStats('Renderer', stats)
+      } else {
+        const d = new Date(Date.now())
+        const hh = d.getHours()
+        const mm = d.getMinutes()
+        const ss = d.getSeconds()
+        const dd = hh + ':' + mm + ':' + ss
+        console.log(chalk.yellow.bold('app is updated: ') + dd + '\n')
+      }
     })
-
-    // function startServer() {
-
-    //   server.get('/', function(req, res) {
-    //     res.render(path.join(__dirname, '../dist/electron/index.html'))
-    //   })
-
-    //   server.use(hotMiddleware)
-    //   server.listen(port, host)
-    //   resolve()
-    // }
-
-    // startServer()
 
     const server = new WebpackDevServer(
       compiler,
@@ -194,11 +196,12 @@ function electronLog (data, color) {
 
 function init () {
   process.env.CHUNKS_LOG = 'true'
-  console.log(chalk.white('initializing app...') + '\n')
+  console.log('\n' + chalk.white('initializing app...') + '\n')
 
   Promise
     .all([startRenderer(), startMain()])
     .then(() => {
+      isRunning = true
       console.log(chalk.green('app is sucessfully running') + '\n')
       process.env.CHUNKS_LOG = 'false'
       startElectron()
