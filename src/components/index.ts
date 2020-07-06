@@ -69,27 +69,24 @@ export default class Index extends Vue {
     return this.$store.getters.getError
   }
 
-  protected checkToken(p: string) {
+  protected async checkToken(p: string) {
+    console.log('call check token')
     this.$store.dispatch('loading', true)
-    storage.isPathExists(p)
-      .then(() => {
-        return storage.isFileExists(p, userDataFileName)
-      })
-      .then(() => {
-        return storage.get(p, userDataFileName, 'token')
-      })
-      .then((token) => {
-        if(token) {
-          this.$store.dispatch('auth', true)
-          this.$store.dispatch('token', token)
-          this.getJson()
-          this.getMd()
-        } else throw new Error()
-      })
-      .catch(() => {
-        this.$store.dispatch('loading', false)
-        this.$store.dispatch('auth', false)
-      })
+    const token = await storage.get(p, userDataFileName, 'token')
+    console.log('token received!')
+    console.log(token)
+    if(token) {
+      this.$store.dispatch('auth', true)
+      this.$store.dispatch('token', token)
+      this.getJson()
+      this.getMd()
+      return true
+    } else {
+      console.log('error: token is null')
+      this.$store.dispatch('loading', false)
+      this.$store.dispatch('auth', false)
+      return null
+    }
   }
 
   protected async getJson() {
@@ -121,10 +118,13 @@ export default class Index extends Vue {
   }
 
   async created(): Promise<void> {
+    console.log('created!!!!!')
     this.$electron.ipcRenderer.send('get-app-path')
-    await this.$electron.ipcRenderer.on('set-app-path', (e: any, appPath: any) => {
-      this.checkToken(appPath)
-      this.setPath(appPath)
+    await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
+      console.log('app path received!')
+      console.log(appPath)
+      await this.checkToken(appPath)
+      // await this.setPath(appPath)
     })
   }
 }

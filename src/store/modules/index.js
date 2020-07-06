@@ -7,7 +7,6 @@ const stateKeys = [
   'loading',
   'isAuth',
   'token',
-  'params',
   'userDataPath',
   'isDevelopment',
   'json',

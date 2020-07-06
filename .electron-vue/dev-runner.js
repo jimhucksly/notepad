@@ -123,9 +123,9 @@ function startRenderer () {
         logStats('Renderer', stats)
       } else {
         const d = new Date(Date.now())
-        const hh = d.getHours()
-        const mm = d.getMinutes()
-        const ss = d.getSeconds()
+        const hh = ('0' + d.getHours()).slice(-2)
+        const mm = ('0' + d.getMinutes()).slice(-2)
+        const ss = ('0' + d.getSeconds()).slice(-2)
         const dd = hh + ':' + mm + ':' + ss
         console.log(chalk.yellow.bold('app is updated: ') + dd + '\n')
       }

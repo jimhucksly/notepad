@@ -211,19 +211,19 @@ ipcMain.on('hide', (event) => {
   mainWindow.hide()
 })
 
-ipcMain.on('menu-popup', (event, { window }) => {
+ipcMain.on('menu-popup', (event) => {
   const appMenu = Menu.getApplicationMenu()
-  appMenu.popup(window)
+  appMenu.popup(mainWindow)
 })
 
-ipcMain.on('context-menu-popup', (event, { window }) => {
+ipcMain.on('context-menu-popup', (event) => {
   const contextMenu = new Menu()
   contextMenu.append(new MenuItem({
     label: 'Copy',
     accelerator: 'CmdOrCtrl+C',
     role: 'copy'
   }))
-  contextMenu.popup(window)
+  contextMenu.popup(mainWindow)
 })
 
 ipcMain.on('authorized', () => {

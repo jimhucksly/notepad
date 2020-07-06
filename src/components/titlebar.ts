@@ -38,9 +38,7 @@ export default class Titlebar extends Vue {
     if(document && document.getElementById) {
       const menuBtn = document.getElementById('menu-button')
       menuBtn && menuBtn.addEventListener('click', (event) => {
-        this.$electron.ipcRenderer.send('menu-popup', {
-          window: this.$electron.remote.getCurrentWindow()
-        })
+        this.$electron.ipcRenderer.send('menu-popup')
       })
 
       const minimizeBtn = document.getElementById('minimize-button')
