@@ -45,7 +45,7 @@ aside {
         position: absolute;
         top: 50%;
         right: 9px;
-        margin-top: -6px;
+        margin-top: -8px;
         width: 9px;
         height: 9px;
         border-right: 2px solid #fff;
@@ -107,11 +107,17 @@ aside {
     position: relative;
     flex-basis: 100%;
     flex-grow: 1;
-    overflow-x: hidden;
-    overflow-y: auto;
     padding-top: 5px;
+    padding-bottom: 54px;
     background-color: $dark;
+    overflow: hidden;
     z-index: 9;
+
+    .projects_inner {
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
 
     .projects_item {
       position: relative;
@@ -234,6 +240,46 @@ aside {
         }
       }
     }
+
+    .projects_archive {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 54px;
+      padding-left: 35px;
+      flex-shrink: 0;
+      color: $yellow_light;
+      border-top: 1px solid lighten($dark, 15%);
+      cursor: pointer;
+
+      &:hover {
+        &:after {
+          border-color: lighten($dark, 45%);
+        }
+      }
+
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        margin-top: -5px;
+        right: 15px;
+        width: 9px;
+        height: 9px;
+        border-top: 2px solid lighten($dark, 15%);
+        border-right: 2px solid lighten($dark, 15%);
+        transform: rotate(45deg);
+        transition: 0.2s;
+      }
+
+      &.active {
+        background-color: darken($dark, 5%);
+      }
+    }
   }
 
   .projects_editor {
@@ -251,13 +297,6 @@ aside {
 
     &.expanded {
       transform: translateX(100%);
-    }
-
-    .projects_editor_title {
-      display: flex;
-      align-items: center;
-      flex-basis: 54px;
-      flex-shrink: 0;
     }
 
     .projects_editor_inner {
@@ -317,6 +356,92 @@ aside {
       flex-basis: 54px;
       flex-shrink: 0;
       padding-right: 15px;
+
+      a {
+        display: block;
+        margin-right: 15px;
+        color: $yellow_light;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .projects_editor_title,
+  .projects_archives_title {
+    display: flex;
+    align-items: center;
+    flex-basis: 54px;
+    flex-shrink: 0;
+  }
+
+  .projects_archives {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-left: 15px;
+    background-color: darken($dark, 5%);
+    z-index: 8;
+    transition: 0.3s;
+
+    &.expanded {
+      transform: translateX(100%);
+    }
+  }
+
+  .projects_archives_inner {
+    flex-basis: 100%;
+    flex-grow: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 5px;
+
+    ul {
+      li {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        padding: 9px 35px 9px 0px;
+        color: $yellow_light;
+        cursor: default;
+        transition: 0.2s;
+
+        &:hover {
+          .icon {
+            display: block;
+          }
+        }
+
+        small {
+          display: block;
+          margin-top: 4px;
+          color: $blue-gray;
+        }
+      }
+    }
+
+    .icon {
+      position: absolute;
+      top: 9px;
+      display: none;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+      svg {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+
+    .icon-restore {
+      right: 36px;
+    }
+    .icon-remove {
+      right: 15px;
     }
   }
 

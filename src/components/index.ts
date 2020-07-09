@@ -70,11 +70,8 @@ export default class Index extends Vue {
   }
 
   protected async checkToken(p: string) {
-    console.log('call check token')
     this.$store.dispatch('loading', true)
     const token = await storage.get(p, userDataFileName, 'token')
-    console.log('token received!')
-    console.log(token)
     if(token) {
       this.$store.dispatch('auth', true)
       this.$store.dispatch('token', token)
@@ -82,7 +79,6 @@ export default class Index extends Vue {
       this.getMd()
       return true
     } else {
-      console.log('error: token is null')
       this.$store.dispatch('loading', false)
       this.$store.dispatch('auth', false)
       return null
@@ -90,7 +86,7 @@ export default class Index extends Vue {
   }
 
   protected async getJson() {
-    const response = await this.$store.dispatch('action', {
+    await this.$store.dispatch('action', {
       type: 'GET_JSON'
     })
   }
@@ -118,13 +114,10 @@ export default class Index extends Vue {
   }
 
   async created(): Promise<void> {
-    console.log('created!!!!!')
     this.$electron.ipcRenderer.send('get-app-path')
     await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
-      console.log('app path received!')
-      console.log(appPath)
       await this.checkToken(appPath)
-      // await this.setPath(appPath)
+      await this.setPath(appPath)
     })
   }
 }

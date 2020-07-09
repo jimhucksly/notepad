@@ -10,6 +10,7 @@ const stateKeys = [
   'userDataPath',
   'isDevelopment',
   'json',
+  'archives',
   'todo',
   'md',
   'events',

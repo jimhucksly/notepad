@@ -20,11 +20,11 @@
       }"
     />
     <projectsEditor
-      v-if="!isPreferences && isProjects && !isSwitcherMenuExpanded"
+      v-if="isProjectEditorVisibility"
       :item-stamp.sync="projectEditedItemKey"
     />
     <projectsArchives
-      v-if="!isPreferences && isProjects && !isSwitcherMenuExpanded"
+      v-if="isProjectArchivesVisibility"
       :init="isProjectsArchivesInit"
     />
     <div

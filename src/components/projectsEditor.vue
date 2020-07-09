@@ -5,7 +5,7 @@
       expanded: !!itemStamp
     }"
     >
-    <div class="projects_editor_title">Item properties</div>
+    <div class="projects_editor_title">Projects: Item properties</div>
     <div class="projects_editor_inner">
       <div class="form-group">
         <div class="form-group-inner">
@@ -66,6 +66,7 @@
       </div>
     </div>
     <div class="projects_editor_footer">
+      <a href="" @click.prevent="hide">Cancel</a>
       <button
         class="btn btn-primary"
         @click="save"

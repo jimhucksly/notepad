@@ -1,17 +1,19 @@
 import fs from "fs"
 import path from 'path'
 
+const debug = false
+
 class Storage {
   public isPathExists(_path: string): Promise<object> {
-    console.log('isPathExists: call!')
+    debug && console.log('isPathExists: call!')
     return new Promise(async (resolve, reject) => {
-      console.log('isPathExists: body of promise')
+      debug && console.log('isPathExists: body of promise')
       fs.stat(_path, (err, stat) => {
         if(err) {
-          console.log('isPathExists: rejected!')
+          debug && console.log('isPathExists: rejected!')
           return reject(err)
         } else {
-          console.log('isPathExists: resolved!')
+          debug && console.log('isPathExists: resolved!')
           return resolve()
         }
       })
@@ -19,17 +21,20 @@ class Storage {
   }
 
   public isFileExists(_path: string, _file?: string): Promise<object> {
+    debug && console.log('call isFileExists')
     return new Promise(async (resolve, reject) => {
       let filePath = _path
       if(_file !== undefined) {
         filePath = path.resolve(_path, _file)
       }
+      debug && console.log('call fs.stat')
       fs.stat(filePath, (err, stat) => {
+        debug && console.log('fs.stat callback exec!!!!!')
         if(err) {
-          console.log('isFileExists: rejected!')
+          debug && console.log('isFileExists: rejected!')
           return reject(null)
         } else {
-          console.log('isFileExists: resolved!')
+          debug && console.log('isFileExists: resolved!')
           return resolve({})
         }
       })
@@ -79,10 +84,12 @@ class Storage {
   }
 
   public get(_path: string, _file: string, key?: string): Promise<object> {
+    debug && console.log('call storage.get')
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
       if(_file !== undefined) fullPath = path.resolve(_path, _file)
       try {
+        debug && console.log('call storage.isFileExists')
         const sResponse = await this.isFileExists(fullPath)
         if(!sResponse) {
           return reject(null)

@@ -1,8 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { cloneDeep } from 'lodash'
 import $http from '../http'
-import storage from '@/plugins/storage'
-import { userDataFileName } from '@/constants'
 import { isJSON } from '@/helpers'
 
 const jsonHeaders = {
@@ -20,25 +18,9 @@ const actions = {
   },
   token(store, value) {
     store.commit('setToken', value)
-    const userDataPath = store.getters.getUserDataPath
-    storage.isPathExists(userDataPath)
-      .then(() => {
-        storage.set(userDataPath, userDataFileName, { token: value })
-          .then(() => console.log('write to file is successfully completed'))
-          .catch(() => {
-            ipcRenderer.send('open-error-dialog', 'write to the file is failed')
-            console.error('write to the file is failed')
-          })
-      })
-      .catch(() => console.error(`${userDataPath} is don't exists`))
   },
   loading(store, flag) {
     store.commit('setLoading', flag)
-  },
-  params(store, data) {
-    console.log('BBBBBBBBBBB')
-    console.log(data)
-    store.commit('setParams', data)
   },
   userDataPath(store, path) {
     store.commit('setUserDataPath', path)
@@ -69,6 +51,9 @@ const actions = {
       }
     } else json = data
     store.commit('setJson', json)
+  },
+  archives(store, data) {
+    store.commit('setArchives', data)
   },
   md(store, data) {
     store.commit('setMd', data)
@@ -221,6 +206,61 @@ const actions = {
           return resp.data.data
         } catch(e) {
           console.log(e)
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
+          return e
+        }
+      case 'GET_ARCHIVES':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(!resp) {
+            throw new Error('error')
+          }
+          store.dispatch('archives', resp.data.data)
+          return resp.data.data
+        } catch(e) {
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
+          return e
+        }
+      case 'ARCHIVE_RESTORE':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.post(type, {
+            name: data
+          }, jsonHeaders)
+          if(resp.status === 'success' && resp.message) {
+            return resp.message
+          }
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'archive restore is failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
+          store.dispatch('loading', false)
+          store.dispatch('auth', false)
+          store.dispatch('token', null)
+          store.dispatch('timeout', null)
+          return e
+        }
+      case 'ARCHIVE_REMOVE':
+        jsonHeaders.headers.Authorization = store.getters.getToken
+        try {
+          resp = await $http.post(type, {
+            name: data
+          }, jsonHeaders)
+          if(!resp) {
+            ipcRenderer.send('open-error-dialog', 'archive remove is failed')
+            throw new Error('error')
+          }
+          return resp
+        } catch(e) {
           store.dispatch('loading', false)
           store.dispatch('auth', false)
           store.dispatch('token', null)

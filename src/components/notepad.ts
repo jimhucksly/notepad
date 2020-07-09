@@ -143,11 +143,6 @@ export default class Notepad extends Vue {
     this.read()
   }
 
-  protected edit(event: KeyboardEvent, stamp: string) {
-    console.log(event)
-    console.log(stamp)
-  }
-
   mounted() {
     const notepad_cont: any = this.$refs.notepad_cont
     notepad_cont.scrollTop = notepad_cont.scrollHeight

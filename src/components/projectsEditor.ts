@@ -55,6 +55,9 @@ export default class ProjectsEditor extends Vue {
     })
     if(sResponse.status === 'success') {
       this.removeHandler()
+      this.$store.dispatch('action', {
+        type: 'GET_ARCHIVES'
+      })
     }
   }
 
@@ -95,6 +98,10 @@ export default class ProjectsEditor extends Vue {
       type: 'UPDATE',
       data: o
     })
+    this.$emit('update:itemStamp', '')
+  }
+
+  protected hide() {
     this.$emit('update:itemStamp', '')
   }
 

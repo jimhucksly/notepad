@@ -7,6 +7,7 @@ import { cloneDeep, unset } from 'lodash'
 export default class Projects extends Vue {
   names: any = {}
   checked: string = ''
+  isArchivesInit: boolean = false
 
   get isProjects() {
     return this.$store.getters.getIsProjectsShow
@@ -21,36 +22,10 @@ export default class Projects extends Vue {
   @Watch('isProjects')
   onIsProjectsChanged(v: boolean) {
     this.checked = ''
+    this.isArchivesInit = false
+    this.$emit('onArchives', this.isArchivesInit)
   }
 
-  // protected toggleEdit(e: any, stamp: string) {
-  //   const items: any = this.$refs.projects_item
-  //   const item = items.find((el: any) => el.dataset.stamp === stamp)
-  //   if(item.classList.contains('edit')) {
-  //     item.classList.remove('edit')
-  //     const o = {
-  //       [stamp]: {
-  //         key: stamp,
-  //         date: this.json[stamp].date,
-  //         name: this.names[stamp],
-  //         lock: this.json[stamp].lock,
-  //         message: this.json[stamp].message,
-  //         file: this.json[stamp].file
-  //       }
-  //     }
-  //     this.$store.dispatch('json', { ...this.json, ...o })
-  //     this.$store.dispatch('action', {
-  //       type: 'UPDATE',
-  //       data: o
-  //     })
-  //   } else {
-  //     item.classList.add('edit')
-  //     this.names = {
-  //       ...this.names,
-  //       [stamp]: this.json[stamp].name || this.json[stamp].key
-  //     }
-  //   }
-  // }
   protected toggleLock(e: any, stamp: string) {
     const items: any = this.$refs.projects_item
     const item = items.find((el: any) => el.dataset.stamp === stamp)
@@ -101,16 +76,28 @@ export default class Projects extends Vue {
   protected toggleCheck(e: any) {
     const target: any = e.target
     const isChecked: boolean = target.checked
+    if(isChecked) {
+      this.isArchivesInit = false
+      this.$emit('onArchives', false)
+    }
     this.checked = isChecked ? target.dataset.stamp : ''
     this.$emit('onEdit', this.checked)
   }
   protected clearCheck() {
     this.checked = ''
     const input: any = document.querySelectorAll('input[type="checkbox"]:checked')
-    input[0].checked = false
+    if(input && input[0]) {
+      input[0].checked = false
+    }
+  }
+  protected toggleArchives() {
+    this.isArchivesInit = !this.isArchivesInit
+    this.$emit('onArchives', this.isArchivesInit)
   }
 
-  mounted() {
-    this.checked = ''
+  async created() {
+    this.$store.dispatch('action', {
+      type: 'GET_ARCHIVES'
+    })
   }
 }
