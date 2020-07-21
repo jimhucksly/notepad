@@ -1,22 +1,28 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { isEmpty } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '~/helpers'
-import Controls from '~/components/controls'
-import File from '~/components/file'
+import NotepadItem from '~/components/notepadItem'
 
 @Component({
   name: 'Notepad',
   components: {
-    Controls,
-    File
+    NotepadItem
   }
 })
 export default class Notepad extends Vue {
   message: string = ''
   newMsgFlag: boolean = false
 
+  isRendered: boolean = false
+
   get json() {
     return this.$store.getters.getJson
+  }
+  get count() {
+    return this.json ? Object.keys(this.json).length : 0
+  }
+  get lastStamp() {
+    return this.count ? Object.keys(this.json)[this.count - 1] : ""
   }
   get filter() {
     return this.$store.getters.getFilter
@@ -39,6 +45,14 @@ export default class Notepad extends Vue {
         notepadCont.scrollTop = notepadCont.scrollHeight
       })
     }
+  }
+
+  @Watch("isRendered")
+  onIsRenderedChange(v: boolean) {
+    this.$nextTick(() => {
+      const notepad_cont: any = this.$refs.notepad_cont
+      notepad_cont.scrollTop = notepad_cont.scrollHeight
+    })
   }
 
   protected send(): void | null {
@@ -145,7 +159,6 @@ export default class Notepad extends Vue {
 
   mounted() {
     const notepad_cont: any = this.$refs.notepad_cont
-    notepad_cont.scrollTop = notepad_cont.scrollHeight
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
 
     window.ondragstart = () => false

@@ -151,7 +151,7 @@ const actions = {
     if(timeout) store.dispatch('timeout', null)
     clearTimeout(timeout)
     const isDevelopment = store.getters.getIsDevelopment
-    if(isDevelopment) {
+    if(isDevelopment && 1 === 2) {
       store.dispatch('timeout', null)
       clearTimeout(timeout)
       return null
@@ -177,7 +177,7 @@ const actions = {
           store.dispatch('error', true)
           store.dispatch('setTimeout')
         })
-    }, 3000)
+    }, isDevelopment ? 6000 : 3000)
     store.dispatch('timeout', timeout)
   },
   async action(store, { type, data }) {

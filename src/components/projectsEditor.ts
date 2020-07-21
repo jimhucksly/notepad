@@ -39,13 +39,13 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  @Watch('isLock')
-  onIsLockChanged(v: boolean) {
-    if(this.item && !v && !this.isDialog) {
-      this.isLock = true
-      this.isDialog = true
+  protected isLockChange(v: boolean): null | void {
+    if(!v) {
       this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
+      this.isDialog = true
+      return null
     }
+    this.isLock = v
   }
 
   protected async archive() {

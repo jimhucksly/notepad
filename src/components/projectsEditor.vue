@@ -12,7 +12,7 @@
           <label>Name</label>
           <div>
             <form>
-              <input type="text" v-model="name">
+              <input type="text" v-model="name" @keydown.enter.prevent="save">
             </form>
           </div>
         </div>
@@ -20,8 +20,7 @@
       <div class="form-group">
         <div class="form-group-inner flex-between items-center">
           <label class="m-b-5">Protected</label>
-          <b-checkbox v-model="isLock"
-          />
+          <b-checkbox :value="isLock" @input="(v) => { isLockChange(v) }" />
         </div>
       </div>
       <div class="form-group" v-if="!isFile">
