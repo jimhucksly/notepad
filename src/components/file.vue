@@ -8,8 +8,8 @@
     <div class="file_link">
       <div>{{ fileName }}</div>
       <div>
-        <a :href="href" target="_blank">Открыть</a>
-        <a :href="href" :data-filename="fileName" :data-stamp="stamp" download="download">Скачать</a>
+        <a :href="href" @click.prevent="openFile">Открыть</a>
+        <a :href="href" @click.prevent="saveFile">Скачать</a>
       </div>
     </div>
     <div>

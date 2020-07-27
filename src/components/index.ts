@@ -86,9 +86,13 @@ export default class Index extends Vue {
   }
 
   protected async getJson() {
-    await this.$store.dispatch('action', {
+    let sResponse = await this.$store.dispatch('action', {
       type: 'GET_JSON'
     })
+
+    if(sResponse.message === 'Network Error') {
+      this.$store.dispatch('error', true)
+    }
   }
 
   protected async getMd() {

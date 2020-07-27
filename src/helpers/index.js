@@ -145,17 +145,17 @@ export function dragAndDropLoader(DOMElementId, CSSClassHighlight, Callback) {
   }
 }
 
-export const downloadFile = (fileUrl, targetPath, loaderDOMElement) => {
+export const downloadFile = (fileUri, targetPath, loaderDOMElement) => {
   let receivedBytes = 0
   let totalBytes = 0
 
+  const targetFileName = path.parse(targetPath).base
+  const targetFileDir = path.parse(targetPath).dir
+
   const req = request({
     method: 'GET',
-    uri: fileUrl
+    uri: encodeURI(fileUri)
   })
-
-  const baseFileName = path.parse(targetPath).base
-  const baseFileDir = path.parse(targetPath).dir
 
   const canSave = (targetPath) => {
     return new Promise((resolve, reject) => {
@@ -190,8 +190,8 @@ export const downloadFile = (fileUrl, targetPath, loaderDOMElement) => {
         })
       })
       .catch(() => {
-        const filename = baseFileName.replace(/\./g, `(${++index}).`)
-        const final = path.resolve(baseFileDir, filename)
+        const filename = targetFileName.replace(/\./g, `(${++index}).`)
+        const final = path.resolve(targetFileDir, filename)
         checkTargetPath(final)
       })
   }

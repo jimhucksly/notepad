@@ -19,7 +19,7 @@ export default class Auth extends Vue {
     pass: 0
   }
 
-  // watchers
+  protected timeout: any = null
 
   @Watch('login')
   onLoginChanged(val: string) {
@@ -29,8 +29,6 @@ export default class Auth extends Vue {
   onPassChanged(val: string) {
     this.errors.pass = val.length > 0 ? 0 : 1
   }
-
-  // methods
 
   protected validate(): boolean {
     if(this.login.length === 0) {
@@ -79,6 +77,25 @@ export default class Auth extends Vue {
             console.error(data)
           }
         })
+    }
+  }
+
+  mounted() {
+    this.timeout = setInterval(async () => {
+      const sResp = await this.$store.dispatch('action', {
+        type: 'PING'
+      })
+      if(sResp) {
+        this.$store.dispatch('error', false)
+      } else {
+        this.$store.dispatch('error', true)
+      }
+    }, 3000)
+  }
+
+  destroyed() {
+    if(this.timeout) {
+      clearInterval(this.timeout)
     }
   }
 }

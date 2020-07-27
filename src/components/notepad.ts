@@ -1,6 +1,6 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { isEmpty } from 'lodash'
-import { checkLinks, now, getFileType, dragAndDropLoader, downloadFile } from '~/helpers'
+import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
 import NotepadItem from '~/components/notepadItem'
 
 @Component({
@@ -89,6 +89,20 @@ export default class Notepad extends Vue {
     this.upload(formData, getFileType(files[0].name))
   }
 
+  protected async upload(file: object, fileType: string) {
+    try {
+      const sResponse = await this.$store.dispatch('action', {
+        type: 'FILE',
+        data: { file }
+      })
+      if(sResponse && sResponse.filename && sResponse.link) {
+        this.addFile(sResponse.filename, sResponse.link, fileType)
+      } else throw new Error('error')
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
   protected addFile(name: string, link: string, type: string) {
     this.newMsgFlag = true
     const {date, stamp} = now()
@@ -114,20 +128,6 @@ export default class Notepad extends Vue {
         data: o
       })
     })
-  }
-
-  protected async upload(file: object, fileType: string) {
-    try {
-      const sResponse = await this.$store.dispatch('action', {
-        type: 'FILE',
-        data: { file }
-      })
-      if(sResponse && sResponse.filename && sResponse.link) {
-        this.addFile(sResponse.filename, sResponse.link, fileType)
-      } else throw new Error('error')
-    } catch(e) {
-      console.error(e)
-    }
   }
 
   protected read() {
@@ -162,26 +162,6 @@ export default class Notepad extends Vue {
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange)
 
     window.ondragstart = () => false
-
-    notepad_cont.addEventListener('click', (e: any) => {
-      const isLink = e.target.tagName === 'A'
-      const hasHref = e.target.href && e.target.href.length
-      if(isLink && hasHref) {
-        e.preventDefault()
-        const href = e.target.href
-        const stamp = e.target.dataset.stamp
-        const items: any = this.$refs.notepad_item
-        const item = items.find((el: any) => el.dataset.stamp === stamp)
-        if(item) {
-          const loader = item.querySelector('.file_loader')
-          const fileName = e.target.dataset.filename
-          const finalPath = this.$store.getters.getDownloadsTargetPath + '\\' + fileName
-          downloadFile(href, finalPath, loader)
-        } else {
-          this.$electron.shell.openExternal(e.target.href)
-        }
-      }
-    })
 
     notepad_cont.addEventListener('scroll', (e: any) => {
       this.read()

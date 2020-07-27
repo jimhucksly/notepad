@@ -22,4 +22,15 @@ export default class File extends Vue {
   get type() {
     return this.itemFile.type
   }
+
+  protected openFile() {
+    this.$emit('onOpenFile', this.href)
+  }
+
+  protected saveFile() {
+    this.$emit('onSaveFile', {
+      fileName: this.fileName,
+      href: this.href
+    })
+  }
 }

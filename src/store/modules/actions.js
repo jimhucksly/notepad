@@ -183,13 +183,21 @@ const actions = {
   async action(store, { type, data }) {
     let resp
     switch(type) {
+      case 'PING':
+        try {
+          resp = await $http.get(type, jsonHeaders)
+          if(resp.data !== 'PONG') return null
+          return resp.data
+        } catch(e) {
+          return null
+        }
       case 'AUTH':
-        const authResp = await $http.post(type, {
+        resp = await $http.post(type, {
           login: data.login,
           password: data.password
         }, jsonHeaders)
-        if(authResp instanceof Error) return Promise.reject(authResp)
-        return authResp
+        if(resp instanceof Error) return Promise.reject(resp)
+        return resp
       case 'GET_JSON':
         jsonHeaders.headers.Authorization = store.getters.getToken
         try {
@@ -205,7 +213,6 @@ const actions = {
           $http.get(type, jsonHeaders)
           return resp.data.data
         } catch(e) {
-          console.log(e)
           store.dispatch('loading', false)
           store.dispatch('auth', false)
           store.dispatch('token', null)
