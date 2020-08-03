@@ -18,6 +18,12 @@ export const checkLinks = (message) => {
       }
       const isURL = new RegExp(REGEXP_URL).test(item)
       if(isURL) {
+        if(item.indexOf('###') === 0) {
+          item = item.replace(/^\#\#\#/, '')
+          item = '<mark>' + item + '</mark>'
+          p[k] = item
+          return
+        }
         item = '<a href="' + (item.indexOf('http') < 0 ? 'http://' : '') + item + '" target="_blank">' + item + '</a>'
         p[k] = item
       }

@@ -32,6 +32,10 @@ html {
   -webkit-user-select: none;
 }
 
+mark {
+  background-color: transparent;
+}
+
 main {
   display: flex;
   flex-grow: 1;

@@ -1,4 +1,4 @@
-import fs from "fs"
+import fs from 'fs'
 import path from 'path'
 
 const debug = false
@@ -8,15 +8,14 @@ class Storage {
     debug && console.log('isPathExists: call!')
     return new Promise(async (resolve, reject) => {
       debug && console.log('isPathExists: body of promise')
-      fs.stat(_path, (err, stat) => {
-        if(err) {
-          debug && console.log('isPathExists: rejected!')
-          return reject(err)
-        } else {
-          debug && console.log('isPathExists: resolved!')
-          return resolve()
-        }
-      })
+      try {
+        fs.statSync(_path)
+        debug && console.log('isPathExists: resolved!')
+        return resolve()
+      } catch(e) {
+        debug && console.log('isPathExists: rejected!')
+        return reject(e)
+      }
     })
   }
 
@@ -28,16 +27,15 @@ class Storage {
         filePath = path.resolve(_path, _file)
       }
       debug && console.log('call fs.stat')
-      fs.stat(filePath, (err, stat) => {
+      try {
+        fs.statSync(filePath)
         debug && console.log('fs.stat callback exec!!!!!')
-        if(err) {
-          debug && console.log('isFileExists: rejected!')
-          return reject(null)
-        } else {
-          debug && console.log('isFileExists: resolved!')
-          return resolve({})
-        }
-      })
+        debug && console.log('isFileExists: resolved!')
+        return resolve({})
+      } catch(e) {
+        debug && console.log('isFileExists: rejected!')
+        return reject(null)
+      }
     })
   }
 
@@ -70,7 +68,9 @@ class Storage {
         data = '{}'
       }
       const fullPath = path.resolve(_path, fileName)
+      console.log('call isFileExists')
       const sResponse = await this.isFileExists(fullPath)
+      console.log('after isFileExists')
       if(!sResponse) {
         reject(null)
       }

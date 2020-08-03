@@ -35,10 +35,11 @@ class Http {
               this.post(action, data, headers)
             }, 2000)
           }
+          return null
         } else {
           interval && clearInterval(interval)
+          return e.response.data
         }
-        return null
       }
     }
     store.dispatch('error', false)

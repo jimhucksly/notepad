@@ -197,7 +197,10 @@ const actions = {
           password: data.password
         }, jsonHeaders)
         if(resp instanceof Error) return Promise.reject(resp)
-        return resp
+        if(resp.status && resp.status === 'success') {
+          return resp
+        }
+        return Promise.reject(resp)
       case 'GET_JSON':
         jsonHeaders.headers.Authorization = store.getters.getToken
         try {

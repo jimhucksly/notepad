@@ -42,7 +42,6 @@ export default class Auth extends Vue {
 
   protected submit() {
     if(this.validate()) {
-      this.$store.dispatch('loading', true)
       this.$store.dispatch('action', {
         type: 'AUTH',
         data: {
@@ -51,12 +50,17 @@ export default class Auth extends Vue {
         }
       })
         .then((resp: any) => {
+          console.log('tpoken', resp.token)
           this.$store.dispatch('token', resp.token)
           const userDataPath = this.$store.getters.getUserDataPath
-          return storage.set(userDataPath, userDataFileName, { token: resp.token })
+          const writer = storage.set(userDataPath, userDataFileName, { token: resp.token })
+          console.log(writer)
+          return writer
         })
         .then((resp: any) => {
+          console.log('AAAAAAAAAa', resp)
           console.log('write to file is successfully completed')
+          this.$store.dispatch('loading', true)
           this.$store.dispatch('auth', true)
           this.$store.dispatch('action', {
             type: 'GET_JSON'
@@ -66,15 +70,14 @@ export default class Auth extends Vue {
           })
         })
         .catch((err: any) => {
+          console.log('BBBBBBBB', err)
           this.$store.dispatch('loading', false)
           const data = err.response && err.response.data ? err.response.data : (err.response || err)
-          if(data.message && !_.isEmpty(data.message)) {
-            this.errors = { ...data.message }
+          if(data.messages && !_.isEmpty(data.messages)) {
+            this.errors = { ...data.messages }
             this.errors.login = this.errors.login ? 1 : 0
             this.errors.pass = this.errors.pass ? 1 : 0
             this.validate()
-          } else {
-            console.error(data)
           }
         })
     }

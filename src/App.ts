@@ -1,6 +1,8 @@
 /// <reference path="../vue-shim.d.ts" />
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import Popup from './components/popup'
+import storage from '~/plugins/storage'
+import { userDataFileName } from '~/constants'
 
 @Component({
   name: 'App',
@@ -37,6 +39,8 @@ export default class App extends Vue {
     this.$electron.ipcRenderer.on('sign-out', () => {
       this.$store.dispatch('auth', false)
       this.$store.dispatch('token', null)
+      const userDataPath = this.$store.getters.getUserDataPath
+      storage.set(userDataPath, userDataFileName, { token: '' })
     })
     this.$electron.ipcRenderer.on('about', () => {
       this.$popup.open('about')

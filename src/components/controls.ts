@@ -42,9 +42,16 @@ export default class Controls extends Vue {
         div.innerHTML = this.json[stamp].message
         const urls = div.querySelectorAll('a')
         urls.length && urls.forEach((el: any) => {
-          const href: string = el.href
+          const href: string = el.href.replace(/\/$/, "")
           const p = document.createElement('p')
           p.innerHTML = href
+          div.insertBefore(p, el)
+          el.remove()
+        })
+        const marks = div.querySelectorAll('mark')
+        marks.length && marks.forEach((el: any) => {
+          const p = document.createElement('p')
+          p.innerHTML = '###' + el.innerHTML
           div.insertBefore(p, el)
           el.remove()
         })
