@@ -11,14 +11,6 @@ const webpackHotMiddleware = require('webpack-hot-middleware')
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 
-const express = require('express')
-const server = express()
-
-const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || 9080
-
-server.set('port', port)
-
 let electronProcess = null
 let manualRestart = false
 let hotMiddleware

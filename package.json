@@ -84,7 +84,6 @@
     "auto-updater": "^1.0.2",
     "axios": "^0.19.2",
     "electron-updater": "^4.0.14",
-    "express": "^4.17.1",
     "fs": "^0.0.1-security",
     "json-formatter-js": "^2.3.3",
     "markdown-it": "^10.0.0",
