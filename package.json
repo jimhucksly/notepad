@@ -144,7 +144,7 @@
     "mini-css-extract-plugin": "0.4.0",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "request": "^2.88.0",
     "require-dir": "^1.0.0",
     "sass-loader": "^7.0.3",
@@ -166,7 +166,7 @@
     "vue2-ace-editor": "^0.0.15",
     "webpack": "^4.15.1",
     "webpack-cli": "^3.0.8",
-    "webpack-dev-server": "^3.1.4",
+    "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.22.2",
     "webpack-merge": "^4.1.3"
   }
