@@ -33,13 +33,6 @@ export default class Preferences extends Vue {
     return this.$store.getters.getDownloadsTargetPath
   }
 
-  @Watch('isAutoLaunchEnabled')
-  onIsAutoLaunchEnabledChanged(v: boolean) {
-    if(v) {
-      this.appAutoLauncher.enable()
-    } else this.appAutoLauncher.disable()
-  }
-
   protected save() {
     const form: any = this.$refs.form
     const requireds = form.querySelectorAll('[required]')
@@ -66,6 +59,10 @@ export default class Preferences extends Vue {
         downloadsTargetPath: this.preferences.downloadsTargetPath
       })
       this.$store.dispatch('downloadsTargetPath', this.preferences.downloadsTargetPath)
+
+      if(this.isAutoLaunchEnabled) {
+        this.appAutoLauncher.enable()
+      } else this.appAutoLauncher.disable()
     }
     this.$electron.ipcRenderer.send('preferences-hide')
     this.commandBus.do(new NavigateCommand('goBack'))
