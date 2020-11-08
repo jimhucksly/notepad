@@ -4,9 +4,9 @@ import path from 'path'
 const debug = false
 
 class Storage {
-  public isPathExists(_path: string): Promise<object> {
+  public isPathExists(_path: string): Promise<any> {
     debug && console.log('isPathExists: call!')
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       debug && console.log('isPathExists: body of promise')
       try {
         fs.statSync(_path)
@@ -19,9 +19,9 @@ class Storage {
     })
   }
 
-  public isFileExists(_path: string, _file?: string): Promise<object> {
+  public isFileExists(_path: string, _file?: string): Promise<any> {
     debug && console.log('call isFileExists')
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let filePath = _path
       if(_file !== undefined) {
         filePath = path.resolve(_path, _file)
@@ -39,7 +39,7 @@ class Storage {
     })
   }
 
-  public append(_path: string, fileName: string, json: object): Promise<object> {
+  public append(_path: string, fileName: string, json: any): Promise<any> {
     return new Promise((resolve, reject) => {
       const fullPath = path.resolve(_path, fileName)
       this.isFileExists(fullPath)
@@ -47,7 +47,7 @@ class Storage {
           let targetJson: any = fs.readFileSync(fullPath, 'utf8')
           try {
             targetJson = JSON.parse(targetJson)
-          } catch (err) {
+          } catch(e) {
             targetJson = {}
           }
           const data = { ...targetJson, ...json }
@@ -59,18 +59,18 @@ class Storage {
     })
   }
 
-  public set(_path: string, fileName: string, json: object): Promise<object> {
+  public set(_path: string, fileName: string, json: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       let data
       try {
         data = json ? JSON.stringify(json) : '{}'
-      } catch (err) {
+      } catch(e) {
         data = '{}'
       }
       const fullPath = path.resolve(_path, fileName)
-      console.log('call isFileExists')
+      debug && console.log('call isFileExists')
       const sResponse = await this.isFileExists(fullPath)
-      console.log('after isFileExists')
+      debug && console.log('after isFileExists')
       if(!sResponse) {
         reject(null)
       }
@@ -83,7 +83,7 @@ class Storage {
     })
   }
 
-  public get(_path: string, _file: string, key?: string): Promise<object> {
+  public get(_path: string, _file: string, key?: string): Promise<any> {
     debug && console.log('call storage.get')
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
@@ -98,7 +98,7 @@ class Storage {
         let json
         try {
           json = JSON.parse(data)
-        } catch (err) {
+        } catch(e) {
           json = {}
         }
         if(key && json[key] !== undefined) {

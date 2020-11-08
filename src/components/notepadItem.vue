@@ -1,7 +1,5 @@
 <template>
-  <div class="notepad_item"
-    :data-stamp="item.key"
-    :class="{ unread: item.unread }">
+  <div class="notepad_item" :data-stamp="item.key" :class="{ unread: item.unread }">
     <div>
       <div class="notepad_item_date">{{ item.date }}</div>
     </div>
@@ -11,20 +9,18 @@
         ref="file"
         :item-key="item.key"
         :item-file="item.file"
-        @onOpenFile="openFile"
-        @onSaveFile="saveFile"
-        >
-      </file>
+        @on-open-file="openFile"
+        @on-save-file="saveFile"
+      />
       <p v-else-if="!isEdit" v-html="message" @click.prevent="openLink($event)"></p>
     </div>
     <controls
       :item-key="item.key"
       :is-lock="item.lock"
       :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']"
-      @onWillEdit="isEdit = true"
-      @onWillSave="isEdit = false"
-      >
-    </controls>
+      @on-will-edit="isEdit = true"
+      @on-will-save="isEdit = false"
+    />
   </div>
 </template>
 <script src="./notepadItem.ts" lang="ts"></script>

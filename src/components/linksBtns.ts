@@ -7,7 +7,7 @@ import BtnAdd from '~/components/btnAdd'
     BtnAdd
   }
 })
-export default class LinksBtns extends Vue  {
+export default class LinksBtns extends Vue {
   protected add() {
     this.$popup.open('linkAdd')
   }

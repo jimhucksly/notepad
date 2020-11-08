@@ -1,5 +1,6 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import SidebarTree from '~/components/sidebarTree'
+import { ITreeItem } from '~/domain/models'
 
 @Component({
   name: 'SidebarTree',
@@ -8,17 +9,8 @@ import SidebarTree from '~/components/sidebarTree'
   }
 })
 export default class SidebarTreeComponent extends Vue {
-  @Prop({
-    type: Array,
-    default: () => []
-  })
-  readonly tree!: object[]
-
-  @Prop({
-    type: Number,
-    default: 1
-  })
-  readonly level!: number
+  @Prop() tree!: ITreeItem[]
+  @Prop({ default: 1 }) level!: number
 
   protected selectNode(item: any) {
     this.$electron.ipcRenderer.send('codemirror-link-click', item.name)

@@ -22,10 +22,10 @@ import TodoBtns from '~/components/TodoBtns'
   }
 })
 export default class Sidebar extends Vue {
-  isSwitcherMenuExpanded: boolean = false
+  isSwitcherMenuExpanded = false
 
-  projectEditedItemKey: string = ''
-  isProjectsArchivesInit: boolean = false
+  projectEditedItemKey = ''
+  isProjectsArchivesInit = false
 
   get isPreferences() {
     return this.$store.getters.getIsPreferencesShow
@@ -49,8 +49,8 @@ export default class Sidebar extends Vue {
     }
     return true
   }
-  get isMarkdown() {
-    return this.$store.getters.getIsMarkdownShow
+  get isLibrary() {
+    return this.$store.getters.getIsLibraryShow
   }
   get isJsonViewer() {
     return this.$store.getters.getIsJsonViewerShow

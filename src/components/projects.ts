@@ -1,21 +1,29 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
+import { IFilters, IJson } from '~/domain/models'
+import { TYPES } from '~/domain/types'
+import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { SetFilterCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { ArchivesQuery } from '~/domain/queries'
 
 @Component({
   name: 'Projects'
 })
 export default class Projects extends Vue {
-  names: any = {}
-  checked: string = ''
-  isArchivesInit: boolean = false
+  checked = ''
+  isArchivesInit = false
 
-  get isProjects() {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  get isProjects(): boolean {
     return this.$store.getters.getIsProjectsShow
   }
-  get json() {
+  get json(): IJson {
     return this.$store.getters.getJson
   }
-  get filter() {
+  get filter(): IFilters {
     return this.$store.getters.getFilter
   }
 
@@ -23,7 +31,7 @@ export default class Projects extends Vue {
   onIsProjectsChanged(v: boolean) {
     this.checked = ''
     this.isArchivesInit = false
-    this.$emit('onArchives', this.isArchivesInit)
+    this.$emit('on-archives', this.isArchivesInit)
   }
 
   protected toggleLock(e: any, stamp: string) {
@@ -31,7 +39,7 @@ export default class Projects extends Vue {
     const item = items.find((el: any) => el.dataset.stamp === stamp)
     const isLocked = item.classList.contains('lock')
     const updateJson = () => {
-      const o = {
+      const o: IJson = {
         [stamp]: {
           key: stamp,
           date: this.json[stamp].date,
@@ -41,11 +49,8 @@ export default class Projects extends Vue {
           file: this.json[stamp].file
         }
       }
-      this.$store.dispatch('json', { ...this.json, ...o })
-      this.$store.dispatch('action', {
-        type: 'UPDATE',
-        data: o
-      })
+      this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
+      this.commandBus.do(new UpdateJsonCommand(o))
     }
     if(isLocked) {
       this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
@@ -67,9 +72,9 @@ export default class Projects extends Vue {
       if(item.classList.contains('active')) {
         const buff = cloneDeep(this.filter)
         unset(buff, stamp)
-        this.$store.dispatch('filter', { ...buff })
+        this.commandBus.do(new SetFilterCommand({ ...buff }))
       } else {
-        this.$store.dispatch('filter', { ...this.filter, [stamp]: true })
+        this.commandBus.do(new SetFilterCommand({ ...this.filter, [stamp]: true }))
       }
     }
   }
@@ -78,10 +83,10 @@ export default class Projects extends Vue {
     const isChecked: boolean = target.checked
     if(isChecked) {
       this.isArchivesInit = false
-      this.$emit('onArchives', false)
+      this.$emit('on-archives', false)
     }
     this.checked = isChecked ? target.dataset.stamp : ''
-    this.$emit('onEdit', this.checked)
+    this.$emit('on-edit', this.checked)
   }
   protected clearCheck() {
     this.checked = ''
@@ -92,12 +97,10 @@ export default class Projects extends Vue {
   }
   protected toggleArchives() {
     this.isArchivesInit = !this.isArchivesInit
-    this.$emit('onArchives', this.isArchivesInit)
+    this.$emit('on-archives', this.isArchivesInit)
   }
 
   async created() {
-    this.$store.dispatch('action', {
-      type: 'GET_ARCHIVES'
-    })
+    await this.queryBus.exec(new ArchivesQuery())
   }
 }

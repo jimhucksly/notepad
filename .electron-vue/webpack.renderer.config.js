@@ -12,6 +12,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 /**
  * List of node_modules to include in webpack bundle
@@ -33,39 +34,16 @@ let rendererConfig = {
   module: {
     rules: [
       {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          extractCSS: process.env.NODE_ENV === 'production',
+          loaders: {
+            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
+            scss: 'vue-style-loader!css-loader!sass-loader',
+            less: 'vue-style-loader!css-loader!less-loader'
           }
         }
-      },
-      {
-        test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.less$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader']
-      },
-      {
-        test: /\.html$/,
-        use: 'vue-html-loader'
       },
       {
         test: /\.js$/,
@@ -75,25 +53,18 @@ let rendererConfig = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
+        include: [ path.resolve(__dirname, '../src') ],
         exclude: /node_modules/
       },
       {
-        test: /\.node$/,
-        use: 'node-loader'
+        test: /\.scss$/,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
-        test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            extractCSS: process.env.NODE_ENV === 'production',
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
-            }
-          }
-        }
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -132,6 +103,7 @@ let rendererConfig = {
   plugins: [
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({filename: 'styles.css'}),
+    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -140,12 +112,16 @@ let rendererConfig = {
         removeAttributeQuotes: true,
         removeComments: true
       },
+      isBrowser: false,
+      isDevelopment: process.env.NODE_ENV !== 'production',
       nodeModules: process.env.NODE_ENV !== 'production'
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new ESLintPlugin({
+      extensions: ['vue', 'js', 'ts'],
+      formatter: require('eslint-formatter-friendly')
+    })
   ],
   output: {
     filename: '[name].js',
@@ -154,11 +130,10 @@ let rendererConfig = {
   },
   resolve: {
     alias: {
-      '@': path.join(__dirname, '../src'),
       '~': path.join(__dirname, '../src'),
       'vue$': 'vue/dist/vue.esm.js'
     },
-    extensions: ['.vue', '.ts', '.tsx', '.js', '.json', '.css', '.node']
+    extensions: ['.vue', '.ts', '.js', ]
   },
   target: 'electron-renderer'
 }
@@ -171,6 +146,9 @@ if (process.env.NODE_ENV !== 'production') {
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
     })
+  )
+  rendererConfig.plugins.push(
+    new webpack.ProgressPlugin({ modules: true, modulesCount: 3000 })
   )
 }
 
@@ -197,22 +175,5 @@ if (process.env.NODE_ENV === 'production') {
     })
   )
 }
-
-rendererConfig.plugins.push(
-  new HtmlWebpackPlugin({
-    filename: 'index.html',
-    template: path.resolve(__dirname, '../src/index.ejs'),
-    minify: {
-      collapseWhitespace: true,
-      removeAttributeQuotes: true,
-      removeComments: true
-    },
-    isBrowser: false,
-    isDevelopment: process.env.NODE_ENV !== 'production',
-    nodeModules: process.env.NODE_ENV !== 'production'
-      ? path.resolve(__dirname, '../node_modules')
-      : false
-  })
-)
 
 module.exports = rendererConfig

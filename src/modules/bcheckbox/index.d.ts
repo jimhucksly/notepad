@@ -1,2 +1,0 @@
-import './bcheckbox';
-export = BCheckbox;

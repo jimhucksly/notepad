@@ -2,7 +2,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 import { uniqueid } from '~/helpers'
 
 Vue.component('CloseBtn', {
-  template: `<div class="popup-close-btn" @click="$emit('click')"></div>`
+  template: '<div class="popup-close-btn" @click="$emit(\'click\')"></div>'
 })
 
 Vue.component('PopupTitle', {
@@ -13,7 +13,7 @@ Vue.component('PopupTitle', {
   name: 'Popup'
 })
 export default class Popup extends Vue {
-  appName: string = ''
+  appName = ''
 
   get aboutPopupShow() {
     return this.$store.getters.getIsAboutPopupShow
@@ -36,9 +36,9 @@ export default class Popup extends Vue {
     }
   }
 
-  protected linkUrl: string = ''
-  protected linkName: string = ''
-  protected linkId: string = ''
+  protected linkUrl = ''
+  protected linkName = ''
+  protected linkId = ''
 
   protected addLink() {
     if(this.linkUrl && this.linkName) {

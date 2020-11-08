@@ -2,7 +2,7 @@ import Vue from 'vue'
 import * as Vuex from 'vuex'
 import { RootState } from 'store/types'
 
-declare module "*.vue" {
+declare module '*.vue' {
   export default Vue
 }
 
@@ -11,10 +11,10 @@ declare module 'vue/types/vue' {
     $store: Vuex.Store<RootState>
     $electron: any
     $popup: {
-      open: (s :string) => {}
-      close: (s: string) => {}
+      open: (s :string) => void
+      close: (s: string) => void
     }
-    $slideUp: Function
-    $slideDown: Function
+    $slideUp: (elem: HTMLElement, duration: number) => any
+    $slideDown: (elem: HTMLElement, duration: number) => any
   }
 }

@@ -7,8 +7,8 @@ process.env.CHUNKS_LOG = 'true'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
-
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 let mainConfig = {
   entry: {
@@ -20,24 +20,9 @@ let mainConfig = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
-      {
         test: /\.js$/,
         use: 'babel-loader',
         exclude: /node_modules/
-      },
-      {
-        test: /\.node$/,
-        use: 'node-loader'
       }
     ]
   },
@@ -50,9 +35,6 @@ let mainConfig = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron')
   },
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
-  ],
   target: 'electron-main'
 }
 
@@ -60,9 +42,18 @@ let mainConfig = {
  * Adjust mainConfig for development settings
  */
 if (process.env.NODE_ENV !== 'production') {
+  if(!mainConfig.plugins) {
+    mainConfig.plugins = []
+  }
   mainConfig.plugins.push(
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
+    })
+  )
+  mainConfig.plugins.push(
+    new ESLintPlugin({
+      extensions: ['vue', 'js', 'ts'],
+      formatter: require('eslint-formatter-friendly')
     })
   )
 }

@@ -1,6 +1,16 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
 import { checkLinks } from '~/helpers'
+import { IFilters, IJson } from '~/domain/models'
+import { ICommandBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { TYPES } from '~/domain/types'
+import {
+  SetJsonCommand,
+  SetFilterCommand,
+  UpdateJsonCommand,
+  DeleteProjectCommand
+} from '~/domain/commands'
 
 @Component({
   name: 'Controls'
@@ -16,12 +26,14 @@ export default class Controls extends Vue {
   @Prop({ type: Array, default: () => [] })
   readonly collection!: string[]
 
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
   editableItems: string[] = []
 
-  get json() {
+  get json(): IJson {
     return this.$store.getters.getJson
   }
-  get filter() {
+  get filter(): IFilters {
     return this.$store.getters.getFilter
   }
   get refs() {
@@ -36,13 +48,13 @@ export default class Controls extends Vue {
       if(content) {
         const area = document.createElement('textarea')
         area.style.visibility = 'hidden'
-        this.$emit("onWillEdit")
+        this.$emit('on-will-edit')
         content.appendChild(area)
         const div = document.createElement('div')
-        div.innerHTML = this.json[stamp].message
+        div.innerHTML = this.json[stamp].message ?? ''
         const urls = div.querySelectorAll('a')
         urls.length && urls.forEach((el: any) => {
-          const href: string = el.href.replace(/\/$/, "")
+          const href: string = el.href.replace(/\/$/, '')
           const p = document.createElement('p')
           p.innerHTML = href
           div.insertBefore(p, el)
@@ -82,10 +94,10 @@ export default class Controls extends Vue {
       const content = item.querySelector('.notepad_item_content')
       if(content) {
         const textarea = content.querySelector('textarea')
-        const value = textarea ? textarea.value.replace(/\n/g, '<br>') : ""
-        this.$emit("onWillSave")
+        const value = textarea ? textarea.value.replace(/\n/g, '<br>') : ''
+        this.$emit('on-will-save')
         textarea && content.removeChild(textarea)
-        const o = {
+        const o: IJson = {
           [stamp]: {
             key: stamp,
             date: this.json[stamp].date,
@@ -94,12 +106,9 @@ export default class Controls extends Vue {
             message: checkLinks(value)
           }
         }
-        this.$store.dispatch('json', { ...this.json, ...o })
+        this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
         this.$nextTick(() => {
-          this.$store.dispatch('action', {
-            type: 'UPDATE',
-            data: o
-          })
+          this.commandBus.do(new UpdateJsonCommand(o))
         })
       }
     }
@@ -109,12 +118,9 @@ export default class Controls extends Vue {
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
     unset(buffFilter, stamp)
-    this.$store.dispatch('json', buffJson)
-    this.$store.dispatch('filter', buffFilter)
-    this.$store.dispatch('action', {
-      type: 'DELETE',
-      data: stamp
-    })
+    this.commandBus.do(new SetJsonCommand(buffJson))
+    this.commandBus.do(new SetFilterCommand(buffFilter))
+    this.commandBus.do(new DeleteProjectCommand(stamp))
   }
   protected remove(e: any, stamp: string) {
     if(this.isLock) {

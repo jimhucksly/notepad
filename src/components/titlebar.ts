@@ -1,11 +1,24 @@
 /// <reference path="../../window.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
+import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { TYPES } from '~/domain/types'
+import { LoadingCommand } from '~/domain/commands'
+import {
+  JsonQuery,
+  LibraryQuery,
+  EventsQuery,
+  LinksQuery
+} from '~/domain/queries'
 
 @Component({
   name: 'Titlebar'
 })
 export default class Titlebar extends Vue {
-  title: string = ''
+  title = ''
+
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   get isAuth() {
     return this.$store.getters.getIsAuth
@@ -14,20 +27,17 @@ export default class Titlebar extends Vue {
     return this.$store.getters.isPreferencesShowed
   }
 
-  protected reload() {
-    this.$store.dispatch('loading', true)
-    this.$store.dispatch('action', {
-      type: 'GET_JSON'
-    })
-    this.$store.dispatch('action', {
-      type: 'GET_MD'
-    })
-    this.$store.dispatch('action', {
-      type: 'EVENTS'
-    })
-    this.$store.dispatch('action', {
-      type: 'LINKS'
-    })
+  protected async reload() {
+    this.commandBus.do(new LoadingCommand(true))
+    await Promise.all([
+      this.queryBus.exec(new JsonQuery()),
+      this.queryBus.exec(new LibraryQuery()),
+      this.queryBus.exec(new EventsQuery()),
+      this.queryBus.exec(new LinksQuery())
+    ])
+    setTimeout(() => {
+      this.commandBus.do(new LoadingCommand(false))
+    }, 1500)
   }
 
   mounted() {

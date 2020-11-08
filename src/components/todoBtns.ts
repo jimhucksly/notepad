@@ -7,7 +7,7 @@ import BtnAdd from '~/components/btnAdd'
     BtnAdd
   }
 })
-export default class TodoBtns extends Vue  {
+export default class TodoBtns extends Vue {
   protected add() {
     this.$electron.ipcRenderer.send('todo-add')
   }

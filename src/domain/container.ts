@@ -1,0 +1,27 @@
+import { Container } from 'inversify'
+import { TYPES } from '~/domain/types'
+import QueryBus from '~/domain/queries/query.bus'
+import CommandBus from '~/domain/commands/command.bus'
+import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import store from '~/store'
+import { Store } from 'vuex'
+import { IRootState } from '~/domain/models'
+import { PingCommandHandler } from '~/domain/commands/ping.command'
+import { NavigateCommandHandler } from '~/domain/commands/nav.command'
+
+const _container = new Container()
+_container.bind<Container>(TYPES.Container).toConstantValue(_container)
+_container.bind<IQueryBus>(TYPES.QueryBus).to(QueryBus)
+_container.bind<IQueryBus>(QueryBus).toSelf()
+_container.bind<ICommandBus>(TYPES.CommandBus).to(CommandBus)
+_container.bind<CommandBus>(CommandBus).toSelf()
+_container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(store)
+/* ------------ commands ------------ */
+_container.bind<PingCommandHandler>(TYPES.PingCommand)
+  .to(PingCommandHandler).inSingletonScope()
+_container.bind<NavigateCommandHandler>(TYPES.NavigateCommand)
+  .to(NavigateCommandHandler).inSingletonScope()
+
+export {
+  _container
+}

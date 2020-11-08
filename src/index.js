@@ -15,6 +15,10 @@ process.on('uncaughtException', (err) => {
   console.log(err)
 })
 
+process.on('unhandledRejection', (err) => {
+  console.log(err)
+});
+
 app.commandLine.appendSwitch('ignore-certificate-errors', 'true')
 app.allowRendererProcessReuse = true
 
@@ -48,7 +52,7 @@ function createWindow() {
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
     headless: true,
-    args: ['--no-sandbox']
+    args: ["--no-sandbox"]
   })
 
   mainWindow.loadURL(winURL)

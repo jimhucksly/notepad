@@ -1,5 +1,16 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { now } from '~/helpers'
+import { ICommandBus } from '~/domain/interfaces'
+import { TYPES } from '~/domain/types'
+import { _container } from '~/domain/container'
+import { IArchive, IJson } from '~/domain/models'
+import {
+  SetJsonCommand,
+  UpdateJsonCommand,
+  ArchiveRestoreCommand,
+  ArchiveRemoveCommand,
+  SetArchivesCommand
+} from '~/domain/commands'
 
 @Component({
   name: 'ProjectsArchives'
@@ -8,57 +19,54 @@ export default class ProjectsArchives extends Vue {
   @Prop({ type: Boolean, default: false })
   init!: boolean
 
-  get items() {
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  get items(): IArchive[] {
     return this.$store.getters.getArchives
   }
 
-  get json() {
+  get json(): IJson {
     return this.$store.getters.getJson
   }
 
-  protected getDate(stamp: string) {
+  protected getDate(stamp: string): string {
     return now(stamp).date
   }
 
-  protected async restore(o: any) {
-    const name = `${o.name}_(datetime)${o.date}`
-    const html = await this.$store.dispatch('action', {
-      type: 'ARCHIVE_RESTORE',
-      data: name
-    })
-    if(html) {
-      const {date, stamp} = now()
-      const json = {
-        [stamp]: {
-          key: stamp,
-          date,
-          name: o.name,
-          lock: false,
-          message: html
+  protected async restore(o: IArchive) {
+    try {
+      const name = `${o.name}_(datetime)${o.date}`
+      const html: string = await this.commandBus.do(new ArchiveRestoreCommand(name))
+      if(html) {
+        const { date, stamp } = now()
+        const json: IJson = {
+          [stamp]: {
+            key: stamp,
+            date,
+            name: o.name,
+            lock: false,
+            message: html
+          }
         }
-      }
-      this.$store.dispatch('json', { ...this.json, ...json })
-      const sResponse = await this.$store.dispatch('action', {
-        type: 'CREATE',
-        data: json
-      })
-      if(sResponse.status === 'success') {
+        this.commandBus.do(new SetJsonCommand({ ...this.json, ...json }))
+        await this.commandBus.do(new UpdateJsonCommand(json))
         this.remove(o)
       }
+    } catch(e) {
+      console.log(e)
     }
   }
 
-  protected async remove(o: any) {
-    const name = `${o.name}_(datetime)${o.date}`
-    const sResponse = await this.$store.dispatch('action', {
-      type: 'ARCHIVE_REMOVE',
-      data: name
-    })
-    if(sResponse.status === 'success') {
-      const arr = this.items.filter((e: any) => {
+  protected async remove(o: IArchive) {
+    try {
+      const name = `${o.name}_(datetime)${o.date}`
+      await this.commandBus.do(new ArchiveRemoveCommand(name))
+      const arr = this.items.filter((e: IArchive) => {
         return e.name !== o.name
       })
-      this.$store.dispatch('archives', arr)
+      this.commandBus.do(new SetArchivesCommand(arr))
+    } catch(e) {
+      console.log(e)
     }
   }
 }

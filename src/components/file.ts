@@ -24,11 +24,11 @@ export default class File extends Vue {
   }
 
   protected openFile() {
-    this.$emit('onOpenFile', this.href)
+    this.$emit('on-open-file', this.href)
   }
 
   protected saveFile() {
-    this.$emit('onSaveFile', {
+    this.$emit('on-save-file', {
       fileName: this.fileName,
       href: this.href
     })

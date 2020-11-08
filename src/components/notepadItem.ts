@@ -24,18 +24,18 @@ interface IData {
   }
 })
 export default class NotepadItem extends Vue {
-  @Prop({ type: Object, default: () => {} })
+  @Prop()
   item!: IData
 
-  @Prop({ type: Boolean, default: false })
+  @Prop()
   isLast!: boolean
 
-  message: string = ""
-  isEdit: boolean = false
+  message = ''
+  isEdit = false
 
-  @Watch("item")
+  @Watch('item')
   onItemChanged(o: IData) {
-    this.message = this.item.message || ""
+    this.message = this.item.message ?? ''
   }
 
   protected openFile(href: string) {
@@ -60,9 +60,9 @@ export default class NotepadItem extends Vue {
   }
 
   mounted() {
-    this.message = this.item.message || ""
+    this.message = this.item.message ?? ''
     if(this.isLast) {
-      this.$emit("onLastRendered")
+      this.$emit('on-last-rendered')
     }
   }
 }

@@ -2,10 +2,10 @@
   <div class="popup" v-show="showPopup">
     <div class="popup-about" v-if="aboutPopupShow">
       <popup-title>
-        <close-btn @click="$popup.close('about')"></close-btn>
+        <close-btn @click="$popup.close('about')" />
       </popup-title>
       <div class="m-b-20">
-        <img src="../../static/icon.svg" alt="">
+        <img src="/static/icon.svg" alt="">
       </div>
       <div class="m-b-5">
         <p>{{ appName }}</p>
@@ -19,7 +19,7 @@
     </div>
     <div class="popup-uploading" v-if="uploadingPopupShow">
       <popup-title>
-        <close-btn @click="$popup.close('uploading')"></close-btn>
+        <close-btn @click="$popup.close('uploading')" />
       </popup-title>
       <div class="uploading-label">
         Uploading file...
@@ -31,7 +31,7 @@
     <div class="popup-link-add" v-if="linkAddPopupShow">
       <popup-title>
         Add link
-        <close-btn @click="$popup.close('linkAdd')"></close-btn>
+        <close-btn @click="$popup.close('linkAdd')" />
       </popup-title>
       <form>
         <div class="m-b-15">

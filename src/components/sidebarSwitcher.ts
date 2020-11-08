@@ -1,52 +1,23 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
-
-interface IMenu {
-  name: string
-  nameAlt: string
-  id: number
-}
+import { NavigateCommand } from '~/domain/commands/nav.command'
+import { IMenu } from '~/domain/models'
+import { ICommandBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { TYPES } from '~/domain/types'
 
 @Component({
-  name: 'SidebarSwitcher',
+  name: 'SidebarSwitcher'
 })
 export default class SidebarSwitcher extends Vue {
-  @Prop({ type: String, default: '' })
-  readonly legend!: string
+  @Prop({ type: String, default: '' }) readonly legend!: string
 
-  protected menu: IMenu[] = [
-    {
-      name: 'projects',
-      nameAlt: 'Projects',
-      id: 1
-    },
-    {
-      name: 'markdown',
-      nameAlt: 'Markdown',
-      id: 2
-    },
-    {
-      name: 'todo',
-      nameAlt: 'Todo',
-      id: 3
-    },
-    {
-      name: 'events',
-      nameAlt: 'Events',
-      id: 4
-    },
-    {
-      name: 'links',
-      nameAlt: 'Links',
-      id: 5
-    },
-    {
-      name: 'jsonViewer',
-      nameAlt: 'Json Viewer',
-      id: 6
-    }
-  ]
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  private isExpand: boolean = false
+  private isExpand = false
+
+  get menu(): IMenu[] {
+    return this.$store.getters.getMenu
+  }
 
   get isProjects() {
     return this.$store.getters.getIsProjectsShow
@@ -54,8 +25,8 @@ export default class SidebarSwitcher extends Vue {
   get isTodo() {
     return this.$store.getters.getIsTodoShow
   }
-  get isMarkdown() {
-    return this.$store.getters.getIsMarkdownShow
+  get isLibrary() {
+    return this.$store.getters.getIsLibraryShow
   }
   get isEvents() {
     return this.$store.getters.getIsEventsShow
@@ -68,7 +39,7 @@ export default class SidebarSwitcher extends Vue {
   }
   get current() {
     if(this.isProjects) return 1
-    if(this.isMarkdown) return 2
+    if(this.isLibrary) return 2
     if(this.isTodo) return 3
     if(this.isEvents) return 4
     if(this.isLinks) return 5
@@ -87,38 +58,34 @@ export default class SidebarSwitcher extends Vue {
   }
 
   protected toggle(): any {
-    if(!!this.legend) return null
+    if(this.legend) return null
     this.isExpand = !this.isExpand
     if(this.isExpand) {
-      this.$emit('onExpand')
-      const switcher: any = this.$refs.switcher
+      this.$emit('on-expand')
       document.onclick = (e: any) => {
         if(!e.target.closest('.switcher')) {
           this.isExpand = !this.isExpand
-          this.$emit('onHide')
+          this.$emit('on-hide')
           document.onclick = null
         }
       }
       document.onkeydown = (e) => {
         if(e.keyCode === 27 || e.code === 'Escape') {
           this.isExpand = !this.isExpand
-          this.$emit('onHide')
+          this.$emit('on-hide')
           document.onclick = null
           document.onkeydown = null
         }
       }
-    }
-    else {
+    } else {
       document.onclick = null
       document.onkeydown = null
-      this.$emit('onHide')
+      this.$emit('on-hide')
     }
   }
 
-  protected select(id: number) {
-    this.menu.forEach((item: IMenu) => {
-      this.$store.dispatch(item.name, item.id === id)
-    })
+  protected select(item: IMenu) {
+    this.commandBus.do(new NavigateCommand(item.name))
     this.toggle()
   }
 }

@@ -1,35 +1,44 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
+import { IFilters, IJson, IJsonItem } from '~/domain/models'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { TYPES } from '~/domain/types'
+import { ArchivingCommand, DeleteProjectCommand, SetFilterCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { ArchivesQuery } from '~/domain/queries'
 
 @Component({
   name: 'ProjectsEditor'
 })
 export default class ProjectsEditor extends Vue {
-  @Prop({ type: String, default: '' })
+  @Prop()
   itemStamp!: string
 
-  name: string = ''
-  isLock: boolean = false
-  isDialog: boolean = false
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  get json() {
+  name = ''
+  isLock = false
+  isDialog = false
+
+  get json(): IJson {
     return this.$store.getters.getJson
   }
 
-  get filter() {
+  get filter(): IFilters {
     return this.$store.getters.getFilter
   }
 
-  get item() {
+  get item(): IJsonItem {
     return this.json[this.itemStamp] || null
   }
 
-  get isFile() {
+  get isFile(): boolean {
     return this.item && !!this.item.file
   }
 
   @Watch('item')
-  onItemChanged(o: any) {
+  onItemChanged(o: IJsonItem) {
     if(o) {
       this.name = o.name
       this.isLock = o.lock
@@ -39,51 +48,41 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  protected isLockChange(v: boolean): null | void {
+  protected toggleLock(v: boolean): void {
     if(!v) {
       this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
       this.isDialog = true
-      return null
+    } else {
+      this.isLock = v
     }
-    this.isLock = v
   }
 
   protected async archive() {
-    const sResponse = await this.$store.dispatch('action', {
-      type: 'ARCHIVE',
-      data: this.itemStamp
-    })
-    if(sResponse.status === 'success') {
-      this.removeHandler()
-      this.$store.dispatch('action', {
-        type: 'GET_ARCHIVES'
-      })
-    }
+    await this.commandBus.do(new ArchivingCommand(this.itemStamp))
+    this.removeHandler()
+    await this.queryBus.exec(new ArchivesQuery())
   }
 
-  protected remove(e: any) {
+  protected remove() {
     this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
     this.$electron.ipcRenderer.once('remove-is-confimed', () => {
       this.removeHandler()
     })
   }
 
-  protected removeHandler() {
+  protected async removeHandler() {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, this.itemStamp)
     unset(buffFilter, this.itemStamp)
-    this.$store.dispatch('json', buffJson)
-    this.$store.dispatch('filter', buffFilter)
-    this.$store.dispatch('action', {
-      type: 'DELETE',
-      data: this.itemStamp
-    })
+    this.commandBus.do(new SetJsonCommand(buffJson))
+    this.commandBus.do(new SetFilterCommand(buffFilter))
+    await this.commandBus.do(new DeleteProjectCommand(this.itemStamp))
     this.$emit('update:itemStamp', '')
   }
 
-  protected save() {
-    const o = {
+  protected async save() {
+    const o: IJson = {
       [this.itemStamp]: {
         key: this.itemStamp,
         date: this.item.date,
@@ -93,11 +92,8 @@ export default class ProjectsEditor extends Vue {
         file: this.item.file
       }
     }
-    this.$store.dispatch('json', { ...this.json, ...o })
-    this.$store.dispatch('action', {
-      type: 'UPDATE',
-      data: o
-    })
+    this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
+    await this.commandBus.do(new UpdateJsonCommand(o))
     this.$emit('update:itemStamp', '')
   }
 

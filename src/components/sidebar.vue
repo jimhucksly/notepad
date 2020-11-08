@@ -2,19 +2,19 @@
   <aside>
     <sidebar-switcher
       :legend="isPreferences ? 'Preferences' : ''"
-      @onExpand="isSwitcherMenuExpanded = true"
-      @onHide="isSwitcherMenuExpanded = false"
+      @on-expand="isSwitcherMenuExpanded = true"
+      @on-hide="isSwitcherMenuExpanded = false"
     />
     <projects
       ref="projects"
       class="projects"
       v-show="!isPreferences && isProjects"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-      @onEdit="(stamp) => {
+      @on-edit="(stamp) => {
         isProjectsArchivesInit = false
         projectEditedItemKey = stamp
       }"
-      @onArchives="(v) => {
+      @on-archives="(v) => {
         projectEditedItemKey = ''
         isProjectsArchivesInit = v
       }"
@@ -29,9 +29,9 @@
     />
     <div
       class="markdown"
-      v-show="!isPreferences && isMarkdown"
+      v-show="!isPreferences && isLibrary"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-      >
+    >
       <sidebar-tree :tree="mdTree" />
     </div>
     <json-viewer-btns

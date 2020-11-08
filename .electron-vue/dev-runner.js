@@ -19,6 +19,7 @@ let isRunning = false
 
 function logStats (proc, data) {
   let log = ''
+  log += '\n'
 
   log += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
   log += '\n\n'
@@ -27,15 +28,17 @@ function logStats (proc, data) {
   p += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
   p += '\n'
 
-  if (typeof data === 'object') {
-    data.toString({
-      colors: true,
-      chunks: false
-    }).split(/\r?\n/).forEach(line => {
-      log += '  ' + line + '\n'
-    })
-  } else {
-    log += `  ${data}\n`
+  if(data) {
+    if (typeof data === 'object') {
+      data.toString({
+        colors: true,
+        chunks: false
+      }).split(/\r?\n/).forEach(line => {
+        log += '  ' + line + '\n'
+      })
+    } else {
+      log += `  ${data}\n`
+    }
   }
 
   log += '\n' + chalk.yellow.bold(`${new Array(28 + 1).join('-')}`) + '\n'
@@ -59,9 +62,12 @@ function startMain () {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      console.log(chalk.white.bold('compiling...' + '\n'))
       hotMiddleware.publish({ action: 'compiling' })
       done()
+    })
+
+    compiler.hooks.done.tap('done', stats => {
+      console.log(chalk.red.bold('app is updated: ') + dd + '\n')
     })
 
     compiler.watch({}, (err, stats) => {
@@ -71,7 +77,7 @@ function startMain () {
       }
 
       if(!isRunning) {
-        logStats('Main', stats)
+        logStats('Main')
       }
 
       if (electronProcess && electronProcess.kill) {
@@ -103,16 +109,9 @@ function startRenderer () {
       heartbeat: 2500
     })
 
-    compiler.hooks.compilation.tap('compilation', compilation => {
-      compilation.hooks.htmlWebpackPluginAfterEmit.tapAsync('html-webpack-plugin-after-emit', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
-        cb()
-      })
-    })
-
     compiler.hooks.done.tap('done', stats => {
       if(!isRunning) {
-        logStats('Renderer', stats)
+        logStats('Renderer')
       } else {
         const d = new Date(Date.now())
         const hh = ('0' + d.getHours()).slice(-2)

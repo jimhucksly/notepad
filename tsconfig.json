@@ -2,12 +2,13 @@
   "compileOnSave": true,
   "compilerOptions": {
     "moduleResolution": "node",
-    "module": "commonjs",
-    "target": "es6",
+    "module": "esnext",
+    "target": "es5",
     "baseUrl": "src",
     "paths": {
       "~/*": ["*"]
     },
+    "types": ["reflect-metadata", "node"],
     "outDir": "./dist",
     "newLine": "LF",
     "preserveConstEnums": true,
@@ -25,16 +26,13 @@
     "skipLibCheck": true,
     "strict": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "allowJs": false,
+    "strictPropertyInitialization": false
   },
   "exclude": [
     "node_modules",
-    "typings",
-    "./dist/**/*"
+    "**/*.js"
   ],
-  "include": [
-    "src",
-    "src/**/*.ts",
-    "@types/**/*.d.ts"
-  ]
+  "include": ["src/**/*"]
 }

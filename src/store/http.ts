@@ -1,19 +1,22 @@
 import axios from 'axios'
-import { API_URL } from '../constants'
-import { uploadingFile } from '../helpers'
-import store from '../store'
+import { API_URL } from '~/constants'
+import { uploadingFile } from '~/helpers'
+import store from '~/store'
+import { IJsonHeaders } from '~/domain/models'
 
 let interval: any = null
 
 class Http {
-  public async get(action: string, headers: object) {
+  public async get(action: string, headers: IJsonHeaders): Promise<any> {
     const query = `action=${action}`
-    const resp = await axios.get(API_URL + '?' + query, headers)
-    if(resp instanceof Error) return null
+    const resp: any = await axios.get(API_URL + '?' + query, headers)
+    if(resp instanceof Error) {
+      return Promise.reject(resp)
+    }
     return resp
   }
 
-  public async post(action: string, data: object, headers: object) {
+  public async post(action: string, data: any, headers: IJsonHeaders) {
     const query = `action=${action}`
     let resp: any
     if(action === 'FILE') {
@@ -27,7 +30,7 @@ class Http {
     } else {
       try {
         resp = await axios.post(API_URL + '?' + query, data, headers)
-      } catch (e) {
+      } catch(e) {
         if(e.response === undefined) {
           store.dispatch('error', true)
           if(interval === undefined) {

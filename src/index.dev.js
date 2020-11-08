@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import electronDebug from 'electron-debug'
-import { app/*, session*/ } from 'electron'
+import { app } from 'electron'
 
 electronDebug()
 
