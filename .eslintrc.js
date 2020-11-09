@@ -42,7 +42,7 @@ module.exports = {
       "anonymous": "never",
       "named": "never",
       "asyncArrow": "always"
-  }],
+    }],
     // enforce spacing before and after keywords (keyword-spacing)
     "keyword-spacing": [2, {
         "overrides": {

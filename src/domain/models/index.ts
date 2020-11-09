@@ -79,12 +79,15 @@ export interface IJsonHeaders {
   }
 }
 
+type TComponent = 'Preferences' | 'Projects' | 'Library' | 'Todo' | 'Events' | 'Links' | 'JsonViewer'
+
 export interface IRootState {
   loading: boolean
   isProjectsShow: boolean
   userDataPath: string
   downloadsTargetPath: string
-  md: string
+  component: TComponent
+  library: string
   mdTree: ITreeItem[]
   filter: IFilters
   isAuth: boolean

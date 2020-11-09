@@ -12,10 +12,10 @@ import JsonViewer from '~/pages/jsonViewer'
 import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
-import { userDataFileName } from '~/constants'
+import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { JsonQuery, LibraryQuery } from '~/domain/queries'
+import { OAuthQuery, JsonQuery, LibraryQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 
@@ -56,31 +56,41 @@ export default class Index extends Vue {
     return this.$store.getters.getComponent
   }
 
-  protected async checkToken(p: string) {
+  protected async checkToken(p: string): Promise<boolean> {
     this.commandBus.do(new LoadingCommand(true))
     const token = await storage.get(p, userDataFileName, 'token')
     if(token) {
-      this.$store.dispatch('token', token)
-      await Promise.all([
-        this.queryBus.exec(new JsonQuery()),
-        this.queryBus.exec(new LibraryQuery())
-      ])
-      setTimeout(() => {
+      try {
+        this.$store.dispatch('token', token)
+        await this.queryBus.exec(new OAuthQuery())
+        await Promise.all([
+          this.queryBus.exec(new JsonQuery()),
+          this.queryBus.exec(new LibraryQuery())
+        ])
+        setTimeout(() => {
+          this.commandBus.do(new LoadingCommand(false))
+          this.commandBus.do(new AuthCommand(true))
+        }, 1500)
+        return true
+      } catch(e) {
+        this.commandBus.do(new AuthCommand(false))
         this.commandBus.do(new LoadingCommand(false))
-        this.commandBus.do(new AuthCommand(true))
-      }, 1500)
-      return true
+        this.$store.dispatch('token', null)
+        const userDataPath = this.$store.getters.getUserDataPath
+        storage.set(userDataPath, userDataFileName, { token: '' })
+        return false
+      }
     } else {
       this.commandBus.do(new LoadingCommand(false))
       this.commandBus.do(new AuthCommand(false))
-      return null
+      return false
     }
   }
 
   protected async setPath(appPath: string) {
     try {
       this.$store.dispatch('userDataPath', appPath)
-      const json: any = await storage.get(appPath, 'UserPreferences')
+      const json: any = await storage.get(appPath, userPreferencesFileName)
       if(json.downloadsTargetPath !== undefined) {
         this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
       } else {
@@ -96,8 +106,8 @@ export default class Index extends Vue {
   async created(): Promise<void> {
     this.$electron.ipcRenderer.send('get-app-path')
     await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
-      await this.checkToken(appPath)
       await this.setPath(appPath)
+      await this.checkToken(appPath)
     })
   }
 }

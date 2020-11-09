@@ -7,7 +7,7 @@ const _state: any = {
   component: 'Projects',
   userDataPath: '',
   downloadsTargetPath: '',
-  md: '',
+  library: '',
   mdTree: [],
   filter: {}
 }

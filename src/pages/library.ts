@@ -124,7 +124,7 @@ export default class Library extends Vue {
   links: string[] = []
 
   get initialValue() {
-    return this.$store.getters.getMd
+    return this.$store.getters.getLibraryData
   }
 
   @Watch('initialValue')
@@ -154,7 +154,7 @@ export default class Library extends Vue {
         }
       }
     })
-    this.commandBus.do(new SetTreeCommand([ ...cloneDeep(tree) ]))
+    this.commandBus.do(new SetTreeCommand([...cloneDeep(tree)]))
   }
 
   mounted() {

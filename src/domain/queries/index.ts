@@ -8,6 +8,9 @@ export class AuthQuery {
   }
 }
 
+export class OAuthQuery {
+}
+
 export class JsonQuery {
 }
 

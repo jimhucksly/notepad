@@ -50,6 +50,7 @@ export class NavigateCommandHandler implements ICommand {
     if(this.isProjects) return 'projects'
     if(this.isLibrary) return 'library'
     if(this.isTodo) return 'todo'
+    if(this.isEvents) return 'events'
     if(this.isLinks) return 'links'
     if(this.isJsonViewer) return 'jsonViewer'
     return ''

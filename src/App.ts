@@ -1,3 +1,4 @@
+/* eslint-disable-next-line */
 /// <reference path="../vue-shim.d.ts" />
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import Popup from './components/popup'

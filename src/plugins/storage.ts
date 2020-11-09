@@ -21,6 +21,8 @@ class Storage {
 
   public isFileExists(_path: string, _file?: string): Promise<any> {
     debug && console.log('call isFileExists')
+    debug && console.log('_path: ', _path)
+    debug && console.log('_file: ', _file)
     return new Promise((resolve, reject) => {
       let filePath = _path
       if(_file !== undefined) {

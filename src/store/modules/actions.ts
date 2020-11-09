@@ -9,6 +9,7 @@ import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
 import {
   AuthQuery,
+  OAuthQuery,
   JsonQuery,
   LibraryQuery,
   ArchivesQuery,
@@ -120,8 +121,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setArchives', command.items)
   }
 
-  md(store: TStore, data: any) {
-    store.commit('setMd', data)
+  libraryData(store: TStore, data: any) {
+    store.commit('setLibraryData', data)
   }
 
   eventsJson(store: TStore, data: any) {
@@ -274,7 +275,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
           store.dispatch('setTimeout')
           if(resp.status !== 204) {
             store.dispatch('json', resp.data.data)
-            store.dispatch('md', resp.data.md)
+            store.dispatch('libraryData', resp.data.md)
             store.dispatch('eventsJson', resp.data.events)
             store.dispatch('linksJson', resp.data.links)
             store.dispatch('todoJson', resp.data.todo)
@@ -296,11 +297,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param data { login, password }
    */
   @Queryable(AuthQuery)
-  async actionAuth(store: TStore, data: any) {
+  async actionAuth(store: TStore, query: AuthQuery) {
     try {
       const resp = await $http.post('AUTH', {
-        login: data.login,
-        password: data.password
+        login: query.login,
+        password: query.password
       }, jsonHeaders)
       if(resp.token) {
         store.dispatch('token', resp.token)
@@ -310,6 +311,21 @@ class Actions implements ActionTree<IRootState, IRootState> {
         return resp
       }
       return Promise.reject(resp)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * OAuth
+   * @param query: OAuthQuery
+   */
+  @Queryable(OAuthQuery)
+  async actionAuthentication(store: TStore) {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      await $http.get('OAUTH', jsonHeaders)
+      return
     } catch(e) {
       return Promise.reject(e)
     }
@@ -375,7 +391,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         store.dispatch('error', true)
         return Promise.reject(resp)
       }
-      store.dispatch('md', resp.data.data)
+      store.dispatch('libraryData', resp.data.data)
       return resp
     } catch(e) {
       console.log(e)

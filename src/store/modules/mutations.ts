@@ -11,6 +11,9 @@ const _mutations: IMutations = {
     state.json = {}
     state.json = { ...json }
   },
+  setLibrary(state: IRootState, data: string) {
+    state.library = data
+  },
   setEvents(state: IRootState, events: IEvents) {
     state.events = {}
     state.events = { ...events }
