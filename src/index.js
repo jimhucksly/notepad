@@ -1,7 +1,17 @@
 'use strict'
 
-import { app, BrowserWindow, Tray, ipcMain, Menu, MenuItem,
-  dialog, nativeImage, globalShortcut } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  Tray,
+  ipcMain,
+  Menu,
+  MenuItem,
+  dialog,
+  nativeImage,
+  globalShortcut
+} from 'electron'
+import fs from 'fs'
 import path from 'path'
 import pkg from '../package.json'
 

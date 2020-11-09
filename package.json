@@ -151,7 +151,6 @@
     "node-loader": "^0.6.0",
     "node-sass": "^4.14.1",
     "reflect-metadata": "^0.1.13",
-    "request": "^2.88.0",
     "require-dir": "^1.0.0",
     "sass-loader": "^7.0.3",
     "spectron": "^3.8.0",

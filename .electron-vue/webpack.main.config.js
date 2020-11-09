@@ -62,6 +62,9 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust mainConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
+  if(!mainConfig.plugins) {
+    mainConfig.plugins = []
+  }
   mainConfig.plugins.push(
     new BabiliWebpackPlugin(),
     new webpack.DefinePlugin({

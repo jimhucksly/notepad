@@ -58,9 +58,10 @@ export default class Index extends Vue {
 
   protected async checkToken(p: string): Promise<boolean> {
     this.commandBus.do(new LoadingCommand(true))
-    const token = await storage.get(p, userDataFileName, 'token')
-    if(token) {
-      try {
+    try {
+      await storage.createFile(p, userDataFileName)
+      const token = await storage.get(p, userDataFileName, 'token')
+      if(token) {
         this.$store.dispatch('token', token)
         await this.queryBus.exec(new OAuthQuery())
         await Promise.all([
@@ -72,17 +73,18 @@ export default class Index extends Vue {
           this.commandBus.do(new AuthCommand(true))
         }, 1500)
         return true
-      } catch(e) {
-        this.commandBus.do(new AuthCommand(false))
+      } else {
         this.commandBus.do(new LoadingCommand(false))
-        this.$store.dispatch('token', null)
-        const userDataPath = this.$store.getters.getUserDataPath
-        storage.set(userDataPath, userDataFileName, { token: '' })
+        this.commandBus.do(new AuthCommand(false))
         return false
       }
-    } else {
-      this.commandBus.do(new LoadingCommand(false))
+    } catch(e) {
       this.commandBus.do(new AuthCommand(false))
+      this.commandBus.do(new LoadingCommand(false))
+      this.$store.dispatch('token', null)
+      const userDataPath = this.$store.getters.getUserDataPath
+      await storage.createFile(userDataPath, userDataFileName)
+      storage.set(userDataPath, userDataFileName, { token: '' })
       return false
     }
   }
@@ -90,6 +92,7 @@ export default class Index extends Vue {
   protected async setPath(appPath: string) {
     try {
       this.$store.dispatch('userDataPath', appPath)
+      await storage.createFile(appPath, userPreferencesFileName)
       const json: any = await storage.get(appPath, userPreferencesFileName)
       if(json.downloadsTargetPath !== undefined) {
         this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)

@@ -1,4 +1,5 @@
-const request = require('request')
+// import axios from 'axios'
+
 const fs = require('fs')
 const path = require('path')
 
@@ -159,93 +160,106 @@ export const downloadFile = (
   targetPath: string,
   loaderDOMElement: HTMLElement
 ): void => {
-  let receivedBytes = 0
-  let totalBytes = 0
+  // let receivedBytes = 0
+  // let totalBytes = 0
+  let index = 0
 
   const targetFileName: string = path.parse(targetPath).base
   const targetFileDir: string = path.parse(targetPath).dir
 
-  const req = request({
-    method: 'GET',
-    uri: encodeURI(fileUri)
-  })
-
-  const canSave = (tPath: string) => {
-    return new Promise((resolve, reject) => {
-      fs.access(tPath, (err: Error) => {
-        if(err) return resolve()
-        else return reject(new Error('file exists'))
-      })
-    })
-  }
-
-  const checkTargetPath = (target: string) => {
-    canSave(target)
-      .then(() => {
-        req.on('response', (data: { statusCode: number, headers: string[] }) => {
-          if(data.statusCode === 200 || data.statusCode === 201) {
-            totalBytes = parseInt(data.headers['content-length'])
-            const out = fs.createWriteStream(target)
-            req.pipe(out)
-          } else {
-            showError(loaderDOMElement)
-            return
-          }
-        })
-        req.on('data', (chunk: any) => {
-          if(totalBytes > 0) {
-            receivedBytes += chunk.length
-            showProgress(receivedBytes, totalBytes, loaderDOMElement)
-          }
-        })
-      })
-      .catch(() => {
-        const filename = targetFileName.replace(/\./g, `(${++index}).`)
-        checkTargetPath(path.resolve(targetFileDir, filename))
-      })
-  }
-
-  let index = 0
-
-  checkTargetPath(targetPath)
-}
-
-const showError = (loaderDOMElement: HTMLElement) => {
-  loaderDOMElement.style.display = 'block'
-  if(loaderDOMElement.firstElementChild) {
-    loaderDOMElement.firstElementChild.classList.add('error')
-    loaderDOMElement.firstElementChild.textContent = 'Error: file not found'
-  }
-  setTimeout(() => {
-    loaderDOMElement.style.display = 'none'
-    if(loaderDOMElement.firstElementChild) {
-      loaderDOMElement.firstElementChild.classList.remove('error')
-      loaderDOMElement.firstElementChild.textContent = ''
+  let isFileExists = true
+  while(isFileExists) {
+    try {
+      fs.statSync(targetPath)
+      const filename = targetFileName.replace(/\./g, `(${++index}).`)
+      targetPath = path.resolve(targetFileDir, filename)
+    } catch(e) {
+      isFileExists = false
     }
-  }, 5000)
+  }
+
+  // const req = request({
+  //   method: 'GET',
+  //   uri: encodeURI(fileUri)
+  // })
+
+  // axios({
+  //   url: fileUri,
+  //   method: 'GET',
+  //   responseType: 'blob'
+  // })
+  //   .then((response) => {
+  //     console.log(response)
+  //     //  const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     //  const link = document.createElement('a');
+  //     //  link.href = url;
+  //     //  link.setAttribute('download', 'file.pdf'); //or any other extension
+  //     //  document.body.appendChild(link);
+  //     //  link.click();
+  //   })
+  //   .catch(e => {
+  //     console.log(e)
+  //   })
+
+  console.log(targetPath)
+
+  // req.on('response', (data: { statusCode: number, headers: string[] }) => {
+  //   console.log('response!!!')
+  //   if(data.statusCode === 200 || data.statusCode === 201) {
+  //     totalBytes = parseInt(data.headers['content-length'])
+  //     const out = fs.createWriteStream(targetPath)
+  //     req.pipe(out)
+  //   } else {
+  //     showError(loaderDOMElement)
+  //     return
+  //   }
+  // })
+
+  // req.on('data', (chunk: any) => {
+  //   console.log('data!!!')
+  //   if(totalBytes > 0) {
+  //     receivedBytes += chunk.length
+  //     showProgress(receivedBytes, totalBytes, loaderDOMElement)
+  //   }
+  // })
 }
 
-const showProgress = (
-  received: number,
-  total: number,
-  loaderDOMElement: HTMLElement
-) => {
-  const percentage = Math.ceil((received * 100) / total)
-  loaderDOMElement.style.display = 'block'
-  loaderDOMElement.style.width = `${percentage}px`
-  if(loaderDOMElement.firstElementChild) {
-    loaderDOMElement.firstElementChild.textContent = `${percentage}%`
-  }
-  if(percentage === 100) {
-    setTimeout(() => {
-      loaderDOMElement.style.display = 'none'
-      if(loaderDOMElement.firstElementChild) {
-        loaderDOMElement.style.width = '0'
-        loaderDOMElement.firstElementChild.textContent = ''
-      }
-    }, 3000)
-  }
-}
+// function showError(loaderDOMElement: HTMLElement): void {
+//   loaderDOMElement.style.display = 'block'
+//   if(loaderDOMElement.firstElementChild) {
+//     loaderDOMElement.firstElementChild.classList.add('error')
+//     loaderDOMElement.firstElementChild.textContent = 'Error: file not found'
+//   }
+//   setTimeout(() => {
+//     loaderDOMElement.style.display = 'none'
+//     if(loaderDOMElement.firstElementChild) {
+//       loaderDOMElement.firstElementChild.classList.remove('error')
+//       loaderDOMElement.firstElementChild.textContent = ''
+//     }
+//   }, 5000)
+// }
+
+// function showProgress(
+//   received: number,
+//   total: number,
+//   loaderDOMElement: HTMLElement
+// ): void {
+//   const percentage = Math.ceil((received * 100) / total)
+//   loaderDOMElement.style.display = 'block'
+//   loaderDOMElement.style.width = `${percentage}px`
+//   if(loaderDOMElement.firstElementChild) {
+//     loaderDOMElement.firstElementChild.textContent = `${percentage}%`
+//   }
+//   if(percentage === 100) {
+//     setTimeout(() => {
+//       loaderDOMElement.style.display = 'none'
+//       if(loaderDOMElement.firstElementChild) {
+//         loaderDOMElement.style.width = '0'
+//         loaderDOMElement.firstElementChild.textContent = ''
+//       }
+//     }, 3000)
+//   }
+// }
 
 export const uploadingFile = (received: number, total: number) => {
   const percentage = Math.ceil((received * 100) / total)

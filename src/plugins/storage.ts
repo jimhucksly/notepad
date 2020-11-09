@@ -94,6 +94,7 @@ class Storage {
         debug && console.log('call storage.isFileExists')
         const sResponse = await this.isFileExists(fullPath)
         if(!sResponse) {
+          console.log('storage.isFileExists failed!')
           return reject(null)
         }
         const data = fs.readFileSync(fullPath, 'utf8')
@@ -108,6 +109,27 @@ class Storage {
         } else resolve(json)
       } catch(err) {
         return reject(null)
+      }
+    })
+  }
+
+  public createFile(_path: string, _file: string) {
+    debug && console.log('call storage.createFile')
+    return new Promise(async (resolve, reject) => {
+      let fullPath = _path
+      if(_file !== undefined) fullPath = path.resolve(_path, _file)
+      try {
+        await this.isFileExists(fullPath)
+        debug && console.log('file exists!!!!!')
+        resolve()
+      } catch(e) {
+        fs.writeFile(fullPath, '{}', (err) => {
+          if(err) {
+            reject(new Error(`file ${fullPath} not found`))
+          }
+          debug && console.log('file created')
+          resolve()
+        })
       }
     })
   }
