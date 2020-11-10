@@ -77,6 +77,7 @@ export default class Auth extends Vue {
   }
 
   mounted() {
+    console.log('auth page mouted!')
     this.commandBus.do(new PingCommand(true))
   }
 

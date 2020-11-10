@@ -16,6 +16,7 @@ class CommandBus implements ICommandBus {
     console.log('call do CommandBus')
     const commandName = Object.getPrototypeOf(command).constructor.name
     console.log('commandName', commandName)
+    console.log(Reflect.getMetadataKeys(CommandBus))
     const actionName = Reflect.getMetadata(commandName, CommandBus)
     console.log('actionName', actionName)
     if(actionName) {
