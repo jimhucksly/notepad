@@ -107,6 +107,7 @@ export default class Index extends Vue {
   }
 
   async created(): Promise<void> {
+    console.log('index page created!')
     this.$electron.ipcRenderer.send('get-app-path')
     await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
       await this.setPath(appPath)

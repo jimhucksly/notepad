@@ -85,7 +85,12 @@ export default class SidebarSwitcher extends Vue {
   }
 
   protected select(item: IMenu) {
-    this.commandBus.do(new NavigateCommand(item.name))
+    console.log('call select')
+    console.log(item.name)
+    console.log(new NavigateCommand(item.name))
+    console.log('this.commandBus')
+    console.log(this.commandBus)
+    this.commandBus.do<NavigateCommand>(new NavigateCommand(item.name))
     this.toggle()
   }
 }

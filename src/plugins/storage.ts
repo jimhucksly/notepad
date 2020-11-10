@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { isJSON } from '~/helpers'
 
 const debug = false
 
@@ -65,7 +66,7 @@ class Storage {
     return new Promise(async (resolve, reject) => {
       let data
       try {
-        data = json ? JSON.stringify(json) : '{}'
+        data = isJSON(json) ? JSON.stringify(json) : '{}'
       } catch(e) {
         data = '{}'
       }

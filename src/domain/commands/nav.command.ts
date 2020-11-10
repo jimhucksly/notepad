@@ -57,24 +57,28 @@ export class NavigateCommandHandler implements ICommand {
   }
 
   do<TCommand>(command: TCommand) {
-    const _command: any = {
-      ...command
-    }
-
-    const page = _command.page
-    if(page === 'goBack') {
-      const previousPage = this._store.getters.getPreviousPage
-      if(previousPage) {
-        this.pages.forEach((p: string) => {
-          this._store.dispatch(p, p === previousPage)
-        })
-        this._store.dispatch('previousPage', '')
+    console.log('call NavigateCommand do')
+    try {
+      const _command: any = {
+        ...command
       }
-    } else {
-      this._store.dispatch('previousPage', this.previousPage)
-      this.pages.forEach((p: string) => {
-        this._store.dispatch(p, p === page)
-      })
+      const page = _command.page
+      if(page === 'goBack') {
+        const previousPage = this._store.getters.getPreviousPage
+        if(previousPage) {
+          this.pages.forEach((p: string) => {
+            this._store.dispatch(p, p === previousPage)
+          })
+          this._store.dispatch('previousPage', '')
+        }
+      } else {
+        this._store.dispatch('previousPage', this.previousPage)
+        this.pages.forEach((p: string) => {
+          this._store.dispatch(p, p === page)
+        })
+      }
+    } catch(e) {
+      console.log(e)
     }
   }
 }

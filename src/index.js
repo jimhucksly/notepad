@@ -116,6 +116,8 @@ function createWindow() {
       mainWindow.focus()
     }
   })
+
+  mainWindow.webContents.openDevTools()
 }
 
 const gotTheLock = app.requestSingleInstanceLock()

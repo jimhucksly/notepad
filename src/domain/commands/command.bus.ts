@@ -13,12 +13,17 @@ class CommandBus implements ICommandBus {
   ) {}
 
   do(command: any) {
+    console.log('call do CommandBus')
     const commandName = Object.getPrototypeOf(command).constructor.name
+    console.log('commandName', commandName)
     const actionName = Reflect.getMetadata(commandName, CommandBus)
+    console.log('actionName', actionName)
     if(actionName) {
       return this._store.dispatch(actionName, command)
     }
+    console.log('TYPES[commandName]', TYPES[commandName])
     const handler: ICommand = this._container.get(TYPES[commandName])
+    console.log('handler', handler)
     if(handler) {
       return handler.do(command)
     }
