@@ -1,14 +1,16 @@
 import { inject, injectable } from 'inversify'
-import { ICommand, IQueryBus } from '~/domain/interfaces'
+import { ICommand, IQueryBus, Command } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
 
-export class PingCommand {
+export class PingCommand extends Command {
   param = false
 
   constructor(param: boolean) {
+    super()
     this.param = param
+    this.NAME = 'PingCommand'
   }
 }
 

@@ -1,14 +1,16 @@
 import { inject, injectable } from 'inversify'
-import { ICommand } from '~/domain/interfaces'
+import { ICommand, Command } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
 
-export class NavigateCommand {
+export class NavigateCommand extends Command {
   page = ''
 
   constructor(page: string) {
+    super()
     this.page = page
+    this.NAME = 'NavigateCommand'
   }
 }
 

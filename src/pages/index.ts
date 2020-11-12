@@ -57,7 +57,7 @@ export default class Index extends Vue {
   }
 
   protected async checkToken(p: string): Promise<boolean> {
-    this.commandBus.do(new LoadingCommand(true))
+    this.commandBus.do<LoadingCommand>(new LoadingCommand(true))
     try {
       await storage.createFile(p, userDataFileName)
       const token = await storage.get(p, userDataFileName, 'token')
@@ -107,7 +107,6 @@ export default class Index extends Vue {
   }
 
   async created(): Promise<void> {
-    console.log('index page created!')
     this.$electron.ipcRenderer.send('get-app-path')
     await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
       await this.setPath(appPath)

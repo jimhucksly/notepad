@@ -11,7 +11,6 @@ import {
   nativeImage,
   globalShortcut
 } from 'electron'
-import fs from 'fs'
 import path from 'path'
 import pkg from '../package.json'
 
@@ -62,7 +61,7 @@ function createWindow() {
     },
     icon: path.resolve(__static, 'icons/64x64.png'),
     headless: true,
-    args: ["--no-sandbox"]
+    args: ['--no-sandbox']
   })
 
   mainWindow.loadURL(winURL)
@@ -117,7 +116,7 @@ function createWindow() {
     }
   })
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 const gotTheLock = app.requestSingleInstanceLock()

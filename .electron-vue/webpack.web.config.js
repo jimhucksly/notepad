@@ -22,17 +22,7 @@ let webConfig = {
       {
         test: /\.scss$/,
         exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.less$/,
-        exclude: /node_modules/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.css$/,
@@ -50,22 +40,20 @@ let webConfig = {
         exclude: /node_modules/
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: 'ts-loader',
         include: [ path.resolve(__dirname, '../src') ],
         exclude: /node_modules/
       },
       {
         test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            extractCSS: true,
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
-            }
+        loader: 'vue-loader',
+        options: {
+          extractCSS: process.env.NODE_ENV === 'production',
+          loaders: {
+            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
+            scss: 'vue-style-loader!css-loader!sass-loader',
+            less: 'vue-style-loader!css-loader!less-loader'
           }
         }
       },

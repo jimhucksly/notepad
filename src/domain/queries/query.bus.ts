@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { Constructor } from 'vue/types/options'
 import { Store } from 'vuex'
 import { IRootState } from '~/domain/models'
 
@@ -11,13 +10,12 @@ class QueryBus implements IQueryBus {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  exec<TQuery, TResult>(query: TQuery): Promise<TResult> {
-    const queryName = Object.getPrototypeOf(query).constructor.name
-    const actionName = Reflect.getMetadata(queryName, QueryBus)
+  exec(query: any): Promise<any> {
+    const actionName = Reflect.getMetadata(TYPES[query.NAME], QueryBus)
     if(actionName) {
       return this._store.dispatch(actionName, query)
     }
-    return Promise.reject(`Не найден action для запроса: ${queryName}`)
+    return Promise.reject(`Не найден action для запроса: ${query.NAME}`)
   }
 }
 
@@ -26,10 +24,10 @@ class QueryBus implements IQueryBus {
  * нужен для связи IQuery и action
  */
 export function Queryable(
-  query: Constructor
+  query: symbol
 ) {
-  return (target: any, propertyKey: string) => {
-    Reflect.defineMetadata(query.name, propertyKey, QueryBus)
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    Reflect.defineMetadata(query, propertyKey, QueryBus)
   }
 }
 

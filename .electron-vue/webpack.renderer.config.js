@@ -6,7 +6,6 @@ process.env.CHUNKS_LOG = 'false'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
-
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -51,7 +50,7 @@ let rendererConfig = {
         exclude: /node_modules/
       },
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         use: 'ts-loader',
         include: [ path.resolve(__dirname, '../src') ],
         exclude: /node_modules/
@@ -173,9 +172,6 @@ if (process.env.NODE_ENV === 'production') {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     })
   )
 }

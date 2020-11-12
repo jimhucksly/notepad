@@ -12,4 +12,13 @@ export interface ICommand {
 
 export type TCommand = {
   [param: string]: any
+  NAME: string
+}
+
+export abstract class Query {
+  NAME: string
+}
+
+export abstract class Command {
+  NAME: string
 }

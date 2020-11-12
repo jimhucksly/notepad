@@ -5,18 +5,10 @@ import { isJSON } from '~/helpers'
 import { IRootState, IJson, IJsonHeaders } from '~/domain/models'
 import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
+import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import {
-  AuthQuery,
-  OAuthQuery,
-  JsonQuery,
-  LibraryQuery,
-  ArchivesQuery,
-  EventsQuery,
-  LinksQuery,
-  TodoQuery
-} from '~/domain/queries'
+import { AuthQuery } from '~/domain/queries'
 import {
   AuthCommand,
   LoadingCommand,
@@ -39,7 +31,6 @@ import {
   UpdateTodoCommand,
   DeleteTodoCommand
 } from '~/domain/commands'
-import { PingCommand } from '~/domain/commands/ping.command'
 import { ActionTree, ActionContext } from 'vuex'
 
 type TStore = ActionContext<IRootState, IRootState>
@@ -65,7 +56,7 @@ function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
 class Actions implements ActionTree<IRootState, IRootState> {
   [key: string]: (injectee: TStore, payload: any) => any
 
-  @Commandable(AuthCommand)
+  @Commandable(TYPES['AuthCommand'])
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
     ipcRenderer.send(command.flag ? 'authorized' : 'unauthorized')
@@ -76,7 +67,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setToken', value)
   }
 
-  @Commandable(LoadingCommand)
+  @Commandable(TYPES['LoadingCommand'])
   loading(store: TStore, command: LoadingCommand) {
     store.commit('setLoading', command.flag)
   }
@@ -94,7 +85,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setTimeout', null)
   }
 
-  @Commandable(SetJsonCommand)
+  @Commandable(TYPES['SetJsonCommand'])
   json(store: TStore, command: SetJsonCommand) {
     let json: IJson = {}
     if(typeof command.json === 'string' && isJSON(command.json)) {
@@ -116,7 +107,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setJson', json)
   }
 
-  @Commandable(SetArchivesCommand)
+  @Commandable(TYPES['SetArchivesCommand'])
   archives(store: TStore, command: SetArchivesCommand) {
     store.commit('setArchives', command.items)
   }
@@ -161,7 +152,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setTodo', json)
   }
 
-  @Commandable(SetTreeCommand)
+  @Commandable(TYPES['SetTreeCommand'])
   mdTree(store: TStore, command: SetTreeCommand) {
     store.commit('setMdTree', command.tree)
   }
@@ -175,7 +166,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setJson', json)
   }
 
-  @Commandable(SetFilterCommand)
+  @Commandable(TYPES['SetFilterCommand'])
   filter(store: TStore, command: SetFilterCommand) {
     store.commit('setFilter', command.filters)
   }
@@ -296,7 +287,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param data { login, password }
    */
-  @Queryable(AuthQuery)
+  @Queryable(TYPES['AuthQuery'])
   async actionAuth(store: TStore, query: AuthQuery) {
     try {
       const resp = await $http.post('AUTH', {
@@ -320,7 +311,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * OAuth
    * @param query: OAuthQuery
    */
-  @Queryable(OAuthQuery)
+  @Queryable(TYPES['OAuthQuery'])
   async actionAuthentication(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -334,7 +325,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Ping
    */
-  @Commandable(PingCommand)
+  @Commandable(TYPES['PingCommand'])
   async actionPing(_: TStore) {
     try {
       const resp = await $http.get('PING', jsonHeaders)
@@ -349,7 +340,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Json
    * @param store Store
    */
-  @Queryable(JsonQuery)
+  @Queryable(TYPES['JsonQuery'])
   async actionGetJson(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -379,7 +370,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Library
    * @param store Store
    */
-  @Queryable(LibraryQuery)
+  @Queryable(TYPES['LibraryQuery'])
   async actionGetLibrary(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -408,8 +399,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Commandable(UpdateJsonCommand)
-  async actionUpdateJson(store: TStore, json: any) {
+  @Commandable(TYPES['UpdateJsonCommand'])
+  async actionUpdateJson(store: TStore, json: UpdateJsonCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post('UPDATE', {
@@ -430,7 +421,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Commandable(DeleteProjectCommand)
+  @Commandable(TYPES['DeleteProjectCommand'])
   async actionDelete(store: TStore, command: DeleteProjectCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -452,7 +443,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Commandable(UploadFileCommand)
+  @Commandable(TYPES['UploadFileCommand'])
   async actionUploadFile(store: TStore, command: UploadFileCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
@@ -474,7 +465,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Queryable(ArchivesQuery)
+  @Queryable(TYPES['ArchivesQuery'])
   async actionGetArchives(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -500,7 +491,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { name: string}
    */
-  @Commandable(ArchiveRestoreCommand)
+  @Commandable(TYPES['ArchiveRestoreCommand'])
   async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -528,7 +519,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { name: string}
    */
-  @Commandable(ArchiveRemoveCommand)
+  @Commandable(TYPES['ArchiveRemoveCommand'])
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -554,7 +545,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { stamp: string}
    */
-  @Commandable(ArchivingCommand)
+  @Commandable(TYPES['ArchivingCommand'])
   async actionArchiving(store: TStore, command: ArchivingCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -575,7 +566,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Events
    * @param store Store
    */
-  @Queryable(EventsQuery)
+  @Queryable(TYPES['EventsQuery'])
   async actionGetEvents(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -594,7 +585,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Links
    * @param store Store
    */
-  @Queryable(LinksQuery)
+  @Queryable(TYPES['LinksQuery'])
   async actionGetLinks(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -614,7 +605,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { event: IEvent }
    */
-  @Commandable(UpdateEventCommand)
+  @Commandable(TYPES['UpdateEventCommand'])
   async actionUpdateEvent(store: TStore, command: UpdateEventCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -636,7 +627,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { date: string }
    */
-  @Commandable(DeleteEventCommand)
+  @Commandable(TYPES['DeleteEventCommand'])
   async actionRemoveEvent(store: TStore, command: DeleteEventCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -660,7 +651,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { value: string }
    */
-  @Commandable(UpdateLibraryCommand)
+  @Commandable(TYPES['UpdateLibraryCommand'])
   async actionUpdateLibrary(store: TStore, command: UpdateLibraryCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -682,7 +673,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { link: ILink }
    */
-  @Commandable(UpdateLinksCommand)
+  @Commandable(TYPES['UpdateLinksCommand'])
   async actionUpdateLinks(store: TStore, command: UpdateLinksCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -704,7 +695,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { key: string }
    */
-  @Commandable(DeleteLinkCommand)
+  @Commandable(TYPES['DeleteLinkCommand'])
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -727,7 +718,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Todo
    * @param store Store
    */
-  @Queryable(TodoQuery)
+  @Queryable(TYPES['TodoQuery'])
   async actionGetTodo(store: TStore) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -752,7 +743,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { item: ITodo }
    */
-  @Commandable(UpdateTodoCommand)
+  @Commandable(TYPES['UpdateTodoCommand'])
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -774,7 +765,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { id: string }
    */
-  @Commandable(DeleteTodoCommand)
+  @Commandable(TYPES['DeleteTodoCommand'])
   async actionRemoveTodo(store: TStore, command: DeleteTodoCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
@@ -798,7 +789,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param command { result: ITodoOrder}
    */
-  @Commandable(TodoOrderCommand)
+  @Commandable(TYPES['TodoOrderCommand'])
   async actionTodoOrder(store: TStore, command: TodoOrderCommand) {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
