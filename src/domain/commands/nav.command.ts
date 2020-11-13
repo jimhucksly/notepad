@@ -59,7 +59,6 @@ export class NavigateCommandHandler implements ICommand {
   }
 
   do<TCommand>(command: TCommand) {
-    console.log('call NavigateCommand do')
     try {
       const _command: any = {
         ...command

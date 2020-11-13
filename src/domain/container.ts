@@ -6,6 +6,7 @@ import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import store from '~/store'
 import { Store } from 'vuex'
 import { IRootState } from '~/domain/models'
+import { CheckQueryHandler } from '~/domain/queries/check.query'
 import { PingCommandHandler } from '~/domain/commands/ping.command'
 import { NavigateCommandHandler } from '~/domain/commands/nav.command'
 
@@ -16,6 +17,9 @@ _container.bind<IQueryBus>(QueryBus).toSelf()
 _container.bind<ICommandBus>(TYPES.CommandBus).to(CommandBus)
 _container.bind<CommandBus>(CommandBus).toSelf()
 _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(store)
+/* ------------ queries ------------ */
+_container.bind<CheckQueryHandler>(TYPES.CheckQuery)
+  .to(CheckQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */
 _container.bind<PingCommandHandler>(TYPES.PingCommand)
   .to(PingCommandHandler).inSingletonScope()

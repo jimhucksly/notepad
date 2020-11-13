@@ -10,9 +10,8 @@ export interface ICommand {
   do<TCommand>(command: TCommand): any
 }
 
-export type TCommand = {
-  [param: string]: any
-  NAME: string
+export interface IQuery {
+  exec<TQuery>(query: TQuery): any
 }
 
 export abstract class Query {

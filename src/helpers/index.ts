@@ -57,13 +57,26 @@ export const now = (stamp?: string): { date: string, stamp: string } => {
   }
 }
 
-export const isJSON = (str: string): boolean => {
-  try {
-    const obj = JSON.parse(str)
-    if(obj && typeof obj === 'object' && obj !== null) {
+export const isJSON = (value: any): boolean => {
+  let json: any = ''
+  if(typeof value === 'string') {
+    try {
+      json = JSON.parse(value)
       return true
+    } catch(e) {
+      console.log(e)
+      return false
     }
-  } catch(err) {}
+  } else {
+    try {
+      json = JSON.parse(JSON.stringify(value))
+      if(json && typeof json === 'object' && json !== null) {
+        return true
+      }
+    } catch(e) {
+      console.log(e)
+    }
+  }
   return false
 }
 

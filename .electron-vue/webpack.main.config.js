@@ -30,6 +30,12 @@ let mainConfig = {
     __dirname: process.env.NODE_ENV !== 'production',
     __filename: process.env.NODE_ENV !== 'production'
   },
+  resolve: {
+    alias: {
+      '~': path.join(__dirname, '../src')
+    },
+    extensions: ['.vue', '.ts', '.js', ]
+  },
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',

@@ -8,9 +8,9 @@ import {
   ITodo,
   ITodoOrder
 } from '~/domain/models'
-import { TCommand, Command } from '~/domain/interfaces'
+import { Command } from '~/domain/interfaces'
 
-export class AuthCommand extends Command implements TCommand {
+export class AuthCommand extends Command {
   flag: boolean
 
   constructor(flag: boolean) {

@@ -24,7 +24,6 @@ const stateItems: string[] = [
   'isJsonViewerShow',
   'isLinksShow',
   'downloadsTargetPath',
-  'timeout',
   'notification',
   'error',
   'previousPage',

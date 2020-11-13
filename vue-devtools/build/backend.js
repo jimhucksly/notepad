@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 261);
+/******/ 	return __webpack_require__(__webpack_require__.s = 129);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -124,14 +124,17 @@
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "r", function() { return openInEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return escape; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return copyToClipboard; });
-/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(23);
+/* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19);
 /* harmony import */ var path__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(path__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _transfer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(15);
-/* harmony import */ var _back__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14);
-/* harmony import */ var _back_vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
-/* harmony import */ var _back_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(13);
-/* harmony import */ var _shared_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3);
-/* harmony import */ var _env__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1);
+/* harmony import */ var _transfer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(13);
+/* harmony import */ var src_backend__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(12);
+/* harmony import */ var src_backend_vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
+/* harmony import */ var src_backend_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(11);
+/* harmony import */ var src_shared_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3);
+/* harmony import */ var _devtools_env__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1);
+
+
+
 
 
 
@@ -141,25 +144,25 @@
 
 
 function cached (fn) {
-  const cache = Object.create(null)
+  var cache = Object.create(null)
   return function cachedFn (str) {
-    const hit = cache[str]
+    var hit = cache[str]
     return hit || (cache[str] = fn(str))
   }
 }
 
-const classifyRE = /(?:^|[-_/])(\w)/g
-const classify = cached((str) => {
+var classifyRE = /(?:^|[-_/])(\w)/g
+var classify = cached((str) => {
   return str && str.replace(classifyRE, toUpper)
 })
 
-const camelizeRE = /-(\w)/g
-const camelize = cached((str) => {
+var camelizeRE = /-(\w)/g
+var camelize = cached((str) => {
   return str.replace(camelizeRE, toUpper)
 })
 
-const kebabizeRE = /([a-z0-9])([A-Z])/g
-const kebabize = cached((str) => {
+var kebabizeRE = /([a-z0-9])([A-Z])/g
+var kebabize = cached((str) => {
   return str && str
     .replace(kebabizeRE, (_, lowerCaseCharacter, upperCaseLetter) => {
       return `${lowerCaseCharacter}-${upperCaseLetter}`
@@ -184,9 +187,9 @@ function getComponentDisplayName (originalName, style = 'class') {
 }
 
 function inDoc (node) {
-  if (!node) return false
-  const doc = node.ownerDocument.documentElement
-  const parent = node.parentNode
+  if (!node) { return false }
+  var doc = node.ownerDocument.documentElement
+  var parent = node.parentNode
   return doc === node ||
     doc === parent ||
     !!(parent && parent.nodeType === 1 && (doc.contains(parent)))
@@ -196,12 +199,12 @@ function inDoc (node) {
  * Stringify/parse data using CircularJSON.
  */
 
-const UNDEFINED = '__vue_devtool_undefined__'
-const INFINITY = '__vue_devtool_infinity__'
-const NEGATIVE_INFINITY = '__vue_devtool_negative_infinity__'
-const NAN = '__vue_devtool_nan__'
+var UNDEFINED = '__vue_devtool_undefined__'
+var INFINITY = '__vue_devtool_infinity__'
+var NEGATIVE_INFINITY = '__vue_devtool_negative_infinity__'
+var NAN = '__vue_devtool_nan__'
 
-const SPECIAL_TOKENS = {
+var SPECIAL_TOKENS = {
   'true': true,
   'false': false,
   'undefined': UNDEFINED,
@@ -211,8 +214,8 @@ const SPECIAL_TOKENS = {
   'NaN': NAN
 }
 
-const MAX_STRING_SIZE = 10000
-const MAX_ARRAY_SIZE = 5000
+var MAX_STRING_SIZE = 10000
+var MAX_ARRAY_SIZE = 5000
 
 function specialTokenToString (value) {
   if (value === null) {
@@ -247,11 +250,11 @@ class EncodeCache {
    * @param {*} factory Function used to create the unique result
    */
   cache (data, factory) {
-    const cached = this.map.get(data)
+    var cached = this.map.get(data)
     if (cached) {
       return cached
     } else {
-      const result = factory(data)
+      var result = factory(data)
       this.map.set(data, result)
       return result
     }
@@ -262,7 +265,7 @@ class EncodeCache {
   }
 }
 
-const encodeCache = new EncodeCache()
+var encodeCache = new EncodeCache()
 
 function stringify (data) {
   // Create a fresh cache for each serialization
@@ -271,10 +274,10 @@ function stringify (data) {
 }
 
 function replacer (key) {
-  const val = this[key]
-  const type = typeof val
+  var val = this[key]
+  var type = typeof val
   if (Array.isArray(val)) {
-    const l = val.length
+    var l = val.length
     if (l > MAX_ARRAY_SIZE) {
       return {
         _isArray: true,
@@ -300,7 +303,7 @@ function replacer (key) {
   } else if (type === 'symbol') {
     return `[native Symbol ${Symbol.prototype.toString.call(val)}]`
   } else if (val !== null && type === 'object') {
-    const proto = Object.prototype.toString.call(val)
+    var proto = Object.prototype.toString.call(val)
     if (proto === '[object Map]') {
       return encodeCache.cache(val, () => getCustomMapDetails(val))
     } else if (proto === '[object Set]') {
@@ -310,14 +313,12 @@ function replacer (key) {
       return `[native RegExp ${RegExp.prototype.toString.call(val)}]`
     } else if (proto === '[object Date]') {
       return `[native Date ${Date.prototype.toString.call(val)}]`
-    } else if (proto === '[object Error]') {
-      return `[native Error ${val.message}]`
     } else if (val.state && val._vm) {
-      return encodeCache.cache(val, () => Object(_back_vuex__WEBPACK_IMPORTED_MODULE_3__[/* getCustomStoreDetails */ "a"])(val))
+      return encodeCache.cache(val, () => Object(src_backend_vuex__WEBPACK_IMPORTED_MODULE_3__[/* getCustomStoreDetails */ "a"])(val))
     } else if (val.constructor && val.constructor.name === 'VueRouter') {
-      return encodeCache.cache(val, () => Object(_back_router__WEBPACK_IMPORTED_MODULE_4__[/* getCustomRouterDetails */ "a"])(val))
+      return encodeCache.cache(val, () => Object(src_backend_router__WEBPACK_IMPORTED_MODULE_4__[/* getCustomRouterDetails */ "a"])(val))
     } else if (val._isVue) {
-      return encodeCache.cache(val, () => Object(_back__WEBPACK_IMPORTED_MODULE_2__[/* getCustomInstanceDetails */ "a"])(val))
+      return encodeCache.cache(val, () => Object(src_backend__WEBPACK_IMPORTED_MODULE_2__[/* getCustomInstanceDetails */ "a"])(val))
     } else if (typeof val.render === 'function') {
       return encodeCache.cache(val, () => getCustomComponentDefinitionDetails(val))
     } else if (val.constructor && val.constructor.name === 'VNode') {
@@ -330,7 +331,7 @@ function replacer (key) {
 }
 
 function getCustomMapDetails (val) {
-  const list = []
+  var list = []
   val.forEach(
     (value, key) => list.push({
       key,
@@ -351,17 +352,17 @@ function getCustomMapDetails (val) {
 }
 
 function reviveMap (val) {
-  const result = new Map()
-  const list = val._custom.value
-  for (let i = 0; i < list.length; i++) {
-    const { key, value } = list[i]
+  var result = new Map()
+  var list = val._custom.value
+  for (var i = 0; i < list.length; i++) {
+    var { key, value } = list[i]
     result.set(key, reviver(null, value))
   }
   return result
 }
 
 function getCustomSetDetails (val) {
-  const list = Array.from(val)
+  var list = Array.from(val)
   return {
     _custom: {
       type: 'set',
@@ -373,10 +374,10 @@ function getCustomSetDetails (val) {
 }
 
 function reviveSet (val) {
-  const result = new Set()
-  const list = val._custom.value
-  for (let i = 0; i < list.length; i++) {
-    const value = list[i]
+  var result = new Set()
+  var list = val._custom.value
+  for (var i = 0; i < list.length; i++) {
+    var value = list[i]
     result.add(reviver(null, value))
   }
   return result
@@ -392,18 +393,18 @@ function basename (filename, ext) {
 }
 
 function getComponentName (options) {
-  const name = options.name || options._componentTag
+  var name = options.name || options._componentTag
   if (name) {
     return name
   }
-  const file = options.__file // injected by vue-loader
+  var file = options.__file // injected by vue-loader
   if (file) {
     return classify(basename(file, '.vue'))
   }
 }
 
 function getCustomComponentDefinitionDetails (def) {
-  let display = getComponentName(def)
+  var display = getComponentName(def)
   if (display) {
     if (def.name && def.__file) {
       display += ` <span>(${def.__file})</span>`
@@ -412,20 +413,18 @@ function getCustomComponentDefinitionDetails (def) {
     display = '<i>Unknown Component</i>'
   }
   return {
-    _custom: {
-      type: 'component-definition',
+    _custom: Object.assign({}, {type: 'component-definition',
       display,
-      tooltip: 'Component definition',
-      ...def.__file ? {
+      tooltip: 'Component definition'},
+      def.__file ? {
         file: def.__file
-      } : {}
-    }
+      } : {})
   }
 }
 
 function getCustomFunctionDetails (func) {
-  let string = ''
-  let matches = null
+  var string = ''
+  var matches = null
   try {
     string = Function.prototype.toString.call(func)
     matches = String.prototype.match.call(string, /\([\s\S]*?\)/)
@@ -433,10 +432,10 @@ function getCustomFunctionDetails (func) {
     // Func is probably a Proxy, which can break Function.prototype.toString()
   }
   // Trim any excess whitespace from the argument string
-  const match = matches && matches[0]
-  const args = typeof match === 'string'
+  var match = matches && matches[0]
+  var args = typeof match === 'string'
     ? `(${match.substr(1, match.length - 2).split(',').map(a => a.trim()).join(', ')})` : '(?)'
-  const name = typeof func.name === 'string' ? func.name : ''
+  var name = typeof func.name === 'string' ? func.name : ''
   return {
     _custom: {
       type: 'function',
@@ -446,11 +445,11 @@ function getCustomFunctionDetails (func) {
 }
 
 function getCustomRefDetails (instance, key, ref) {
-  let value
+  var value
   if (Array.isArray(ref)) {
     value = ref.map((r) => getCustomRefDetails(instance, key, r)).map(data => data.value)
   } else {
-    let name
+    var name
     if (ref._isVue) {
       name = getComponentName(ref.$options)
     } else {
@@ -481,8 +480,8 @@ function parse (data, revive) {
     : _transfer__WEBPACK_IMPORTED_MODULE_1__[/* parse */ "a"](data)
 }
 
-const specialTypeRE = /^\[native (\w+) (.*)\]$/
-const symbolRE = /^\[native Symbol Symbol\((.*)\)\]$/
+var specialTypeRE = /^\[native (\w+) (.*)\]$/
+var symbolRE = /^\[native Symbol Symbol\((.*)\)\]$/
 
 function reviver (key, val) {
   if (val === UNDEFINED) {
@@ -495,18 +494,18 @@ function reviver (key, val) {
     return NaN
   } else if (val && val._custom) {
     if (val._custom.type === 'component') {
-      return _back__WEBPACK_IMPORTED_MODULE_2__[/* instanceMap */ "d"].get(val._custom.id)
+      return src_backend__WEBPACK_IMPORTED_MODULE_2__[/* instanceMap */ "d"].get(val._custom.id)
     } else if (val._custom.type === 'map') {
       return reviveMap(val)
     } else if (val._custom.type === 'set') {
       return reviveSet(val)
     }
   } else if (symbolRE.test(val)) {
-    const [, string] = symbolRE.exec(val)
+    var [, string] = symbolRE.exec(val)
     return Symbol.for(string)
   } else if (specialTypeRE.test(val)) {
-    const [, type, string] = specialTypeRE.exec(val)
-    return new window[type](string)
+    var [, type, string$1] = specialTypeRE.exec(val)
+    return new window[type](string$1)
   } else {
     return val
   }
@@ -543,7 +542,7 @@ function isPrimitive (data) {
   if (data == null) {
     return true
   }
-  const type = typeof data
+  var type = typeof data
   return (
     type === 'string' ||
     type === 'number' ||
@@ -558,13 +557,13 @@ function isPrimitive (data) {
  * @returns {boolean} Search match
  */
 function searchDeepInObject (obj, searchTerm) {
-  const seen = new Map()
-  const result = internalSearchObject(obj, searchTerm.toLowerCase(), seen, 0)
+  var seen = new Map()
+  var result = internalSearchObject(obj, searchTerm.toLowerCase(), seen, 0)
   seen.clear()
   return result
 }
 
-const SEARCH_MAX_DEPTH = 10
+var SEARCH_MAX_DEPTH = 10
 
 /**
  * Executes a search on each field of the provided object
@@ -578,10 +577,10 @@ function internalSearchObject (obj, searchTerm, seen, depth) {
   if (depth > SEARCH_MAX_DEPTH) {
     return false
   }
-  let match = false
-  const keys = Object.keys(obj)
-  let key, value
-  for (let i = 0; i < keys.length; i++) {
+  var match = false
+  var keys = Object.keys(obj)
+  var key, value
+  for (var i = 0; i < keys.length; i++) {
     key = keys[i]
     value = obj[key]
     match = internalSearchCheck(searchTerm, key, value, seen, depth + 1)
@@ -604,9 +603,9 @@ function internalSearchArray (array, searchTerm, seen, depth) {
   if (depth > SEARCH_MAX_DEPTH) {
     return false
   }
-  let match = false
-  let value
-  for (let i = 0; i < array.length; i++) {
+  var match = false
+  var value
+  for (var i = 0; i < array.length; i++) {
     value = array[i]
     match = internalSearchCheck(searchTerm, null, value, seen, depth + 1)
     if (match) {
@@ -626,8 +625,8 @@ function internalSearchArray (array, searchTerm, seen, depth) {
  * @returns {boolean} Search match
  */
 function internalSearchCheck (searchTerm, key, value, seen, depth) {
-  let match = false
-  let result
+  var match = false
+  var result
   if (key === '_custom') {
     key = value.display
     value = value.value
@@ -665,18 +664,18 @@ function compare (value, searchTerm) {
 
 function sortByKey (state) {
   return state && state.slice().sort((a, b) => {
-    if (a.key < b.key) return -1
-    if (a.key > b.key) return 1
+    if (a.key < b.key) { return -1 }
+    if (a.key > b.key) { return 1 }
     return 0
   })
 }
 
 function set (object, path, value, cb = null) {
-  const sections = Array.isArray(path) ? path : path.split('.')
+  var sections = Array.isArray(path) ? path : path.split('.')
   while (sections.length > 1) {
     object = object[sections.shift()]
   }
-  const field = sections[0]
+  var field = sections[0]
   if (cb) {
     cb(object, field, value)
   } else {
@@ -685,8 +684,8 @@ function set (object, path, value, cb = null) {
 }
 
 function get (object, path) {
-  const sections = Array.isArray(path) ? path : path.split('.')
-  for (let i = 0; i < sections.length; i++) {
+  var sections = Array.isArray(path) ? path : path.split('.')
+  for (var i = 0; i < sections.length; i++) {
     object = object[sections[i]]
     if (!object) {
       return undefined
@@ -700,8 +699,8 @@ function has (object, path, parent = false) {
     return false
   }
 
-  const sections = Array.isArray(path) ? path : path.split('.')
-  const size = !parent ? 1 : 2
+  var sections = Array.isArray(path) ? path : path.split('.')
+  var size = !parent ? 1 : 2
   while (object && sections.length > size) {
     object = object[sections.shift()]
   }
@@ -709,12 +708,12 @@ function has (object, path, parent = false) {
 }
 
 function scrollIntoView (scrollParent, el, center = true) {
-  const parentTop = scrollParent.scrollTop
-  const parentHeight = scrollParent.offsetHeight
-  const elBounds = el.getBoundingClientRect()
-  const parentBounds = scrollParent.getBoundingClientRect()
-  const top = elBounds.top - parentBounds.top + scrollParent.scrollTop
-  const height = el.offsetHeight
+  var parentTop = scrollParent.scrollTop
+  var parentHeight = scrollParent.offsetHeight
+  var elBounds = el.getBoundingClientRect()
+  var parentBounds = scrollParent.getBoundingClientRect()
+  var top = elBounds.top - parentBounds.top + scrollParent.scrollTop
+  var height = el.offsetHeight
   if (center) {
     scrollParent.scrollTop = top + (height - parentHeight) / 2
   } else if (top < parentTop) {
@@ -731,8 +730,8 @@ function focusInput (el) {
 
 function openInEditor (file) {
   // Console display
-  const fileName = file.replace(/\\/g, '\\\\')
-  const src = `fetch('${_shared_data__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"].openInEditorHost}__open-in-editor?file=${encodeURI(file)}').then(response => {
+  var fileName = file.replace(/\\/g, '\\\\')
+  var src = `fetch('${src_shared_data__WEBPACK_IMPORTED_MODULE_5__[/* default */ "a"].openInEditorHost}__open-in-editor?file=${encodeURI(file)}').then(response => {
     if (response.ok) {
       console.log('File ${fileName} opened in editor')
     } else {
@@ -746,7 +745,7 @@ function openInEditor (file) {
       console.log('Check the setup of your project, see https://github.com/vuejs/vue-devtools/blob/master/docs/open-in-editor.md')
     }
   })`
-  if (_env__WEBPACK_IMPORTED_MODULE_6__[/* isChrome */ "c"]) {
+  if (_devtools_env__WEBPACK_IMPORTED_MODULE_6__[/* isChrome */ "c"]) {
     chrome.devtools.inspectedWindow.eval(src)
   } else {
     // eslint-disable-next-line no-eval
@@ -754,7 +753,7 @@ function openInEditor (file) {
   }
 }
 
-const ESC = {
+var ESC = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
@@ -770,8 +769,8 @@ function escapeChar (a) {
 }
 
 function copyToClipboard (state) {
-  if (typeof document === 'undefined') return
-  const dummyTextArea = document.createElement('textarea')
+  if (typeof document === 'undefined') { return }
+  var dummyTextArea = document.createElement('textarea')
   dummyTextArea.textContent = stringify(state)
   document.body.appendChild(dummyTextArea)
   dummyTextArea.select()
@@ -795,18 +794,18 @@ function copyToClipboard (state) {
 /* unused harmony export isLinux */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return keys; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return initEnv; });
-const isBrowser = typeof navigator !== 'undefined'
-const target = isBrowser
+var isBrowser = typeof navigator !== 'undefined'
+var target = isBrowser
   ? window
   : typeof global !== 'undefined'
     ? global
     : {}
-const isChrome = typeof chrome !== 'undefined' && !!chrome.devtools
-const isFirefox = isBrowser && navigator.userAgent.indexOf('Firefox') > -1
-const isWindows = isBrowser && navigator.platform.indexOf('Win') === 0
-const isMac = isBrowser && navigator.platform === 'MacIntel'
-const isLinux = isBrowser && navigator.platform.indexOf('Linux') === 0
-const keys = {
+var isChrome = typeof chrome !== 'undefined' && !!chrome.devtools
+var isFirefox = isBrowser && navigator.userAgent.indexOf('Firefox') > -1
+var isWindows = isBrowser && navigator.platform.indexOf('Win') === 0
+var isMac = isBrowser && navigator.platform === 'MacIntel'
+var isLinux = isBrowser && navigator.platform.indexOf('Linux') === 0
+var keys = {
   ctrl: isMac ? '&#8984;' : 'Ctrl',
   shift: 'Shift',
   alt: isMac ? '&#8997;' : 'Alt',
@@ -816,7 +815,7 @@ const keys = {
 }
 
 function initEnv (Vue) {
-  if (Vue.prototype.hasOwnProperty('$isChrome')) return
+  if (Vue.prototype.hasOwnProperty('$isChrome')) { return }
 
   Object.defineProperties(Vue.prototype, {
     '$isChrome': { get: () => isChrome },
@@ -827,9 +826,9 @@ function initEnv (Vue) {
     '$keys': { get: () => keys }
   })
 
-  if (isWindows) document.body.classList.add('platform-windows')
-  if (isMac) document.body.classList.add('platform-mac')
-  if (isLinux) document.body.classList.add('platform-linux')
+  if (isWindows) { document.body.classList.add('platform-windows') }
+  if (isMac) { document.body.classList.add('platform-mac') }
+  if (isLinux) { document.body.classList.add('platform-linux') }
 }
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8)))
@@ -842,16 +841,17 @@ function initEnv (Vue) {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initVuexBackend; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCustomStoreDetails; });
-/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* harmony import */ var _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var src_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var src_shared_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
-/* harmony import */ var _clone__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
+/* harmony import */ var _clone__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
 
 
 
 
 
-const isProd = "production" === 'production'
+
+var isProd = "production" === 'production'
 
 class VuexBackend {
   constructor (hook, bridge, isLegacy) {
@@ -898,22 +898,26 @@ class VuexBackend {
       this.store.registerModule = (path, module, options) => {
         this.addModule(path, module, options)
         this.origRegisterModule(path, module, options)
-        if (!isProd) console.log('register module', path)
+        if (!isProd) { console.log('register module', path) }
       }
 
       this.origUnregisterModule = this.store.unregisterModule.bind(this.store)
       this.store.unregisterModule = (path) => {
         this.removeModule(path)
         this.origUnregisterModule(path)
-        if (!isProd) console.log('unregister module', path)
+        if (!isProd) { console.log('unregister module', path) }
       }
     } else {
       this.origRegisterModule = this.origUnregisterModule = () => {}
     }
 
     // Register modules that were added before backend was created
-    this.earlyModules.forEach(({ path, module, options }) => {
-      const moduleInfo = this.addModule(path, module, options)
+    this.earlyModules.forEach((ref) => {
+    var path = ref.path;
+    var module = ref.module;
+    var options = ref.options;
+
+      var moduleInfo = this.addModule(path, module, options)
       moduleInfo.early = true
     })
 
@@ -937,8 +941,11 @@ class VuexBackend {
   /**
    * Register a mutation record
    */
-  onMutation ({ type, payload }) {
-    if (!_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) return
+  onMutation (ref) {
+    var type = ref.type;
+    var payload = ref.payload;
+
+    if (!src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) { return }
 
     this.addMutation(type, payload)
   }
@@ -946,9 +953,12 @@ class VuexBackend {
   /**
    * Time-travel to the state of a specific mutation (by index)
    */
-  onTravelToState ({ index, apply }) {
-    const snapshot = this.replayMutations(index)
-    const state = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.lastState)
+  onTravelToState (ref) {
+    var index = ref.index;
+    var apply = ref.apply;
+
+    var snapshot = this.replayMutations(index)
+    var state = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.lastState)
     this.bridge.send('vuex:inspected-state', {
       index,
       snapshot
@@ -973,7 +983,7 @@ class VuexBackend {
    * ⚠️ State should be time-traveled to before executing this
    */
   onCommit (index) {
-    if (_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
+    if (src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
       this.baseStateSnapshot = this.lastState
     } else {
       this.legacyBaseSnapshot = this.mutations[index].snapshot
@@ -1000,7 +1010,7 @@ class VuexBackend {
    * Parse and time-travel to a state
    */
   onImportState (state) {
-    const parsed = Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(state, true)
+    var parsed = Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(state, true)
     this.initialState = parsed
     this.hook.emit('vuex:travel-to-state', parsed)
     this.reset()
@@ -1013,20 +1023,24 @@ class VuexBackend {
    * Else replays the mutations up to the <index> mutation.
    */
   onInspectState (index) {
-    const snapshot = this.replayMutations(index)
+    var snapshot = this.replayMutations(index)
     this.bridge.send('vuex:inspected-state', {
       index,
       snapshot
     })
   }
 
-  onEditState ({ index, value, path }) {
-    let parsedValue
+  onEditState (ref) {
+    var index = ref.index;
+    var value = ref.value;
+    var path = ref.path;
+
+    var parsedValue
     if (value) {
-      parsedValue = Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(value, true)
+      parsedValue = Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(value, true)
     }
     this.store._committing = true
-    Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* set */ "v"])(this.store.state, path, parsedValue)
+    Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* set */ "v"])(this.store.state, path, parsedValue)
     this.store._committing = false
     this.bridge.send('vuex:inspected-state', {
       index,
@@ -1052,7 +1066,7 @@ class VuexBackend {
    * Reset vuex backend
    */
   reset (stateSnapshot = null) {
-    if (_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
+    if (src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
       this.baseStateSnapshot = stateSnapshot || Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.initialState)
     } else {
       this.legacyBaseSnapshot = this.stringifyStore()
@@ -1075,11 +1089,11 @@ class VuexBackend {
    * Handle adding a dynamic store module
    */
   addModule (path, module, options) {
-    if (typeof path === 'string') path = [path]
+    if (typeof path === 'string') { path = [path] }
 
-    let state
+    var state
     if (options && options.preserveState) {
-      state = Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* get */ "k"])(this.store.state, path)
+      state = Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* get */ "k"])(this.store.state, path)
     }
     if (!state) {
       state = typeof module.state === 'function' ? module.state() : module.state
@@ -1088,17 +1102,15 @@ class VuexBackend {
       state = {}
     }
 
-    const fakeModule = {
-      ...module
-    }
+    var fakeModule = Object.assign({}, module)
 
-    if (_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
+    if (src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
       // Ensure all children state are cloned
-      const replaceNestedStates = (nestedModule) => {
+      var replaceNestedStates = (nestedModule) => {
         if (nestedModule.modules) {
           Object.keys(nestedModule.modules).forEach(key => {
-            const child = nestedModule.modules[key]
-            let state = {}
+            var child = nestedModule.modules[key]
+            var state = {}
             if (child.state) {
               state = typeof child.state === 'function' ? child.state() : child.state
             }
@@ -1110,18 +1122,16 @@ class VuexBackend {
       replaceNestedStates(fakeModule)
     }
 
-    const key = path.join('/')
-    const moduleInfo = this.registeredModules[key] = this.allTimeModules[key] = {
+    var key = path.join('/')
+    var moduleInfo = this.registeredModules[key] = this.allTimeModules[key] = {
       path,
       module: fakeModule,
-      options: {
-        ...options,
-        preserveState: false
-      },
-      state: _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend ? Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state) : null
+      options: Object.assign({}, options,
+        {preserveState: false}),
+      state: src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend ? Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state) : null
     }
 
-    if (_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) {
+    if (src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) {
       this.addMutation(`Register module: ${key}`, {
         path,
         module,
@@ -1138,11 +1148,11 @@ class VuexBackend {
    * Handle removing a dynamic store module
    */
   removeModule (path) {
-    if (typeof path === 'string') path = [path]
+    if (typeof path === 'string') { path = [path] }
 
     delete this.registeredModules[path.join('/')]
 
-    if (_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) {
+    if (src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].recordVuex) {
       this.addMutation(`Unregister module: ${path.join('/')}`, {
         path
       }, {
@@ -1159,13 +1169,11 @@ class VuexBackend {
     if (mutation) {
       mutation.registeredModules.forEach(m => {
         if (!Object.keys(this.registeredModules).sort((a, b) => a.length - b.length).includes(m)) {
-          const data = this.allTimeModules[m]
+          var data = this.allTimeModules[m]
           if (data) {
-            const { path, module, options, state } = data
-            this.origRegisterModule(path, {
-              ...module,
-              state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state)
-            }, options)
+            var { path, module, options, state } = data
+            this.origRegisterModule(path, Object.assign({}, module,
+              {state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state)}), options)
             this.registeredModules[path.join('/')] = data
           }
         }
@@ -1188,12 +1196,9 @@ class VuexBackend {
   }
 
   stringifyStore () {
-    return Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
+    return Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
       state: this.store.state,
-      getters: getCatchedGetters(this.store),
-      modules: Object.keys(this.store._modulesNamespaceMap || {})
-        .map(m => m.substr(0, m.length - 1))
-        .sort()
+      getters: this.store.getters || {}
     })
   }
 
@@ -1201,25 +1206,23 @@ class VuexBackend {
    * Handle a new mutation commited to the store
    */
   addMutation (type, payload, options = {}) {
-    const index = this.mutations.length
+    var index = this.mutations.length
 
-    if (!_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
+    if (!src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
       options.snapshot = this.stringifyStore()
     }
 
-    this.mutations.push({
-      type,
-      payload: _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend ? Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(payload) : null,
+    this.mutations.push(Object.assign({}, {type,
+      payload: src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend ? Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(payload) : null,
       index,
       handlers: this.store._mutations[type],
-      registeredModules: Object.keys(this.registeredModules),
-      ...options
-    })
+      registeredModules: Object.keys(this.registeredModules)},
+      options))
 
     this.bridge.send('vuex:mutation', {
       mutation: {
         type: type,
-        payload: Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])(payload),
+        payload: Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])(payload),
         index
       },
       timestamp: Date.now(),
@@ -1232,18 +1235,18 @@ class VuexBackend {
    * to re-create what the vuex state should be at this point
    */
   replayMutations (index) {
-    if (!_utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
-      const snapshot = index === -1 ? this.legacyBaseSnapshot : this.mutations[index].snapshot
-      this.lastState = Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(snapshot, true).state
+    if (!src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].vuexNewBackend) {
+      var snapshot = index === -1 ? this.legacyBaseSnapshot : this.mutations[index].snapshot
+      this.lastState = Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* parse */ "s"])(snapshot, true).state
       return snapshot
     }
 
-    const originalVm = this.store._vm
-    const originalState = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.store.state)
+    var originalVm = this.store._vm
+    var originalState = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.store.state)
     this.store._vm = this.snapshotsVm
 
-    let tempRemovedModules = []
-    let tempAddedModules = []
+    var tempRemovedModules = []
+    var tempAddedModules = []
 
     // If base state, we need to remove all dynamic registered modules
     // to prevent errors because their state is missing
@@ -1251,15 +1254,15 @@ class VuexBackend {
       tempRemovedModules = Object.keys(this.registeredModules)
       tempRemovedModules.filter(m => this.hasModule(m.split('/'))).sort((a, b) => b.length - a.length).forEach(m => {
         this.origUnregisterModule(m.split('/'))
-        if (!isProd) console.log('before replay unregister', m)
+        if (!isProd) { console.log('before replay unregister', m) }
       })
     }
 
     // Get most recent snapshot for target index
     // for faster replay
-    let stateSnapshot
-    for (let i = 0; i < this.stateSnapshotCache.length; i++) {
-      const s = this.stateSnapshotCache[i]
+    var stateSnapshot
+    for (var i = 0; i < this.stateSnapshotCache.length; i++) {
+      var s = this.stateSnapshotCache[i]
       if (s.index > index) {
         break
       } else {
@@ -1267,13 +1270,13 @@ class VuexBackend {
       }
     }
 
-    let resultState
+    var resultState
 
     // Snapshot was already replayed
     if (stateSnapshot.index === index) {
       resultState = stateSnapshot.state
 
-      const state = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(stateSnapshot.state)
+      var state = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(stateSnapshot.state)
       this.resetSnapshotsVm(state)
       this.store.replaceState(state)
     } else {
@@ -1281,7 +1284,7 @@ class VuexBackend {
       this.resetSnapshotsVm(originalState)
       this.store.replaceState(originalState)
       // Temporarily remove modules if they where not present during first mutation being replayed
-      const startMutation = this.mutations[stateSnapshot.index]
+      var startMutation = this.mutations[stateSnapshot.index]
       if (startMutation) {
         tempRemovedModules = Object.keys(this.registeredModules).filter(m => !startMutation.registeredModules.includes(m))
       } else {
@@ -1289,39 +1292,37 @@ class VuexBackend {
       }
       tempRemovedModules.filter(m => this.hasModule(m.split('/'))).sort((a, b) => b.length - a.length).forEach(m => {
         this.origUnregisterModule(m.split('/'))
-        if (!isProd) console.log('before replay unregister', m)
+        if (!isProd) { console.log('before replay unregister', m) }
       })
 
-      const state = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(stateSnapshot.state)
-      this.resetSnapshotsVm(state)
-      this.store.replaceState(state)
+      var state$1 = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(stateSnapshot.state)
+      this.resetSnapshotsVm(state$1)
+      this.store.replaceState(state$1)
 
-      _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].snapshotLoading = true
+      src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].snapshotLoading = true
 
       // Replay mutations
-      for (let i = stateSnapshot.index + 1; i <= index; i++) {
-        const mutation = this.mutations[i]
+      for (var i$1 = stateSnapshot.index + 1; i$1 <= index; i$1++) {
+        var mutation = this.mutations[i$1]
         if (mutation.registerModule) {
-          const key = mutation.payload.path.join('/')
-          const moduleInfo = this.allTimeModules[key]
+          var key = mutation.payload.path.join('/')
+          var moduleInfo = this.allTimeModules[key]
           tempAddedModules.push(key)
-          this.origRegisterModule(moduleInfo.path, {
-            ...moduleInfo.module,
-            state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(moduleInfo.state)
-          }, moduleInfo.options)
+          this.origRegisterModule(moduleInfo.path, Object.assign({}, moduleInfo.module,
+            {state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(moduleInfo.state)}), moduleInfo.options)
           this.resetSnapshotsVm(this.store.state)
-          if (!isProd) console.log('replay register module', moduleInfo)
+          if (!isProd) { console.log('replay register module', moduleInfo) }
         } else if (mutation.unregisterModule && this.hasModule(mutation.payload.path)) {
-          const path = mutation.payload.path
-          const index = tempAddedModules.indexOf(path.join('/'))
-          if (index !== -1) tempAddedModules.splice(index, 1)
+          var path = mutation.payload.path
+          var index$1 = tempAddedModules.indexOf(path.join('/'))
+          if (index$1 !== -1) { tempAddedModules.splice(index$1, 1) }
           this.origUnregisterModule(path)
           this.resetSnapshotsVm(this.store.state)
-          if (!isProd) console.log('replay unregister module', path)
+          if (!isProd) { console.log('replay unregister module', path) }
         } else if (mutation.handlers) {
           this.store._committing = true
           try {
-            let payload = mutation.payload
+            var payload = mutation.payload
 
             if (this.isLegacy && !Array.isArray(payload)) {
               payload = [payload]
@@ -1347,33 +1348,31 @@ class VuexBackend {
         }
 
         // Optimization: periodically cache snapshots
-        if (i === index || (i % _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cacheVuexSnapshotsEvery === 0)) {
-          this.cacheStateSnapshot(i)
+        if (i$1 === index || (i$1 % src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cacheVuexSnapshotsEvery === 0)) {
+          this.cacheStateSnapshot(i$1)
         }
       }
 
       // Send final state after replay
       resultState = Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.store.state)
 
-      if (!isProd) console.log(`replayed ${index - stateSnapshot.index} mutation(s)`)
+      if (!isProd) { console.log(`replayed ${index - stateSnapshot.index} mutation(s)`) }
     }
 
     this.lastState = resultState
 
-    const result = this.stringifyStore()
+    var result = this.stringifyStore()
 
     // Restore user state
     tempAddedModules.sort((a, b) => b.length - a.length).forEach(m => {
       this.origUnregisterModule(m.split('/'))
-      if (!isProd) console.log('after replay unregister', m)
+      if (!isProd) { console.log('after replay unregister', m) }
     })
     tempRemovedModules.sort((a, b) => a.length - b.length).forEach(m => {
-      const { path, module, options, state } = this.registeredModules[m]
-      this.origRegisterModule(path, {
-        ...module,
-        state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state)
-      }, options)
-      if (!isProd) console.log('after replay register', m)
+      var { path, module, options, state } = this.registeredModules[m]
+      this.origRegisterModule(path, Object.assign({}, module,
+        {state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(state)}), options)
+      if (!isProd) { console.log('after replay register', m) }
     })
     this.store._vm = originalVm
 
@@ -1387,34 +1386,37 @@ class VuexBackend {
       state: Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(this.store.state),
       permanent
     })
-    if (!isProd) console.log('cached snapshot', index)
+    if (!isProd) { console.log('cached snapshot', index) }
     // Delete old cached snapshots
-    if (this.stateSnapshotCache.filter(s => !s.permanent).length > _utils_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cacheVuexSnapshotsLimit) {
-      const i = this.stateSnapshotCache.findIndex(s => !s.permanent)
+    if (this.stateSnapshotCache.filter(s => !s.permanent).length > src_shared_data__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"].cacheVuexSnapshotsLimit) {
+      var i = this.stateSnapshotCache.findIndex(s => !s.permanent)
       if (i !== -1) {
-        if (!isProd) console.log('clean cached snapshot', this.stateSnapshotCache[i].index)
+        if (!isProd) { console.log('clean cached snapshot', this.stateSnapshotCache[i].index) }
         this.stateSnapshotCache.splice(i, 1)
       }
     }
   }
 
   removeCachedStateSnapshot (index) {
-    const i = this.stateSnapshotCache.findIndex(s => s.idex === index)
-    if (i !== -1) this.stateSnapshotCache.splice(i, 1)
+    var i = this.stateSnapshotCache.findIndex(s => s.idex === index)
+    if (i !== -1) { this.stateSnapshotCache.splice(i, 1) }
   }
 
   /**
    * Get the serialized state and getters from the store
    */
   getStoreSnapshot (stateSnapshot = null) {
-    let originalVm
+    var originalVm
     if (stateSnapshot) {
       originalVm = this.store._vm
       this.store._vm = this.snapshotsVm
       this.store.replaceState(Object(_clone__WEBPACK_IMPORTED_MODULE_3__[/* default */ "a"])(stateSnapshot))
     }
 
-    const result = this.stringifyStore()
+    var result = Object(src_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
+      state: this.store.state,
+      getters: this.store.getters || {}
+    })
 
     if (stateSnapshot) {
       // Restore user state
@@ -1430,28 +1432,6 @@ function initVuexBackend (hook, bridge, isLegacy) {
   new VuexBackend(hook, bridge, isLegacy)
 }
 
-function getCatchedGetters (store) {
-  const getters = {}
-
-  const origGetters = store.getters || {}
-  const keys = Object.keys(origGetters)
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    Object.defineProperty(getters, key, {
-      enumerable: true,
-      get: () => {
-        try {
-          return origGetters[key]
-        } catch (e) {
-          return e
-        }
-      }
-    })
-  }
-
-  return getters
-}
-
 function getCustomStoreDetails (store) {
   return {
     _custom: {
@@ -1459,7 +1439,7 @@ function getCustomStoreDetails (store) {
       display: 'Store',
       value: {
         state: store.state,
-        getters: getCatchedGetters(store)
+        getters: store.getters
       },
       fields: {
         abstract: true
@@ -1471,27 +1451,27 @@ function getCustomStoreDetails (store) {
 
 /***/ }),
 
-/***/ 13:
+/***/ 11:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return initRouterBackend; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return getCustomRouterDetails; });
-/* harmony import */ var _utils_util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 
 
 function initRouterBackend (Vue, bridge, rootInstances) {
-  let recording = true
+  var recording = true
 
-  const getSnapshot = () => {
-    const routeChanges = []
+  var getSnapshot = () => {
+    var routeChanges = []
     rootInstances.forEach(instance => {
-      const router = instance._router
+      var router = instance._router
       if (router && router.options && router.options.routes) {
         routeChanges.push(...router.options.routes)
       }
     })
-    return Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
+    return Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
       routeChanges
     })
   }
@@ -1503,18 +1483,18 @@ function initRouterBackend (Vue, bridge, rootInstances) {
   })
 
   rootInstances.forEach(instance => {
-    const router = instance._router
+    var router = instance._router
 
     if (router) {
       router.afterEach((to, from) => {
-        if (!recording) return
-        bridge.send('router:changed', Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
+        if (!recording) { return }
+        bridge.send('router:changed', Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
           to,
           from,
           timestamp: Date.now()
         }))
       })
-      bridge.send('router:init', Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
+      bridge.send('router:init', Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])({
         mode: router.mode,
         current: {
           from: router.history.current,
@@ -1524,10 +1504,10 @@ function initRouterBackend (Vue, bridge, rootInstances) {
       }))
 
       if (router.matcher && router.matcher.addRoutes) {
-        const addRoutes = router.matcher.addRoutes
+        var addRoutes = router.matcher.addRoutes
         router.matcher.addRoutes = function (routes) {
           routes.forEach((item) => {
-            bridge.send('routes:changed', Object(_utils_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])(item))
+            bridge.send('routes:changed', Object(_util__WEBPACK_IMPORTED_MODULE_0__[/* stringify */ "y"])(item))
           })
           addRoutes.call(this, routes)
         }
@@ -1555,31 +1535,31 @@ function getCustomRouterDetails (router) {
 
 /***/ }),
 
-/***/ 14:
+/***/ 12:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 
-// EXTERNAL MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/shared-utils/src/util.js
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/util.js
 var util = __webpack_require__(0);
 
-// EXTERNAL MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/shared-utils/src/shared-data.js
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/shared-data.js
 var shared_data = __webpack_require__(3);
 
-// EXTERNAL MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/shared-utils/src/env.js
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/devtools/env.js
 var env = __webpack_require__(1);
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/highlighter.js
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/highlighter.js
 
 
 
 
 
-let overlay
-let overlayContent
+var overlay
+var overlayContent
 
 function init () {
-  if (overlay || !env["b" /* isBrowser */]) return
+  if (overlay || !env["b" /* isBrowser */]) { return }
   overlay = document.createElement('div')
   overlay.style.backgroundColor = 'rgba(104, 182, 255, 0.35)'
   overlay.style.position = 'fixed'
@@ -1606,8 +1586,8 @@ function init () {
  */
 
 function highlight (instance) {
-  if (!instance) return
-  const rect = getInstanceOrVnodeRect(instance)
+  if (!instance) { return }
+  var rect = getInstanceOrVnodeRect(instance)
 
   if (!env["b" /* isBrowser */]) {
     // TODO: Highlight rect area.
@@ -1616,15 +1596,15 @@ function highlight (instance) {
 
   init()
   if (rect) {
-    const content = []
-    let name = instance.fnContext ? Object(util["m" /* getComponentName */])(instance.fnOptions) : getInstanceName(instance)
+    var content = []
+    var name = instance.fnContext ? Object(util["m" /* getComponentName */])(instance.fnOptions) : getInstanceName(instance)
     name = Object(util["l" /* getComponentDisplayName */])(name, shared_data["a" /* default */].componentNameStyle)
     if (name) {
-      const pre = document.createElement('span')
+      var pre = document.createElement('span')
       pre.style.opacity = '0.6'
       pre.innerText = '<'
-      const text = document.createTextNode(name)
-      const post = document.createElement('span')
+      var text = document.createTextNode(name)
+      var post = document.createElement('span')
       post.style.opacity = '0.6'
       post.innerText = '>'
       content.push(pre, text, post)
@@ -1651,7 +1631,7 @@ function unHighlight () {
  */
 
 function getInstanceOrVnodeRect (instance) {
-  const el = instance.$el || instance.elm
+  var el = instance.$el || instance.elm
   if (!env["b" /* isBrowser */]) {
     // TODO: Find position from instance or a vnode (for functional components).
 
@@ -1675,10 +1655,13 @@ function getInstanceOrVnodeRect (instance) {
  * @return {Object}
  */
 
-function getFragmentRect ({ _fragmentStart, _fragmentEnd }) {
-  let top, bottom, left, right
+function getFragmentRect (ref) {
+  var _fragmentStart = ref._fragmentStart;
+  var _fragmentEnd = ref._fragmentEnd;
+
+  var top, bottom, left, right
   highlighter_util().mapNodeRange(_fragmentStart, _fragmentEnd, function (node) {
-    let rect
+    var rect
     if (node.nodeType === 1 || node.getBoundingClientRect) {
       rect = node.getBoundingClientRect()
     } else if (node.nodeType === 3 && node.data.trim()) {
@@ -1707,7 +1690,7 @@ function getFragmentRect ({ _fragmentStart, _fragmentEnd }) {
   }
 }
 
-let range
+var range
 /**
  * Get the bounding rect for a text node using a Range.
  *
@@ -1715,8 +1698,8 @@ let range
  * @return {Rect}
  */
 function getTextRect (node) {
-  if (!env["b" /* isBrowser */]) return
-  if (!range) range = document.createRange()
+  if (!env["b" /* isBrowser */]) { return }
+  if (!range) { range = document.createRange() }
 
   range.selectNode(node)
 
@@ -1729,8 +1712,13 @@ function getTextRect (node) {
  * @param {Rect}
  */
 
-function showOverlay ({ width = 0, height = 0, top = 0, left = 0 }, content = []) {
-  if (!env["b" /* isBrowser */]) return
+function showOverlay (ref, content = []) {
+  var width = ref.width; if ( width === void 0 ) width = 0;
+  var height = ref.height; if ( height === void 0 ) height = 0;
+  var top = ref.top; if ( top === void 0 ) top = 0;
+  var left = ref.left; if ( left === void 0 ) left = 0;
+
+  if (!env["b" /* isBrowser */]) { return }
 
   overlay.style.width = ~~width + 'px'
   overlay.style.height = ~~height + 'px'
@@ -1751,17 +1739,17 @@ function highlighter_util () {
   return env["f" /* target */].__VUE_DEVTOOLS_GLOBAL_HOOK__.Vue.util
 }
 
-// EXTERNAL MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/vuex.js
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/vuex.js
 var vuex = __webpack_require__(10);
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/events.js
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/events.js
 
 
 
-const internalRE = /^(?:pre-)?hook:/
+var internalRE = /^(?:pre-)?hook:/
 
 function initEventsBackend (Vue, bridge) {
-  let recording = true
+  var recording = true
 
   bridge.send('events:reset')
 
@@ -1787,10 +1775,10 @@ function initEventsBackend (Vue, bridge) {
   }
 
   function wrap (method) {
-    const original = Vue.prototype[method]
+    var original = Vue.prototype[method]
     if (original) {
       Vue.prototype[method] = function (...args) {
-        const res = original.apply(this, args)
+        var res = original.apply(this, args)
         if (recording) {
           logEvent(this, method, args[0], args.slice(1))
         }
@@ -1804,14 +1792,14 @@ function initEventsBackend (Vue, bridge) {
   wrap('$dispatch')
 }
 
-// EXTERNAL MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/router.js
-var router = __webpack_require__(13);
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/router.js
+var router = __webpack_require__(11);
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/perf.js
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/perf.js
 
 
 
-const COMPONENT_HOOKS = [
+var COMPONENT_HOOKS = [
   'beforeCreate',
   'created',
   'beforeMount',
@@ -1822,19 +1810,19 @@ const COMPONENT_HOOKS = [
   'destroyed'
 ]
 
-const RENDER_HOOKS = {
+var RENDER_HOOKS = {
   beforeMount: { after: 'mountRender' },
   mounted: { before: 'mountRender' },
   beforeUpdate: { after: 'updateRender' },
   updated: { before: 'updateRender' }
 }
 
-let perf_frames = 0
-let frameTime
-let secondsTimer
-let perf_bridge
+var perf_frames = 0
+var frameTime
+var secondsTimer
+var perf_bridge
 
-let componentMetrics
+var componentMetrics
 
 function initPerfBackend (Vue, _bridge, instanceMap) {
   perf_bridge = _bridge
@@ -1878,7 +1866,7 @@ function perf_frame () {
 }
 
 function frameInterval () {
-  const metric = {
+  var metric = {
     type: 'fps',
     time: Date.now(),
     start: frameTime,
@@ -1890,21 +1878,21 @@ function frameInterval () {
 }
 
 function applyHooks (vm) {
-  if (vm.$options.$_devtoolsPerfHooks) return
+  if (vm.$options.$_devtoolsPerfHooks) { return }
   vm.$options.$_devtoolsPerfHooks = true
 
-  const renderMetrics = {}
+  var renderMetrics = {}
 
   COMPONENT_HOOKS.forEach(hook => {
-    const renderHook = RENDER_HOOKS[hook]
+    var renderHook = RENDER_HOOKS[hook]
 
-    const handler = function () {
+    var handler = function () {
       if (shared_data["a" /* default */].recordPerf) {
         // Before
-        const time = performance.now()
+        var time = performance.now()
         if (renderHook && renderHook.before) {
           // Render hook ends before one hook
-          const metric = renderMetrics[renderHook.before]
+          var metric = renderMetrics[renderHook.before]
           if (metric) {
             metric.end = time
             addComponentMetric(vm.$options, renderHook.before, metric.start, metric.end)
@@ -1913,7 +1901,7 @@ function applyHooks (vm) {
 
         // After
         this.$once(`hook:${hook}`, () => {
-          const newTime = performance.now()
+          var newTime = performance.now()
           addComponentMetric(vm.$options, hook, time, newTime)
           if (renderHook && renderHook.after) {
             // Render hook starts after one hook
@@ -1925,7 +1913,7 @@ function applyHooks (vm) {
         })
       }
     }
-    const currentValue = vm.$options[hook]
+    var currentValue = vm.$options[hook]
     if (Array.isArray(currentValue)) {
       vm.$options[hook] = [handler, ...currentValue]
     } else if (typeof currentValue === 'function') {
@@ -1937,16 +1925,16 @@ function applyHooks (vm) {
 }
 
 function addComponentMetric (options, type, start, end) {
-  const duration = end - start
-  const name = Object(util["m" /* getComponentName */])(options)
+  var duration = end - start
+  var name = Object(util["m" /* getComponentName */])(options)
 
-  const metric = componentMetrics[name] = componentMetrics[name] || {
+  var metric = componentMetrics[name] = componentMetrics[name] || {
     id: name,
     hooks: {},
     totalTime: 0
   }
 
-  const hook = metric.hooks[type] = metric.hooks[type] || {
+  var hook = metric.hooks[type] = metric.hooks[type] || {
     count: 0,
     totalTime: 0
   }
@@ -1958,7 +1946,7 @@ function addComponentMetric (options, type, start, end) {
   perf_bridge.send('perf:upsert-metric', { type: 'componentRender', data: metric })
 }
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/utils.js
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/utils.js
 function findRelatedComponent (el) {
   while (!el.__vue__ && el.parentElement) {
     el = el.parentElement
@@ -1966,14 +1954,14 @@ function findRelatedComponent (el) {
   return el.__vue__
 }
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/component-selector.js
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/component-selector.js
 
 
 
 
 class component_selector_ComponentSelector {
   constructor (bridge, instanceMap) {
-    const self = this
+    var self = this
     self.bridge = bridge
     self.instanceMap = instanceMap
     self.bindMethods()
@@ -1986,7 +1974,7 @@ class component_selector_ComponentSelector {
    * Adds event listeners for mouseover and mouseup
    */
   startSelecting () {
-    if (!env["b" /* isBrowser */]) return
+    if (!env["b" /* isBrowser */]) { return }
     window.addEventListener('mouseover', this.elementMouseOver, true)
     window.addEventListener('click', this.elementClicked, true)
     window.addEventListener('mouseout', this.cancelEvent, true)
@@ -2000,7 +1988,7 @@ class component_selector_ComponentSelector {
    * Removes event listeners
    */
   stopSelecting () {
-    if (!env["b" /* isBrowser */]) return
+    if (!env["b" /* isBrowser */]) { return }
     window.removeEventListener('mouseover', this.elementMouseOver, true)
     window.removeEventListener('click', this.elementClicked, true)
     window.removeEventListener('mouseout', this.cancelEvent, true)
@@ -2019,7 +2007,7 @@ class component_selector_ComponentSelector {
   elementMouseOver (e) {
     this.cancelEvent(e)
 
-    const el = e.target
+    var el = e.target
     if (el) {
       this.selectedInstance = findRelatedComponent(el)
     }
@@ -2066,8 +2054,11 @@ class component_selector_ComponentSelector {
   }
 }
 
-// CONCATENATED MODULE: /home/akryum/Projects/vue-devtools/node_modules/@vue-devtools/app-backend/src/index.js
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return src_instanceMap; });
+// EXTERNAL MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/storage.js
+var storage = __webpack_require__(9);
+
+// CONCATENATED MODULE: C:/Users/zce/Desktop/vue-devtools/source/src/backend/index.js
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return backend_instanceMap; });
 /* unused harmony export functionalVnodeMap */
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return initBackend; });
 /* unused harmony export findInstanceOrVnode */
@@ -2090,48 +2081,51 @@ class component_selector_ComponentSelector {
 
 
 
+
 // hook should have been injected before this executes.
-const src_hook = env["f" /* target */].__VUE_DEVTOOLS_GLOBAL_HOOK__
-const rootInstances = []
-const propModes = ['default', 'sync', 'once']
+var backend_hook = env["f" /* target */].__VUE_DEVTOOLS_GLOBAL_HOOK__
+var rootInstances = []
+var propModes = ['default', 'sync', 'once']
 
-const src_instanceMap = env["f" /* target */].__VUE_DEVTOOLS_INSTANCE_MAP__ = new Map()
-const functionalVnodeMap = env["f" /* target */].__VUE_DEVTOOLS_FUNCTIONAL_VNODE_MAP__ = new Map()
+var backend_instanceMap = env["f" /* target */].__VUE_DEVTOOLS_INSTANCE_MAP__ = new Map()
+var functionalVnodeMap = env["f" /* target */].__VUE_DEVTOOLS_FUNCTIONAL_VNODE_MAP__ = new Map()
 
-const consoleBoundInstances = Array(5)
-let currentInspectedId
-let src_bridge
-let filter = ''
-let captureCount = 0
-let isLegacy = false
-let rootUID = 0
-let functionalIds = new Map()
+var consoleBoundInstances = Array(5)
+var currentInspectedId
+var backend_bridge
+var filter = ''
+var captureCount = 0
+var isLegacy = false
+var rootUID = 0
+var functionalIds = new Map()
 
 // Dedupe instances
 // Some instances may be both on a component and on a child abstract/functional component
-const captureIds = new Map()
+var captureIds = new Map()
 
 function initBackend (_bridge) {
-  src_bridge = _bridge
+  backend_bridge = _bridge
 
-  if (src_hook.Vue) {
-    isLegacy = src_hook.Vue.version && src_hook.Vue.version.split('.')[0] === '1'
-    connect(src_hook.Vue)
+  if (backend_hook.Vue) {
+    isLegacy = backend_hook.Vue.version && backend_hook.Vue.version.split('.')[0] === '1'
+    connect(backend_hook.Vue)
   } else {
-    src_hook.once('init', connect)
+    backend_hook.once('init', connect)
   }
 
   initRightClick()
 }
 
 function connect (Vue) {
-  Object(shared_data["c" /* init */])({
-    bridge: src_bridge,
-    Vue
-  }).then(() => {
-    src_hook.currentTab = 'components'
-    src_bridge.on('switch-tab', tab => {
-      src_hook.currentTab = tab
+  Object(storage["b" /* init */])().then(() => {
+    Object(shared_data["c" /* init */])({
+      bridge: backend_bridge,
+      Vue
+    })
+
+    backend_hook.currentTab = 'components'
+    backend_bridge.on('switch-tab', tab => {
+      backend_hook.currentTab = tab
       if (tab === 'components') {
         flush()
       }
@@ -2140,90 +2134,90 @@ function connect (Vue) {
     // the backend may get injected to the same page multiple times
     // if the user closes and reopens the devtools.
     // make sure there's only one flush listener.
-    src_hook.off('flush')
-    src_hook.on('flush', () => {
-      if (src_hook.currentTab === 'components') {
+    backend_hook.off('flush')
+    backend_hook.on('flush', () => {
+      if (backend_hook.currentTab === 'components') {
         flush()
       }
     })
 
-    src_bridge.on('select-instance', id => {
+    backend_bridge.on('select-instance', id => {
       currentInspectedId = id
-      const instance = findInstanceOrVnode(id)
-      if (!instance) return
-      if (!/:functional:/.test(id)) bindToConsole(instance)
+      var instance = findInstanceOrVnode(id)
+      if (!instance) { return }
+      if (!/:functional:/.test(id)) { bindToConsole(instance) }
       flush()
-      src_bridge.send('instance-selected')
+      backend_bridge.send('instance-selected')
     })
 
-    src_bridge.on('scroll-to-instance', id => {
-      const instance = findInstanceOrVnode(id)
+    backend_bridge.on('scroll-to-instance', id => {
+      var instance = findInstanceOrVnode(id)
       if (instance) {
         scrollIntoView(instance)
         highlight(instance)
       }
     })
 
-    src_bridge.on('filter-instances', _filter => {
+    backend_bridge.on('filter-instances', _filter => {
       filter = _filter.toLowerCase()
       flush()
     })
 
-    src_bridge.on('refresh', scan)
+    backend_bridge.on('refresh', scan)
 
-    src_bridge.on('enter-instance', id => {
-      const instance = findInstanceOrVnode(id)
-      if (instance) highlight(instance)
+    backend_bridge.on('enter-instance', id => {
+      var instance = findInstanceOrVnode(id)
+      if (instance) { highlight(instance) }
     })
 
-    src_bridge.on('leave-instance', unHighlight)
+    backend_bridge.on('leave-instance', unHighlight)
 
     // eslint-disable-next-line no-new
-    new component_selector_ComponentSelector(src_bridge, src_instanceMap)
+    new component_selector_ComponentSelector(backend_bridge, backend_instanceMap)
 
     // Get the instance id that is targeted by context menu
-    src_bridge.on('get-context-menu-target', () => {
-      const instance = env["f" /* target */].__VUE_DEVTOOLS_CONTEXT_MENU_TARGET__
+    backend_bridge.on('get-context-menu-target', () => {
+      var instance = env["f" /* target */].__VUE_DEVTOOLS_CONTEXT_MENU_TARGET__
 
       env["f" /* target */].__VUE_DEVTOOLS_CONTEXT_MENU_TARGET__ = null
       env["f" /* target */].__VUE_DEVTOOLS_CONTEXT_MENU_HAS_TARGET__ = false
 
       if (instance) {
-        const id = instance.__VUE_DEVTOOLS_UID__
+        var id = instance.__VUE_DEVTOOLS_UID__
         if (id) {
-          return src_bridge.send('inspect-instance', id)
+          return backend_bridge.send('inspect-instance', id)
         }
       }
 
       toast('No Vue component was found', 'warn')
     })
 
-    src_bridge.on('set-instance-data', args => {
+    backend_bridge.on('set-instance-data', args => {
       setStateValue(args)
       flush()
     })
 
     // vuex
-    if (src_hook.store) {
-      Object(vuex["b" /* initVuexBackend */])(src_hook, src_bridge, src_hook.store.commit === undefined)
+    if (backend_hook.store) {
+      Object(vuex["b" /* initVuexBackend */])(backend_hook, backend_bridge, backend_hook.store.commit === undefined)
     } else {
-      src_hook.once('vuex:init', store => {
-        Object(vuex["b" /* initVuexBackend */])(src_hook, src_bridge, store.commit === undefined)
+      backend_hook.once('vuex:init', store => {
+        Object(vuex["b" /* initVuexBackend */])(backend_hook, backend_bridge, store.commit === undefined)
       })
     }
 
-    src_hook.once('router:init', () => {
-      Object(router["b" /* initRouterBackend */])(src_hook.Vue, src_bridge, rootInstances)
+    backend_hook.once('router:init', () => {
+      Object(router["b" /* initRouterBackend */])(backend_hook.Vue, backend_bridge, rootInstances)
     })
 
     // events
-    initEventsBackend(Vue, src_bridge)
+    initEventsBackend(Vue, backend_bridge)
 
     env["f" /* target */].__VUE_DEVTOOLS_INSPECT__ = inspectInstance
 
     // User project devtools config
     if (env["f" /* target */].hasOwnProperty('VUE_DEVTOOLS_CONFIG')) {
-      const config = env["f" /* target */].VUE_DEVTOOLS_CONFIG
+      var config = env["f" /* target */].VUE_DEVTOOLS_CONFIG
 
       // Open in editor
       if (config.hasOwnProperty('openInEditorHost')) {
@@ -2231,9 +2225,9 @@ function connect (Vue) {
       }
     }
 
-    src_bridge.log('backend ready.')
-    src_bridge.send('ready', Vue.version)
-    src_bridge.on('log-detected-vue', () => {
+    backend_bridge.log('backend ready.')
+    backend_bridge.send('ready', Vue.version)
+    backend_bridge.on('log-detected-vue', () => {
       console.log(
         `%c vue-devtools %c Detected Vue v${Vue.version} %c`,
         'background:#35495e ; padding: 1px; border-radius: 3px 0 0 3px;  color: #fff',
@@ -2246,18 +2240,18 @@ function connect (Vue) {
       scan()
 
       // perf
-      initPerfBackend(Vue, src_bridge, src_instanceMap)
+      initPerfBackend(Vue, backend_bridge, backend_instanceMap)
     }, 0)
   })
 }
 
 function findInstanceOrVnode (id) {
   if (/:functional:/.test(id)) {
-    const [refId] = id.split(':functional:')
-    const map = functionalVnodeMap.get(refId)
+    var [refId] = id.split(':functional:')
+    var map = functionalVnodeMap.get(refId)
     return map && map[id]
   }
-  return src_instanceMap.get(id)
+  return backend_instanceMap.get(id)
 }
 
 /**
@@ -2266,8 +2260,8 @@ function findInstanceOrVnode (id) {
 
 function scan () {
   rootInstances.length = 0
-  let inFragment = false
-  let currentFragment = null
+  var inFragment = false
+  var currentFragment = null
 
   function processInstance (instance) {
     if (instance) {
@@ -2280,7 +2274,7 @@ function scan () {
       }
 
       // respect Vue.config.devtools option
-      let baseVue = instance.constructor
+      var baseVue = instance.constructor
       while (baseVue.super) {
         baseVue = baseVue.super
       }
@@ -2306,7 +2300,7 @@ function scan () {
         }
         return true
       }
-      let instance = node.__vue__
+      var instance = node.__vue__
 
       return processInstance(instance)
     })
@@ -2315,7 +2309,7 @@ function scan () {
       env["f" /* target */].__VUE_ROOT_INSTANCES__.map(processInstance)
     }
   }
-  src_hook.emit('router:init')
+  backend_hook.emit('router:init')
   flush()
 }
 
@@ -2328,9 +2322,9 @@ function scan () {
 
 function walk (node, fn) {
   if (node.childNodes) {
-    for (let i = 0, l = node.childNodes.length; i < l; i++) {
-      const child = node.childNodes[i]
-      const stop = fn(child)
+    for (var i = 0, l = node.childNodes.length; i < l; i++) {
+      var child = node.childNodes[i]
+      var stop = fn(child)
       if (!stop) {
         walk(child, fn)
       }
@@ -2351,16 +2345,16 @@ function walk (node, fn) {
  */
 
 function flush () {
-  let start
+  var start
   functionalIds.clear()
   captureIds.clear()
   if (false) {}
-  const payload = Object(util["y" /* stringify */])({
+  var payload = Object(util["y" /* stringify */])({
     inspectedInstance: getInstanceDetails(currentInspectedId),
     instances: findQualifiedChildrenFromList(rootInstances)
   })
   if (false) {}
-  src_bridge.send('flush', payload)
+  backend_bridge.send('flush', payload)
 }
 
 /**
@@ -2411,14 +2405,14 @@ function findQualifiedChildren (instance) {
  */
 
 function isQualified (instance) {
-  const name = Object(util["g" /* classify */])(instance.name || getInstanceName(instance)).toLowerCase()
+  var name = Object(util["g" /* classify */])(instance.name || getInstanceName(instance)).toLowerCase()
   return name.indexOf(filter) > -1
 }
 
 function flatten (items) {
   return items.reduce((acc, item) => {
-    if (item instanceof Array) acc.push(...flatten(item))
-    else if (item) acc.push(item)
+    if (item instanceof Array) { acc.push(...flatten(item)) }
+    else if (item) { acc.push(item) }
 
     return acc
   }, [])
@@ -2428,7 +2422,7 @@ function captureChild (child) {
   if (child.fnContext && !child.componentInstance) {
     return capture(child)
   } else if (child.componentInstance) {
-    if (!child.componentInstance._isBeingDestroyed) return capture(child.componentInstance)
+    if (!child.componentInstance._isBeingDestroyed) { return capture(child.componentInstance) }
   } else if (child.children) {
     return flatten(child.children.map(captureChild))
   }
@@ -2450,15 +2444,15 @@ function capture (instance, index, list) {
 
   // Functional component.
   if (instance.fnContext && !instance.componentInstance) {
-    const contextUid = instance.fnContext.__VUE_DEVTOOLS_UID__
-    let id = functionalIds.get(contextUid)
+    var contextUid = instance.fnContext.__VUE_DEVTOOLS_UID__
+    var id = functionalIds.get(contextUid)
     if (id == null) {
       id = 0
     } else {
       id++
     }
     functionalIds.set(contextUid, id)
-    const functionalId = contextUid + ':functional:' + id
+    var functionalId = contextUid + ':functional:' + id
     markFunctional(functionalId, instance)
     return {
       id: functionalId,
@@ -2491,9 +2485,9 @@ function capture (instance, index, list) {
   }
 
   mark(instance)
-  const name = getInstanceName(instance)
+  var name = getInstanceName(instance)
 
-  const ret = {
+  var ret = {
     uid: instance._uid,
     id: instance.__VUE_DEVTOOLS_UID__,
     name,
@@ -2515,21 +2509,21 @@ function capture (instance, index, list) {
 
   // record screen position to ensure correct ordering
   if ((!list || list.length > 1) && !instance._inactive) {
-    const rect = getInstanceOrVnodeRect(instance)
+    var rect = getInstanceOrVnodeRect(instance)
     ret.top = rect ? rect.top : Infinity
   } else {
     ret.top = Infinity
   }
   // check if instance is available in console
-  const consoleId = consoleBoundInstances.indexOf(instance.__VUE_DEVTOOLS_UID__)
+  var consoleId = consoleBoundInstances.indexOf(instance.__VUE_DEVTOOLS_UID__)
   ret.consoleId = consoleId > -1 ? '$vm' + consoleId : null
   // check router view
-  const isRouterView2 = instance.$vnode && instance.$vnode.data.routerView
+  var isRouterView2 = instance.$vnode && instance.$vnode.data.routerView
   if (instance._routerView || isRouterView2) {
     ret.isRouterView = true
     if (!instance._inactive && instance.$route) {
-      const matched = instance.$route.matched
-      const depth = isRouterView2
+      var matched = instance.$route.matched
+      var depth = isRouterView2
         ? instance.$vnode.data.routerViewDepth
         : instance._routerView.depth
       ret.matchedRouteSegment =
@@ -2548,16 +2542,16 @@ function capture (instance, index, list) {
  */
 
 function mark (instance) {
-  if (!src_instanceMap.has(instance.__VUE_DEVTOOLS_UID__)) {
-    src_instanceMap.set(instance.__VUE_DEVTOOLS_UID__, instance)
+  if (!backend_instanceMap.has(instance.__VUE_DEVTOOLS_UID__)) {
+    backend_instanceMap.set(instance.__VUE_DEVTOOLS_UID__, instance)
     instance.$on('hook:beforeDestroy', function () {
-      src_instanceMap.delete(instance.__VUE_DEVTOOLS_UID__)
+      backend_instanceMap.delete(instance.__VUE_DEVTOOLS_UID__)
     })
   }
 }
 
 function markFunctional (id, vnode) {
-  const refId = vnode.fnContext.__VUE_DEVTOOLS_UID__
+  var refId = vnode.fnContext.__VUE_DEVTOOLS_UID__
   if (!functionalVnodeMap.has(refId)) {
     functionalVnodeMap.set(refId, {})
     vnode.fnContext.$on('hook:beforeDestroy', function () {
@@ -2575,34 +2569,34 @@ function markFunctional (id, vnode) {
  */
 
 function getInstanceDetails (id) {
-  const instance = src_instanceMap.get(id)
+  var instance = backend_instanceMap.get(id)
   if (!instance) {
-    const vnode = findInstanceOrVnode(id)
+    var vnode = findInstanceOrVnode(id)
 
-    if (!vnode) return {}
+    if (!vnode) { return {} }
 
-    const data = {
+    var data = {
       id,
       name: Object(util["m" /* getComponentName */])(vnode.fnOptions),
       file: vnode.fnOptions.__file || null,
-      state: processProps({ $options: vnode.fnOptions, ...(vnode.devtoolsMeta && vnode.devtoolsMeta.renderContext.props) }),
+      state: processProps(Object.assign({}, {$options: vnode.fnOptions}, (vnode.devtoolsMeta && vnode.devtoolsMeta.renderContext.props))),
       functional: true
     }
 
     return data
   } else {
-    const data = {
+    var data$1 = {
       id: id,
       name: getInstanceName(instance),
       state: getInstanceState(instance)
     }
 
-    let i
+    var i
     if ((i = instance.$vnode) && (i = i.componentOptions) && (i = i.Ctor) && (i = i.options)) {
-      data.file = i.__file || null
+      data$1.file = i.__file || null
     }
 
-    return data
+    return data$1
   }
 }
 
@@ -2621,7 +2615,7 @@ function getInstanceState (instance) {
 }
 
 function getCustomInstanceDetails (instance) {
-  const state = getInstanceState(instance)
+  var state = getInstanceState(instance)
   return {
     _custom: {
       type: 'component',
@@ -2641,8 +2635,8 @@ function reduceStateList (list) {
     return undefined
   }
   return list.reduce((map, item) => {
-    const key = item.type || 'data'
-    const obj = map[key] = map[key] || {}
+    var key = item.type || 'data'
+    var obj = map[key] = map[key] || {}
     obj[item.key] = item.value
     return map
   }, {})
@@ -2656,8 +2650,8 @@ function reduceStateList (list) {
  */
 
 function getInstanceName (instance) {
-  const name = Object(util["m" /* getComponentName */])(instance.$options || instance.fnOptions || {})
-  if (name) return name
+  var name = Object(util["m" /* getComponentName */])(instance.$options || instance.fnOptions || {})
+  if (name) { return name }
   return instance.$root === instance
     ? 'Root'
     : 'Anonymous Component'
@@ -2673,12 +2667,12 @@ function getInstanceName (instance) {
  */
 
 function processProps (instance) {
-  let props
+  var props
   if (isLegacy && (props = instance._props)) {
     // 1.x
     return Object.keys(props).map(key => {
-      const prop = props[key]
-      const options = prop.options
+      var prop = props[key]
+      var options = prop.options
       return {
         type: 'props',
         key: prop.path,
@@ -2692,9 +2686,9 @@ function processProps (instance) {
     })
   } else if ((props = instance.$options.props)) {
     // 2.0
-    const propsData = []
-    for (let key in props) {
-      const prop = props[key]
+    var propsData = []
+    for (var key in props) {
+      var prop = props[key]
       key = Object(util["f" /* camelize */])(key)
       propsData.push({
         type: 'props',
@@ -2716,7 +2710,10 @@ function processProps (instance) {
 }
 
 function processAttrs (instance) {
-  return Object.entries(instance.$attrs || {}).map(([key, value]) => {
+  return Object.entries(instance.$attrs || {}).map((ref) => {
+    var key = ref[0];
+    var value = ref[1];
+
     return {
       type: '$attrs',
       key,
@@ -2731,9 +2728,9 @@ function processAttrs (instance) {
  * @param {Function} fn
  */
 
-const fnTypeRE = /^(?:function|class) (\w+)/
+var fnTypeRE = /^(?:function|class) (\w+)/
 function getPropType (type) {
-  const match = type.toString().match(fnTypeRE)
+  var match = type.toString().match(fnTypeRE)
   return typeof type === 'function'
     ? (match && match[1]) || 'any'
     : 'any'
@@ -2749,10 +2746,10 @@ function getPropType (type) {
  */
 
 function processState (instance) {
-  const props = isLegacy
+  var props = isLegacy
     ? instance._props
     : instance.$options.props
-  const getters =
+  var getters =
     instance.$options.vuex &&
     instance.$options.vuex.getters
   return Object.keys(instance._data)
@@ -2788,20 +2785,20 @@ function processRefs (instance) {
  */
 
 function processComputed (instance) {
-  const computed = []
-  const defs = instance.$options.computed || {}
+  var computed = []
+  var defs = instance.$options.computed || {}
   // use for...in here because if 'computed' is not defined
   // on component, computed properties will be placed in prototype
   // and Object.keys does not include
   // properties from object's prototype
-  for (const key in defs) {
-    const def = defs[key]
-    const type = typeof def === 'function' && def.vuex
+  for (var key in defs) {
+    var def = defs[key]
+    var type = typeof def === 'function' && def.vuex
       ? 'vuex bindings'
       : 'computed'
     // use try ... catch here because some computed properties may
     // throw error during its evaluation
-    let computedProp = null
+    var computedProp = null
     try {
       computedProp = {
         type,
@@ -2830,7 +2827,7 @@ function processComputed (instance) {
  */
 
 function processInjected (instance) {
-  const injected = instance.$options.inject
+  var injected = instance.$options.inject
 
   if (injected) {
     return Object.keys(injected).map(key => {
@@ -2854,14 +2851,14 @@ function processInjected (instance) {
 
 function processRouteContext (instance) {
   try {
-    const route = instance.$route
+    var route = instance.$route
     if (route) {
-      const { path, query, params } = route
-      const value = { path, query, params }
-      if (route.fullPath) value.fullPath = route.fullPath
-      if (route.hash) value.hash = route.hash
-      if (route.name) value.name = route.name
-      if (route.meta) value.meta = route.meta
+      var { path, query, params } = route
+      var value = { path, query, params }
+      if (route.fullPath) { value.fullPath = route.fullPath }
+      if (route.hash) { value.hash = route.hash }
+      if (route.name) { value.name = route.name }
+      if (route.meta) { value.meta = route.meta }
       return [{
         key: '$route',
         value: {
@@ -2887,7 +2884,7 @@ function processRouteContext (instance) {
  */
 
 function processVuexGetters (instance) {
-  const getters =
+  var getters =
     instance.$options.vuex &&
     instance.$options.vuex.getters
   if (getters) {
@@ -2911,7 +2908,7 @@ function processVuexGetters (instance) {
  */
 
 function processFirebaseBindings (instance) {
-  const refs = instance.$firebaseRefs
+  var refs = instance.$firebaseRefs
   if (refs) {
     return Object.keys(refs).map(key => {
       return {
@@ -2933,7 +2930,7 @@ function processFirebaseBindings (instance) {
  */
 
 function processObservables (instance) {
-  const obs = instance.$observables
+  var obs = instance.$observables
   if (obs) {
     return Object.keys(obs).map(key => {
       return {
@@ -2954,7 +2951,7 @@ function processObservables (instance) {
  */
 
 function scrollIntoView (instance) {
-  const rect = getInstanceOrVnodeRect(instance)
+  var rect = getInstanceOrVnodeRect(instance)
   if (rect) {
     // TODO: Handle this for non-browser environments.
     window.scrollBy(0, rect.top + (rect.height - window.innerHeight) / 2)
@@ -2969,11 +2966,11 @@ function scrollIntoView (instance) {
  */
 
 function bindToConsole (instance) {
-  if (!instance) return
-  if (!env["b" /* isBrowser */]) return
+  if (!instance) { return }
+  if (!env["b" /* isBrowser */]) { return }
 
-  const id = instance.__VUE_DEVTOOLS_UID__
-  const index = consoleBoundInstances.indexOf(id)
+  var id = instance.__VUE_DEVTOOLS_UID__
+  var index = consoleBoundInstances.indexOf(id)
   if (index > -1) {
     consoleBoundInstances.splice(index, 1)
   } else {
@@ -2981,8 +2978,8 @@ function bindToConsole (instance) {
   }
 
   consoleBoundInstances.unshift(id)
-  for (let i = 0; i < 5; i++) {
-    window['$vm' + i] = src_instanceMap.get(consoleBoundInstances[i])
+  for (var i = 0; i < 5; i++) {
+    window['$vm' + i] = backend_instanceMap.get(consoleBoundInstances[i])
   }
   window.$vm = instance
 }
@@ -2992,13 +2989,13 @@ function bindToConsole (instance) {
  * @param {Vue} instance
  */
 function getUniqueId (instance) {
-  const rootVueId = instance.$root.__VUE_DEVTOOLS_ROOT_UID__
+  var rootVueId = instance.$root.__VUE_DEVTOOLS_ROOT_UID__
   return `${rootVueId}:${instance._uid}`
 }
 
 function getRenderKey (value) {
-  if (value == null) return
-  const type = typeof value
+  if (value == null) { return }
+  var type = typeof value
   if (type === 'number') {
     return value
   } else if (type === 'string') {
@@ -3015,28 +3012,34 @@ function getRenderKey (value) {
  * @param {any} message HTML content
  */
 function toast (message, type = 'normal') {
-  const fn = env["f" /* target */].__VUE_DEVTOOLS_TOAST__
+  var fn = env["f" /* target */].__VUE_DEVTOOLS_TOAST__
   fn && fn(message, type)
 }
 
 function inspectInstance (instance) {
-  const id = instance.__VUE_DEVTOOLS_UID__
-  id && src_bridge.send('inspect-instance', id)
+  var id = instance.__VUE_DEVTOOLS_UID__
+  id && backend_bridge.send('inspect-instance', id)
 }
 
-function setStateValue ({ id, path, value, newKey, remove }) {
-  const instance = src_instanceMap.get(id)
+function setStateValue (ref) {
+  var id = ref.id;
+  var path = ref.path;
+  var value = ref.value;
+  var newKey = ref.newKey;
+  var remove = ref.remove;
+
+  var instance = backend_instanceMap.get(id)
   if (instance) {
     try {
-      let parsedValue
+      var parsedValue
       if (value) {
         parsedValue = Object(util["s" /* parse */])(value, true)
       }
-      const api = isLegacy ? {
-        $set: src_hook.Vue.set,
-        $delete: src_hook.Vue.delete
+      var api = isLegacy ? {
+        $set: backend_hook.Vue.set,
+        $delete: backend_hook.Vue.delete
       } : instance
-      const data = Object(util["o" /* has */])(instance._props, path, newKey)
+      var data = Object(util["o" /* has */])(instance._props, path, newKey)
         ? instance._props
         : instance._data
       Object(util["v" /* set */])(data, path, parsedValue, (obj, field, value) => {
@@ -3050,14 +3053,14 @@ function setStateValue ({ id, path, value, newKey, remove }) {
 }
 
 function initRightClick () {
-  if (!env["b" /* isBrowser */]) return
+  if (!env["b" /* isBrowser */]) { return }
   // Start recording context menu when Vue is detected
   // event if Vue devtools are not loaded yet
   document.addEventListener('contextmenu', event => {
-    const el = event.target
+    var el = event.target
     if (el) {
       // Search for parent that "is" a component instance
-      const instance = findRelatedComponent(el)
+      var instance = findRelatedComponent(el)
       if (instance) {
         window.__VUE_DEVTOOLS_CONTEXT_MENU_HAS_TARGET__ = true
         window.__VUE_DEVTOOLS_CONTEXT_MENU_TARGET__ = instance
@@ -3072,32 +3075,83 @@ function initRightClick () {
 
 /***/ }),
 
-/***/ 15:
+/***/ 129:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var src_backend__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(12);
+/* harmony import */ var src_bridge__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(20);
+// this is injected to the app page when the panel is activated.
+
+
+
+
+window.addEventListener('message', handshake)
+
+function handshake (e) {
+  if (e.data.source === 'vue-devtools-proxy' && e.data.payload === 'init') {
+    window.removeEventListener('message', handshake)
+
+    var listeners = []
+    var bridge = new src_bridge__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]({
+      listen (fn) {
+        var listener = evt => {
+          if (evt.data.source === 'vue-devtools-proxy' && evt.data.payload) {
+            fn(evt.data.payload)
+          }
+        }
+        window.addEventListener('message', listener)
+        listeners.push(listener)
+      },
+      send (data) {
+        window.postMessage({
+          source: 'vue-devtools-backend',
+          payload: data
+        }, '*')
+      }
+    })
+
+    bridge.on('shutdown', () => {
+      listeners.forEach(l => {
+        window.removeEventListener('message', l)
+      })
+      listeners = []
+    })
+
+    Object(src_backend__WEBPACK_IMPORTED_MODULE_0__[/* initBackend */ "c"])(bridge)
+  }
+}
+
+
+/***/ }),
+
+/***/ 13:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return stringify; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return parse; });
 /* unused harmony export stringifyStrict */
-const MAX_SERIALIZED_SIZE = 512 * 1024 // 1MB
+var MAX_SERIALIZED_SIZE = 512 * 1024 // 1MB
 
 function encode (data, replacer, list, seen) {
-  let stored, key, value, i, l
-  const seenIndex = seen.get(data)
+  var stored, key, value, i, l
+  var seenIndex = seen.get(data)
   if (seenIndex != null) {
     return seenIndex
   }
-  const index = list.length
-  const proto = Object.prototype.toString.call(data)
+  var index = list.length
+  var proto = Object.prototype.toString.call(data)
   if (proto === '[object Object]') {
     stored = {}
     seen.set(data, index)
     list.push(stored)
-    const keys = Object.keys(data)
+    var keys = Object.keys(data)
     for (i = 0, l = keys.length; i < l; i++) {
       key = keys[i]
       value = data[key]
-      if (replacer) value = replacer.call(data, key, value)
+      if (replacer) { value = replacer.call(data, key, value) }
       stored[key] = encode(value, replacer, list, seen)
     }
   } else if (proto === '[object Array]') {
@@ -3106,7 +3160,7 @@ function encode (data, replacer, list, seen) {
     list.push(stored)
     for (i = 0, l = data.length; i < l; i++) {
       value = data[i]
-      if (replacer) value = replacer.call(data, i, value)
+      if (replacer) { value = replacer.call(data, i, value) }
       stored[i] = encode(value, replacer, list, seen)
     }
   } else {
@@ -3116,23 +3170,23 @@ function encode (data, replacer, list, seen) {
 }
 
 function decode (list, reviver) {
-  let i = list.length
-  let j, k, data, key, value, proto
+  var i = list.length
+  var j, k, data, key, value, proto
   while (i--) {
     data = list[i]
     proto = Object.prototype.toString.call(data)
     if (proto === '[object Object]') {
-      const keys = Object.keys(data)
+      var keys = Object.keys(data)
       for (j = 0, k = keys.length; j < k; j++) {
         key = keys[j]
         value = list[data[key]]
-        if (reviver) value = reviver.call(data, key, value)
+        if (reviver) { value = reviver.call(data, key, value) }
         data[key] = value
       }
     } else if (proto === '[object Array]') {
       for (j = 0, k = data.length; j < k; j++) {
         value = list[data[j]]
-        if (reviver) value = reviver.call(data, j, value)
+        if (reviver) { value = reviver.call(data, j, value) }
         data[j] = value
       }
     }
@@ -3140,7 +3194,7 @@ function decode (list, reviver) {
 }
 
 function stringify (data, replacer, space) {
-  let result
+  var result
   try {
     result = arguments.length === 1
       ? JSON.stringify(data)
@@ -3149,9 +3203,9 @@ function stringify (data, replacer, space) {
     result = stringifyStrict(data, replacer, space)
   }
   if (result.length > MAX_SERIALIZED_SIZE) {
-    const chunkCount = Math.ceil(result.length / MAX_SERIALIZED_SIZE)
-    const chunks = []
-    for (let i = 0; i < chunkCount; i++) {
+    var chunkCount = Math.ceil(result.length / MAX_SERIALIZED_SIZE)
+    var chunks = []
+    for (var i = 0; i < chunkCount; i++) {
       chunks.push(result.slice(i * MAX_SERIALIZED_SIZE, (i + 1) * MAX_SERIALIZED_SIZE))
     }
     return chunks
@@ -3163,20 +3217,20 @@ function parse (data, reviver) {
   if (Array.isArray(data)) {
     data = data.join('')
   }
-  const hasCircular = /^\s/.test(data)
+  var hasCircular = /^\s/.test(data)
   if (!hasCircular) {
     return arguments.length === 1
       ? JSON.parse(data)
       : JSON.parse(data, reviver)
   } else {
-    const list = JSON.parse(data)
+    var list = JSON.parse(data)
     decode(list, reviver)
     return list[0]
   }
 }
 
 function stringifyStrict (data, replacer, space) {
-  const list = []
+  var list = []
   encode(data, replacer, list, new Map())
   return space
     ? ' ' + JSON.stringify(list, null, space)
@@ -3186,7 +3240,2067 @@ function stringifyStrict (data, replacer, space) {
 
 /***/ }),
 
-/***/ 19:
+/***/ 14:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+/* eslint-disable no-proto */
+
+
+
+var base64 = __webpack_require__(15)
+var ieee754 = __webpack_require__(16)
+var isArray = __webpack_require__(17)
+
+exports.Buffer = Buffer
+exports.SlowBuffer = SlowBuffer
+exports.INSPECT_MAX_BYTES = 50
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Due to various browser bugs, sometimes the Object implementation will be used even
+ * when the browser supports typed arrays.
+ *
+ * Note:
+ *
+ *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+ *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *     incorrect length in some situations.
+
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+ * get the Object implementation, which is slower but behaves correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+  ? global.TYPED_ARRAY_SUPPORT
+  : typedArraySupport()
+
+/*
+ * Export kMaxLength after typed array support is determined.
+ */
+exports.kMaxLength = kMaxLength()
+
+function typedArraySupport () {
+  try {
+    var arr = new Uint8Array(1)
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+    return arr.foo() === 42 && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+}
+
+function kMaxLength () {
+  return Buffer.TYPED_ARRAY_SUPPORT
+    ? 0x7fffffff
+    : 0x3fffffff
+}
+
+function createBuffer (that, length) {
+  if (kMaxLength() < length) {
+    throw new RangeError('Invalid typed array length')
+  }
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = new Uint8Array(length)
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    if (that === null) {
+      that = new Buffer(length)
+    }
+    that.length = length
+  }
+
+  return that
+}
+
+/**
+ * The Buffer constructor returns instances of `Uint8Array` that have their
+ * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+ * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+ * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+ * returns a single octet.
+ *
+ * The `Uint8Array` prototype remains unmodified.
+ */
+
+function Buffer (arg, encodingOrOffset, length) {
+  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+    return new Buffer(arg, encodingOrOffset, length)
+  }
+
+  // Common case.
+  if (typeof arg === 'number') {
+    if (typeof encodingOrOffset === 'string') {
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
+      )
+    }
+    return allocUnsafe(this, arg)
+  }
+  return from(this, arg, encodingOrOffset, length)
+}
+
+Buffer.poolSize = 8192 // not used by this implementation
+
+// TODO: Legacy, not needed anymore. Remove in next major version.
+Buffer._augment = function (arr) {
+  arr.__proto__ = Buffer.prototype
+  return arr
+}
+
+function from (that, value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+    return fromArrayBuffer(that, value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'string') {
+    return fromString(that, value, encodingOrOffset)
+  }
+
+  return fromObject(that, value)
+}
+
+/**
+ * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+ * if value is a number.
+ * Buffer.from(str[, encoding])
+ * Buffer.from(array)
+ * Buffer.from(buffer)
+ * Buffer.from(arrayBuffer[, byteOffset[, length]])
+ **/
+Buffer.from = function (value, encodingOrOffset, length) {
+  return from(null, value, encodingOrOffset, length)
+}
+
+if (Buffer.TYPED_ARRAY_SUPPORT) {
+  Buffer.prototype.__proto__ = Uint8Array.prototype
+  Buffer.__proto__ = Uint8Array
+  if (typeof Symbol !== 'undefined' && Symbol.species &&
+      Buffer[Symbol.species] === Buffer) {
+    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
+    Object.defineProperty(Buffer, Symbol.species, {
+      value: null,
+      configurable: true
+    })
+  }
+}
+
+function assertSize (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
+  }
+}
+
+function alloc (that, size, fill, encoding) {
+  assertSize(size)
+  if (size <= 0) {
+    return createBuffer(that, size)
+  }
+  if (fill !== undefined) {
+    // Only pay attention to encoding if it's a string. This
+    // prevents accidentally sending in a number that would
+    // be interpretted as a start offset.
+    return typeof encoding === 'string'
+      ? createBuffer(that, size).fill(fill, encoding)
+      : createBuffer(that, size).fill(fill)
+  }
+  return createBuffer(that, size)
+}
+
+/**
+ * Creates a new filled Buffer instance.
+ * alloc(size[, fill[, encoding]])
+ **/
+Buffer.alloc = function (size, fill, encoding) {
+  return alloc(null, size, fill, encoding)
+}
+
+function allocUnsafe (that, size) {
+  assertSize(size)
+  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < size; ++i) {
+      that[i] = 0
+    }
+  }
+  return that
+}
+
+/**
+ * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+ * */
+Buffer.allocUnsafe = function (size) {
+  return allocUnsafe(null, size)
+}
+/**
+ * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+ */
+Buffer.allocUnsafeSlow = function (size) {
+  return allocUnsafe(null, size)
+}
+
+function fromString (that, string, encoding) {
+  if (typeof encoding !== 'string' || encoding === '') {
+    encoding = 'utf8'
+  }
+
+  if (!Buffer.isEncoding(encoding)) {
+    throw new TypeError('"encoding" must be a valid string encoding')
+  }
+
+  var length = byteLength(string, encoding) | 0
+  that = createBuffer(that, length)
+
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
+  return that
+}
+
+function fromArrayLike (that, array) {
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
+  that = createBuffer(that, length)
+  for (var i = 0; i < length; i += 1) {
+    that[i] = array[i] & 255
+  }
+  return that
+}
+
+function fromArrayBuffer (that, array, byteOffset, length) {
+  array.byteLength // this throws if `array` is not a valid ArrayBuffer
+
+  if (byteOffset < 0 || array.byteLength < byteOffset) {
+    throw new RangeError('\'offset\' is out of bounds')
+  }
+
+  if (array.byteLength < byteOffset + (length || 0)) {
+    throw new RangeError('\'length\' is out of bounds')
+  }
+
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array)
+  } else if (length === undefined) {
+    array = new Uint8Array(array, byteOffset)
+  } else {
+    array = new Uint8Array(array, byteOffset, length)
+  }
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = array
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    that = fromArrayLike(that, array)
+  }
+  return that
+}
+
+function fromObject (that, obj) {
+  if (Buffer.isBuffer(obj)) {
+    var len = checked(obj.length) | 0
+    that = createBuffer(that, len)
+
+    if (that.length === 0) {
+      return that
+    }
+
+    obj.copy(that, 0, 0, len)
+    return that
+  }
+
+  if (obj) {
+    if ((typeof ArrayBuffer !== 'undefined' &&
+        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+        return createBuffer(that, 0)
+      }
+      return fromArrayLike(that, obj)
+    }
+
+    if (obj.type === 'Buffer' && isArray(obj.data)) {
+      return fromArrayLike(that, obj.data)
+    }
+  }
+
+  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+}
+
+function checked (length) {
+  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // length is NaN (which is otherwise coerced to zero.)
+  if (length >= kMaxLength()) {
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+  }
+  return length | 0
+}
+
+function SlowBuffer (length) {
+  if (+length != length) { // eslint-disable-line eqeqeq
+    length = 0
+  }
+  return Buffer.alloc(+length)
+}
+
+Buffer.isBuffer = function isBuffer (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function compare (a, b) {
+  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+    throw new TypeError('Arguments must be Buffers')
+  }
+
+  if (a === b) return 0
+
+  var x = a.length
+  var y = b.length
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i]
+      y = b[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+Buffer.isEncoding = function isEncoding (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'latin1':
+    case 'binary':
+    case 'base64':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.concat = function concat (list, length) {
+  if (!isArray(list)) {
+    throw new TypeError('"list" argument must be an Array of Buffers')
+  }
+
+  if (list.length === 0) {
+    return Buffer.alloc(0)
+  }
+
+  var i
+  if (length === undefined) {
+    length = 0
+    for (i = 0; i < list.length; ++i) {
+      length += list[i].length
+    }
+  }
+
+  var buffer = Buffer.allocUnsafe(length)
+  var pos = 0
+  for (i = 0; i < list.length; ++i) {
+    var buf = list[i]
+    if (!Buffer.isBuffer(buf)) {
+      throw new TypeError('"list" argument must be an Array of Buffers')
+    }
+    buf.copy(buffer, pos)
+    pos += buf.length
+  }
+  return buffer
+}
+
+function byteLength (string, encoding) {
+  if (Buffer.isBuffer(string)) {
+    return string.length
+  }
+  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+    return string.byteLength
+  }
+  if (typeof string !== 'string') {
+    string = '' + string
+  }
+
+  var len = string.length
+  if (len === 0) return 0
+
+  // Use a for loop to avoid recursion
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'ascii':
+      case 'latin1':
+      case 'binary':
+        return len
+      case 'utf8':
+      case 'utf-8':
+      case undefined:
+        return utf8ToBytes(string).length
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return len * 2
+      case 'hex':
+        return len >>> 1
+      case 'base64':
+        return base64ToBytes(string).length
+      default:
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+Buffer.byteLength = byteLength
+
+function slowToString (encoding, start, end) {
+  var loweredCase = false
+
+  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+  // property of a typed array.
+
+  // This behaves neither like String nor Uint8Array in that we set start/end
+  // to their upper/lower bounds if the value passed is out of range.
+  // undefined is handled specially as per ECMA-262 6th Edition,
+  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+  if (start === undefined || start < 0) {
+    start = 0
+  }
+  // Return early if start > this.length. Done here to prevent potential uint32
+  // coercion fail below.
+  if (start > this.length) {
+    return ''
+  }
+
+  if (end === undefined || end > this.length) {
+    end = this.length
+  }
+
+  if (end <= 0) {
+    return ''
+  }
+
+  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+  end >>>= 0
+  start >>>= 0
+
+  if (end <= start) {
+    return ''
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Slice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+// Buffer instances.
+Buffer.prototype._isBuffer = true
+
+function swap (b, n, m) {
+  var i = b[n]
+  b[n] = b[m]
+  b[m] = i
+}
+
+Buffer.prototype.swap16 = function swap16 () {
+  var len = this.length
+  if (len % 2 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 16-bits')
+  }
+  for (var i = 0; i < len; i += 2) {
+    swap(this, i, i + 1)
+  }
+  return this
+}
+
+Buffer.prototype.swap32 = function swap32 () {
+  var len = this.length
+  if (len % 4 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 32-bits')
+  }
+  for (var i = 0; i < len; i += 4) {
+    swap(this, i, i + 3)
+    swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
+  }
+  return this
+}
+
+Buffer.prototype.toString = function toString () {
+  var length = this.length | 0
+  if (length === 0) return ''
+  if (arguments.length === 0) return utf8Slice(this, 0, length)
+  return slowToString.apply(this, arguments)
+}
+
+Buffer.prototype.equals = function equals (b) {
+  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.inspect = function inspect () {
+  var str = ''
+  var max = exports.INSPECT_MAX_BYTES
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max) str += ' ... '
+  }
+  return '<Buffer ' + str + '>'
+}
+
+Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (!Buffer.isBuffer(target)) {
+    throw new TypeError('Argument must be a Buffer')
+  }
+
+  if (start === undefined) {
+    start = 0
+  }
+  if (end === undefined) {
+    end = target ? target.length : 0
+  }
+  if (thisStart === undefined) {
+    thisStart = 0
+  }
+  if (thisEnd === undefined) {
+    thisEnd = this.length
+  }
+
+  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+    throw new RangeError('out of range index')
+  }
+
+  if (thisStart >= thisEnd && start >= end) {
+    return 0
+  }
+  if (thisStart >= thisEnd) {
+    return -1
+  }
+  if (start >= end) {
+    return 1
+  }
+
+  start >>>= 0
+  end >>>= 0
+  thisStart >>>= 0
+  thisEnd >>>= 0
+
+  if (this === target) return 0
+
+  var x = thisEnd - thisStart
+  var y = end - start
+  var len = Math.min(x, y)
+
+  var thisCopy = this.slice(thisStart, thisEnd)
+  var targetCopy = target.slice(start, end)
+
+  for (var i = 0; i < len; ++i) {
+    if (thisCopy[i] !== targetCopy[i]) {
+      x = thisCopy[i]
+      y = targetCopy[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+  var indexSize = 1
+  var arrLength = arr.length
+  var valLength = val.length
+
+  if (encoding !== undefined) {
+    encoding = String(encoding).toLowerCase()
+    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+        encoding === 'utf16le' || encoding === 'utf-16le') {
+      if (arr.length < 2 || val.length < 2) {
+        return -1
+      }
+      indexSize = 2
+      arrLength /= 2
+      valLength /= 2
+      byteOffset /= 2
+    }
+  }
+
+  function read (buf, i) {
+    if (indexSize === 1) {
+      return buf[i]
+    } else {
+      return buf.readUInt16BE(i * indexSize)
+    }
+  }
+
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
+    }
+  }
+
+  return -1
+}
+
+Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+}
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; ++i) {
+    var parsed = parseInt(string.substr(i * 2, 2), 16)
+    if (isNaN(parsed)) return i
+    buf[offset + i] = parsed
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+function asciiWrite (buf, string, offset, length) {
+  return blitBuffer(asciiToBytes(string), buf, offset, length)
+}
+
+function latin1Write (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  return blitBuffer(base64ToBytes(string), buf, offset, length)
+}
+
+function ucs2Write (buf, string, offset, length) {
+  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+Buffer.prototype.write = function write (string, offset, length, encoding) {
+  // Buffer#write(string)
+  if (offset === undefined) {
+    encoding = 'utf8'
+    length = this.length
+    offset = 0
+  // Buffer#write(string, encoding)
+  } else if (length === undefined && typeof offset === 'string') {
+    encoding = offset
+    length = this.length
+    offset = 0
+  // Buffer#write(string, offset[, length][, encoding])
+  } else if (isFinite(offset)) {
+    offset = offset | 0
+    if (isFinite(length)) {
+      length = length | 0
+      if (encoding === undefined) encoding = 'utf8'
+    } else {
+      encoding = length
+      length = undefined
+    }
+  // legacy write(string, encoding, offset, length) - remove in v0.13
+  } else {
+    throw new Error(
+      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+    )
+  }
+
+  var remaining = this.length - offset
+  if (length === undefined || length > remaining) length = remaining
+
+  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+    throw new RangeError('Attempt to write outside buffer bounds')
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'hex':
+        return hexWrite(this, string, offset, length)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Write(this, string, offset, length)
+
+      case 'ascii':
+        return asciiWrite(this, string, offset, length)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Write(this, string, offset, length)
+
+      case 'base64':
+        // Warning: maxLength not taken into account in base64Write
+        return base64Write(this, string, offset, length)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return ucs2Write(this, string, offset, length)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+Buffer.prototype.toJSON = function toJSON () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  end = Math.min(buf.length, end)
+  var res = []
+
+  var i = start
+  while (i < end) {
+    var firstByte = buf[i]
+    var codePoint = null
+    var bytesPerSequence = (firstByte > 0xEF) ? 4
+      : (firstByte > 0xDF) ? 3
+      : (firstByte > 0xBF) ? 2
+      : 1
+
+    if (i + bytesPerSequence <= end) {
+      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+      switch (bytesPerSequence) {
+        case 1:
+          if (firstByte < 0x80) {
+            codePoint = firstByte
+          }
+          break
+        case 2:
+          secondByte = buf[i + 1]
+          if ((secondByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+            if (tempCodePoint > 0x7F) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 3:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 4:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          fourthByte = buf[i + 3]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+              codePoint = tempCodePoint
+            }
+          }
+      }
+    }
+
+    if (codePoint === null) {
+      // we did not generate a valid codePoint so insert a
+      // replacement char (U+FFFD) and advance only 1 byte
+      codePoint = 0xFFFD
+      bytesPerSequence = 1
+    } else if (codePoint > 0xFFFF) {
+      // encode to utf16 (surrogate pair dance)
+      codePoint -= 0x10000
+      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+      codePoint = 0xDC00 | codePoint & 0x3FF
+    }
+
+    res.push(codePoint)
+    i += bytesPerSequence
+  }
+
+  return decodeCodePointsArray(res)
+}
+
+// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+// the lowest limit is Chrome, with 0x10000 args.
+// We go 1 magnitude less, for safety
+var MAX_ARGUMENTS_LENGTH = 0x1000
+
+function decodeCodePointsArray (codePoints) {
+  var len = codePoints.length
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+  }
+
+  // Decode in chunks to avoid "call stack size exceeded".
+  var res = ''
+  var i = 0
+  while (i < len) {
+    res += String.fromCharCode.apply(
+      String,
+      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+    )
+  }
+  return res
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i] & 0x7F)
+  }
+  return ret
+}
+
+function latin1Slice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; ++i) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function slice (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len
+    if (start < 0) start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0) end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start) end = start
+
+  var newBuf
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    newBuf = this.subarray(start, end)
+    newBuf.__proto__ = Buffer.prototype
+  } else {
+    var sliceLen = end - start
+    newBuf = new Buffer(sliceLen, undefined)
+    for (var i = 0; i < sliceLen; ++i) {
+      newBuf[i] = this[i + start]
+    }
+  }
+
+  return newBuf
+}
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    checkOffset(offset, byteLength, this.length)
+  }
+
+  var val = this[offset + --byteLength]
+  var mul = 1
+  while (byteLength > 0 && (mul *= 0x100)) {
+    val += this[offset + --byteLength] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  return this[offset]
+}
+
+Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return this[offset] | (this[offset + 1] << 8)
+}
+
+Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return (this[offset] << 8) | this[offset + 1]
+}
+
+Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+}
+
+Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] * 0x1000000) +
+    ((this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    this[offset + 3])
+}
+
+Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var i = byteLength
+  var mul = 1
+  var val = this[offset + --i]
+  while (i > 0 && (mul *= 0x100)) {
+    val += this[offset + --i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  if (!(this[offset] & 0x80)) return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+}
+
+Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset] | (this[offset + 1] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset + 1] | (this[offset] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset]) |
+    (this[offset + 1] << 8) |
+    (this[offset + 2] << 16) |
+    (this[offset + 3] << 24)
+}
+
+Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] << 24) |
+    (this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    (this[offset + 3])
+}
+
+Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, true, 23, 4)
+}
+
+Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, false, 23, 4)
+}
+
+Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, true, 52, 8)
+}
+
+Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, false, 52, 8)
+}
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+}
+
+Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var mul = 1
+  var i = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 1] = (value >>> 8)
+    this[offset] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = 0
+  var mul = 1
+  var sub = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  var sub = 0
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  if (value < 0) value = 0xff + value + 1
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 3] = (value >>> 24)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (value < 0) value = 0xffffffff + value + 1
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+  if (offset < 0) throw new RangeError('Index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (targetStart >= target.length) targetStart = target.length
+  if (!targetStart) targetStart = 0
+  if (end > 0 && end < start) end = start
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0
+  if (target.length === 0 || this.length === 0) return 0
+
+  // Fatal error conditions
+  if (targetStart < 0) {
+    throw new RangeError('targetStart out of bounds')
+  }
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length) end = this.length
+  if (target.length - targetStart < end - start) {
+    end = target.length - targetStart + start
+  }
+
+  var len = end - start
+  var i
+
+  if (this === target && start < targetStart && targetStart < end) {
+    // descending copy from end
+    for (i = len - 1; i >= 0; --i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    // ascending copy from start
+    for (i = 0; i < len; ++i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else {
+    Uint8Array.prototype.set.call(
+      target,
+      this.subarray(start, start + len),
+      targetStart
+    )
+  }
+
+  return len
+}
+
+// Usage:
+//    buffer.fill(number[, offset[, end]])
+//    buffer.fill(buffer[, offset[, end]])
+//    buffer.fill(string[, offset[, end]][, encoding])
+Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  // Handle string cases:
+  if (typeof val === 'string') {
+    if (typeof start === 'string') {
+      encoding = start
+      start = 0
+      end = this.length
+    } else if (typeof end === 'string') {
+      encoding = end
+      end = this.length
+    }
+    if (val.length === 1) {
+      var code = val.charCodeAt(0)
+      if (code < 256) {
+        val = code
+      }
+    }
+    if (encoding !== undefined && typeof encoding !== 'string') {
+      throw new TypeError('encoding must be a string')
+    }
+    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      throw new TypeError('Unknown encoding: ' + encoding)
+    }
+  } else if (typeof val === 'number') {
+    val = val & 255
+  }
+
+  // Invalid ranges are not set to a default, so can range check early.
+  if (start < 0 || this.length < start || this.length < end) {
+    throw new RangeError('Out of range index')
+  }
+
+  if (end <= start) {
+    return this
+  }
+
+  start = start >>> 0
+  end = end === undefined ? this.length : end >>> 0
+
+  if (!val) val = 0
+
+  var i
+  if (typeof val === 'number') {
+    for (i = start; i < end; ++i) {
+      this[i] = val
+    }
+  } else {
+    var bytes = Buffer.isBuffer(val)
+      ? val
+      : utf8ToBytes(new Buffer(val, encoding).toString())
+    var len = bytes.length
+    for (i = 0; i < end - start; ++i) {
+      this[i + start] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node converts strings with length < 2 to ''
+  if (str.length < 2) return ''
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (string, units) {
+  units = units || Infinity
+  var codePoint
+  var length = string.length
+  var leadSurrogate = null
+  var bytes = []
+
+  for (var i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i)
+
+    // is surrogate component
+    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+      // last char was a lead
+      if (!leadSurrogate) {
+        // no lead yet
+        if (codePoint > 0xDBFF) {
+          // unexpected trail
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        } else if (i + 1 === length) {
+          // unpaired lead
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        }
+
+        // valid lead
+        leadSurrogate = codePoint
+
+        continue
+      }
+
+      // 2 leads in a row
+      if (codePoint < 0xDC00) {
+        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+        leadSurrogate = codePoint
+        continue
+      }
+
+      // valid surrogate pair
+      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
+      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+    }
+
+    leadSurrogate = null
+
+    // encode utf8
+    if (codePoint < 0x80) {
+      if ((units -= 1) < 0) break
+      bytes.push(codePoint)
+    } else if (codePoint < 0x800) {
+      if ((units -= 2) < 0) break
+      bytes.push(
+        codePoint >> 0x6 | 0xC0,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x10000) {
+      if ((units -= 3) < 0) break
+      bytes.push(
+        codePoint >> 0xC | 0xE0,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x110000) {
+      if ((units -= 4) < 0) break
+      bytes.push(
+        codePoint >> 0x12 | 0xF0,
+        codePoint >> 0xC & 0x3F | 0x80,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else {
+      throw new Error('Invalid code point')
+    }
+  }
+
+  return bytes
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str, units) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    if ((units -= 2) < 0) break
+
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(base64clean(str))
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; ++i) {
+    if ((i + offset >= dst.length) || (i >= src.length)) break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function isnan (val) {
+  return val !== val // eslint-disable-line no-self-compare
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8)))
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+// Support decoding URL-safe base64 strings, as Node.js does.
+// See: https://en.wikipedia.org/wiki/Base64#URL_applications
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function getLens (b64) {
+  var len = b64.length
+
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
+}
+
+// base64 is 4/3 + up to two characters of the original data
+function byteLength (b64) {
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function toByteArray (b64) {
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
+
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
+  }
+
+  return parts.join('')
+}
+
+
+/***/ }),
+
+/***/ 16:
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+
+/***/ 17:
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+
+/***/ 18:
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -3377,7 +5491,7 @@ process.umask = function() { return 0; };
 
 /***/ }),
 
-/***/ 23:
+/***/ 19:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// .dirname, .basename, and .extname methods are extracted from Node.js v8.11.1,
@@ -3683,20 +5797,20 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(18)))
 
 /***/ }),
 
-/***/ 24:
+/***/ 20:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Bridge; });
-/* harmony import */ var events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25);
+/* harmony import */ var events__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(21);
 /* harmony import */ var events__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(events__WEBPACK_IMPORTED_MODULE_0__);
 
 
-const BATCH_DURATION = 100
+var BATCH_DURATION = 100
 
 class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
   constructor (wall) {
@@ -3726,7 +5840,7 @@ class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
 
   send (event, payload) {
     if (Array.isArray(payload)) {
-      const lastIndex = payload.length - 1
+      var lastIndex = payload.length - 1
       payload.forEach((chunk, index) => {
         this._send({
           event,
@@ -3744,7 +5858,7 @@ class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
         payload
       })
 
-      const now = Date.now()
+      var now = Date.now()
       if (now - this._time > BATCH_DURATION) {
         this._flush()
       } else {
@@ -3764,7 +5878,7 @@ class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
   }
 
   _flush () {
-    if (this._batchingQueue.length) this._send(this._batchingQueue)
+    if (this._batchingQueue.length) { this._send(this._batchingQueue) }
     clearTimeout(this._timer)
     this._batchingQueue = []
     this._time = null
@@ -3790,9 +5904,9 @@ class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
   }
 
   _nextSend () {
-    if (!this._sendingQueue.length || this._sending) return
+    if (!this._sendingQueue.length || this._sending) { return }
     this._sending = true
-    const messages = this._sendingQueue.shift()
+    var messages = this._sendingQueue.shift()
     try {
       this.wall.send(messages)
     } catch (err) {
@@ -3808,7 +5922,7 @@ class Bridge extends events__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"] {
 
 /***/ }),
 
-/***/ 25:
+/***/ 21:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4264,70 +6378,6 @@ function unwrapListeners(arr) {
 
 /***/ }),
 
-/***/ 261:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _back__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14);
-/* harmony import */ var _utils_bridge__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(24);
-// this is injected to the app page when the panel is activated.
-
-
-
-
-window.addEventListener('message', handshake)
-
-function sendListening () {
-  window.postMessage({
-    source: 'vue-devtools-backend-injection',
-    payload: 'listening'
-  }, '*')
-}
-sendListening()
-
-function handshake (e) {
-  if (e.data.source === 'vue-devtools-proxy' && e.data.payload === 'init') {
-    window.removeEventListener('message', handshake)
-
-    var listeners = []
-    var bridge = new _utils_bridge__WEBPACK_IMPORTED_MODULE_1__[/* default */ "a"]({
-      listen (fn) {
-        var listener = evt => {
-          if (evt.data.source === 'vue-devtools-proxy' && evt.data.payload) {
-            fn(evt.data.payload)
-          }
-        }
-        window.addEventListener('message', listener)
-        listeners.push(listener)
-      },
-      send (data) {
-        // if (process.env.NODE_ENV !== 'production') {
-        //   console.log('[chrome] backend -> devtools', data)
-        // }
-        window.postMessage({
-          source: 'vue-devtools-backend',
-          payload: data
-        }, '*')
-      }
-    })
-
-    bridge.on('shutdown', () => {
-      listeners.forEach(l => {
-        window.removeEventListener('message', l)
-      })
-      listeners = []
-    })
-
-    Object(_back__WEBPACK_IMPORTED_MODULE_0__[/* initBackend */ "c"])(bridge)
-  } else {
-    sendListening()
-  }
-}
-
-
-/***/ }),
-
 /***/ 3:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -4339,7 +6389,7 @@ function handshake (e) {
 
 
 // Initial state
-const internalSharedData = {
+var internalSharedData = {
   openInEditorHost: '/',
   componentNameStyle: 'class',
   theme: 'auto',
@@ -4353,11 +6403,10 @@ const internalSharedData = {
   editableProps: false,
   logDetected: true,
   vuexNewBackend: false,
-  vuexAutoload: false,
-  vuexGroupGettersByModule: true
+  vuexAutoload: false
 }
 
-const persisted = [
+var persisted = [
   'componentNameStyle',
   'theme',
   'displayDensity',
@@ -4366,92 +6415,48 @@ const persisted = [
   'logDetected',
   'vuexNewBackend',
   'vuexAutoload',
-  'vuexGroupGettersByModule',
   'timeFormat'
 ]
 
 // ---- INTERNALS ---- //
 
-let Vue
-let bridge
+var Vue
+var bridge
 // List of fields to persist to storage (disabled if 'false')
 // This should be unique to each shared data client to prevent conflicts
-let persist = false
+var persist = false
 // For reactivity, we wrap the data in a Vue instance
-let vm
-
-let initRetryInterval
-let initRetryCount = 0
+var vm
 
 function init (params) {
-  return new Promise((resolve, reject) => {
-    // Mandatory params
-    bridge = params.bridge
-    Vue = params.Vue
-    persist = !!params.persist
+  // Mandatory params
+  bridge = params.bridge
+  Vue = params.Vue
+  persist = !!params.persist
 
-    if (persist) {
-      if (false) {}
-      // Load persisted fields
-      persisted.forEach(key => {
-        const value = _storage__WEBPACK_IMPORTED_MODULE_0__[/* get */ "a"](`shared-data:${key}`)
-        if (value !== null) {
-          internalSharedData[key] = value
-        }
-      })
-      bridge.on('shared-data:load', () => {
-        // Send all fields
-        Object.keys(internalSharedData).forEach(key => {
-          sendValue(key, internalSharedData[key])
-        })
-        bridge.send('shared-data:load-complete')
-      })
-      bridge.on('shared-data:init-complete', () => {
-        if (false) {}
-        clearInterval(initRetryInterval)
-        resolve()
-      })
-
-      bridge.send('shared-data:master-init-waiting')
-      // In case backend init is executed after frontend
-      bridge.on('shared-data:slave-init-waiting', () => {
-        bridge.send('shared-data:master-init-waiting')
-      })
-
-      initRetryCount = 0
-      initRetryInterval = setInterval(() => {
-        if (false) {}
-        bridge.send('shared-data:master-init-waiting')
-        initRetryCount++
-        if (initRetryCount > 30) {
-          clearInterval(initRetryInterval)
-          console.error('[shared data] Master init failed')
-        }
-      }, 2000)
-    } else {
-      if (false) {}
-      bridge.on('shared-data:master-init-waiting', () => {
-        if (false) {}
-        // Load all persisted shared data
-        bridge.send('shared-data:load')
-        bridge.once('shared-data:load-complete', () => {
-          if (false) {}
-          bridge.send('shared-data:init-complete')
-          resolve()
-        })
-      })
-      bridge.send('shared-data:slave-init-waiting')
+  // Load persisted fields
+  persisted.forEach(key => {
+    var value = _storage__WEBPACK_IMPORTED_MODULE_0__[/* get */ "a"](`shared-data:${key}`)
+    if (value !== null) {
+      internalSharedData[key] = value
+      // Send to other shared data clients
+      if (persist) {
+        sendValue(key, value)
+      }
     }
+  })
 
-    // Wrapper Vue instance
-    vm = new Vue({
-      data: internalSharedData
-    })
+  // Wrapper Vue instance
+  vm = new Vue({
+    data: internalSharedData
+  })
 
-    // Update value from other shared data clients
-    bridge.on('shared-data:set', ({ key, value }) => {
-      setValue(key, value)
-    })
+  // Update value from other shared data clients
+  bridge.on('shared-data:set', (ref) => {
+    var key = ref.key;
+    var value = ref.value;
+
+    setValue(key, value)
   })
 }
 
@@ -4481,7 +6486,7 @@ function watch (...args) {
   vm.$watch(...args)
 }
 
-const proxy = {}
+var proxy = {}
 Object.keys(internalSharedData).forEach(key => {
   Object.defineProperty(proxy, key, {
     configurable: false,
@@ -12342,419 +14347,226 @@ if (inBrowser) {
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8), __webpack_require__(67).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8), __webpack_require__(53).setImmediate))
 
 /***/ }),
 
-/***/ 6:
+/***/ 5:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {// Clone deep utility for cloning initial state of the store
-// Forked from https://github.com/planttheidea/fast-copy
-// Last update: 2019-10-30
-// ⚠️ Don't forget to update `./hook.js`
+/* WEBPACK VAR INJECTION */(function(Buffer) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return clone; });
+// Clone deep utility for cloning initial state of the store
+// REFERENCE: https://github.com/pvorb/clone
 
-// utils
-const { toString: toStringFunction } = Function.prototype
-const {
-  create,
-  defineProperty,
-  getOwnPropertyDescriptor,
-  getOwnPropertyNames,
-  getOwnPropertySymbols,
-  getPrototypeOf
-} = Object
-const { hasOwnProperty, propertyIsEnumerable } = Object.prototype
-
-/**
- * @enum
- *
- * @const {Object} SUPPORTS
- *
- * @property {boolean} SYMBOL_PROPERTIES are symbol properties supported
- * @property {boolean} WEAKSET is WeakSet supported
- */
-const SUPPORTS = {
-  SYMBOL_PROPERTIES: typeof getOwnPropertySymbols === 'function',
-  WEAKSET: typeof WeakSet === 'function'
+var NativeMap
+try {
+  NativeMap = Map
+} catch (_) {
+  // maybe a reference error because no `Map`. Give it a dummy value that no
+  // value will ever be an instanceof.
+  NativeMap = function () {}
 }
 
-/**
- * @function createCache
- *
- * @description
- * get a new cache object to prevent circular references
- *
- * @returns the new cache object
- */
-const createCache = () => {
-  if (SUPPORTS.WEAKSET) {
-    return new WeakSet()
-  }
-
-  const object = create({
-    add: (value) => object._values.push(value),
-    has: (value) => !!~object._values.indexOf(value)
-  })
-
-  object._values = []
-
-  return object
+var NativeSet
+try {
+  NativeSet = Set
+} catch (_) {
+  NativeSet = function () {}
 }
 
-/**
- * @function getCleanClone
- *
- * @description
- * get an empty version of the object with the same prototype it has
- *
- * @param object the object to build a clean clone from
- * @param realm the realm the object resides in
- * @returns the empty cloned object
- */
-const getCleanClone = (object, realm) => {
-  if (!object.constructor) {
-    return create(null)
-  }
+var NativePromise
+try {
+  NativePromise = Promise
+} catch (_) {
+  NativePromise = function () {}
+}
 
-  // eslint-disable-next-line no-proto
-  const prototype = object.__proto__ || getPrototypeOf(object)
+function clone (parent, ref) {
+  if ( ref === void 0 ) ref = {};
+  var circular = ref.circular; if ( circular === void 0 ) circular = true;
+  var depth = ref.depth; if ( depth === void 0 ) depth = Infinity;
+  var prototype = ref.prototype;
+  var includeNonEnumerable = ref.includeNonEnumerable;
 
-  if (object.constructor === realm.Object) {
-    return prototype === realm.Object.prototype ? {} : create(prototype)
-  }
+  // maintain two arrays for circular references, where corresponding parents
+  // and children have the same index
+  var allParents = []
+  var allChildren = []
 
-  if (~toStringFunction.call(object.constructor).indexOf('[native code]')) {
-    try {
-      return new object.constructor()
-    } catch (e) {
-      // Error
+  var useBuffer = typeof Buffer !== 'undefined' && typeof Buffer.isBuffer === 'function'
+
+  var isBuffer = typeof window !== 'undefined' ? browserIsBuffer : Buffer.isBuffer
+
+  // recurse this function so we don't reset allParents and allChildren
+  function _clone (parent, depth) {
+    // cloning null always returns null
+    if (parent === null) { return null }
+
+    if (depth === 0) { return parent }
+
+    var child
+    var proto
+    if (typeof parent !== 'object') {
+      return parent
     }
-  }
 
-  return create(prototype)
-}
-
-/**
- * @function getObjectCloneLoose
- *
- * @description
- * get a copy of the object based on loose rules, meaning all enumerable keys
- * and symbols are copied, but property descriptors are not considered
- *
- * @param object the object to clone
- * @param realm the realm the object resides in
- * @param handleCopy the function that handles copying the object
- * @returns the copied object
- */
-const getObjectCloneLoose = (
-  object,
-  realm,
-  handleCopy,
-  cache
-) => {
-  const clone = getCleanClone(object, realm)
-
-  for (const key in object) {
-    if (hasOwnProperty.call(object, key)) {
-      clone[key] = handleCopy(object[key], cache)
+    if (_instanceof(parent, NativeMap)) {
+      child = new NativeMap()
+    } else if (_instanceof(parent, NativeSet)) {
+      child = new NativeSet()
+    } else if (_instanceof(parent, NativePromise)) {
+      child = new NativePromise(function (resolve, reject) {
+        parent.then(function (value) {
+          resolve(_clone(value, depth - 1))
+        }, function (err) {
+          reject(_clone(err, depth - 1))
+        })
+      })
+    } else if (clone.__isArray(parent)) {
+      child = []
+    } else if (clone.__isRegExp(parent)) {
+      child = new RegExp(parent.source, __getRegExpFlags(parent))
+      if (parent.lastIndex) { child.lastIndex = parent.lastIndex }
+    } else if (clone.__isDate(parent)) {
+      child = new Date(parent.getTime())
+    } else if (useBuffer && isBuffer(parent)) {
+      if (Buffer.from) {
+        // Node.js >= 5.10.0
+        child = Buffer.from(parent)
+      } else {
+        // Older Node.js versions
+        // eslint-disable-next-line node/no-deprecated-api
+        child = new Buffer(parent.length)
+        parent.copy(child)
+      }
+      return child
+    } else if (_instanceof(parent, Error)) {
+      child = Object.create(parent)
+    } else {
+      if (typeof prototype === 'undefined') {
+        proto = Object.getPrototypeOf(parent)
+        child = Object.create(proto)
+      } else {
+        child = Object.create(prototype)
+        proto = prototype
+      }
     }
-  }
 
-  if (SUPPORTS.SYMBOL_PROPERTIES) {
-    const symbols = getOwnPropertySymbols(object)
+    if (circular) {
+      var index = allParents.indexOf(parent)
 
-    if (symbols.length) {
-      for (let index = 0, symbol; index < symbols.length; index++) {
-        symbol = symbols[index]
+      if (index !== -1) {
+        return allChildren[index]
+      }
+      allParents.push(parent)
+      allChildren.push(child)
+    }
 
-        if (propertyIsEnumerable.call(object, symbol)) {
-          clone[symbol] = handleCopy(object[symbol], cache)
+    if (_instanceof(parent, NativeMap)) {
+      parent.forEach(function (value, key) {
+        var keyChild = _clone(key, depth - 1)
+        var valueChild = _clone(value, depth - 1)
+        child.set(keyChild, valueChild)
+      })
+    }
+    if (_instanceof(parent, NativeSet)) {
+      parent.forEach(function (value) {
+        var entryChild = _clone(value, depth - 1)
+        child.add(entryChild)
+      })
+    }
+
+    for (var i in parent) {
+      var attrs = Object.getOwnPropertyDescriptor(parent, i)
+      if (attrs) {
+        if (attrs.hasOwnProperty('get') && attrs.get.name === 'computedGetter') {
+          Object.defineProperty(child, i, attrs)
+          continue
         }
+
+        child[i] = _clone(parent[i], depth - 1)
       }
     }
-  }
 
-  return clone
-}
-
-/**
- * @function getObjectCloneStrict
- *
- * @description
- * get a copy of the object based on strict rules, meaning all keys and symbols
- * are copied based on the original property descriptors
- *
- * @param object the object to clone
- * @param realm the realm the object resides in
- * @param handleCopy the function that handles copying the object
- * @returns the copied object
- */
-const getObjectCloneStrict = (
-  object,
-  realm,
-  handleCopy,
-  cache
-) => {
-  const clone = getCleanClone(object, realm)
-
-  const properties = SUPPORTS.SYMBOL_PROPERTIES
-    ? [].concat(getOwnPropertyNames(object), getOwnPropertySymbols(object))
-    : getOwnPropertyNames(object)
-
-  if (properties.length) {
-    for (
-      let index = 0, property, descriptor;
-      index < properties.length;
-      index++
-    ) {
-      property = properties[index]
-
-      if (property !== 'callee' && property !== 'caller') {
-        descriptor = getOwnPropertyDescriptor(object, property)
-
-        descriptor.value = handleCopy(object[property], cache)
-
-        defineProperty(clone, property, descriptor)
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(parent)
+      for (var i$1 = 0; i$1 < symbols.length; i$1++) {
+        // Don't need to worry about cloning a symbol because it is a primitive,
+        // like a number or string.
+        var symbol = symbols[i$1]
+        var descriptor = Object.getOwnPropertyDescriptor(parent, symbol)
+        if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+          continue
+        }
+        child[symbol] = _clone(parent[symbol], depth - 1)
+        Object.defineProperty(child, symbol, descriptor)
       }
     }
+
+    if (includeNonEnumerable) {
+      var allPropertyNames = Object.getOwnPropertyNames(parent)
+      for (var i$2 = 0; i$2 < allPropertyNames.length; i$2++) {
+        var propertyName = allPropertyNames[i$2]
+        var descriptor$1 = Object.getOwnPropertyDescriptor(parent, propertyName)
+        if (descriptor$1 && descriptor$1.enumerable) {
+          continue
+        }
+        child[propertyName] = _clone(parent[propertyName], depth - 1)
+        Object.defineProperty(child, propertyName, descriptor$1)
+      }
+    }
+
+    return child
   }
 
-  return clone
+  return _clone(parent, depth)
 }
 
-/**
- * @function getRegExpFlags
- *
- * @description
- * get the flags to apply to the copied regexp
- *
- * @param regExp the regexp to get the flags of
- * @returns the flags for the regexp
- */
-const getRegExpFlags = (regExp) => {
-  let flags = ''
+// private utility functions
 
-  if (regExp.global) {
-    flags += 'g'
-  }
+function __objToStr (o) {
+  return Object.prototype.toString.call(o)
+}
+clone.__objToStr = __objToStr
 
-  if (regExp.ignoreCase) {
-    flags += 'i'
-  }
+function __isDate (o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Date]'
+}
+clone.__isDate = __isDate
 
-  if (regExp.multiline) {
-    flags += 'm'
-  }
+function __isArray (o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Array]'
+}
+clone.__isArray = __isArray
 
-  if (regExp.unicode) {
-    flags += 'u'
-  }
+function __isRegExp (o) {
+  return typeof o === 'object' && __objToStr(o) === '[object RegExp]'
+}
+clone.__isRegExp = __isRegExp
 
-  if (regExp.sticky) {
-    flags += 'y'
-  }
-
+function __getRegExpFlags (re) {
+  var flags = ''
+  if (re.global) { flags += 'g' }
+  if (re.ignoreCase) { flags += 'i' }
+  if (re.multiline) { flags += 'm' }
   return flags
 }
+clone.__getRegExpFlags = __getRegExpFlags
 
-const { isArray } = Array
-
-const GLOBAL_THIS = (() => {
-  if (typeof self !== 'undefined') {
-    return self
-  }
-
-  if (typeof window !== 'undefined') {
-    return window
-  }
-
-  if (typeof global !== 'undefined') {
-    return global
-  }
-
-  if (console && console.error) {
-    console.error('Unable to locate global object, returning "this".')
-  }
-})()
-
-/**
- * @function clone
- *
- * @description
- * copy an object deeply as much as possible
- *
- * If `strict` is applied, then all properties (including non-enumerable ones)
- * are copied with their original property descriptors on both objects and arrays.
- *
- * The object is compared to the global constructors in the `realm` provided,
- * and the native constructor is always used to ensure that extensions of native
- * objects (allows in ES2015+) are maintained.
- *
- * @param object the object to copy
- * @param [options] the options for copying with
- * @param [options.isStrict] should the copy be strict
- * @param [options.realm] the realm (this) object the object is copied from
- * @returns the copied object
- */
-function clone (object, options) {
-  // manually coalesced instead of default parameters for performance
-  const isStrict = !!(options && options.isStrict)
-  const realm = (options && options.realm) || GLOBAL_THIS
-
-  const getObjectClone = isStrict
-    ? getObjectCloneStrict
-    : getObjectCloneLoose
-
-  /**
-   * @function handleCopy
-   *
-   * @description
-   * copy the object recursively based on its type
-   *
-   * @param object the object to copy
-   * @returns the copied object
-   */
-  const handleCopy = (
-    object,
-    cache
-  ) => {
-    if (!object || typeof object !== 'object' || cache.has(object)) {
-      return object
-    }
-
-    // DOM objects
-    if (object instanceof HTMLElement) {
-      return object.cloneNode(false)
-    }
-
-    const Constructor = object.constructor
-
-    // plain objects
-    if (Constructor === realm.Object) {
-      cache.add(object)
-
-      return getObjectClone(object, realm, handleCopy, cache)
-    }
-
-    let clone
-
-    // arrays
-    if (isArray(object)) {
-      cache.add(object)
-
-      // if strict, include non-standard properties
-      if (isStrict) {
-        return getObjectCloneStrict(object, realm, handleCopy, cache)
-      }
-
-      clone = new Constructor()
-
-      for (let index = 0; index < object.length; index++) {
-        clone[index] = handleCopy(object[index], cache)
-      }
-
-      return clone
-    }
-
-    // dates
-    if (object instanceof realm.Date) {
-      return new Constructor(object.getTime())
-    }
-
-    // regexps
-    if (object instanceof realm.RegExp) {
-      clone = new Constructor(
-        object.source,
-        object.flags || getRegExpFlags(object)
-      )
-
-      clone.lastIndex = object.lastIndex
-
-      return clone
-    }
-
-    // maps
-    if (realm.Map && object instanceof realm.Map) {
-      cache.add(object)
-
-      clone = new Constructor()
-
-      object.forEach((value, key) => {
-        clone.set(key, handleCopy(value, cache))
-      })
-
-      return clone
-    }
-
-    // sets
-    if (realm.Set && object instanceof realm.Set) {
-      cache.add(object)
-
-      clone = new Constructor()
-
-      object.forEach((value) => {
-        clone.add(handleCopy(value, cache))
-      })
-
-      return clone
-    }
-
-    // buffers (node-only)
-    if (realm.Buffer && realm.Buffer.isBuffer(object)) {
-      clone = realm.Buffer.allocUnsafe
-        ? realm.Buffer.allocUnsafe(object.length)
-        : new Constructor(object.length)
-
-      object.copy(clone)
-
-      return clone
-    }
-
-    // arraybuffers / dataviews
-    if (realm.ArrayBuffer) {
-      // dataviews
-      if (realm.ArrayBuffer.isView(object)) {
-        return new Constructor(object.buffer.slice(0))
-      }
-
-      // arraybuffers
-      if (object instanceof realm.ArrayBuffer) {
-        return object.slice(0)
-      }
-    }
-
-    // if the object cannot / should not be cloned, don't
-    if (
-      // promise-like
-      (hasOwnProperty.call(object, 'then') && typeof object.then === 'function') ||
-      // errors
-      object instanceof Error ||
-      // weakmaps
-      (realm.WeakMap && object instanceof realm.WeakMap) ||
-      // weaksets
-      (realm.WeakSet && object instanceof realm.WeakSet)
-    ) {
-      return object
-    }
-
-    cache.add(object)
-
-    // assume anything left is a custom constructor
-    return getObjectClone(object, realm, handleCopy, cache)
-  }
-
-  return handleCopy(object, createCache())
+function _instanceof (obj, type) {
+  return type != null && obj instanceof type
 }
 
-/* harmony default export */ __webpack_exports__["a"] = (clone);
+function browserIsBuffer (b) {
+  return !!(b != null && '_isBuffer' in b && b._isBuffer)
+}
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(14).Buffer))
 
 /***/ }),
 
-/***/ 67:
+/***/ 53:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -12810,7 +14622,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(68);
+__webpack_require__(54);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -12825,7 +14637,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
-/***/ 68:
+/***/ 54:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -13015,7 +14827,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8), __webpack_require__(19)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(8), __webpack_require__(18)))
 
 /***/ }),
 
@@ -13058,9 +14870,9 @@ module.exports = g;
 // If we can, we use the browser extension API to store data
 // it's async though, so we synchronize changes from an intermediate
 // storageData object
-const useStorage = typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined'
+var useStorage = typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined'
 
-let storageData = null
+var storageData = null
 
 function init () {
   return new Promise((resolve) => {

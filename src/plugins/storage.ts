@@ -66,9 +66,13 @@ class Storage {
     return new Promise(async (resolve, reject) => {
       let data
       try {
-        data = isJSON(json) ? JSON.stringify(json) : '{}'
+        debug && console.log('data for set:')
+        debug && console.log(json)
+        debug && console.log('isJson data')
+        debug && console.log(isJSON(json))
+        data = isJSON(json) ? JSON.stringify(json) : ''
       } catch(e) {
-        data = '{}'
+        data = ''
       }
       const fullPath = path.resolve(_path, fileName)
       debug && console.log('call isFileExists')

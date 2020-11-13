@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import Titlebar from '~/components/titlebar'
 import Loading from '~/components/loading'
 import Error from '~/components/error'
@@ -18,6 +18,7 @@ import { TYPES } from '~/domain/types'
 import { OAuthQuery, JsonQuery, LibraryQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
+import { CheckQuery } from '~/domain/queries/check.query'
 
 @Component({
   name: 'Index',
@@ -54,6 +55,12 @@ export default class Index extends Vue {
   }
   get component(): string {
     return this.$store.getters.getComponent
+  }
+
+  @Watch('isAuth') onAuthChanged(v: boolean) {
+    if(v) {
+      this.queryBus.exec(new CheckQuery())
+    }
   }
 
   protected async checkToken(p: string): Promise<boolean> {
