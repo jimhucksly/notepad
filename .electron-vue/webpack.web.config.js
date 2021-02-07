@@ -5,12 +5,12 @@ process.env.BABEL_ENV = 'web'
 const path = require('path')
 const webpack = require('webpack')
 
-const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 let webConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -113,6 +113,18 @@ let webConfig = {
     },
     extensions: ['.ts', '.tsx', '.js', '.json', '.node', '.vue']
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          keep_classnames: true,
+          keep_fnames: true
+        }
+      })
+    ]
+  },
   target: 'web'
 }
 
@@ -123,7 +135,6 @@ if (process.env.NODE_ENV === 'production') {
   webConfig.devtool = ''
 
   webConfig.plugins.push(
-    new BabiliWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {
