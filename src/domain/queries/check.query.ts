@@ -1,15 +1,10 @@
 import { inject, injectable } from 'inversify'
-import { Query, IQuery } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
+import { IQuery } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
+import { TYPES } from '~/domain/types'
 
-export class CheckQuery extends Query {
-  constructor() {
-    super()
-    this.NAME = 'CheckQuery'
-  }
-}
+export class CheckQuery {}
 
 @injectable()
 export class CheckQueryHandler implements IQuery {

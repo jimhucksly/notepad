@@ -116,6 +116,9 @@ function createWindow() {
     }
   })
 
+  /**
+   * Uncomment to open Devtools in production mode
+  */
   // mainWindow.webContents.openDevTools()
 }
 

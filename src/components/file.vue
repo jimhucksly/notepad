@@ -9,7 +9,7 @@
       <div>{{ fileName }}</div>
       <div>
         <a :href="href" @click.prevent="openFile">Открыть</a>
-        <a :href="href" @click.prevent="saveFile">Скачать</a>
+        <!-- <a :href="href" @click.prevent="saveFile">Скачать</a> -->
       </div>
     </div>
     <div>

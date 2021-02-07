@@ -1,7 +1,7 @@
-// import axios from 'axios'
+import axios from 'axios'
 
-const fs = require('fs')
-const path = require('path')
+// const fs = require('fs')
+// const path = require('path')
 
 const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 const REGEXP_EMAIL = /.+@.+\..+/i
@@ -168,39 +168,61 @@ export function dragAndDropLoader(
   }
 }
 
-export const downloadFile = (
+export async function downloadFile(
   fileUri: string,
   targetPath: string,
   loaderDOMElement: HTMLElement
-): void => {
+): Promise<void> {
+  // const response = await fetch(encodeURI(fileUri))
+  // if(response && response.body && response.headers) {
+  //   const reader = response.body.getReader()
+  //   const contentLength = response.headers.get('Content-Length')
+  //   let receivedLength = 0
+  //   const chunks = []
+  //   while(true) {
+  //     const { done, value } = await reader.read()
+  //     if(done) {
+  //       break
+  //     }
+  //     if(value) {
+  //       chunks.push(value)
+  //       receivedLength += value.length
+  //       console.log(`Received ${receivedLength} of ${contentLength}`)
+  //     }
+  //   }
+  // }
+
   // let receivedBytes = 0
   // let totalBytes = 0
-  let index = 0
+  // let index = 0
 
-  const targetFileName: string = path.parse(targetPath).base
-  const targetFileDir: string = path.parse(targetPath).dir
+  // const targetFileName: string = path.parse(targetPath).base
+  // const targetFileDir: string = path.parse(targetPath).dir
 
-  let isFileExists = true
-  while(isFileExists) {
-    try {
-      fs.statSync(targetPath)
-      const filename = targetFileName.replace(/\./g, `(${++index}).`)
-      targetPath = path.resolve(targetFileDir, filename)
-    } catch(e) {
-      isFileExists = false
-    }
-  }
+  // let isFileExists = true
+  // while(isFileExists) {
+  //   try {
+  //     fs.statSync(targetPath)
+  //     const filename = targetFileName.replace(/\./g, `(${++index}).`)
+  //     targetPath = path.resolve(targetFileDir, filename)
+  //   } catch(e) {
+  //     isFileExists = false
+  //   }
+  // }
 
   // const req = request({
   //   method: 'GET',
   //   uri: encodeURI(fileUri)
   // })
 
-  // axios({
-  //   url: fileUri,
-  //   method: 'GET',
-  //   responseType: 'blob'
-  // })
+  const f = 'http://jimhucksly-studio.ru/files/uploads/2016/12/SmartBabyWatch.jpg'
+
+  await axios.get(f, {
+    headers: {
+      'Access-Control-Allow-Origin': '*'
+    },
+    responseType: 'blob'
+  })
   //   .then((response) => {
   //     console.log(response)
   //     //  const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -214,7 +236,7 @@ export const downloadFile = (
   //     console.log(e)
   //   })
 
-  console.log(targetPath)
+  // console.log(targetPath)
 
   // req.on('response', (data: { statusCode: number, headers: string[] }) => {
   //   console.log('response!!!')

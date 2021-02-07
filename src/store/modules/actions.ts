@@ -71,15 +71,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setLoading', command.flag)
   }
 
-  userDataPath(store: TStore, path: any) {
+  userDataPath(store: TStore, path: string) {
     store.commit('setUserDataPath', path)
   }
 
-  error(store: TStore, flag: any) {
+  error(store: TStore, flag: boolean) {
     store.commit('setError', flag)
   }
 
-  isDevelopment(store: TStore, flag: any) {
+  isDevelopment(store: TStore, flag: boolean) {
     store.commit('setIsDevelopment', flag)
   }
 

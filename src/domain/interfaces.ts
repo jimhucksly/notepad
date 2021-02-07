@@ -13,11 +13,3 @@ export interface ICommand {
 export interface IQuery {
   exec<TQuery>(query: TQuery): any
 }
-
-export abstract class Query {
-  NAME: string
-}
-
-export abstract class Command {
-  NAME: string
-}

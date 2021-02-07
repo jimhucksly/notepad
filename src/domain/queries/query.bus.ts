@@ -1,8 +1,8 @@
 import { Container, inject, injectable } from 'inversify'
-import { IQueryBus, IQuery } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
+import { IQuery, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
+import { TYPES } from '~/domain/types'
 
 @injectable()
 class QueryBus implements IQueryBus {
@@ -12,15 +12,15 @@ class QueryBus implements IQueryBus {
   ) {}
 
   exec(query :any): Promise<any> {
-    const actionName = Reflect.getMetadata(TYPES[query.NAME], QueryBus)
+    const actionName = Reflect.getMetadata(TYPES[query.constructor.name], QueryBus)
     if(actionName) {
       return this._store.dispatch(actionName, query)
     }
-    const handler: IQuery = this._container.get(TYPES[query.NAME])
+    const handler: IQuery = this._container.get(TYPES[query.constructor.name])
     if(handler) {
       return handler.exec(query)
     }
-    return Promise.reject(`Не найден обрабтчик для запроса: ${query.NAME}`)
+    return Promise.reject(`Не найден обрабтчик для запроса: ${query.constructor.name}`)
   }
 }
 

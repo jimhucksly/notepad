@@ -12,15 +12,15 @@ class CommandBus implements ICommandBus {
   ) {}
 
   do(command: any) {
-    const actionName = Reflect.getMetadata(TYPES[command.NAME], CommandBus)
+    const actionName = Reflect.getMetadata(TYPES[command.constructor.name], CommandBus)
     if(actionName) {
       return this._store.dispatch(actionName, command)
     }
-    const handler: ICommand = this._container.get(TYPES[command.NAME])
+    const handler: ICommand = this._container.get(TYPES[command.constructor.name])
     if(handler) {
       return handler.do(command)
     }
-    return Promise.reject(`Не найден обработчик для команды: ${command.NAME}`)
+    return Promise.reject(`Не найден обработчик для команды: ${command.constructor.name}`)
   }
 }
 

@@ -7,8 +7,8 @@ process.env.CHUNKS_LOG = 'true'
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
-const BabiliWebpackPlugin = require('babili-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 let mainConfig = {
   entry: {
@@ -41,6 +41,18 @@ let mainConfig = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron')
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          keep_classnames: true,
+          keep_fnames: true
+        }
+      })
+    ]
+  },
   target: 'electron-main'
 }
 
@@ -72,7 +84,6 @@ if (process.env.NODE_ENV === 'production') {
     mainConfig.plugins = []
   }
   mainConfig.plugins.push(
-    new BabiliWebpackPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     })
