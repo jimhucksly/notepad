@@ -16,7 +16,7 @@
   "build": {
     "productName": "Notepad App",
     "appId": "com.example.notepad-jimhucksly-studioApp",
-    "copyright": "Copyright © 2019-2020 ${author}",
+    "copyright": "Copyright © 2019-2021 ${author}",
     "directories": {
       "output": "build"
     },
@@ -110,9 +110,8 @@
     "auto-launch": "^5.0.5",
     "babel-eslint": "^8.2.3",
     "babel-jest": "^25.1.0",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "^8.2.2",
     "babel-register": "^6.26.0",
-    "babili-webpack-plugin": "^0.1.2",
     "cfonts": "^2.1.2",
     "chalk": "^2.4.1",
     "copy-webpack-plugin": "^6.3.0",
@@ -150,7 +149,8 @@
     "sass-loader": "^7.0.3",
     "spectron": "^3.8.0",
     "style-loader": "^2.0.0",
-    "ts-loader": "^6.2.1",
+    "terser-webpack-plugin": "^4.2.3",
+    "ts-loader": "^8.0.15",
     "typescript": "^3.7.5",
     "url-loader": "^1.0.1",
     "vue-class-component": "^7.2.2",
@@ -163,7 +163,7 @@
     "vue-template-compiler": "^2.5.16",
     "vue2-ace-editor": "^0.0.15",
     "webpack": "^4.44.2",
-    "webpack-cli": "^3.0.8",
+    "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-hot-middleware": "^2.22.2",
     "webpack-merge": "^4.1.3"
