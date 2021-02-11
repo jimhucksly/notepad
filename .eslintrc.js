@@ -178,7 +178,7 @@ module.exports = {
     "@typescript-eslint/no-useless-constructor": "error",
     "@typescript-eslint/prefer-for-of": "warn",
     "@typescript-eslint/no-parameter-properties": "off",
-    "@typescript-eslint/no-unnecessary-type-arguments": "warn",
+    "@typescript-eslint/no-unnecessary-type-arguments": "error",
     "@typescript-eslint/prefer-function-type": "warn",
     "@typescript-eslint/prefer-readonly": "warn",
     "@typescript-eslint/no-explicit-any": "off",
@@ -188,7 +188,7 @@ module.exports = {
         "allowExpressions": true
       }
     ],
-    "@typescript-eslint/brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+    "@typescript-eslint/brace-style": ["error", "1tbs"],
     "@typescript-eslint/indent": ["off", 2],
     "@typescript-eslint/quotes": [
       "error",

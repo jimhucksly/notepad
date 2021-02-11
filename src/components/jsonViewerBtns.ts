@@ -20,7 +20,7 @@ export default class JsonViewerBtns extends Vue {
     }
 
     const readText = (filePath: any) => {
-      let reader: any = null
+      let reader = null
       if(window.File && window.FileReader && window.FileList && window.Blob) {
         reader = new FileReader()
       } else {

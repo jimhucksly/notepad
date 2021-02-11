@@ -10,6 +10,7 @@ import { JsonQuery, LibraryQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 import { NavigateCommand } from '~/domain/commands/nav.command'
+import { CreateElement, VNode } from 'vue'
 
 @Component({
   name: 'App',
@@ -73,7 +74,7 @@ export default class App extends Vue {
     this.$store.dispatch('timeout', null)
   }
 
-  render(h: any) {
+  render(h: CreateElement): VNode {
     return h(
       'div',
       {

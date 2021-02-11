@@ -361,7 +361,9 @@ class BCalendarComponent extends Vue {
       {
         staticClass: 'b-calendar-form-overlay',
         on: {
-          click: () => { this.formClear() }
+          click: () => {
+            this.formClear()
+          }
         }
       }
     )
@@ -399,7 +401,9 @@ class BCalendarComponent extends Vue {
                   placeholder: 'Title'
                 },
                 on: {
-                  input: (e: MouseEvent) => { this.event.title = (e.target as any).value }
+                  input: (e: MouseEvent) => {
+                    this.event.title = (e.target as any).value
+                  }
                 }
               }
             ),
@@ -425,7 +429,9 @@ class BCalendarComponent extends Vue {
                   placeholder: 'Text'
                 },
                 on: {
-                  input: (e: MouseEvent) => { this.event.content = (e.target as any).value }
+                  input: (e: MouseEvent) => {
+                    this.event.content = (e.target as any).value
+                  }
                 }
               }
             ),

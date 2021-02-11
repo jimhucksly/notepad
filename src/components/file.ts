@@ -1,14 +1,13 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import { IFile } from '~/domain/models'
 
 @Component({
   name: 'File'
 })
 export default class File extends Vue {
-  @Prop()
-  readonly itemKey!: string
+  @Prop() readonly itemKey!: string
 
-  @Prop()
-  readonly itemFile!: any
+  @Prop() readonly itemFile!: IFile
 
   get stamp() {
     return this.itemKey

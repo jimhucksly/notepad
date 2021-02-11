@@ -40,7 +40,7 @@ export default class Controls extends Vue {
     return this.$parent.$refs
   }
 
-  protected edit(event: any, stamp: string) {
+  protected edit(stamp: string) {
     const item = this.$parent.$el
     if(item) {
       this.editableItems.push(stamp)
@@ -53,7 +53,7 @@ export default class Controls extends Vue {
         const div = document.createElement('div')
         div.innerHTML = this.json[stamp].message ?? ''
         const urls = div.querySelectorAll('a')
-        urls.length && urls.forEach((el: any) => {
+        urls.length && urls.forEach((el: HTMLAnchorElement) => {
           const href: string = el.href.replace(/\/$/, '')
           const p = document.createElement('p')
           p.innerHTML = href
@@ -61,7 +61,7 @@ export default class Controls extends Vue {
           el.remove()
         })
         const marks = div.querySelectorAll('mark')
-        marks.length && marks.forEach((el: any) => {
+        marks.length && marks.forEach((el: HTMLElement) => {
           const p = document.createElement('p')
           p.innerHTML = '###' + el.innerHTML
           div.insertBefore(p, el)
@@ -70,7 +70,7 @@ export default class Controls extends Vue {
         area.value = div.innerHTML.replace(/<br\/?>/g, '\n').replace(/<\/?p\/?>/g, '')
         area.style.height = area.scrollHeight * 1.1 + 'px'
         area.style.visibility = 'visible'
-        area.addEventListener('keydown', (e: any) => {
+        area.addEventListener('keydown', (e: KeyboardEvent) => {
           if(
             (e.code === 'Enter' ||
             e.key === 'Enter' ||
@@ -80,13 +80,13 @@ export default class Controls extends Vue {
             e.ctrlKey
           ) {
             e.preventDefault()
-            this.save(e, stamp)
+            this.save(stamp)
           }
         })
       }
     }
   }
-  protected save(e: any, stamp: string) {
+  protected save(stamp: string) {
     const item = this.$parent.$el
     if(item) {
       const i = this.editableItems.findIndex((el: string) => el === stamp)
@@ -122,7 +122,7 @@ export default class Controls extends Vue {
     this.commandBus.do(new SetFilterCommand(buffFilter))
     this.commandBus.do(new DeleteProjectCommand(stamp))
   }
-  protected remove(e: any, stamp: string) {
+  protected remove(stamp: string) {
     if(this.isLock) {
       this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
       this.$electron.ipcRenderer.once('remove-is-confimed', () => {

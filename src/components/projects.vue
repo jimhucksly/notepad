@@ -17,7 +17,12 @@
         <div>
           <span class="projects_item_check">
             <label>
-              <input type="checkbox" @change="toggleCheck" :data-stamp="item.key">
+              <input
+                type="checkbox"
+                @change="toggleCheck"
+                :data-stamp="item.key"
+                :checked="item.key === checked"
+              >
             </label>
           </span>
           <label>{{ item.name || item.key }}</label>

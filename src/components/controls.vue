@@ -3,7 +3,7 @@
     <button
       v-if="collection.includes('save')"
       v-show="editableItems.includes(itemKey)"
-      @click.prevent="save($event, itemKey)"
+      @click.prevent="save(itemKey)"
     >
       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
         <g style="fill: #2766BA">
@@ -18,7 +18,7 @@
     <button
       v-if="collection.includes('edit')"
       v-show="!editableItems.includes(itemKey)"
-      @click.prevent="edit($event, itemKey)"
+      @click.prevent="edit(itemKey)"
     >
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" version="1.1">
         <g class="g1" style="fill: #2766BA">
@@ -28,7 +28,7 @@
     </button>
     <button
       v-if="collection.includes('remove')"
-      @click.prevent="remove($event, itemKey)"
+      @click.prevent="remove(itemKey)"
     >
       <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 109 90">
         <g style="fill: #FB004D">

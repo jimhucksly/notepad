@@ -1,10 +1,11 @@
+import { CreateElement, VNode } from 'vue'
 import { Vue, Component } from 'vue-property-decorator'
 
 @Component({
   name: 'Error'
 })
 export default class Error extends Vue {
-  render(h: any) {
+  render(h: CreateElement): VNode {
     return h(
       'div',
       {

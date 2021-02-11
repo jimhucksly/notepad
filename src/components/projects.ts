@@ -63,12 +63,14 @@ export default class Projects extends Vue {
       updateJson()
     }
   }
-  protected toggleFilter(e: any, stamp: string): void | null {
+  protected toggleFilter(e: MouseEvent, stamp: string): void | null {
     const items: any = this.$refs.projects_item
     const item = items.find((el: any) => el.dataset.stamp === stamp)
-    const target: any = e.target
-    if(target.closest('.projects_item_check')) return null
-    if(e.target.tagName === 'DIV' || e.target.tagName === 'LABEL') {
+    const target = e.target as HTMLElement
+    if(target.closest('.projects_item_check')) {
+      return null
+    }
+    if(target.tagName === 'DIV' || target.tagName === 'LABEL') {
       if(item.classList.contains('active')) {
         const buff = cloneDeep(this.filter)
         unset(buff, stamp)
@@ -78,14 +80,14 @@ export default class Projects extends Vue {
       }
     }
   }
-  protected toggleCheck(e: any) {
-    const target: any = e.target
-    const isChecked: boolean = target.checked
+  protected toggleCheck(e: InputEvent) {
+    const target = e.target as HTMLInputElement
+    const isChecked = target.checked
     if(isChecked) {
       this.isArchivesInit = false
       this.$emit('on-archives', false)
     }
-    this.checked = isChecked ? target.dataset.stamp : ''
+    this.checked = isChecked ? target.dataset?.stamp || '' : ''
     this.$emit('on-edit', this.checked)
   }
   protected clearCheck() {

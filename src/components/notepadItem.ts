@@ -1,3 +1,4 @@
+import { VNode } from 'vue'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
@@ -43,14 +44,14 @@ export default class NotepadItem extends Vue {
   }
 
   protected saveFile(o: { fileName: string, href: string }) {
-    const fileCont: any = this.$refs.file
-    const loader: any = fileCont.$refs.loader
+    const fileCont = this.$refs.file as Vue
+    const loader = fileCont.$refs.loader as HTMLElement
     const finalPath = this.$store.getters.getDownloadsTargetPath + '\\' + o.fileName
     downloadFile(o.href, finalPath, loader)
   }
 
   protected openLink(e: MouseEvent): void | boolean {
-    const target: any = e.target
+    const target = e.target as HTMLAnchorElement
     const isLink = target.tagName === 'A'
     const hasHref = target.href && target.href.length
     if(isLink && hasHref) {

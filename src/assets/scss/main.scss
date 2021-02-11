@@ -839,6 +839,7 @@ main {
 
   &.todo_cont--drag {
     .todo_item {
+      user-select: none;
       -ms-user-select: none;
       -moz-user-select: none;
       -khtml-user-select: none;
