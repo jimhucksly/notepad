@@ -40,13 +40,17 @@ function install(Constructor: VueConstructor) {
 
   if(!Constructor.prototype.hasOwnProperty('$slideDown')) {
     Object.defineProperty(Constructor.prototype, '$slideDown', {
-      get: function get() { return slideDown }
+      get: function get() {
+        return slideDown
+      }
     })
   }
 
   if(!Constructor.prototype.hasOwnProperty('$slideUp')) {
     Object.defineProperty(Constructor.prototype, '$slideUp', {
-      get: function get() { return slideUp }
+      get: function get() {
+        return slideUp
+      }
     })
   }
 }

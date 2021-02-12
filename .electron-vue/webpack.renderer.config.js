@@ -12,6 +12,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
+const ProgressPlugin = require('webpack/lib/ProgressPlugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 /**
  * List of node_modules to include in webpack bundle
@@ -120,6 +122,22 @@ let rendererConfig = {
     new ESLintPlugin({
       extensions: ['vue', 'js', 'ts'],
       formatter: require('eslint-formatter-friendly')
+    }),
+    new ProgressPlugin({
+      modules: true, modulesCount: 3000
+    }),
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        diagnosticOptions: {
+          syntactic: false,
+          semantic: true,
+          declaration: false,
+          global: false
+        }
+      },
+      eslint: {
+        files: './src/**/*.{ts,tsx,js}'
+      }
     })
   ],
   output: {

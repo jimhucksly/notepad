@@ -53,11 +53,11 @@ function logStats (proc, data) {
 
 function startMain () {
   return new Promise((resolve, reject) => {
+    mainConfig.mode = 'development'
+
     mainConfig.entry.main = [
       path.join(__dirname, '../src/index.dev.js')
     ].concat(mainConfig.entry.main)
-
-    mainConfig.mode = 'development'
 
     const compiler = webpack(mainConfig)
 
@@ -77,7 +77,7 @@ function startMain () {
       }
 
       if(!isRunning) {
-        logStats('Main')
+        // logStats('Main')
       }
 
       if (electronProcess && electronProcess.kill) {
@@ -98,10 +98,12 @@ function startMain () {
 
 function startRenderer () {
   return new Promise((resolve, reject) => {
+    rendererConfig.mode = 'development'
+
     rendererConfig.entry.renderer = [
       path.join(__dirname, 'dev-client')
     ].concat(rendererConfig.entry.renderer)
-    rendererConfig.mode = 'development'
+
     const compiler = webpack(rendererConfig)
 
     hotMiddleware = webpackHotMiddleware(compiler, {
@@ -111,7 +113,7 @@ function startRenderer () {
 
     compiler.hooks.done.tap('done', stats => {
       if(!isRunning) {
-        logStats('Renderer')
+        // logStats('Renderer')
       } else {
         const d = new Date(Date.now())
         const hh = ('0' + d.getHours()).slice(-2)
@@ -187,14 +189,14 @@ function electronLog (data, color) {
 
 function init () {
   process.env.CHUNKS_LOG = 'true'
-  console.log('\n' + chalk.white('initializing app...') + '\n')
+  console.log(chalk.white('initializing app...') + '\n')
 
   Promise
     .all([startRenderer(), startMain()])
     .then(() => {
       isRunning = true
       console.log(chalk.green('app is sucessfully running') + '\n')
-      process.env.CHUNKS_LOG = 'false'
+      // process.env.CHUNKS_LOG = 'false'
       startElectron()
     })
     .catch(err => {

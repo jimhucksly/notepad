@@ -14,10 +14,12 @@ import {
 import path from 'path'
 import pkg from '../package.json'
 
-if(process.env.NODE_ENV !== 'development') {
-  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
-} else {
+const $DEV = process.env.NODE_ENV === 'development'
+
+if($DEV) {
   global.__static = path.join(__dirname, '../static').replace(/\\/g, '\\\\')
+} else {
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 process.on('uncaughtException', (err) => {

@@ -14,7 +14,9 @@ import '~/assets/css/simplemde.css'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
-if(!process.env.IS_WEB) Vue.use(vueElectron)
+if(!process.env.IS_WEB) {
+  Vue.use(vueElectron)
+}
 Vue.use(Popup)
 Vue.use(Anime)
 Vue.use(BCheckbox)

@@ -87,7 +87,7 @@ export default class Projects extends Vue {
       this.isArchivesInit = false
       this.$emit('on-archives', false)
     }
-    this.checked = isChecked ? target.dataset?.stamp || '' : ''
+    this.checked = isChecked ? target.dataset?.stamp ?? '' : ''
     this.$emit('on-edit', this.checked)
   }
   protected clearCheck() {

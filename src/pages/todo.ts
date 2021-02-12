@@ -154,7 +154,9 @@ export default class Todo extends Vue {
           dragItem.style.display = 'none'
           const el = document.elementFromPoint(clientX, clientY)
           dragItem.style.display = 'block'
-          // такое возможно, если курсор мыши "вылетел" за границу окна
+          /**
+           * такое возможно, если курсор мыши "вылетел" за границу окна
+           */
           if(el === null) {
             finishDrag()
             return null
@@ -177,7 +179,7 @@ export default class Todo extends Vue {
         item && (item.order = index + 1)
       }
     })
-    this.items = [ ...this.items ]
+    this.items = [...this.items]
     this.commandBus.do(new TodoOrderCommand(result))
   }
 
@@ -207,7 +209,7 @@ export default class Todo extends Vue {
       const o: ITodo | null = this.items.find((item: ITodo) => item.id === id) ?? null
       if(o) {
         o.text = this.itemSelected.text
-        this.items = [ ...this.items ]
+        this.items = [...this.items]
         this.cancel()
         this.commandBus.do(new UpdateTodoCommand(o))
       }

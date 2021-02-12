@@ -1,12 +1,12 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import SidebarSwitcher from '~/components/sidebarSwitcher'
 import Projects from '~/components/projects'
-import ProjectsEditor from '~/components/ProjectsEditor'
-import ProjectsArchives from '~/components/ProjectsArchives'
+import ProjectsEditor from '~/components/projectsEditor'
+import ProjectsArchives from '~/components/projectsArchives'
 import SidebarTree from '~/components/sidebarTree'
-import JsonViewerBtns from '~/components/JsonViewerBtns'
-import LinksBtns from '~/components/LinksBtns'
-import TodoBtns from '~/components/TodoBtns'
+import JsonViewerBtns from '~/components/jsonViewerBtns'
+import LinksBtns from '~/components/linksBtns'
+import TodoBtns from '~/components/todoBtns'
 
 @Component({
   name: 'Sidebar',

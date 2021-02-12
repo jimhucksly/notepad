@@ -21,7 +21,9 @@ function install(Constructor: VueConstructor) {
 
   if(!Constructor.prototype.hasOwnProperty('$popup')) {
     Object.defineProperty(Constructor.prototype, '$popup', {
-      get: function get() { return _popup }
+      get: function get() {
+        return _popup
+      }
     })
   }
 }

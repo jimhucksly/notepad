@@ -52,7 +52,9 @@ export default class Events extends Vue {
     }
     const elems = document.querySelectorAll('.processing[data-current]')
     if(elems && elems.length) {
-      elems.forEach((el: any) => { el.classList.remove('processing') })
+      elems.forEach((el: any) => {
+        el.classList.remove('processing')
+      })
     }
   }
 

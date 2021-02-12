@@ -176,7 +176,9 @@ export default class JsonViewer extends Vue {
                   height: '100%'
                 },
                 on: {
-                  init: (event: any) => { this.editorInit(event) },
+                  init: (event: any) => {
+                    this.editorInit(event)
+                  },
                   input: (value: any) => {
                     this.$emit('input', value)
                   }

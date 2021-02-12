@@ -1,4 +1,4 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
 import AutoLaunch from 'auto-launch'

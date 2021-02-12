@@ -1,3 +1,4 @@
+/* eslint-disable-next-line spaced-comment */
 /// <reference path="../../window.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'

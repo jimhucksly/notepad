@@ -1,4 +1,3 @@
-import { VNode } from 'vue'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
