@@ -151,7 +151,7 @@
     "spectron": "^3.8.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^4.2.3",
-    "ts-loader": "^8.0.15",
+    "ts-loader": "^8.0.17",
     "typescript": "^3.7.5",
     "url-loader": "^1.0.1",
     "vue-class-component": "^7.2.2",

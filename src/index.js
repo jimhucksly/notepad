@@ -13,11 +13,13 @@ import {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
+import electronDebug from 'electron-debug'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
 if($DEV) {
   global.__static = path.join(__dirname, '../static').replace(/\\/g, '\\\\')
+  electronDebug()
 } else {
   global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }

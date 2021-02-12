@@ -55,9 +55,9 @@ function startMain () {
   return new Promise((resolve, reject) => {
     mainConfig.mode = 'development'
 
-    mainConfig.entry.main = [
-      path.join(__dirname, '../src/index.dev.js')
-    ].concat(mainConfig.entry.main)
+    // mainConfig.entry.main = [
+    //   path.join(__dirname, '../src/index.dev.js')
+    // ].concat(mainConfig.entry.main)
 
     const compiler = webpack(mainConfig)
 
@@ -100,9 +100,9 @@ function startRenderer () {
   return new Promise((resolve, reject) => {
     rendererConfig.mode = 'development'
 
-    rendererConfig.entry.renderer = [
-      path.join(__dirname, 'dev-client')
-    ].concat(rendererConfig.entry.renderer)
+    // rendererConfig.entry.renderer = [
+    //   path.join(__dirname, 'dev-client')
+    // ].concat(rendererConfig.entry.renderer)
 
     const compiler = webpack(rendererConfig)
 
