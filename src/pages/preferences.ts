@@ -23,6 +23,7 @@ export default class Preferences extends Vue {
     downloadsTargetPath: 0
   }
 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   appAutoLauncher: any = null
   isAutoLaunchEnabled = false
 
@@ -34,10 +35,10 @@ export default class Preferences extends Vue {
   }
 
   protected save() {
-    const form: any = this.$refs.form
-    const requireds = form.querySelectorAll('[required]')
+    const form = this.$refs.form as HTMLFormElement
+    const requireds: NodeListOf<HTMLInputElement> = form.querySelectorAll('[required]')
     if(requireds.length > 0) {
-      requireds.forEach((el: any) => {
+      requireds.forEach(el => {
         const name = el.name
         if(this[name] === '') {
           this.errors[name] = 1
@@ -65,17 +66,18 @@ export default class Preferences extends Vue {
       } else this.appAutoLauncher.disable()
     }
     this.$electron.ipcRenderer.send('preferences-hide')
-    this.commandBus.do(new NavigateCommand('goBack'))
+    this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
 
   protected cancel() {
     this.$electron.ipcRenderer.send('preferences-hide')
-    this.commandBus.do(new NavigateCommand('goBack'))
+    this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
   protected openFolderDialog() {
     this.$electron.ipcRenderer.send('open-folder-dialog', {
       defaultPath: this.downloadsTargetPath
     })
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('open-dialog-paths-selected', (event: any, response: any) => {
       const path = response && response.filePaths && response.filePaths[0] ? response.filePaths[0] : null
       const currentPath = this.preferences.downloadsTargetPath || this.userDataPath

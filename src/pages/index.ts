@@ -19,6 +19,11 @@ import { OAuthQuery, JsonQuery, LibraryQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 import { CheckQuery } from '~/domain/queries/check.query'
+import { IJson } from '~/domain/models'
+
+interface IUserPreferences {
+  downloadsTargetPath: string
+}
 
 @Component({
   name: 'Index',
@@ -59,35 +64,39 @@ export default class Index extends Vue {
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
-      this.queryBus.exec(new CheckQuery())
+      try {
+        this.queryBus.exec<CheckQuery, void>(new CheckQuery())
+      } catch(e) {
+        console.log(e)
+      }
     }
   }
 
   protected async checkToken(p: string): Promise<boolean> {
-    this.commandBus.do<LoadingCommand>(new LoadingCommand(true))
+    this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
     try {
       await storage.createFile(p, userDataFileName)
       const token = await storage.get(p, userDataFileName, 'token')
       if(token) {
         this.$store.dispatch('token', token)
-        await this.queryBus.exec(new OAuthQuery())
+        await this.queryBus.exec<OAuthQuery, void>(new OAuthQuery())
         await Promise.all([
-          this.queryBus.exec(new JsonQuery()),
-          this.queryBus.exec(new LibraryQuery())
+          this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+          this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
         ])
         setTimeout(() => {
-          this.commandBus.do(new LoadingCommand(false))
-          this.commandBus.do(new AuthCommand(true))
+          this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+          this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
         }, 1500)
         return true
       } else {
-        this.commandBus.do(new LoadingCommand(false))
-        this.commandBus.do(new AuthCommand(false))
+        this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+        this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
         return false
       }
     } catch(e) {
-      this.commandBus.do(new AuthCommand(false))
-      this.commandBus.do(new LoadingCommand(false))
+      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+      this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
       this.$store.dispatch('token', null)
       const userDataPath = this.$store.getters.getUserDataPath
       await storage.createFile(userDataPath, userDataFileName)
@@ -100,7 +109,7 @@ export default class Index extends Vue {
     try {
       this.$store.dispatch('userDataPath', appPath)
       await storage.createFile(appPath, userPreferencesFileName)
-      const json: any = await storage.get(appPath, userPreferencesFileName)
+      const json: IUserPreferences = await storage.get(appPath, userPreferencesFileName)
       if(json.downloadsTargetPath !== undefined) {
         this.$store.dispatch('downloadsTargetPath', json.downloadsTargetPath)
       } else {
@@ -115,6 +124,7 @@ export default class Index extends Vue {
 
   async created(): Promise<void> {
     this.$electron.ipcRenderer.send('get-app-path')
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
       await this.setPath(appPath)
       await this.checkToken(appPath)

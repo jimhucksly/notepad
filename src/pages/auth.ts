@@ -6,6 +6,7 @@ import { _container } from '~/domain/container'
 import { PingCommand } from '~/domain/commands/ping.command'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 import _ from 'lodash'
+import { IJson } from '~/domain/models'
 
 interface IErrors {
   login: number
@@ -23,7 +24,7 @@ export default class Auth extends Vue {
     pass: 0
   }
 
-  protected timeout: any = null
+  protected timeout: NodeJS.Timeout | null = null
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -51,16 +52,15 @@ export default class Auth extends Vue {
   protected async submit() {
     if(this.validate()) {
       try {
-        const query = new AuthQuery(this.login, this.pass)
-        await this.queryBus.exec(query)
-        this.commandBus.do(new LoadingCommand(true))
+        await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
+        this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
         await Promise.all([
-          this.queryBus.exec(new JsonQuery()),
-          this.queryBus.exec(new LibraryQuery())
+          this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+          this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
         ])
         setTimeout(() => {
-          this.commandBus.do(new LoadingCommand(false))
-          this.commandBus.do(new AuthCommand(true))
+          this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+          this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
         }, 1500)
       } catch(e) {
         const data = e.response && e.response.data ? e.response.data : (e.response || e)
@@ -77,10 +77,10 @@ export default class Auth extends Vue {
   }
 
   mounted() {
-    this.commandBus.do(new PingCommand(true))
+    this.commandBus.do<PingCommand, void>(new PingCommand(true))
   }
 
   destroyed() {
-    this.commandBus.do(new PingCommand(false))
+    this.commandBus.do<PingCommand, void>(new PingCommand(false))
   }
 }

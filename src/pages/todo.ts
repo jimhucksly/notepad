@@ -32,7 +32,7 @@ export default class Todo extends Vue {
   }
 
   @Watch('json')
-  onJsonChanged(json: any) {
+  onJsonChanged() {
     this.setItems()
   }
 
@@ -91,7 +91,8 @@ export default class Todo extends Vue {
         elem.style.opacity = '0.7'
         elem.style.transform = 'rotate(7deg)'
 
-        container.childNodes.forEach((el: any) => {
+        const childNodes: NodeListOf<HTMLElement> = container.childNodes as NodeListOf<HTMLElement>
+        childNodes.forEach(el => {
           if(el.classList) {
             const isAvatar = el.classList.contains('dragable-avatar')
             const isSelf = el.classList.contains('dragable')
@@ -99,12 +100,13 @@ export default class Todo extends Vue {
           }
         })
 
-        const dragItem: HTMLElement = elem
+        const dragItem = elem
 
         const finishDrag = () => {
           dragItem.classList.remove('dragable')
           dragItem.removeAttribute('style')
-          container.querySelectorAll('.dropable').forEach((el: any) => {
+          const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
+          dropableElems.forEach(el => {
             el.classList.remove('dropable')
             el.removeAttribute('style')
           })
@@ -116,7 +118,7 @@ export default class Todo extends Vue {
           this.setOrder()
         }
 
-        document.onmousemove = (e: MouseEvent): void | null => {
+        document.onmousemove = (e: MouseEvent) => {
           const moveX = startPos.x - e.clientX
           const moveY = startPos.y - e.clientY
 
@@ -127,7 +129,9 @@ export default class Todo extends Vue {
           dragItem.style.display = 'none'
           const el: Element | null = document.elementFromPoint(clientX, clientY)
           dragItem.style.display = 'block'
-          if(el === null) return null
+          if(!el) {
+            return
+          }
           const dropItem: HTMLElement | null = el.closest('.dropable')
           if(dropItem === null) return null
           const dropRect: DOMRect = dropItem.getBoundingClientRect()
@@ -149,30 +153,21 @@ export default class Todo extends Vue {
           }
         }
 
-        document.onmouseup = (e: MouseEvent): void | null => {
-          const { clientX, clientY } = e
-          dragItem.style.display = 'none'
-          const el = document.elementFromPoint(clientX, clientY)
-          dragItem.style.display = 'block'
-          /**
-           * такое возможно, если курсор мыши "вылетел" за границу окна
-           */
-          if(el === null) {
-            finishDrag()
-            return null
-          }
+        document.onmouseup = () => {
           finishDrag()
         }
       }
     }
   }
 
-  protected setOrder(): void | null {
+  protected setOrder() {
     const result: ITodoOrder = {}
-    const elems = document.querySelectorAll('[data-id]')
-    if(!elems.length) return null
-    elems.forEach((el: Element, index: number) => {
-      const id = (el as HTMLElement).dataset.id
+    const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]')
+    if(!elems.length) {
+      return
+    }
+    elems.forEach((el: HTMLElement, index: number) => {
+      const id = el.dataset.id
       if(id) {
         result[id] = index + 1
         const item = this.items.find((o: ITodo) => o.id === id)
@@ -180,7 +175,7 @@ export default class Todo extends Vue {
       }
     })
     this.items = [...this.items]
-    this.commandBus.do(new TodoOrderCommand(result))
+    this.commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
   }
 
   protected edit(id: string) {
@@ -191,9 +186,9 @@ export default class Todo extends Vue {
     if(this.itemSelected) {
       this.isPopupShow = true
       this.$nextTick(() => {
-        const textarea: any = this.$refs.textarea
+        const textarea = this.$refs.textarea as HTMLElement
         textarea.focus()
-        textarea.addEventListener('keydown', (e: any) => {
+        textarea.addEventListener('keydown', (e: KeyboardEvent) => {
           if((e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
             e.preventDefault()
             this.save()
@@ -211,7 +206,7 @@ export default class Todo extends Vue {
         o.text = this.itemSelected.text
         this.items = [...this.items]
         this.cancel()
-        this.commandBus.do(new UpdateTodoCommand(o))
+        this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
       }
     }
   }
@@ -226,7 +221,7 @@ export default class Todo extends Vue {
       const id = this.itemSelected.id
       this.items = this.items.filter((item: ITodo) => item.id !== id)
       this.cancel()
-      await this.commandBus.do(new DeleteTodoCommand(id))
+      await this.commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
       this.setOrder()
     }
   }
@@ -244,22 +239,22 @@ export default class Todo extends Vue {
   }
 
   async mounted() {
-    await this.queryBus.exec(new TodoQuery())
+    await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
 
-    this.$electron.ipcRenderer.on('todo-add', (event: any) => {
+    this.$electron.ipcRenderer.on('todo-add', () => {
       const { date, stamp } = now()
       let sstamp: number = +stamp
       while(this.keys.includes(sstamp.toString())) {
         sstamp += 1
       }
-      const o: any = {
+      const o: ITodo = {
         id: sstamp.toString(),
         date,
         text: '',
         order: this.items.length + 1
       }
       this.items.push(o)
-      this.commandBus.do(new UpdateTodoCommand(o))
+      this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
     })
   }
 }

@@ -1,60 +1,57 @@
 import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
 import { IQuery } from '~/domain/interfaces'
-import { IRootState } from '~/domain/models'
+import { ICheckResponse, IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 
 export class CheckQuery {}
 
 @injectable()
-export class CheckQueryHandler implements IQuery {
+export class CheckQueryHandler implements IQuery<void> {
   constructor(
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  timeout: any = null
+  timeout: NodeJS.Timeout | null = null
 
-  get isDevelopment() {
+  get isDevelopment(): boolean {
     return this._store.getters.getIsDevelopment
   }
 
-  get isAuth() {
+  get isAuth(): boolean {
     return this._store.getters.getIsAuth
   }
 
-  exec() {
+  exec<CheckQuery>(query: CheckQuery): Promise<void> {
     if(this.isDevelopment) {
-      return
+      return void 0
     }
     const duration = this.isDevelopment ? 6000 : 3000
     if(!this.isAuth) {
       this.timeout && clearTimeout(this.timeout)
-      return
+      return Promise.reject()
     }
-    this.timeout = setTimeout(async (): Promise<any> => {
+    this.timeout = setTimeout(async (): Promise<void> => {
       try {
-        const resp = await this._store.dispatch('actionCheck')
+        const resp: ICheckResponse = await this._store.dispatch('actionCheck')
         if(!resp) {
-          return Promise.reject()
+          return void 0
         }
         this._store.dispatch('error', false)
-        if(resp.status !== 204) {
-          this._store.dispatch('json', {
-            json: resp.data.data
-          })
-          this._store.dispatch('libraryData', resp.data.md)
-          this._store.dispatch('eventsJson', resp.data.events)
-          this._store.dispatch('linksJson', resp.data.links)
-          this._store.dispatch('todoJson', resp.data.todo)
-        }
-        return null
+        this._store.dispatch('json', {
+          json: resp.json
+        })
+        this._store.dispatch('libraryData', resp.md)
+        this._store.dispatch('eventsJson', resp.events)
+        this._store.dispatch('linksJson', resp.links)
+        this._store.dispatch('todoJson', resp.todo)
       } catch(e) {
         console.log(e)
         this._store.dispatch('error', true)
       } finally {
-        this.exec()
+        this.exec(query)
       }
     }, duration)
-    return null
+    return void 0
   }
 }

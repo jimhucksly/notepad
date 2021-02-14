@@ -1,6 +1,6 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
-import { IFilters, IJson } from '~/domain/models'
+import { IArchive, IFilters, IJson } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
@@ -34,9 +34,20 @@ export default class Projects extends Vue {
     this.$emit('on-archives', this.isArchivesInit)
   }
 
-  protected toggleLock(e: any, stamp: string) {
-    const items: any = this.$refs.projects_item
-    const item = items.find((el: any) => el.dataset.stamp === stamp)
+  public clearCheck() {
+    this.checked = ''
+    const input: NodeListOf<Element> = document.querySelectorAll('input[type="checkbox"]:checked')
+    if(input && input[0]) {
+      (input[0] as HTMLInputElement).checked = false
+    }
+  }
+
+  protected toggleLock(e: InputEvent, stamp: string) {
+    const items = this.$refs.projects_item as Array<HTMLElement>
+    const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
+    if(!item) {
+      return
+    }
     const isLocked = item.classList.contains('lock')
     const updateJson = () => {
       const o: IJson = {
@@ -49,8 +60,8 @@ export default class Projects extends Vue {
           file: this.json[stamp].file
         }
       }
-      this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
-      this.commandBus.do(new UpdateJsonCommand(o))
+      this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
     }
     if(isLocked) {
       this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
@@ -63,9 +74,13 @@ export default class Projects extends Vue {
       updateJson()
     }
   }
+
   protected toggleFilter(e: MouseEvent, stamp: string): void | null {
-    const items: any = this.$refs.projects_item
-    const item = items.find((el: any) => el.dataset.stamp === stamp)
+    const items = this.$refs.projects_item as Array<HTMLElement>
+    const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
+    if(!item) {
+      return
+    }
     const target = e.target as HTMLElement
     if(target.closest('.projects_item_check')) {
       return null
@@ -74,12 +89,13 @@ export default class Projects extends Vue {
       if(item.classList.contains('active')) {
         const buff = cloneDeep(this.filter)
         unset(buff, stamp)
-        this.commandBus.do(new SetFilterCommand({ ...buff }))
+        this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand({ ...buff }))
       } else {
-        this.commandBus.do(new SetFilterCommand({ ...this.filter, [stamp]: true }))
+        this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand({ ...this.filter, [stamp]: true }))
       }
     }
   }
+
   protected toggleCheck(e: InputEvent) {
     const target = e.target as HTMLInputElement
     const isChecked = target.checked
@@ -90,19 +106,17 @@ export default class Projects extends Vue {
     this.checked = isChecked ? target.dataset?.stamp ?? '' : ''
     this.$emit('on-edit', this.checked)
   }
-  protected clearCheck() {
-    this.checked = ''
-    const input: any = document.querySelectorAll('input[type="checkbox"]:checked')
-    if(input && input[0]) {
-      input[0].checked = false
-    }
-  }
+
   protected toggleArchives() {
     this.isArchivesInit = !this.isArchivesInit
     this.$emit('on-archives', this.isArchivesInit)
   }
 
-  async created() {
-    await this.queryBus.exec(new ArchivesQuery())
+  created() {
+    try {
+      this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
+    } catch(e) {
+      console.log(e)
+    }
   }
 }

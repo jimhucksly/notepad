@@ -6,7 +6,7 @@ import { LinksQuery } from '~/domain/queries'
 import { UpdateLinksCommand, DeleteLinkCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
 
-interface IItems {
+interface IItem {
   key: string
   name: string
   url: string
@@ -19,11 +19,11 @@ export default class Links extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  items: IItems[] = []
+  items: IItem[] = []
 
   getItems() {
     const o: ILink = this.$store.getters.getLinks
-    this.items = Object.keys(o).map((key: string, index: number, arr: any) => {
+    this.items = Object.keys(o).map((key: string) => {
       return {
         key,
         url: o[key].url,
@@ -40,13 +40,13 @@ export default class Links extends Vue {
     this.$popup.open('linkAdd')
     this.$electron.ipcRenderer.send('data-transfer', {
       target: 'popup-link-edit',
-      data: this.items.find((el: any) => el.key === key)
+      data: this.items.find((el: IItem) => el.key === key)
     })
   }
 
   protected async remove(key: string) {
     try {
-      await this.commandBus.do(new DeleteLinkCommand(key))
+      await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(key))
       this.items = this.items.filter(el => el.key !== key)
     } catch(e) {
       console.log(e)
@@ -54,11 +54,12 @@ export default class Links extends Vue {
   }
 
   async mounted() {
-    await this.queryBus.exec(new LinksQuery())
+    await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     this.getItems()
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('data-transfer', (event: any, data: any) => {
       if(data.target === 'links') {
-        this.commandBus.do(new UpdateLinksCommand(data.data))
+        this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(data.data))
         this.items.push(data.data)
       }
     })

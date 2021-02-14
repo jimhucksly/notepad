@@ -6,12 +6,7 @@ import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { SetJsonCommand, UploadFileCommand, UpdateJsonCommand } from '~/domain/commands'
-import { IFilters, IJson } from '~/domain/models'
-
-interface IUploadResponse {
-  filename: string
-  link: string
-}
+import { IFile, IFilters, IJson } from '~/domain/models'
 
 @Component({
   name: 'Notepad',
@@ -20,11 +15,13 @@ interface IUploadResponse {
   }
 })
 export default class Notepad extends Vue {
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
   message = ''
   newMsgFlag = false
   isRendered = false
 
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+  onScrollHandler: () => void = null
 
   get json(): IJson {
     return this.$store.getters.getJson
@@ -47,27 +44,28 @@ export default class Notepad extends Vue {
 
   @Watch('hasFilter')
   onHasFilterChanged(flag: boolean) {
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
     if(flag) {
-      const notepadCont: any = this.$refs.notepad_cont
       notepadCont.scrollTo(0, 0)
     } else {
       this.$nextTick(() => {
-        const notepadCont: any = this.$refs.notepad_cont
         notepadCont.scrollTop = notepadCont.scrollHeight
       })
     }
   }
 
   @Watch('isRendered')
-  onIsRenderedChange(v: boolean) {
+  onIsRenderedChange() {
     this.$nextTick(() => {
-      const notepadCont: any = this.$refs.notepad_cont
+      const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
     })
   }
 
-  protected send(): void | null {
-    if(!this.message.length) return null
+  protected send() {
+    if(!this.message.length) {
+      return
+    }
     this.newMsgFlag = true
     const { date, stamp } = now()
     const o: IJson = {
@@ -80,17 +78,20 @@ export default class Notepad extends Vue {
       }
     }
     this.message = ''
-    this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
+    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
     this.$nextTick(() => {
-      const notepadCont: any = this.$refs.notepad_cont
+      const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do(new UpdateJsonCommand(o))
+      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
     })
   }
 
-  protected onFileChange(e: any): void | null {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  protected onFileChange(e: any) {
     const files = e.target.files || e.dataTransfer.files
-    if(files.length === 0) return null
+    if(files.length === 0) {
+      return
+    }
     const formData = new FormData()
     formData.append('file', files[0])
     formData.set('file', files[0])
@@ -99,8 +100,8 @@ export default class Notepad extends Vue {
 
   protected async upload(file: FormData, fileType: string) {
     try {
-      const resp: IUploadResponse = await this.commandBus.do(new UploadFileCommand(file))
-      this.addFile(resp.filename, resp.link, fileType)
+      const resp = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
+      this.addFile(resp.name, resp.link, fileType)
     } catch(e) {
       console.error(e)
     }
@@ -122,20 +123,20 @@ export default class Notepad extends Vue {
         }
       }
     }
-    this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
+    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
     this.$nextTick(() => {
-      const notepadCont: any = this.$refs.notepad_cont
+      const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do(new UpdateJsonCommand(o))
+      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
     })
   }
 
   protected read() {
-    const self: any = this.$refs.notepad_cont
+    const self = this.$refs.notepad_cont as HTMLElement
     const rect = self.getBoundingClientRect()
     const viewportHeight = rect.top + rect.height
-    const unread = self.querySelectorAll('.unread')
-    unread.forEach((el: any, i: number) => {
+    const unread: NodeListOf<HTMLElement> = self.querySelectorAll('.unread')
+    unread.forEach((el: HTMLElement) => {
       const elRect = el.getBoundingClientRect()
       if(elRect.top < viewportHeight) {
         if(!el.classList.contains('.will-be-marked')) {
@@ -158,13 +159,16 @@ export default class Notepad extends Vue {
   }
 
   mounted() {
-    const notepadCont: any = this.$refs.notepad_cont
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
+    this.onScrollHandler = this.read.bind(this)
+    notepadCont.addEventListener('scroll', this.onScrollHandler)
+
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
-
     window.ondragstart = () => false
+  }
 
-    notepadCont.addEventListener('scroll', (_: any) => {
-      this.read()
-    })
+  beforeDestroy() {
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
+    notepadCont.removeEventListener('scroll', this.onScrollHandler)
   }
 }

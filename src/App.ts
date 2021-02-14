@@ -11,6 +11,7 @@ import { _container } from '~/domain/container'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 import { NavigateCommand } from '~/domain/commands/nav.command'
 import { CreateElement, VNode } from 'vue'
+import { IJson } from './domain/models'
 
 @Component({
   name: 'App',
@@ -36,18 +37,18 @@ export default class App extends Vue {
   mounted() {
     this.$store.dispatch('isDevelopment', process.env.NODE_ENV === 'development')
     this.$electron.ipcRenderer.on('preferences-show', () => {
-      this.commandBus.do(new NavigateCommand('preferences'))
+      this.commandBus.do<NavigateCommand, void>(new NavigateCommand('preferences'))
     })
     this.$electron.ipcRenderer.on('reload', async () => {
-      this.commandBus.do(new LoadingCommand(true))
+      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
       await Promise.all([
-        this.queryBus.exec(new JsonQuery()),
-        this.queryBus.exec(new LibraryQuery())
+        this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+        this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
       ])
-      this.commandBus.do(new LoadingCommand(false))
+      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
     })
     this.$electron.ipcRenderer.on('sign-out', () => {
-      this.commandBus.do(new AuthCommand(false))
+      this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
       this.$store.dispatch('token', null)
       const userDataPath = this.$store.getters.getUserDataPath
       storage.set(userDataPath, userDataFileName, { token: '' })

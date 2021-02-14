@@ -1,6 +1,7 @@
 import { VueConstructor } from 'vue/types'
 const anime = require('animejs')
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Anime = function _anime(options: any) {
   if(!options) options = {}
 }
@@ -10,12 +11,11 @@ function install(Constructor: VueConstructor) {
     el.style.overflow = 'hidden'
     el.style.display = 'block'
     el.style.visibility = 'hidden'
-    const h = el.offsetHeight
     el.style.height = '0px'
     el.style.visibility = 'visible'
     anime({
       targets: el,
-      height: h,
+      height: el.offsetHeight,
       easing: 'linear',
       duration: duration,
       complete() {

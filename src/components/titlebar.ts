@@ -11,6 +11,7 @@ import {
   EventsQuery,
   LinksQuery
 } from '~/domain/queries'
+import { IEvent, IJson, ILink } from '~/domain/models'
 
 @Component({
   name: 'Titlebar'
@@ -29,31 +30,32 @@ export default class Titlebar extends Vue {
   }
 
   protected async reload() {
-    this.commandBus.do(new LoadingCommand(true))
+    this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
     await Promise.all([
-      this.queryBus.exec(new JsonQuery()),
-      this.queryBus.exec(new LibraryQuery()),
-      this.queryBus.exec(new EventsQuery()),
-      this.queryBus.exec(new LinksQuery())
+      this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+      this.queryBus.exec<LibraryQuery, string>(new LibraryQuery()),
+      this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
+      this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     ])
     setTimeout(() => {
-      this.commandBus.do(new LoadingCommand(false))
+      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
     }, 1500)
   }
 
   mounted() {
     this.$electron.ipcRenderer.send('get-window-title')
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('set-window-title', (e: any, title: string) => {
       this.title = title
     })
     if(document && document.getElementById) {
       const menuBtn = document.getElementById('menu-button')
-      menuBtn && menuBtn.addEventListener('click', (event) => {
+      menuBtn && menuBtn.addEventListener('click', () => {
         this.$electron.ipcRenderer.send('menu-popup')
       })
 
       const minimizeBtn = document.getElementById('minimize-button')
-      minimizeBtn && minimizeBtn.addEventListener('click', (e) => {
+      minimizeBtn && minimizeBtn.addEventListener('click', () => {
         this.$electron.ipcRenderer.send('minimize')
       })
 
@@ -63,7 +65,7 @@ export default class Titlebar extends Vue {
       })
 
       const closebtn = document.getElementById('close-button')
-      closebtn && closebtn.addEventListener('click', (e) => {
+      closebtn && closebtn.addEventListener('click', () => {
         this.$electron.ipcRenderer.send('hide')
       })
     }

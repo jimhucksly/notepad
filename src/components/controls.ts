@@ -17,16 +17,11 @@ import {
 })
 
 export default class Controls extends Vue {
-  @Prop({ type: String, default: '' })
-  readonly itemKey!: string
-
-  @Prop({ type: Boolean, default: false })
-  isLock!: false
-
-  @Prop({ type: Array, default: () => [] })
-  readonly collection!: string[]
-
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Prop({ type: String, default: '' }) readonly itemKey: string
+  @Prop({ type: Boolean, default: false }) isLock: false
+  @Prop() readonly collection: string[]
 
   editableItems: string[] = []
 
@@ -106,9 +101,9 @@ export default class Controls extends Vue {
             message: checkLinks(value)
           }
         }
-        this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
+        this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
         this.$nextTick(() => {
-          this.commandBus.do(new UpdateJsonCommand(o))
+          this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
         })
       }
     }
@@ -118,9 +113,9 @@ export default class Controls extends Vue {
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
     unset(buffFilter, stamp)
-    this.commandBus.do(new SetJsonCommand(buffJson))
-    this.commandBus.do(new SetFilterCommand(buffFilter))
-    this.commandBus.do(new DeleteProjectCommand(stamp))
+    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
+    this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand(buffFilter))
+    this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
   protected remove(stamp: string) {
     if(this.isLock) {

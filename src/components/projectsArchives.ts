@@ -36,7 +36,9 @@ export default class ProjectsArchives extends Vue {
   protected async restore(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
-      const html: string = await this.commandBus.do(new ArchiveRestoreCommand(name))
+      const html: string = await this.commandBus.do<ArchiveRestoreCommand, string>(
+        new ArchiveRestoreCommand(name)
+      )
       if(html) {
         const { date, stamp } = now()
         const json: IJson = {
@@ -48,8 +50,8 @@ export default class ProjectsArchives extends Vue {
             message: html
           }
         }
-        this.commandBus.do(new SetJsonCommand({ ...this.json, ...json }))
-        await this.commandBus.do(new UpdateJsonCommand(json))
+        this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...json }))
+        await this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(json))
         this.remove(o)
       }
     } catch(e) {
@@ -60,11 +62,11 @@ export default class ProjectsArchives extends Vue {
   protected async remove(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
-      await this.commandBus.do(new ArchiveRemoveCommand(name))
+      await this.commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(name))
       const arr = this.items.filter((e: IArchive) => {
         return e.name !== o.name
       })
-      this.commandBus.do(new SetArchivesCommand(arr))
+      this.commandBus.do<SetArchivesCommand, void>(new SetArchivesCommand(arr))
     } catch(e) {
       console.log(e)
     }

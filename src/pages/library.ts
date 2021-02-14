@@ -9,6 +9,7 @@ import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { SetTreeCommand, UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryQuery } from '~/domain/queries'
+import { CreateElement, VNode } from 'vue'
 
 interface ITree {
   children: ITree[]
@@ -17,9 +18,23 @@ interface ITree {
   id: string
 }
 
-/* tslint-disable object-literal-shorthand */
+interface ILinkedDoc {
+  lines: Array<{ text: string }>
+  children: Array<ILinkedDoc>
+}
+
+interface IToolbarItem {
+  name: string
+  action: () => void
+}
+
+interface SimpleMDEExt extends SimpleMDE {
+  togglePreviewHandler?: (callback?: (isActive: boolean) => void) => void
+  toolbar?: IToolbarItem[]
+}
+
 Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
-  value(cb: (arg: any) => void) {
+  value(cb: (arg: boolean) => void) {
     this.togglePreview()
     setTimeout(() => {
       if(cb instanceof Function) {
@@ -29,11 +44,11 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
   }
 })
 
-Object.defineProperty(SimpleMDE.prototype, 'saveContent', {
-  value() {
-    this.saveContentHandler()
-  }
-})
+// Object.defineProperty(SimpleMDE.prototype, 'saveContent', {
+//   value() {
+//     this.saveContentHandler()
+//   }
+// })
 
 // let autosaveTimeout = null
 
@@ -69,7 +84,7 @@ md.use(MarkdownItAnchor, {
   permalinkBefore: false
 })
 
-const config: any = {
+const config = {
   autofocus: true,
   toolbar: [
     'bold', 'italic', 'heading', '|',
@@ -119,7 +134,7 @@ export default class Library extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  editor: any = null
+  editor: SimpleMDEExt = null
   isRendered = false
   links: string[] = []
 
@@ -136,7 +151,7 @@ export default class Library extends Vue {
   protected buildTree() {
     const tree: ITree[] = []
     let index = -1
-    nodes.forEach((item: any) => {
+    nodes.forEach(item => {
       const node = document.getElementById(item.slug)
       if(node) {
         const level = +node.tagName.slice(-1)
@@ -154,21 +169,24 @@ export default class Library extends Vue {
         }
       }
     })
-    this.commandBus.do(new SetTreeCommand([...cloneDeep(tree)]))
+    this.commandBus.do<SetTreeCommand, void>(new SetTreeCommand([...cloneDeep(tree)]))
   }
 
   mounted() {
     const editor = document.getElementById('editor')
     if(editor) {
       const editorElement = document.getElementById('editor')
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const conf: any = {
         ...config
       }
-      if(editorElement) conf.element = editorElement
+      if(editorElement) {
+        conf.element = editorElement
+      }
       this.editor = new SimpleMDE(conf)
       this.editor.value(this.initialValue)
       this.editor.togglePreviewHandler()
-      const toolbarItemPreview = this.editor.toolbar.find((item: any) => item.name === 'preview')
+      const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
       if(toolbarItemPreview) {
         toolbarItemPreview.action = () => {
           this.editor.togglePreviewHandler((isActive: boolean) => {
@@ -176,13 +194,15 @@ export default class Library extends Vue {
           })
         }
       }
-      const toolbarItemSave = this.editor.toolbar.find((item: any) => item.name === 'save')
+      const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
       if(toolbarItemSave) {
         toolbarItemSave.action = () => {
-          const sRequest = this.commandBus.do(new UpdateLibraryCommand(this.editor.value()))
+          const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
+            new UpdateLibraryCommand(this.editor.value())
+          )
           Promise
             .all([sRequest])
-            .then((data: any) => {
+            .then(() => {
               const statusBar = document.querySelector('.editor-statusbar')
               if(statusBar) {
                 const savedSatus = statusBar.querySelector('.saved-status')
@@ -200,22 +220,20 @@ export default class Library extends Vue {
       }
       this.buildTree()
       this.isRendered = true
-      const cm: any = this.editor.codemirror
-      const doc: any = cm.getDoc()
+      const doc = this.editor.codemirror.getDoc()
       const count = doc.lineCount()
-      const linkedDoc = doc.linkedDoc({
+      const linkedDoc: ILinkedDoc = doc.linkedDoc({
         from: 0,
         to: count
       })
 
-      const result: any = []
+      const result: string[] = []
 
-      const linked = (o: any) => {
+      const linked = (o: ILinkedDoc) => {
         if(o.children) {
-          const arr = o.children
-          arr.forEach((item: any) => {
+          o.children.forEach(item => {
             if(item.lines) {
-              item.lines.forEach((line: any) => {
+              item.lines.forEach(line => {
                 result.push(line.text)
               })
             }
@@ -228,6 +246,7 @@ export default class Library extends Vue {
       linked(linkedDoc)
       this.links = result
 
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       this.$electron.ipcRenderer.on('codemirror-link-click', (event: any, text: string) => {
         let scrolling = false
         this.links.forEach((link: string, index: number): void | null => {
@@ -246,15 +265,15 @@ export default class Library extends Vue {
   }
 
   beforeDestroy() {
-    this.commandBus.do(new SetTreeCommand([]))
-    this.commandBus.do(new UpdateLibraryCommand(this.editor.value()))
+    this.commandBus.do<SetTreeCommand, void>(new SetTreeCommand([]))
+    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(this.editor.value()))
   }
 
   created() {
-    this.queryBus.exec(new LibraryQuery())
+    this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
   }
 
-  render(h: any) {
+  render(h: CreateElement): VNode {
     return h(
       'div',
       {

@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import BCalendar from '~/modules/calendar'
+import BCalendar, { IBCalendar } from '~/modules/calendar'
 import { debounce } from 'lodash'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
@@ -22,6 +22,11 @@ interface ISelected {
   title: string
 }
 
+interface IFilteredItem {
+  key: string
+  title: string
+}
+
 @Component({
   name: 'Events'
 })
@@ -38,7 +43,7 @@ export default class Events extends Vue {
 
   protected header = ''
   protected search = ''
-  protected itemsFiltered: any = []
+  protected itemsFiltered: Array<IFilteredItem> = []
 
   get items() {
     return this.$store.getters.getEvents
@@ -50,17 +55,19 @@ export default class Events extends Vue {
       ...this.bCalendarOptions,
       items: o
     }
-    const elems = document.querySelectorAll('.processing[data-current]')
+    const elems: NodeListOf<Element> = document.querySelectorAll('.processing[data-current]')
     if(elems && elems.length) {
-      elems.forEach((el: any) => {
+      elems.forEach(el => {
         el.classList.remove('processing')
       })
     }
   }
 
-  private readonly debounced = debounce((v: string, context: any): void | null => {
+  private readonly debounced = debounce((v: string, context: Events): void => {
     context.itemsFiltered = []
-    if(!v) return null
+    if(!v) {
+      return
+    }
     Object.keys(context.bCalendarOptions.items).forEach((key: string) => {
       const title = context.bCalendarOptions.items[key].title.toLowerCase()
       const content = context.bCalendarOptions.items[key].content.toLowerCase()
@@ -72,12 +79,12 @@ export default class Events extends Vue {
       }
       if(context.itemsFiltered.length === 0) {
         context.itemsFiltered.push({
-          key: 0,
+          key: '0',
           title: 'Nothing to show'
         })
       }
       document.onkeydown = (e) => {
-        if(e.keyCode === 27 || e.code === 'Escape') {
+        if(e.code === 'Escape') {
           context.itemsFiltered = []
           context.search = ''
           document.onclick = null
@@ -86,7 +93,7 @@ export default class Events extends Vue {
       }
       document.onclick = (e) => {
         e.preventDefault()
-        const el: any = e.target
+        const el = e.target as HTMLElement
         if(el.closest('.events__search') === null) {
           context.itemsFiltered = []
           context.search = ''
@@ -101,15 +108,15 @@ export default class Events extends Vue {
   }
 
   protected prev() {
-    const elem: any = this.$refs.calendar
+    const elem = this.$refs.calendar as IBCalendar
     elem.prevMonth()
   }
   protected next() {
-    const elem: any = this.$refs.calendar
+    const elem = this.$refs.calendar as IBCalendar
     elem.nextMonth()
   }
   protected today() {
-    const elem: any = this.$refs.calendar
+    const elem = this.$refs.calendar as IBCalendar
     elem.setToday()
   }
 
@@ -118,7 +125,7 @@ export default class Events extends Vue {
     if(elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do(new UpdateEventCommand(event))
+    await this.commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
   }
 
   protected async remove(date: string) {
@@ -126,7 +133,7 @@ export default class Events extends Vue {
     if(elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do(new DeleteEventCommand(date))
+    await this.commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
   }
 
   protected itemSelected(item: ISelected): void | null {
@@ -141,7 +148,7 @@ export default class Events extends Vue {
     }
   }
 
-  async mounted() {
-    await this.queryBus.exec(new EventsQuery())
+  mounted() {
+    this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
   }
 }

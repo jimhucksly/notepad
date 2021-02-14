@@ -1,5 +1,6 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { debounce } from 'lodash'
+import { CreateElement, VNode } from 'vue'
 
 const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
@@ -8,6 +9,12 @@ require('brace/theme/twilight')
 const JSONFormatter = require('json-formatter-js')
 const fs = require('fs')
 
+interface IEditor {
+  getValue: () => string
+  on: (event: string, callback: () => void) => void
+  setValue: (value: string) => void
+}
+
 @Component({
   name: 'JsonViewer',
   components: {
@@ -15,21 +22,21 @@ const fs = require('fs')
   }
 })
 export default class JsonViewer extends Vue {
-  editor: any = null
+  editor: IEditor = null
   content = ''
 
-  protected editorInit(instance: any) {
+  protected editorInit(instance: IEditor) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
 
-    const debounced = debounce((): void | null => {
+    const debounced = debounce(() => {
       const value = instance.getValue()
       if(!value.length) {
         if(res) {
           res.innerHTML = ''
         }
-        return null
+        return
       }
-      let json: any = {}
+      let json: Record<string, unknown> = null
       try {
         json = JSON.parse(value)
         if(window.localStorage) {
@@ -61,14 +68,13 @@ export default class JsonViewer extends Vue {
     this.editor = instance
   }
 
-  protected drag(event?: any): void | null {
+  protected drag(event?: MouseEvent): void {
     const src: HTMLElement | null = document.querySelector('.json_viewer_src')
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
     const container = document.querySelector('.json_viewer_cont')
 
-    if(event.which !== 1) {
-      // если клик правой кнопкой мыши
-      return null // то он не запускает перенос
+    if(event.button !== 0) {
+      return
     }
     const startX = event.screenX
     const minW = 17
@@ -77,7 +83,7 @@ export default class JsonViewer extends Vue {
       const srcW = src.clientWidth
       const resW = res.clientWidth
       const contW = container.clientWidth
-      document.onmousemove = (e: any) => {
+      document.onmousemove = (e: MouseEvent) => {
         if(e.screenX < startX) {
           const w: number = srcW - (startX - e.screenX)
           const p: number = w * 100 / contW
@@ -90,7 +96,7 @@ export default class JsonViewer extends Vue {
         }
         if(e.screenX > startX) {
           const w: number = resW - (e.screenX - startX)
-          const p: number = w * 100 / contW
+          const p = w * 100 / contW
           if(p > minW) {
             res.style.maxWidth = p + '%'
             res.style.minWidth = p + '%'
@@ -103,7 +109,7 @@ export default class JsonViewer extends Vue {
         res.classList.add('non-selectable')
       }
 
-      document.onmouseup = (e: any) => {
+      document.onmouseup = () => {
         document.onmousemove = null
         document.onmouseup = null
         src.classList.remove('non-selectable')
@@ -113,8 +119,9 @@ export default class JsonViewer extends Vue {
   }
 
   mounted() {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('json-viewer-src-set', (_: any, value: any) => {
-      let json: any = {}
+      let json: Record<string, unknown> = null
       try {
         json = JSON.parse(value)
         this.editor.setValue(JSON.stringify(json, null, 2))
@@ -122,9 +129,11 @@ export default class JsonViewer extends Vue {
         this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
       }
     })
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('json-viewer-save', (_: any, fileName: string) => {
       fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
     })
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('json-viewer-clear', (_: any) => {
       this.editor.setValue('')
       const res: HTMLElement | null = document.querySelector('.json_viewer_res')
@@ -138,7 +147,7 @@ export default class JsonViewer extends Vue {
 
     if(window.localStorage) {
       const value = localStorage.getItem('json_viewer')
-      let json: any = {}
+      let json: Record<string, unknown> = null
       if(value) {
         try {
           json = JSON.parse(value)
@@ -150,7 +159,7 @@ export default class JsonViewer extends Vue {
     }
   }
 
-  render(h: any) {
+  render(h: CreateElement): VNode {
     return h(
       'div',
       {
@@ -176,10 +185,10 @@ export default class JsonViewer extends Vue {
                   height: '100%'
                 },
                 on: {
-                  init: (event: any) => {
-                    this.editorInit(event)
+                  init: (instance: IEditor) => {
+                    this.editorInit(instance)
                   },
-                  input: (value: any) => {
+                  input: (value: string) => {
                     this.$emit('input', value)
                   }
                 }
@@ -190,7 +199,7 @@ export default class JsonViewer extends Vue {
               {
                 staticClass: 'json_viewer_separator',
                 on: {
-                  mousedown: (event: any) => {
+                  mousedown: (event: MouseEvent) => {
                     this.drag(event)
                   }
                 }

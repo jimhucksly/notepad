@@ -3,6 +3,7 @@ import { upperFirst } from '~/helpers'
 import { IRootState, IJson, IFilters, IEvents } from '~/domain/models'
 
 interface IMutations {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (state: IRootState, data: any) => void
 }
 

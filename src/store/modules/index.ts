@@ -30,6 +30,7 @@ const stateItems: string[] = [
   'component'
 ]
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const files = (require as any).context('.', false, /\.ts$/)
 const modules = {}
 

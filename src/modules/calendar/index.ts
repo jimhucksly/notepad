@@ -35,6 +35,7 @@ export interface IOptions {
   labelFormat: string // '... %DATA% ...'
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function isDate(date: any): boolean {
   return date instanceof Date
 }
@@ -108,8 +109,16 @@ export const defaults: IOptions = {
   labelFormat: '' // '... %DATA% ...'
 }
 
-const Calendar = function calendar(options: IOptions) {
-  if(!options) (options as any) = {}
+const Calendar = function calendar(options: Record<string, unknown>) {
+  if(!options) {
+    options = {}
+  }
+}
+
+export interface IBCalendar extends Vue {
+  prevMonth: () => void
+  nextMonth: () => void
+  setToday: () => void
 }
 
 @Component({
@@ -186,10 +195,16 @@ class BCalendarComponent extends Vue {
         return
       }
       if(this.range.length === 1) {
-        let r1: any = getNativeDate(this.range[0])
-        r1 && (r1 = r1.getTime())
-        let d: any = getNativeDate(date)
-        d && (d = d.getTime())
+        const date1 = getNativeDate(this.range[0])
+        let r1: number
+        if(date1) {
+          r1 = date1.getTime()
+        }
+        const date2 = getNativeDate(date)
+        let d: number
+        if(date2) {
+          d = date2.getTime()
+        }
         if(d && r1) {
           if(d < r1) this.range.unshift(date)
           else this.range.push(date)
@@ -197,12 +212,21 @@ class BCalendarComponent extends Vue {
         return
       }
       if(this.range.length === 2) {
-        let r1: any = getNativeDate(this.range[0])
-        r1 && (r1 = r1.getTime())
-        let r2: any = getNativeDate(this.range[1])
-        r2 && (r2 = r2.getTime())
-        let d: any = getNativeDate(date)
-        d && (d = d.getTime())
+        const date1 = getNativeDate(this.range[0])
+        let r1: number
+        if(date1) {
+          r1 = date1.getTime()
+        }
+        const date2 = getNativeDate(this.range[1])
+        let r2: number
+        if(date2) {
+          r2 = date2.getTime()
+        }
+        const date3 = getNativeDate(date)
+        let d: number
+        if(date3) {
+          d = date3.getTime()
+        }
         if(d && r1 && r2) {
           if(d < r1) {
             this.range = this.range.slice(1)
@@ -277,13 +301,13 @@ class BCalendarComponent extends Vue {
 
   public setMonth(instanceId: number, index: number) {
     if(instanceId === 1) {
-      const date: any = getNativeDate(this.date1.toString())
+      const date: Date = getNativeDate(this.date1.toString())
       if(date) {
         this.op.setDate = new Date(date.setMonth(index)).toString()
       }
     }
     if(instanceId === 2) {
-      const date: any = getNativeDate(this.date1.toString())
+      const date: Date = getNativeDate(this.date1.toString())
       if(date) {
         if(index === 0) {
           date.setFullYear(date.getFullYear() - 1)
@@ -295,7 +319,7 @@ class BCalendarComponent extends Vue {
   }
 
   public setYear(year: number) {
-    const date: any = getNativeDate(this.date1.toString())
+    const date: Date = getNativeDate(this.date1.toString())
     if(date) {
       this.op.setDate = new Date(date.setFullYear(year)).toString()
     }
@@ -402,7 +426,7 @@ class BCalendarComponent extends Vue {
                 },
                 on: {
                   input: (e: MouseEvent) => {
-                    this.event.title = (e.target as any).value
+                    this.event.title = (e.target as HTMLInputElement).value
                   }
                 }
               }
@@ -430,7 +454,7 @@ class BCalendarComponent extends Vue {
                 },
                 on: {
                   input: (e: MouseEvent) => {
-                    this.event.content = (e.target as any).value
+                    this.event.content = (e.target as HTMLInputElement).value
                   }
                 }
               }

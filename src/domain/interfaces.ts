@@ -3,13 +3,13 @@ export interface IQueryBus {
 }
 
 export interface ICommandBus {
-  do<ICommand>(command: ICommand): any
+  do<TCommand, TResult>(command: TCommand): Promise<TResult>
 }
 
-export interface ICommand {
-  do<TCommand>(command: TCommand): any
+export interface ICommand<TResult> {
+  do<TCommand>(command: TCommand): TResult
 }
 
-export interface IQuery {
-  exec<TQuery>(query: TQuery): any
+export interface IQuery<TResult> {
+  exec<TQuery>(query: TQuery): Promise<TResult>
 }

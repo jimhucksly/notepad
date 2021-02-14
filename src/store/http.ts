@@ -1,24 +1,31 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { API_URL } from '~/constants'
 import { uploadingFile } from '~/helpers'
 import store from '~/store'
-import { IJsonHeaders } from '~/domain/models'
+import { IJsonHeaders, IResponse } from '~/domain/models'
 
-let interval: any = null
+let interval: NodeJS.Timeout | null = null
 
 class Http {
-  public async get(action: string, headers: IJsonHeaders): Promise<any> {
+  public async get<TResponse>(
+    action: string, headers: IJsonHeaders
+  ): Promise<IResponse<TResponse>> {
     const query = `action=${action}`
-    const resp: any = await axios.get(API_URL + '?' + query, headers)
-    if(resp instanceof Error) {
+    const resp: AxiosResponse<IResponse<TResponse>> = await axios.get(API_URL + '?' + query, headers)
+    if(resp.status === 204) {
+      return Promise.resolve(void 0)
+    }
+    if(!resp || !resp.data || resp instanceof Error) {
       return Promise.reject(resp)
     }
-    return resp
+    return resp.data
   }
 
-  public async post(action: string, data: any, headers: IJsonHeaders) {
+  public async post<TPayload, TResponse>(
+    action: string, data: TPayload, headers: IJsonHeaders
+  ): Promise<IResponse<TResponse>> {
     const query = `action=${action}`
-    let resp: any
+    let resp: AxiosResponse<IResponse<TResponse>>
     if(action === 'FILE') {
       const config = {
         ...headers,
@@ -38,7 +45,7 @@ class Http {
               this.post(action, data, headers)
             }, 2000)
           }
-          return null
+          return Promise.reject()
         } else {
           interval && clearInterval(interval)
           return e.response.data
@@ -47,7 +54,7 @@ class Http {
     }
     store.dispatch('error', false)
     interval && clearInterval(interval)
-    return resp.data ? resp.data : resp
+    return resp.data
   }
 }
 

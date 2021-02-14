@@ -12,11 +12,11 @@ export default class SidebarTreeComponent extends Vue {
   @Prop() tree!: ITreeItem[]
   @Prop({ default: 1 }) level!: number
 
-  protected selectNode(item: any) {
+  protected selectNode(item: ITreeItem) {
     this.$electron.ipcRenderer.send('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor-preview')
     if(editor) {
-      const link: any = editor.querySelector(`a[href*=${item.slug}]`)
+      const link: HTMLAnchorElement | null = editor.querySelector(`a[href*=${item.slug}]`)
       link && link.click()
       if(item.children && item.children.length) {
         const node = this.$refs[item.id][0]

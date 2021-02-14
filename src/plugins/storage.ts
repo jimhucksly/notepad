@@ -4,23 +4,23 @@ import { isJSON } from '~/helpers'
 
 const debug = false
 
-class Storage {
-  public isPathExists(_path: string): Promise<any> {
+export default class Storage {
+  static isPathExists(_path: string): Promise<boolean> {
     debug && console.log('isPathExists: call!')
     return new Promise((resolve, reject) => {
       debug && console.log('isPathExists: body of promise')
       try {
         fs.statSync(_path)
         debug && console.log('isPathExists: resolved!')
-        return resolve()
+        return resolve(true)
       } catch(e) {
         debug && console.log('isPathExists: rejected!')
-        return reject(e)
+        return reject(false)
       }
     })
   }
 
-  public isFileExists(_path: string, _file?: string): Promise<any> {
+  static isFileExists(_path: string, _file?: string): Promise<boolean> {
     debug && console.log('call isFileExists')
     debug && console.log('_path: ', _path)
     debug && console.log('_file: ', _file)
@@ -34,35 +34,36 @@ class Storage {
         fs.statSync(filePath)
         debug && console.log('fs.stat callback exec!!!!!')
         debug && console.log('isFileExists: resolved!')
-        return resolve({})
+        return resolve(true)
       } catch(e) {
         debug && console.log('isFileExists: rejected!')
-        return reject(null)
+        return reject(false)
       }
     })
   }
 
-  public append(_path: string, fileName: string, json: any): Promise<any> {
+  static append<T>(_path: string, fileName: string, json: T): Promise<void> {
     return new Promise((resolve, reject) => {
       const fullPath = path.resolve(_path, fileName)
       this.isFileExists(fullPath)
         .then(() => {
-          let targetJson: any = fs.readFileSync(fullPath, 'utf8')
+          const oldVal: string = fs.readFileSync(fullPath, 'utf8')
+          let oldJson: T | Record<string, unknown>
           try {
-            targetJson = JSON.parse(targetJson)
+            oldJson = JSON.parse(oldVal)
           } catch(e) {
-            targetJson = {}
+            oldJson = {}
           }
-          const data = { ...targetJson, ...json }
+          const data = { ...oldJson, ...json }
           this.set(_path, fileName, data)
         })
         .catch(() => {
-          this.set(_path, fileName, json)
+          this.set<T>(_path, fileName, json)
         })
     })
   }
 
-  public set(_path: string, fileName: string, json: any): Promise<any> {
+  static set<T>(_path: string, fileName: string, json: T): Promise<void> {
     return new Promise(async (resolve, reject) => {
       let data
       try {
@@ -83,14 +84,14 @@ class Storage {
       }
       try {
         fs.writeFileSync(fullPath, data)
-        resolve()
+        resolve(void 0)
       } catch(err) {
         reject(err)
       }
     })
   }
 
-  public get(_path: string, _file: string, key?: string): Promise<any> {
+  static get<T>(_path: string, _file: string, key?: string): Promise<T> {
     debug && console.log('call storage.get')
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
@@ -118,7 +119,7 @@ class Storage {
     })
   }
 
-  public createFile(_path: string, _file: string) {
+  static createFile(_path: string, _file: string) {
     debug && console.log('call storage.createFile')
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
@@ -126,19 +127,16 @@ class Storage {
       try {
         await this.isFileExists(fullPath)
         debug && console.log('file exists!!!!!')
-        resolve()
+        resolve(void 0)
       } catch(e) {
         fs.writeFile(fullPath, '{}', (err) => {
           if(err) {
             reject(new Error(`file ${fullPath} not found`))
           }
           debug && console.log('file created')
-          resolve()
+          resolve(void 0)
         })
       }
     })
   }
 }
-
-const instance = new Storage()
-export default instance

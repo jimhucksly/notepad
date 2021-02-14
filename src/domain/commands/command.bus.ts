@@ -11,14 +11,14 @@ class CommandBus implements ICommandBus {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  do(command: any) {
+  do<TCommand, TResult>(command: TCommand) {
     const actionName = Reflect.getMetadata(TYPES[command.constructor.name], CommandBus)
     if(actionName) {
       return this._store.dispatch(actionName, command)
     }
-    const handler: ICommand = this._container.get(TYPES[command.constructor.name])
+    const handler: ICommand<TResult> = this._container.get(TYPES[command.constructor.name])
     if(handler) {
-      return handler.do(command)
+      return handler.do<TCommand>(command)
     }
     return Promise.reject(`Не найден обработчик для команды: ${command.constructor.name}`)
   }
@@ -34,6 +34,7 @@ class CommandBus implements ICommandBus {
 export function Commandable(
   command: symbol
 ) {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     Reflect.defineMetadata(command, propertyKey, CommandBus)
   }

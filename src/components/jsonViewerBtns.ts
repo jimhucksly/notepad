@@ -19,6 +19,7 @@ export default class JsonViewerBtns extends Vue {
       element.click()
     }
 
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const readText = (filePath: any) => {
       let reader = null
       if(window.File && window.FileReader && window.FileList && window.Blob) {
@@ -29,6 +30,7 @@ export default class JsonViewerBtns extends Vue {
       }
       let output = ''
       if(filePath.files && filePath.files[0]) {
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         reader.onload = (e: any) => {
           output = e.target.result
           this.$electron.ipcRenderer.send('json-viewer-src-set', output)
@@ -43,7 +45,8 @@ export default class JsonViewerBtns extends Vue {
 
   protected save() {
     this.$electron.ipcRenderer.send('save-file-dialog', {})
-    this.$electron.ipcRenderer.on('save-dialog-file-selected', (e: any, file: any) => {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    this.$electron.ipcRenderer.on('save-dialog-file-selected', (e: any, file: { filePath: string }) => {
       if(file && file.filePath) {
         this.$electron.ipcRenderer.send('json-viewer-save', file.filePath)
       }

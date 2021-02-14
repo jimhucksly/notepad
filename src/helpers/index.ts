@@ -34,16 +34,16 @@ export const checkLinks = (message: string): string => {
 }
 
 export const now = (stamp?: string): { date: string, stamp: string } => {
-  let d
+  let d: Date
   if(stamp !== undefined) {
     d = new Date(stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6'))
   } else d = new Date()
-  const y: any = d.getFullYear()
-  let mon: any = d.getMonth()
-  let day: any = d.getDate()
-  let h: any = d.getHours()
-  let mm: any = d.getMinutes()
-  let s: any = d.getSeconds()
+  const y: string | number = d.getFullYear()
+  let mon: string | number = d.getMonth()
+  let day: string | number = d.getDate()
+  let h: string | number = d.getHours()
+  let mm: string | number = d.getMinutes()
+  let s: string | number = d.getSeconds()
 
   mon = (mon + 1) < 10 ? '0' + (mon + 1) : (mon + 1)
   day = day < 10 ? '0' + day : day
@@ -57,8 +57,9 @@ export const now = (stamp?: string): { date: string, stamp: string } => {
   }
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isJSON = (value: any): boolean => {
-  let json: any = ''
+  let json: Record<string, unknown>
   if(typeof value === 'string') {
     try {
       json = JSON.parse(value)
@@ -106,19 +107,19 @@ export const getFileType = (name: string): string => {
 export function dragAndDropLoader(
   DOMElementId: string,
   CSSClassHighlight: string,
-  Callback: (e: any) => any
+  Callback: (e: MouseEvent) => void
 ): void {
   const id = DOMElementId
   const cls = CSSClassHighlight
   const cb = Callback
 
-  const dropArea: HTMLElement | null = document.getElementById(id)
+  const dropArea = document.getElementById(id)
 
   if(dropArea) {
     if(!dropArea.style.position) {
       dropArea.style.position = 'relative'
     }
-    const overlay: HTMLElement = document.createElement('div')
+    const overlay = document.createElement('div')
     overlay.classList.add('drop-overlay')
     dropArea.appendChild(overlay)
 

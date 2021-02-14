@@ -1,3 +1,4 @@
+import { CreateElement } from 'vue'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { VNode } from 'vue/types/vnode'
 import {
@@ -30,7 +31,7 @@ class CalendarComponent extends Vue {
   get currentDate() {
     if(this.op.setDate && isDate(this.op.setDate)) {
       if(getNativeDate(this.op.setDate) instanceof Date) {
-        return new Date((getNativeDate(this.op.setDate) as Date))
+        return new Date(getNativeDate(this.op.setDate))
       }
     }
     return new Date()
@@ -318,19 +319,20 @@ class CalendarComponent extends Vue {
 
   public inRange(date: string): boolean {
     if(this.op.range && this.range.length === 2) {
-      let r1 = 0
-      let r2 = 0
-      const d1 = getNativeDate(this.range[0])
-      const d2 = getNativeDate(this.range[1])
-      if(d1 instanceof Date) {
-        r1 = d1.getTime()
+      const date1 = getNativeDate(this.range[0])
+      let r1: number
+      if(date1) {
+        r1 = date1.getTime()
       }
-      if(d2 instanceof Date) {
-        r2 = d2.getTime()
+      const date2 = getNativeDate(this.range[1])
+      let r2: number
+      if(date2) {
+        r2 = date2.getTime()
       }
-      let d: any = getNativeDate(date)
-      if(d instanceof Date) {
-        d = d.getTime()
+      const date3 = getNativeDate(date)
+      let d: number
+      if(date3) {
+        d = date3.getTime()
       }
       return d > r1 && d < r2
     }
@@ -338,18 +340,20 @@ class CalendarComponent extends Vue {
   }
 
   public inRangeHover(date: string): boolean {
-    let r1 = 0
-    const d1 = getNativeDate(this.range[0])
-    if(d1 instanceof Date) {
-      r1 = d1.getTime()
+    const date1 = getNativeDate(this.range[0])
+    let r1: number
+    if(date1) {
+      r1 = date1.getTime()
     }
-    let d: any = getNativeDate(date)
-    if(d instanceof Date) {
-      d = d.getTime()
+    const date2 = getNativeDate(date)
+    let d: number
+    if(date2) {
+      d = date2.getTime()
     }
-    let a: any = getNativeDate(this.active)
-    if(a instanceof Date) {
-      a = a.getTime()
+    const date3 = getNativeDate(this.active)
+    let a: number
+    if(date3) {
+      a = date3.getTime()
     }
     if(a > r1) {
       return d < a && d > r1
@@ -374,7 +378,7 @@ class CalendarComponent extends Vue {
     else this.fillHeader()
   }
 
-  render(h: typeof Vue.prototype.$createElement): VNode {
+  render(h: CreateElement): VNode {
     const back: VNode = h(
       'button',
       {
@@ -462,12 +466,14 @@ class CalendarComponent extends Vue {
                   'b-calendar__range-hover': this.inRangeHover(d.date)
                 },
                 on: {
-                  click: (e: MouseEvent) => {
+                  click: () => {
                     if(!d.isDisabled) {
                       this.daySelection(d.date)
                     }
                   },
-                  mouseover: () => this.$emit('active-date', d.date)
+                  mouseover: () => {
+                    this.$emit('active-date', d.date)
+                  }
                 }
               },
               this.op.eventsMode
@@ -492,7 +498,7 @@ class CalendarComponent extends Vue {
                     }
                   )
                 ]
-                : [h('span', {}, d.num)]
+                : [h('span', {}, `${d.num}`)]
             )
           })
         ]
@@ -531,7 +537,7 @@ class CalendarComponent extends Vue {
             click: (e: MouseEvent) => this.yearSelection(y)
           }
         },
-        y
+        `${y}`
       ))
     }
 

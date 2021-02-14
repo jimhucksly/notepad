@@ -2,8 +2,10 @@ import { VueConstructor, VNode } from 'vue/types'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import './bcheckbox.scss'
 
-const BCheckbox = function calendar(options: any) {
-  if(!options) options = {}
+const BCheckbox = function calendar(options: Record<string, unknown>) {
+  if(!options) {
+    options = {}
+  }
 }
 
 @Component

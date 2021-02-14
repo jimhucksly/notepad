@@ -1,6 +1,7 @@
 import { stateItems } from './index'
 import { IRootState } from '~/domain/models'
 
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const _state: any = {
   loading: true,
   isProjectsShow: true,

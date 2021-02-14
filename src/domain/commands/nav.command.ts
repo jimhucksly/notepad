@@ -9,8 +9,8 @@ export class NavigateCommand {
 }
 
 @injectable()
-export class NavigateCommandHandler implements ICommand {
-  interval: any
+export class NavigateCommandHandler implements ICommand<void> {
+  interval: NodeJS.Timeout
 
   constructor(
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
@@ -52,11 +52,9 @@ export class NavigateCommandHandler implements ICommand {
     return ''
   }
 
-  do<TCommand>(command: TCommand) {
+  do<NavigateCommand>(command: NavigateCommand): void {
     try {
-      const _command: any = {
-        ...command
-      }
+      const _command = (command as unknown) as Record<string, unknown>
       const page = _command.page
       if(page === 'goBack') {
         const previousPage = this._store.getters.getPreviousPage

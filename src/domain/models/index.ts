@@ -79,6 +79,24 @@ export interface IJsonHeaders {
   }
 }
 
+type TResponseStatus = 'success' | 'error'
+
+export interface IResponse<TData> {
+  status: TResponseStatus
+  token?: string
+  data?: TData
+  message?: string
+  messages?: Array<string>
+}
+
+export interface ICheckResponse {
+  json: string
+  md: string
+  events: string
+  links: string
+  todo: string
+}
+
 type TComponent = 'Preferences' | 'Projects' | 'Library' | 'Todo' | 'Events' | 'Links' | 'JsonViewer'
 
 export interface IRootState {
@@ -107,7 +125,7 @@ export interface IRootState {
   isEventsShow: boolean
   isJsonViewerShow: boolean
   isLinksShow: boolean
-  timeout: any
+  timeout: NodeJS.Timeout | null
   notification: boolean
   error: boolean
 }

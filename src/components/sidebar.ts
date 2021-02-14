@@ -73,7 +73,7 @@ export default class Sidebar extends Vue {
   @Watch('projectEditedItemKey')
   onProjectEditedItemKeyChanged(v: string) {
     if(!v) {
-      const cont: any = this.$refs.projects
+      const cont = this.$refs.projects as Projects
       cont.clearCheck()
     }
   }

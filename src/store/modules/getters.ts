@@ -41,6 +41,7 @@ const pages = [
 ]
 
 interface IGetters {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (state: IRootState) => any
 }
 

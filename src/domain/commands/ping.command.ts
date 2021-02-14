@@ -9,27 +9,24 @@ export class PingCommand {
 }
 
 @injectable()
-export class PingCommandHandler implements ICommand {
-  interval: any
+export class PingCommandHandler implements ICommand<void> {
+  interval: NodeJS.Timeout
 
   constructor(
     @inject(TYPES.Store) private readonly _store: Store<IRootState>,
     @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus
   ) {}
 
-  get isDev() {
+  get isDev(): boolean {
     return this._store.getters.getIsDevelopment
   }
 
-  do<TCommand>(command: TCommand) {
-    const _command: any = {
-      ...command
-    }
-
+  do<PingCommand>(command: PingCommand): void {
+    const _command = (command as unknown) as Record<string, unknown>
     if(!this.isDev) {
       if(_command.param) {
-        this.interval = setInterval(async () => {
-          const resp = await this._queryBus.exec(command)
+        this.interval = setInterval(async (): Promise<void> => {
+          const resp = await this._queryBus.exec<PingCommand, string>(command)
           if(resp) {
             this._store.dispatch('error', false)
           } else {

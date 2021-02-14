@@ -1,6 +1,6 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
-import { IFilters, IJson, IJsonItem } from '~/domain/models'
+import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
@@ -58,9 +58,9 @@ export default class ProjectsEditor extends Vue {
   }
 
   protected async archive() {
-    await this.commandBus.do(new ArchivingCommand(this.itemStamp))
+    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.itemStamp))
     this.removeHandler()
-    await this.queryBus.exec(new ArchivesQuery())
+    await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
   protected remove() {
@@ -75,9 +75,9 @@ export default class ProjectsEditor extends Vue {
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, this.itemStamp)
     unset(buffFilter, this.itemStamp)
-    this.commandBus.do(new SetJsonCommand(buffJson))
-    this.commandBus.do(new SetFilterCommand(buffFilter))
-    await this.commandBus.do(new DeleteProjectCommand(this.itemStamp))
+    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
+    this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand(buffFilter))
+    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.itemStamp))
     this.$emit('update:itemStamp', '')
   }
 
@@ -92,8 +92,8 @@ export default class ProjectsEditor extends Vue {
         file: this.item.file
       }
     }
-    this.commandBus.do(new SetJsonCommand({ ...this.json, ...o }))
-    await this.commandBus.do(new UpdateJsonCommand(o))
+    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+    await this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
     this.$emit('update:itemStamp', '')
   }
 

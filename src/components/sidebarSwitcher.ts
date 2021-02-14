@@ -57,20 +57,22 @@ export default class SidebarSwitcher extends Vue {
     }
   }
 
-  protected toggle(): any {
-    if(this.legend) return null
+  protected toggle() {
+    if(this.legend) {
+      return
+    }
     this.isExpand = !this.isExpand
     if(this.isExpand) {
       this.$emit('on-expand')
-      document.onclick = (e: any) => {
-        if(!e.target.closest('.switcher')) {
+      document.onclick = (e: MouseEvent) => {
+        if(!(e.target as HTMLElement).closest('.switcher')) {
           this.isExpand = !this.isExpand
           this.$emit('on-hide')
           document.onclick = null
         }
       }
-      document.onkeydown = (e) => {
-        if(e.keyCode === 27 || e.code === 'Escape') {
+      document.onkeydown = (e: KeyboardEvent) => {
+        if(e.code === 'Escape') {
           this.isExpand = !this.isExpand
           this.$emit('on-hide')
           document.onclick = null
@@ -85,7 +87,7 @@ export default class SidebarSwitcher extends Vue {
   }
 
   protected select(item: IMenu) {
-    this.commandBus.do<NavigateCommand>(new NavigateCommand(item.name))
+    this.commandBus.do<NavigateCommand, void>(new NavigateCommand(item.name))
     this.toggle()
   }
 }
