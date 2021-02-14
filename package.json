@@ -8,10 +8,7 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "dev": "node .electron-vue/dev-runner.js",
-    "build": "node .electron-vue/build.js && electron-builder -w",
-    "e2e": "npm run pack && mocha test/e2e",
-    "test": "npm run unit && npm run e2e",
-    "unit": "jest"
+    "build": "node .electron-vue/build.js && electron-builder -w"
   },
   "build": {
     "productName": "Notepad App",
@@ -55,22 +52,6 @@
       "icon": "build/icons"
     }
   },
-  "jest": {
-    "preset": "ts-jest",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest",
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
-    }
-  },
   "dependencies": {
     "@babel/cli": "^7.8.4",
     "@types/auto-launch": "^5.0.1",
@@ -110,7 +91,6 @@
     "@typescript-eslint/parser": "^4.6.1",
     "auto-launch": "^5.0.5",
     "babel-eslint": "^8.2.3",
-    "babel-jest": "^25.1.0",
     "babel-loader": "^8.2.2",
     "babel-register": "^6.26.0",
     "cfonts": "^2.1.2",
