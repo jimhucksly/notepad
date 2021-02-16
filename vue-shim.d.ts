@@ -3,6 +3,7 @@ import * as Vuex from 'vuex'
 import { RootState } from 'store/types'
 
 declare module '*.vue' {
+  import Vue from 'vue'
   export default Vue
 }
 

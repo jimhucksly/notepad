@@ -39,7 +39,7 @@ export default class Auth extends Vue {
     this.errors.pass = val.length > 0 ? 0 : 1
   }
 
-  protected validate(): boolean {
+  validate(): boolean {
     if(this.login.length === 0) {
       this.errors.login = 1
     }
@@ -49,7 +49,7 @@ export default class Auth extends Vue {
     return Object.keys(this.errors).map((key: string) => this.errors[key]).reduce((a, b) => a + b) === 0
   }
 
-  protected async submit() {
+  async submit() {
     if(this.validate()) {
       try {
         await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))

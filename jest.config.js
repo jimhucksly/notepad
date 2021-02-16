@@ -174,13 +174,13 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.js$": "babel-jest",
+    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
     // обработка файлов с расширением `*.vue` с помощью `vue-jest`
-    "^.+\\.vue$": "vue-jest",
+    "^.+\\.vue$": "<rootDir>/node_modules/vue-jest",
     // обработка файлов с расширением `*.ts` с помощью `ts-jest`
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest",
     // обработка файлов (vuetify|ngx-datatable) с расширеним `*.(css|sass|scss)` с помощью `jest-transform-stub`
-    "^.+\\.s?[a|c]ss$": "jest-transform-stub"
+    "^.+\\.s?[a|c]ss$": "<rootDir>/node_modules/jest-transform-stub"
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
