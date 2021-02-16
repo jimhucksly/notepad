@@ -1,0 +1,33 @@
+const stateKeys: string[] = [
+  'loading',
+  'isAuth',
+  'token',
+  'userDataPath',
+  'isDevelopment',
+  'json',
+  'archives',
+  'libraryData',
+  'todo',
+  'events',
+  'links',
+  'todo',
+  'mdTree',
+  'filter',
+  'isAboutPopupShow',
+  'isUploadingPopupShow',
+  'isLinkAddPopupShow',
+  'isPreferencesShow',
+  'isProjectsShow',
+  'isTodoShow',
+  'isLibraryShow',
+  'isEventsShow',
+  'isJsonViewerShow',
+  'isLinksShow',
+  'downloadsTargetPath',
+  'notification',
+  'error',
+  'previousPage',
+  'component'
+]
+
+export default stateKeys

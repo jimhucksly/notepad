@@ -1,45 +1,11 @@
-const stateItems: string[] = [
-  'loading',
-  'isAuth',
-  'token',
-  'userDataPath',
-  'isDevelopment',
-  'json',
-  'archives',
-  'libraryData',
-  'todo',
-  'events',
-  'links',
-  'todo',
-  'mdTree',
-  'filter',
-  'isAboutPopupShow',
-  'isUploadingPopupShow',
-  'isLinkAddPopupShow',
-  'isPreferencesShow',
-  'isProjectsShow',
-  'isTodoShow',
-  'isLibraryShow',
-  'isEventsShow',
-  'isJsonViewerShow',
-  'isLinksShow',
-  'downloadsTargetPath',
-  'notification',
-  'error',
-  'previousPage',
-  'component'
-]
+import actions from './actions'
+import getters from './getters'
+import mutations from './mutations'
+import state from './state'
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const files = (require as any).context('.', false, /\.ts$/)
-const modules = {}
-
-files.keys().forEach((key: string) => {
-  if(key === './index.js') return
-  modules[key.replace(/(\.\/|\.ts)/g, '')] = files(key).default
-})
-
-export default modules
-export {
-  stateItems
+export default {
+  actions,
+  getters,
+  mutations,
+  state
 }

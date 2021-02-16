@@ -1,4 +1,4 @@
-import { stateItems } from './index'
+import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
 import { IRootState, IJson, IFilters, IEvents } from '~/domain/models'
 
@@ -25,7 +25,7 @@ const _mutations: IMutations = {
   }
 }
 
-stateItems.forEach(key => {
+stateKeys.forEach(key => {
   const commitKey = 'set' + upperFirst(key)
 
   if(_mutations[commitKey] === undefined) {

@@ -1,4 +1,4 @@
-import { stateItems } from './index'
+import stateKeys from './stateKeys'
 import { IRootState } from '~/domain/models'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -13,7 +13,7 @@ const _state: any = {
   filter: {}
 }
 
-stateItems.forEach(key => {
+stateKeys.forEach(key => {
   if(_state[key] === undefined) {
     _state[key] = null
   }

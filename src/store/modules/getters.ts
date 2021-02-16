@@ -1,4 +1,4 @@
-import { stateItems } from './index'
+import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
 import { IMenu, IRootState } from '~/domain/models'
 
@@ -54,7 +54,7 @@ const getters: IGetters = {
   }
 }
 
-stateItems.forEach(key => {
+stateKeys.forEach(key => {
   const getterKey = 'get' + upperFirst(key)
   if(getters[getterKey] === undefined) {
     getters[getterKey] = state => {
