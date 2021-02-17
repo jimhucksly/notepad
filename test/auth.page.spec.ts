@@ -17,7 +17,7 @@ let wrapper: Wrapper<Auth>
 async function setupTest(props?: any) {
   try {
     let options = { sync: false, store, localVue }
-    if (props) {
+    if(props) {
       options = { ...options, ...props };
     }
     wrapper = mount(AuthTemplate, options);
@@ -27,49 +27,39 @@ async function setupTest(props?: any) {
   }
 }
 
+var scheduler = typeof setImmediate === 'function' ? setImmediate : setTimeout
+
 function flushPromises() {
-  return new Promise(resolve => {
-    setTimeout(resolve, 0)
-  });
+  return new Promise(function(resolve) {
+    scheduler(resolve, 0)
+  })
 }
 
 describe('Auth Page', async () => {
   beforeEach(async () => {
     await setupTest()
-    await flushPromises();
+    await flushPromises()
   });
 
-  it('correctly rendered', async () => {
+  it('correctly rendered', () => {
     expect(wrapper.attributes('id')).toBe('auth_cont')
   })
 
-  it('contain Login input', async () => {
+  it('contain Login input', () => {
     expect(wrapper.findComponent({ ref: 'login' }).exists()).toBe(true)
   })
 
-  it('contain Pasword input', async () => {
+  it('contain Pasword input', () => {
     expect(wrapper.findComponent({ ref: 'password' }).exists()).toBe(true)
   })
 
-  it('contain button', async () => {
+  it('contain button', () => {
     expect(wrapper.findComponent({ ref: 'button' }).exists()).toBe(true)
   })
 
-  it('errors is showing correctly when login or paswword is empty', () => {
+  it('errors is showing correctly when login or password is empty', () => {
     const button = wrapper.findComponent({ ref: 'button' })
     button.trigger('click')
-    const errors = wrapper.findAll('.form-label-error')
-    const result1 = errors.at(0).text() === 'Login is incorrect'
-    const result2 = errors.at(1).text() === 'Password is incorrect'
-    expect(result1 && result2).toBe(true)
-  })
-
-  it('display message if login or password is incorrect', async () => {
-    const login = wrapper.findComponent({ ref: 'login' })
-    const password = wrapper.findComponent({ ref: 'password' })
-    login.setValue('1')
-    password.setValue('1')
-    await wrapper.vm.submit()
     const errors = wrapper.findAll('.form-label-error')
     const result1 = errors.at(0).text() === 'Login is incorrect'
     const result2 = errors.at(1).text() === 'Password is incorrect'

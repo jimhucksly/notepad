@@ -6,7 +6,8 @@ import { _container } from '~/domain/container'
 import { PingCommand } from '~/domain/commands/ping.command'
 import { AuthCommand, LoadingCommand } from '~/domain/commands'
 import _ from 'lodash'
-import { IJson } from '~/domain/models'
+import { IJson, IResponse } from '~/domain/models'
+import { AxiosError } from 'axios'
 
 interface IErrors {
   login: number
@@ -63,16 +64,19 @@ export default class Auth extends Vue {
           this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
         }, 1500)
       } catch(e) {
-        const data = e.response && e.response.data ? e.response.data : (e.response || e)
-        if(data.messages && !_.isEmpty(data.messages)) {
-          this.errors = { ...data.messages }
-          this.errors.login = this.errors.login ? 1 : 0
-          this.errors.pass = this.errors.pass ? 1 : 0
-          this.validate()
-        } else {
-          console.error(e)
-        }
+        this.handleError(e)
       }
+    }
+  }
+
+  handleError(e: AxiosError<IResponse<void>>) {
+    const data = (e.response ? e.response.data : (e.response || e)) as IResponse<void>
+    if(data.messages && !_.isEmpty(data.messages)) {
+      this.errors.login = this.errors.login ? 1 : 0
+      this.errors.pass = this.errors.pass ? 1 : 0
+      this.validate()
+    } else {
+      console.error(e)
     }
   }
 

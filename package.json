@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "node .electron-vue/dev-runner.js",
     "build": "node .electron-vue/build.js && electron-builder -w",
-    "test": "cross-env NODE_ENV=test DEBUG_MODE=0 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest"
+    "test": "cross-env NODE_ENV=test DEBUG_MODE=1 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest"
   },
   "build": {
     "productName": "Notepad App",
@@ -127,6 +127,7 @@
     "inversify": "^5.0.1",
     "jest": "^26.6.3",
     "jest-electron": "^0.1.11",
+    "jest-mock-axios": "^4.3.0",
     "jest-transform-stub": "^2.0.0",
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "0.4.0",
