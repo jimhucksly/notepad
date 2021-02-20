@@ -48,6 +48,9 @@ export interface IEvents {
 }
 
 export interface IEvent {
+  /*
+   * 01.03.2020
+   */
   date: string
   title: string
   content: string

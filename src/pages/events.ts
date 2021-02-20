@@ -34,16 +34,16 @@ export default class Events extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  protected bCalendarOptions: IBCalendarOptions = {
+  bCalendarOptions: IBCalendarOptions = {
     eventsMode: true,
     items: null,
     disableDaysBefore: false
   }
-  protected bCalendarFormShow = false
+  bCalendarFormShow = false
 
-  protected header = ''
-  protected search = ''
-  protected itemsFiltered: Array<IFilteredItem> = []
+  header = ''
+  search = ''
+  itemsFiltered: Array<IFilteredItem> = []
 
   get items() {
     return this.$store.getters.getEvents
@@ -68,13 +68,13 @@ export default class Events extends Vue {
     if(!v) {
       return
     }
-    Object.keys(context.bCalendarOptions.items).forEach((key: string) => {
-      const title = context.bCalendarOptions.items[key].title.toLowerCase()
-      const content = context.bCalendarOptions.items[key].content.toLowerCase()
+    Object.keys(context.items).forEach((key: string) => {
+      const title = context.items[key].title.toLowerCase()
+      const content = context.items[key].content.toLowerCase()
       if(title.indexOf(v) > -1 || content.indexOf(v) > -1) {
         context.itemsFiltered.push({
           key,
-          title: context.bCalendarOptions.items[key].title
+          title: context.items[key].title
         })
       }
       if(context.itemsFiltered.length === 0) {
@@ -104,23 +104,30 @@ export default class Events extends Vue {
 
   @Watch('search')
   onSearchChanged(val: string) {
+    if(!val) {
+      return
+    }
     this.debounced(val.toLowerCase(), this)
   }
 
-  protected prev() {
+  prev() {
     const elem = this.$refs.calendar as IBCalendar
     elem.prevMonth()
   }
-  protected next() {
+  next() {
     const elem = this.$refs.calendar as IBCalendar
     elem.nextMonth()
   }
-  protected today() {
+  today() {
     const elem = this.$refs.calendar as IBCalendar
     elem.setToday()
   }
 
-  protected async save(event: IEvent) {
+  setHeader(v: string) {
+    this.header = v
+  }
+
+  async save(event: IEvent) {
     const elem = document.querySelector('[data-current="' + event.date + '"]')
     if(elem) {
       elem.classList.add('processing')
@@ -128,7 +135,7 @@ export default class Events extends Vue {
     await this.commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
   }
 
-  protected async remove(date: string) {
+  async remove(date: string) {
     const elem = document.querySelector('[data-current="' + date + '"]')
     if(elem) {
       elem.classList.add('processing')
@@ -136,9 +143,10 @@ export default class Events extends Vue {
     await this.commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
   }
 
-  protected itemSelected(item: ISelected): void | null {
-    if(item.key === '0') return null
-    else {
+  itemSelected(item: ISelected): void {
+    if(item.key === '0') {
+      return
+    } else {
       this.bCalendarOptions = {
         ...this.bCalendarOptions,
         setDate: item.key

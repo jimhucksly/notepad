@@ -1,24 +1,24 @@
 <template>
-  <div class="events">
+  <div id="events_cont" class="events">
     <div class="events__top">
       <div class="events__btns">
-        <button class="btn btn-primary events__btn-left" @click="prev">
+        <button class="btn btn-primary events__btn-left" ref="button-prev" @click="prev">
           <span></span>
         </button>
-        <div class="events__header">{{ header }}</div>
-        <button class="btn btn-primary events__btn-right" @click="next">
+        <div class="events__header" ref="header">{{ header }}</div>
+        <button class="btn btn-primary events__btn-right" ref="button-next" @click="next">
           <span></span>
         </button>
-        <button class="btn btn-primary m-l-15" @click="today">Today</button>
+        <button class="btn btn-primary m-l-15" ref="button-today" @click="today">Today</button>
       </div>
       <div class="events__search">
-        <form>
+        <form ref="search-form">
           <input
             type="text"
             v-model="search"
             :readonly="bCalendarFormShow"
           >
-          <div class="events__search-dropdown" v-if="itemsFiltered.length">
+          <div class="events__search-dropdown" ref="search-results" v-if="itemsFiltered.length">
             <ul>
               <li
                 v-for="item in itemsFiltered"
@@ -38,7 +38,7 @@
       <b-calendar
         ref="calendar"
         :options="bCalendarOptions"
-        @set-header="(v) => { header = v }"
+        @set-header="setHeader"
         @save="save"
         @remove="remove"
         @form-toggle="(v) => { bCalendarFormShow = v }"

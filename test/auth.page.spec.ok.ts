@@ -35,11 +35,11 @@ function flushPromises() {
   })
 }
 
-describe('Auth Page', async () => {
+describe('Auth Page', () => {
   beforeEach(async () => {
     await setupTest()
     await flushPromises()
-  });
+  })
 
   it('correctly rendered', () => {
     expect(wrapper.attributes('id')).toBe('auth_cont')

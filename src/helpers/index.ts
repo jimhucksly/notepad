@@ -396,3 +396,14 @@ export const indexOf = (DOMElement: HTMLElement): number => {
   })
   return result
 }
+
+export async function delay(timeout: number) {
+  let resolveFunc: (value: unknown) => void = null
+  const promise = new Promise(resolve => {
+    resolveFunc = resolve
+  })
+  setTimeout(() => {
+    resolveFunc(void 0)
+  }, timeout)
+  await promise
+}
