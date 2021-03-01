@@ -42,7 +42,7 @@ export default class Projects extends Vue {
     }
   }
 
-  protected toggleLock(e: InputEvent, stamp: string) {
+  toggleLock(e: InputEvent, stamp: string) {
     const items = this.$refs.projects_item as Array<HTMLElement>
     const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
     if(!item) {
@@ -75,7 +75,7 @@ export default class Projects extends Vue {
     }
   }
 
-  protected toggleFilter(e: MouseEvent, stamp: string): void | null {
+  toggleFilter(e: MouseEvent, stamp: string): void | null {
     const items = this.$refs.projects_item as Array<HTMLElement>
     const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
     if(!item) {
@@ -96,7 +96,7 @@ export default class Projects extends Vue {
     }
   }
 
-  protected toggleCheck(e: InputEvent) {
+  toggleCheck(e: InputEvent) {
     const target = e.target as HTMLInputElement
     const isChecked = target.checked
     if(isChecked) {
@@ -107,7 +107,7 @@ export default class Projects extends Vue {
     this.$emit('on-edit', this.checked)
   }
 
-  protected toggleArchives() {
+  toggleArchives() {
     this.isArchivesInit = !this.isArchivesInit
     this.$emit('on-archives', this.isArchivesInit)
   }

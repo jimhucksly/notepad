@@ -48,7 +48,7 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  protected toggleLock(v: boolean): void {
+  toggleLock(v: boolean): void {
     if(!v) {
       this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
       this.isDialog = true
@@ -57,20 +57,20 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  protected async archive() {
+  async archive() {
     await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.itemStamp))
     this.removeHandler()
     await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
-  protected remove() {
+  remove() {
     this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
     this.$electron.ipcRenderer.once('remove-is-confimed', () => {
       this.removeHandler()
     })
   }
 
-  protected async removeHandler() {
+  async removeHandler() {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, this.itemStamp)
@@ -81,7 +81,7 @@ export default class ProjectsEditor extends Vue {
     this.$emit('update:itemStamp', '')
   }
 
-  protected async save() {
+  async save() {
     const o: IJson = {
       [this.itemStamp]: {
         key: this.itemStamp,
@@ -97,7 +97,7 @@ export default class ProjectsEditor extends Vue {
     this.$emit('update:itemStamp', '')
   }
 
-  protected hide() {
+  hide() {
     this.$emit('update:itemStamp', '')
   }
 

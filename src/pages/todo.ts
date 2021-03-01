@@ -19,9 +19,10 @@ export default class Todo extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  protected items: ITodo[] = []
-  protected isPopupShow = false
-  protected itemSelected: ITodo | null = null
+  items: ITodo[] = []
+  isPopupShow = false
+  itemSelected: ITodo | null = null
+  clickTimer: NodeJS.Timeout | null = null
 
   get json() {
     return this.$store.getters.getTodo
@@ -36,28 +37,48 @@ export default class Todo extends Vue {
     this.setItems()
   }
 
-  protected move(event: MouseEvent, id: string): void | null {
-    if(event.which !== 1) {
-      // если клик правой кнопкой мыши
-      return // то он не запускает перенос
+  onMouseDown(event: MouseEvent, id: string) {
+    if(event.button > 0) {
+      /**
+       * если клик правой кнопкой мыши
+       */
+      return
     }
 
+    this.clickTimer = setTimeout(() => {
+      this.move(event, id)
+      document.onmouseup = null
+      document.onmousemove = null
+      clearTimeout(this.clickTimer)
+    }, 600)
+
+    document.onmouseup = () => {
+      const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
+      if(!elem) {
+        return
+      }
+      elem.style.transition = 'all 0.1s'
+      elem.style.transform = 'scale(0.95)'
+      this.edit(id)
+      setTimeout(() => {
+        elem.style.transform = 'scale(1)'
+        elem.removeAttribute('style')
+      }, 100)
+      clearTimeout(this.clickTimer)
+    }
+
+    document.onmousemove = () => {
+      this.move(event, id)
+      document.onmouseup = null
+      clearTimeout(this.clickTimer)
+    }
+  }
+
+  move(event: MouseEvent, id: string): void {
     const container: HTMLElement | null = document.querySelector('.todo_cont')
     const elemsClassName = 'todo_item'
     if(!container || container.childElementCount === 1) return null
     const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
-    if(!elem) return null
-
-    document.onmouseup = () => {
-      elem.style.transform = 'scale(1)'
-      this.edit(id)
-      setTimeout(() => {
-        elem.removeAttribute('style')
-      }, 100)
-    }
-
-    elem.style.transition = 'all 0.1s'
-    elem.style.transform = 'scale(0.95)'
 
     const startPos = {
       x: event.clientX,
@@ -133,7 +154,9 @@ export default class Todo extends Vue {
             return
           }
           const dropItem: HTMLElement | null = el.closest('.dropable')
-          if(dropItem === null) return null
+          if(!dropItem) {
+            return
+          }
           const dropRect: DOMRect = dropItem.getBoundingClientRect()
           const dropCoords = {
             x: e.clientX - dropRect.left,
@@ -143,7 +166,9 @@ export default class Todo extends Vue {
             const next: Element | null = dropItem.nextElementSibling
             if(next) {
               container.insertBefore(avatar, next)
-            } else container.appendChild(avatar)
+            } else {
+              container.appendChild(avatar)
+            }
           } else {
             if(indexOf(dropItem) === container.childElementCount - 1) {
               container.appendChild(avatar)
@@ -160,7 +185,7 @@ export default class Todo extends Vue {
     }
   }
 
-  protected setOrder() {
+  setOrder() {
     const result: ITodoOrder = {}
     const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]')
     if(!elems.length) {
@@ -178,7 +203,7 @@ export default class Todo extends Vue {
     this.commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
   }
 
-  protected edit(id: string) {
+  edit(id: string) {
     document.onmousemove = null
     document.onmouseup = null
     const o = this.items.find((item: ITodo) => item.id === id)
@@ -198,7 +223,7 @@ export default class Todo extends Vue {
     }
   }
 
-  protected save() {
+  save() {
     if(this.itemSelected) {
       const id = this.itemSelected.id
       const o: ITodo | null = this.items.find((item: ITodo) => item.id === id) ?? null
@@ -211,12 +236,12 @@ export default class Todo extends Vue {
     }
   }
 
-  protected cancel() {
+  cancel() {
     this.isPopupShow = false
     this.itemSelected = null
   }
 
-  protected async remove() {
+  async remove() {
     if(this.itemSelected) {
       const id = this.itemSelected.id
       this.items = this.items.filter((item: ITodo) => item.id !== id)
@@ -226,7 +251,7 @@ export default class Todo extends Vue {
     }
   }
 
-  protected setItems() {
+  setItems() {
     this.items = Object.keys(this.json).map((key: string): ITodo => {
       const o: ITodo = {
         id: key,

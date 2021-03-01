@@ -62,7 +62,7 @@ export default class Notepad extends Vue {
     })
   }
 
-  protected send() {
+  send() {
     if(!this.message.length) {
       return
     }
@@ -87,7 +87,7 @@ export default class Notepad extends Vue {
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  protected onFileChange(e: any) {
+  onFileChange(e: any) {
     const files = e.target.files || e.dataTransfer.files
     if(files.length === 0) {
       return
@@ -98,7 +98,7 @@ export default class Notepad extends Vue {
     this.upload(formData, getFileType(files[0].name))
   }
 
-  protected async upload(file: FormData, fileType: string) {
+  async upload(file: FormData, fileType: string) {
     try {
       const resp = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
       this.addFile(resp.name, resp.link, fileType)
@@ -107,7 +107,7 @@ export default class Notepad extends Vue {
     }
   }
 
-  protected addFile(name: string, link: string, type: string) {
+  addFile(name: string, link: string, type: string) {
     this.newMsgFlag = true
     const { date, stamp } = now()
     const o: IJson = {
@@ -131,7 +131,7 @@ export default class Notepad extends Vue {
     })
   }
 
-  protected read() {
+  read() {
     const self = this.$refs.notepad_cont as HTMLElement
     const rect = self.getBoundingClientRect()
     const viewportHeight = rect.top + rect.height
@@ -154,7 +154,7 @@ export default class Notepad extends Vue {
     })
   }
 
-  protected updated() {
+  updated() {
     this.read()
   }
 

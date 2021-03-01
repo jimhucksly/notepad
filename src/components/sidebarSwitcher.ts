@@ -57,7 +57,7 @@ export default class SidebarSwitcher extends Vue {
     }
   }
 
-  protected toggle() {
+  toggle() {
     if(this.legend) {
       return
     }
@@ -86,7 +86,7 @@ export default class SidebarSwitcher extends Vue {
     }
   }
 
-  protected select(item: IMenu) {
+  select(item: IMenu) {
     this.commandBus.do<NavigateCommand, void>(new NavigateCommand(item.name))
     this.toggle()
   }

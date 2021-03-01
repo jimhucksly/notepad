@@ -12,7 +12,7 @@ export default class SidebarTreeComponent extends Vue {
   @Prop() tree!: ITreeItem[]
   @Prop({ default: 1 }) level!: number
 
-  protected selectNode(item: ITreeItem) {
+  selectNode(item: ITreeItem) {
     this.$electron.ipcRenderer.send('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor-preview')
     if(editor) {

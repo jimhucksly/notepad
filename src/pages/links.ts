@@ -32,11 +32,11 @@ export default class Links extends Vue {
     })
   }
 
-  protected open(url: string) {
+  open(url: string) {
     this.$electron.shell.openExternal(url)
   }
 
-  protected edit(key: string) {
+  edit(key: string) {
     this.$popup.open('linkAdd')
     this.$electron.ipcRenderer.send('data-transfer', {
       target: 'popup-link-edit',
@@ -44,7 +44,7 @@ export default class Links extends Vue {
     })
   }
 
-  protected async remove(key: string) {
+  async remove(key: string) {
     try {
       await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(key))
       this.items = this.items.filter(el => el.key !== key)

@@ -72,7 +72,7 @@ export default class Index extends Vue {
     }
   }
 
-  protected async checkToken(p: string): Promise<boolean> {
+  async checkToken(p: string): Promise<boolean> {
     this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
     try {
       await storage.createFile(p, userDataFileName)
@@ -105,7 +105,7 @@ export default class Index extends Vue {
     }
   }
 
-  protected async setPath(appPath: string) {
+  async setPath(appPath: string) {
     try {
       this.$store.dispatch('userDataPath', appPath)
       await storage.createFile(appPath, userPreferencesFileName)

@@ -25,7 +25,7 @@ export default class JsonViewer extends Vue {
   editor: IEditor = null
   content = ''
 
-  protected editorInit(instance: IEditor) {
+  editorInit(instance: IEditor) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
 
     const debounced = debounce(() => {
@@ -68,7 +68,7 @@ export default class JsonViewer extends Vue {
     this.editor = instance
   }
 
-  protected drag(event?: MouseEvent): void {
+  drag(event?: MouseEvent): void {
     const src: HTMLElement | null = document.querySelector('.json_viewer_src')
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
     const container = document.querySelector('.json_viewer_cont')

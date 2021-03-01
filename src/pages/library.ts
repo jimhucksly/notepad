@@ -148,7 +148,7 @@ export default class Library extends Vue {
     this.buildTree()
   }
 
-  protected buildTree() {
+  buildTree() {
     const tree: ITree[] = []
     let index = -1
     nodes.forEach(item => {

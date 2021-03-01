@@ -34,7 +34,7 @@ export default class Preferences extends Vue {
     return this.$store.getters.getDownloadsTargetPath
   }
 
-  protected save() {
+  save() {
     const form = this.$refs.form as HTMLFormElement
     const requireds: NodeListOf<HTMLInputElement> = form.querySelectorAll('[required]')
     if(requireds.length > 0) {
@@ -69,11 +69,11 @@ export default class Preferences extends Vue {
     this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
 
-  protected cancel() {
+  cancel() {
     this.$electron.ipcRenderer.send('preferences-hide')
     this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
-  protected openFolderDialog() {
+  openFolderDialog() {
     this.$electron.ipcRenderer.send('open-folder-dialog', {
       defaultPath: this.downloadsTargetPath
     })

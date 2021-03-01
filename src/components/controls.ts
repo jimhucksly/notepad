@@ -35,7 +35,7 @@ export default class Controls extends Vue {
     return this.$parent.$refs
   }
 
-  protected edit(stamp: string) {
+  edit(stamp: string) {
     const item = this.$parent.$el
     if(item) {
       this.editableItems.push(stamp)
@@ -81,7 +81,7 @@ export default class Controls extends Vue {
       }
     }
   }
-  protected save(stamp: string) {
+  save(stamp: string) {
     const item = this.$parent.$el
     if(item) {
       const i = this.editableItems.findIndex((el: string) => el === stamp)
@@ -108,7 +108,7 @@ export default class Controls extends Vue {
       }
     }
   }
-  protected removeHandler(stamp: string) {
+  removeHandler(stamp: string) {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
@@ -117,7 +117,7 @@ export default class Controls extends Vue {
     this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand(buffFilter))
     this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
-  protected remove(stamp: string) {
+  remove(stamp: string) {
     if(this.isLock) {
       this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
       this.$electron.ipcRenderer.once('remove-is-confimed', () => {

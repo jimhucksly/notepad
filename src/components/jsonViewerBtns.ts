@@ -4,7 +4,7 @@ import { Vue, Component } from 'vue-property-decorator'
   name: 'JsonViewerBtns'
 })
 export default class JsonViewerBtns extends Vue {
-  protected open() {
+  open() {
     const openFile = () => {
       const element = document.createElement('input')
       element.type = 'file'
@@ -43,7 +43,7 @@ export default class JsonViewerBtns extends Vue {
     openFile()
   }
 
-  protected save() {
+  save() {
     this.$electron.ipcRenderer.send('save-file-dialog', {})
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('save-dialog-file-selected', (e: any, file: { filePath: string }) => {
@@ -53,7 +53,7 @@ export default class JsonViewerBtns extends Vue {
     })
   }
 
-  protected clear() {
+  clear() {
     this.$electron.ipcRenderer.send('json-viewer-clear')
   }
 }

@@ -18,14 +18,14 @@ interface IErrors {
   name: 'Auth'
 })
 export default class Auth extends Vue {
-  protected login = ''
-  protected pass = ''
-  protected errors: IErrors = {
+  login = ''
+  pass = ''
+  errors: IErrors = {
     login: 0,
     pass: 0
   }
 
-  protected timeout: NodeJS.Timeout | null = null
+  timeout: NodeJS.Timeout | null = null
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -84,7 +84,7 @@ export default class Auth extends Vue {
     this.commandBus.do<PingCommand, void>(new PingCommand(true))
   }
 
-  destroyed() {
+  beforeDestroy() {
     this.commandBus.do<PingCommand, void>(new PingCommand(false))
   }
 }

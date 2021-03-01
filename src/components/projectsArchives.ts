@@ -29,11 +29,11 @@ export default class ProjectsArchives extends Vue {
     return this.$store.getters.getJson
   }
 
-  protected getDate(stamp: string): string {
+  getDate(stamp: string): string {
     return now(stamp).date
   }
 
-  protected async restore(o: IArchive) {
+  async restore(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
       const html: string = await this.commandBus.do<ArchiveRestoreCommand, string>(
@@ -59,7 +59,7 @@ export default class ProjectsArchives extends Vue {
     }
   }
 
-  protected async remove(o: IArchive) {
+  async remove(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
       await this.commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(name))

@@ -29,7 +29,7 @@ export default class Titlebar extends Vue {
     return this.$store.getters.isPreferencesShowed
   }
 
-  protected async reload() {
+  async reload() {
     this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
     await Promise.all([
       this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),

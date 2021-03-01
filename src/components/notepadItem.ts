@@ -38,18 +38,18 @@ export default class NotepadItem extends Vue {
     this.message = this.item.message ?? ''
   }
 
-  protected openFile(href: string) {
+  openFile(href: string) {
     this.$electron.shell.openExternal(href)
   }
 
-  protected saveFile(o: { fileName: string, href: string }) {
+  saveFile(o: { fileName: string, href: string }) {
     const fileCont = this.$refs.file as Vue
     const loader = fileCont.$refs.loader as HTMLElement
     const finalPath = this.$store.getters.getDownloadsTargetPath + '\\' + o.fileName
     downloadFile(o.href, finalPath, loader)
   }
 
-  protected openLink(e: MouseEvent): void | boolean {
+  openLink(e: MouseEvent): void | boolean {
     const target = e.target as HTMLAnchorElement
     const isLink = target.tagName === 'A'
     const hasHref = target.href && target.href.length

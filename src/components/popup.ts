@@ -36,11 +36,11 @@ export default class Popup extends Vue {
     }
   }
 
-  protected linkUrl = ''
-  protected linkName = ''
-  protected linkId = ''
+  linkUrl = ''
+  linkName = ''
+  linkId = ''
 
-  protected addLink() {
+  addLink() {
     if(this.linkUrl && this.linkName) {
       this.$electron.ipcRenderer.send('data-transfer', {
         target: 'links',
@@ -55,7 +55,7 @@ export default class Popup extends Vue {
     }
   }
 
-  protected clear() {
+  clear() {
     this.linkUrl = ''
     this.linkName = ''
     this.linkId = ''

@@ -34,10 +34,10 @@ export class CheckQueryHandler implements IQuery<void> {
     this.timeout = setTimeout(async (): Promise<void> => {
       try {
         const resp: ICheckResponse = await this._store.dispatch('actionCheck')
+        this._store.dispatch('error', false)
         if(!resp) {
           return void 0
         }
-        this._store.dispatch('error', false)
         this._store.dispatch('json', {
           json: resp.json
         })

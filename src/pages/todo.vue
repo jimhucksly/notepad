@@ -5,7 +5,7 @@
       :key="item.id"
       class="todo_item"
       :data-id="item.id"
-      @mousedown="move($event, item.id)"
+      @mousedown="onMouseDown($event, item.id)"
     >
       <div class="todo_item-header">
         {{ item.date }}
