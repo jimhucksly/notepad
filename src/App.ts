@@ -8,10 +8,11 @@ import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { JsonQuery, LibraryQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
-import { AuthCommand, LoadingCommand } from '~/domain/commands'
+import { AuthCommand } from '~/domain/commands'
 import { NavigateCommand } from '~/domain/commands/nav.command'
 import { CreateElement, VNode } from 'vue'
 import { IJson } from './domain/models'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'App',
@@ -22,6 +23,10 @@ import { IJson } from './domain/models'
 export default class App extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setIsDevelopment') setIsDevelopment: (value: boolean) => void
+  @Mutation('setToken') setToken: (value: string) => void
+  @Mutation('setLoading') setLoading: (value: boolean) => void
 
   get notification() {
     return this.$store.getters.getNotification
@@ -35,21 +40,21 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.$store.dispatch('isDevelopment', process.env.NODE_ENV === 'development')
+    this.setIsDevelopment(process.env.NODE_ENV === 'development')
     this.$electron.ipcRenderer.on('preferences-show', () => {
       this.commandBus.do<NavigateCommand, void>(new NavigateCommand('preferences'))
     })
     this.$electron.ipcRenderer.on('reload', async () => {
-      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
+      this.setLoading(true)
       await Promise.all([
         this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
         this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
       ])
-      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+      this.setLoading(false)
     })
     this.$electron.ipcRenderer.on('sign-out', () => {
       this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
-      this.$store.dispatch('token', null)
+      this.setToken(null)
       const userDataPath = this.$store.getters.getUserDataPath
       storage.set(userDataPath, userDataFileName, { token: '' })
     })
@@ -69,10 +74,6 @@ export default class App extends Vue {
         this.$electron.ipcRenderer.send('context-menu-popup')
       }
     })
-  }
-
-  beforeDestroy() {
-    this.$store.dispatch('timeout', null)
   }
 
   render(h: CreateElement): VNode {

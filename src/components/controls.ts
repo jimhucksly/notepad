@@ -7,10 +7,10 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import {
   SetJsonCommand,
-  SetFilterCommand,
   UpdateJsonCommand,
   DeleteProjectCommand
 } from '~/domain/commands'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'Controls'
@@ -18,6 +18,8 @@ import {
 
 export default class Controls extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setFilter') setFilter: (value: IFilters) => void
 
   @Prop({ type: String, default: '' }) readonly itemKey: string
   @Prop({ type: Boolean, default: false }) isLock: false
@@ -113,8 +115,8 @@ export default class Controls extends Vue {
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
     unset(buffFilter, stamp)
+    this.setFilter(buffFilter)
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
-    this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand(buffFilter))
     this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
   remove(stamp: string) {

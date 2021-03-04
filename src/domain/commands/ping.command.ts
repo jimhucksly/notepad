@@ -28,9 +28,9 @@ export class PingCommandHandler implements ICommand<void> {
         this.interval = setInterval(async (): Promise<void> => {
           const resp = await this._queryBus.exec<PingCommand, string>(command)
           if(resp) {
-            this._store.dispatch('error', false)
+            this._store.commit('setError', false)
           } else {
-            this._store.dispatch('error', true)
+            this._store.commit('setError', true)
           }
         }, 3000)
       } else {

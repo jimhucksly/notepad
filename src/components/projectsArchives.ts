@@ -8,9 +8,9 @@ import {
   SetJsonCommand,
   UpdateJsonCommand,
   ArchiveRestoreCommand,
-  ArchiveRemoveCommand,
-  SetArchivesCommand
+  ArchiveRemoveCommand
 } from '~/domain/commands'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'ProjectsArchives'
@@ -20,6 +20,8 @@ export default class ProjectsArchives extends Vue {
   init!: boolean
 
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setArchives') setArchives: (value: Array<IArchive>) => void
 
   get items(): IArchive[] {
     return this.$store.getters.getArchives
@@ -66,7 +68,7 @@ export default class ProjectsArchives extends Vue {
       const arr = this.items.filter((e: IArchive) => {
         return e.name !== o.name
       })
-      this.commandBus.do<SetArchivesCommand, void>(new SetArchivesCommand(arr))
+      this.setArchives(arr)
     } catch(e) {
       console.log(e)
     }

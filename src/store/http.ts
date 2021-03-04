@@ -39,7 +39,7 @@ class Http {
         resp = await axios.post(API_URL + '?' + query, data, headers)
       } catch(e) {
         if(e.response === undefined) {
-          store.dispatch('error', true)
+          store.commit('setError', true)
           if(interval === undefined) {
             interval = setInterval(() => {
               this.post(action, data, headers)
@@ -52,7 +52,7 @@ class Http {
         }
       }
     }
-    store.dispatch('error', false)
+    store.commit('setError', false)
     interval && clearInterval(interval)
     return resp.data
   }

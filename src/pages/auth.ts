@@ -4,10 +4,11 @@ import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { PingCommand } from '~/domain/commands/ping.command'
-import { AuthCommand, LoadingCommand } from '~/domain/commands'
+import { AuthCommand } from '~/domain/commands'
 import _ from 'lodash'
 import { IJson, IResponse } from '~/domain/models'
 import { AxiosError } from 'axios'
+import { Mutation } from 'vuex-class'
 
 interface IErrors {
   login: number
@@ -29,6 +30,7 @@ export default class Auth extends Vue {
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+  @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Watch('login')
   onLoginChanged(val: string) {
@@ -54,13 +56,13 @@ export default class Auth extends Vue {
     if(this.validate()) {
       try {
         await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
-        this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
+        this.setLoading(true)
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
           this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
         ])
         setTimeout(() => {
-          this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+          this.setLoading(false)
           this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
         }, 1500)
       } catch(e) {

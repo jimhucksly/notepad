@@ -7,9 +7,10 @@ import { translit, uniqueid } from '~/helpers'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
-import { SetTreeCommand, UpdateLibraryCommand } from '~/domain/commands'
+import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
+import { Mutation } from 'vuex-class'
 
 interface ITree {
   children: ITree[]
@@ -134,6 +135,8 @@ export default class Library extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Mutation('setMdTree') setMdTree: (value: Array<ITree>) => void
+
   editor: SimpleMDEExt = null
   isRendered = false
   links: string[] = []
@@ -169,7 +172,7 @@ export default class Library extends Vue {
         }
       }
     })
-    this.commandBus.do<SetTreeCommand, void>(new SetTreeCommand([...cloneDeep(tree)]))
+    this.setMdTree([...cloneDeep(tree)])
   }
 
   mounted() {
@@ -265,7 +268,7 @@ export default class Library extends Vue {
   }
 
   beforeDestroy() {
-    this.commandBus.do<SetTreeCommand, void>(new SetTreeCommand([]))
+    this.setMdTree([])
     this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(this.editor.value()))
   }
 

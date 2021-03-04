@@ -23,19 +23,15 @@ import { Commandable } from '~/domain/commands/command.bus'
 import { AuthQuery } from '~/domain/queries'
 import {
   AuthCommand,
-  LoadingCommand,
   SetJsonCommand,
-  SetFilterCommand,
   UploadFileCommand,
   UpdateJsonCommand,
   DeleteProjectCommand,
   ArchiveRestoreCommand,
   ArchiveRemoveCommand,
   ArchivingCommand,
-  SetArchivesCommand,
   UpdateEventCommand,
   DeleteEventCommand,
-  SetTreeCommand,
   UpdateLibraryCommand,
   UpdateLinksCommand,
   DeleteLinkCommand,
@@ -75,27 +71,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     ipcRenderer.send(command.flag ? 'authorized' : 'unauthorized')
   }
 
-  token(store: TStore, value: string | null) {
-    store.commit('setToken', value)
-  }
-
-  @Commandable(TYPES.LoadingCommand)
-  loading(store: TStore, command: LoadingCommand): void {
-    store.commit('setLoading', command.flag)
-  }
-
-  userDataPath(store: TStore, path: string): void {
-    store.commit('setUserDataPath', path)
-  }
-
-  error(store: TStore, flag: boolean): void {
-    store.commit('setError', flag)
-  }
-
-  isDevelopment(store: TStore, flag: boolean): void {
-    store.commit('setIsDevelopment', flag)
-  }
-
   @Commandable(TYPES.SetJsonCommand)
   json(store: TStore, command: SetJsonCommand): void {
     let json: IJson = {}
@@ -115,15 +90,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
     } else json = command.json
     store.commit('setJson', json)
-  }
-
-  @Commandable(TYPES.SetArchivesCommand)
-  archives(store: TStore, command: SetArchivesCommand): void {
-    store.commit('setArchives', command.items)
-  }
-
-  libraryData(store: TStore, data: string): void {
-    store.commit('setLibraryData', data)
   }
 
   eventsJson(store: TStore, data: Array<IEvent> | string): void {
@@ -150,11 +116,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setTodo', json)
   }
 
-  @Commandable(TYPES.SetTreeCommand)
-  mdTree(store: TStore, command: SetTreeCommand): void {
-    store.commit('setMdTree', command.tree)
-  }
-
   read(store: TStore, key: string): void {
     const json = cloneDeep(store.getters['getJson'])
     delete json[key]['unread']
@@ -162,11 +123,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     if(haveUnread) ipcRenderer.send('set-icon-notification')
     else ipcRenderer.send('hide-icon-notification')
     store.commit('setJson', json)
-  }
-
-  @Commandable(TYPES.SetFilterCommand)
-  filter(store: TStore, command: SetFilterCommand): void {
-    store.commit('setFilter', command.filters)
   }
 
   aboutPopupShow(store: TStore, flag: boolean): void {
@@ -234,10 +190,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setPreviousPage', page)
   }
 
-  downloadsTargetPath(store: TStore, path: string): void {
-    store.commit('setDownloadsTargetPath', path)
-  }
-
   /**
    * Auth
    * @param store Store
@@ -251,7 +203,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         password: query.password
       }, jsonHeaders)
       if(resp.token) {
-        store.dispatch('token', resp.token)
+        store.commit('token', resp.token)
         const userDataPath = store.getters.getUserDataPath
         await storage.set(userDataPath, userDataFileName, { token: resp.token })
         console.log('write to file is successfully completed')
@@ -306,7 +258,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         return Promise.reject(resp)
       }
       if(resp instanceof Error && resp.message === 'Network Error') {
-        store.dispatch('error', true)
+        store.commit('setError', true)
         return Promise.reject(resp)
       }
       store.dispatch('json', {
@@ -314,9 +266,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
       })
       return resp.data
     } catch(e) {
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('token', null)
       return Promise.reject(e)
     }
   }
@@ -334,16 +286,16 @@ class Actions implements ActionTree<IRootState, IRootState> {
         return Promise.reject(resp)
       }
       if(resp.message === 'Network Error') {
-        store.dispatch('error', true)
+        store.commit('setError', true)
         return Promise.reject(resp)
       }
-      store.dispatch('libraryData', resp.data)
+      store.commit('setLibraryData', resp.data)
       return resp.data
     } catch(e) {
       console.log(e)
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('token', null)
       return Promise.reject(e)
     }
   }
@@ -427,14 +379,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(!resp || !resp.data || !resp.data) {
         return Promise.reject(resp)
       }
-      store.dispatch('archives', {
-        items: resp.data
-      })
+      store.commit('setArchives', resp.data)
       return resp.data
     } catch(e) {
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('token', null)
       return Promise.reject(e)
     }
   }
@@ -460,9 +410,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return Promise.reject(resp)
     } catch(e) {
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('token', null)
       return Promise.reject(e)
     }
   }
@@ -485,9 +435,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return Promise.resolve()
     } catch(e) {
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -682,9 +632,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return resp.data
     } catch(e) {
       console.log(e)
-      store.dispatch('loading', false)
+      store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.dispatch('token', null)
+      store.commit('token', null)
       return Promise.reject(e)
     }
   }

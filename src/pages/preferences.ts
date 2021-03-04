@@ -6,12 +6,15 @@ import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { NavigateCommand } from '~/domain/commands/nav.command'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'Preferences'
 })
 export default class Preferences extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
 
   preferences = {
     downloadsTargetPath: ''
@@ -59,7 +62,7 @@ export default class Preferences extends Vue {
       storage.append(this.userDataPath, 'UserPreferences', {
         downloadsTargetPath: this.preferences.downloadsTargetPath
       })
-      this.$store.dispatch('downloadsTargetPath', this.preferences.downloadsTargetPath)
+      this.setDownloadsTargetPath(this.preferences.downloadsTargetPath)
 
       if(this.isAutoLaunchEnabled) {
         this.appAutoLauncher.enable()

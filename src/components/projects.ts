@@ -4,8 +4,9 @@ import { IArchive, IFilters, IJson } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
-import { SetFilterCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'Projects'
@@ -16,6 +17,8 @@ export default class Projects extends Vue {
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setFilter') setFilter: (value: IFilters) => void
 
   get isProjects(): boolean {
     return this.$store.getters.getIsProjectsShow
@@ -89,9 +92,9 @@ export default class Projects extends Vue {
       if(item.classList.contains('active')) {
         const buff = cloneDeep(this.filter)
         unset(buff, stamp)
-        this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand({ ...buff }))
+        this.setFilter({ ...buff })
       } else {
-        this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand({ ...this.filter, [stamp]: true }))
+        this.setFilter({ ...this.filter, [stamp]: true })
       }
     }
   }

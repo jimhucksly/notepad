@@ -1,19 +1,12 @@
 import {
   IJson,
-  IFilters,
-  IArchive,
   IEvent,
-  ITreeItem,
   ILink,
   ITodo,
   ITodoOrder
 } from '~/domain/models'
 
 export class AuthCommand {
-  constructor(public flag: boolean) {}
-}
-
-export class LoadingCommand {
   constructor(public flag: boolean) {}
 }
 
@@ -27,10 +20,6 @@ export class SetJsonCommand {
 
 export class DeleteProjectCommand {
   constructor(public stamp: string | number) {}
-}
-
-export class SetFilterCommand {
-  constructor(public filters: IFilters) {}
 }
 
 export class UploadFileCommand {
@@ -49,20 +38,12 @@ export class ArchiveRemoveCommand {
   constructor(public name: string) {}
 }
 
-export class SetArchivesCommand {
-  constructor(public items: IArchive[]) {}
-}
-
 export class UpdateEventCommand {
   constructor(public event: IEvent) {}
 }
 
 export class DeleteEventCommand {
   constructor(public date: string) {}
-}
-
-export class SetTreeCommand {
-  constructor(public tree: ITreeItem[]) {}
 }
 
 export class UpdateLibraryCommand {

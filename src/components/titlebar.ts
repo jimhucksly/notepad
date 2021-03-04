@@ -4,7 +4,6 @@ import { Vue, Component } from 'vue-property-decorator'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { LoadingCommand } from '~/domain/commands'
 import {
   JsonQuery,
   LibraryQuery,
@@ -12,6 +11,7 @@ import {
   LinksQuery
 } from '~/domain/queries'
 import { IEvent, IJson, ILink } from '~/domain/models'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'Titlebar'
@@ -22,6 +22,8 @@ export default class Titlebar extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Mutation('setLoading') setLoading: (value: boolean) => void
+
   get isAuth() {
     return this.$store.getters.getIsAuth
   }
@@ -30,7 +32,7 @@ export default class Titlebar extends Vue {
   }
 
   async reload() {
-    this.commandBus.do<LoadingCommand, void>(new LoadingCommand(true))
+    this.setLoading(true)
     await Promise.all([
       this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
       this.queryBus.exec<LibraryQuery, string>(new LibraryQuery()),
@@ -38,7 +40,7 @@ export default class Titlebar extends Vue {
       this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     ])
     setTimeout(() => {
-      this.commandBus.do<LoadingCommand, void>(new LoadingCommand(false))
+      this.setLoading(false)
     }, 1500)
   }
 

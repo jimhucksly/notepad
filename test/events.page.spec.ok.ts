@@ -1,4 +1,3 @@
-import { version } from '@babel/core'
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
 import 'reflect-metadata'
 import Vue from 'vue'
@@ -35,7 +34,7 @@ async function setupTest(props?: any) {
   }
 }
 
-var scheduler = typeof setImmediate === 'function' ? setImmediate : setTimeout
+const scheduler = typeof setImmediate === 'function' ? setImmediate : setTimeout
 
 function flushPromises() {
   return new Promise(function(resolve) {

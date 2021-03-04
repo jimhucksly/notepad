@@ -4,8 +4,9 @@ import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { ArchivingCommand, DeleteProjectCommand, SetFilterCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
+import { Mutation } from 'vuex-class'
 
 @Component({
   name: 'ProjectsEditor'
@@ -16,6 +17,8 @@ export default class ProjectsEditor extends Vue {
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setFilter') setFilter: (value: IFilters) => void
 
   name = ''
   isLock = false
@@ -75,8 +78,8 @@ export default class ProjectsEditor extends Vue {
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, this.itemStamp)
     unset(buffFilter, this.itemStamp)
+    this.setFilter(buffFilter)
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
-    this.commandBus.do<SetFilterCommand, void>(new SetFilterCommand(buffFilter))
     await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.itemStamp))
     this.$emit('update:itemStamp', '')
   }
