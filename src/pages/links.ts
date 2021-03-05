@@ -5,6 +5,7 @@ import { _container } from '~/domain/container'
 import { LinksQuery } from '~/domain/queries'
 import { UpdateLinksCommand, DeleteLinkCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
+import { Mutation } from 'vuex-class'
 
 interface IItem {
   key: string
@@ -18,6 +19,8 @@ interface IItem {
 export default class Links extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
 
   items: IItem[] = []
 
@@ -37,7 +40,7 @@ export default class Links extends Vue {
   }
 
   edit(key: string) {
-    this.$popup.open('linkAdd')
+    this.showAddLinkPopup(true)
     this.$electron.ipcRenderer.send('data-transfer', {
       target: 'popup-link-edit',
       data: this.items.find((el: IItem) => el.key === key)

@@ -1,4 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Mutation } from 'vuex-class'
 import { uniqueid } from '~/helpers'
 
 Vue.component('CloseBtn', {
@@ -13,6 +14,10 @@ Vue.component('PopupTitle', {
   name: 'Popup'
 })
 export default class Popup extends Vue {
+  @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
+  @Mutation('setIsUploadingPopupShow') showUploadingPopup: (value: boolean) => void
+  @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
+
   appName = ''
 
   get aboutPopupShow() {
@@ -50,7 +55,7 @@ export default class Popup extends Vue {
           name: this.linkName
         }
       })
-      this.$popup.close('linkAdd')
+      this.showAddLinkPopup(true)
       this.clear()
     }
   }

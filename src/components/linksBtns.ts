@@ -1,4 +1,5 @@
 import { Vue, Component } from 'vue-property-decorator'
+import { Mutation } from 'vuex-class'
 import BtnAdd from '~/components/btnAdd'
 
 @Component({
@@ -8,7 +9,9 @@ import BtnAdd from '~/components/btnAdd'
   }
 })
 export default class LinksBtns extends Vue {
+  @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
+
   add() {
-    this.$popup.open('linkAdd')
+    this.showAddLinkPopup(true)
   }
 }

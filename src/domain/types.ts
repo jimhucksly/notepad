@@ -15,6 +15,7 @@ const TYPES = {
   CheckQuery: Symbol('CheckQuery'),
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
+  CheckCommand: Symbol.for('CheckCommand'),
   NavigateCommand: Symbol.for('NavigateCommand'),
   AuthCommand: Symbol('AuthCommand'),
   SetJsonCommand: Symbol('SetJsonCommand'),

@@ -27,6 +27,7 @@ export default class App extends Vue {
   @Mutation('setIsDevelopment') setIsDevelopment: (value: boolean) => void
   @Mutation('setToken') setToken: (value: string) => void
   @Mutation('setLoading') setLoading: (value: boolean) => void
+  @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
 
   get notification() {
     return this.$store.getters.getNotification
@@ -59,7 +60,7 @@ export default class App extends Vue {
       storage.set(userDataPath, userDataFileName, { token: '' })
     })
     this.$electron.ipcRenderer.on('about', () => {
-      this.$popup.open('about')
+      this.showAboutPopup(true)
     })
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault()

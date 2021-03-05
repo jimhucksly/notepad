@@ -125,18 +125,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setJson', json)
   }
 
-  aboutPopupShow(store: TStore, flag: boolean): void {
-    store.commit('setIsAboutPopupShow', flag)
-  }
-
-  uploadingPopupShow(store: TStore, flag: boolean): void {
-    store.commit('setIsUploadingPopupShow', flag)
-  }
-
-  linkAddPopupShow(store: TStore, flag: boolean): void {
-    store.commit('setIsLinkAddPopupShow', flag)
-  }
-
   preferences(store: TStore, flag: boolean): void {
     store.commit('setIsPreferencesShow', flag)
     if(flag) {
@@ -184,10 +172,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     if(flag) {
       store.commit('setComponent', 'JsonViewer')
     }
-  }
-
-  previousPage(store: TStore, page: string): void {
-    store.commit('setPreviousPage', page)
   }
 
   /**
@@ -706,6 +690,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Check
+   */
+  @Commandable(TYPES.CheckCommand)
   async actionCheck(store: TStore): Promise<ICheckResponse> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {

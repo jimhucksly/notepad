@@ -59,13 +59,20 @@ export class NavigateCommandHandler implements ICommand<void> {
       if(page === 'goBack') {
         const previousPage = this._store.getters.getPreviousPage
         if(previousPage) {
+          // preferences
+          // projects
+          // library
+          // todo
+          // events
+          // links
+          // jsonViewer
           this.pages.forEach((p: string) => {
             this._store.dispatch(p, p === previousPage)
           })
-          this._store.dispatch('previousPage', '')
+          this._store.commit('setPreviousPage', '')
         }
       } else {
-        this._store.dispatch('previousPage', this.previousPage)
+        this._store.commit('setPreviousPage', this.previousPage)
         this.pages.forEach((p: string) => {
           this._store.dispatch(p, p === page)
         })

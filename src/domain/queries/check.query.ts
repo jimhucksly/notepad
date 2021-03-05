@@ -1,14 +1,16 @@
 import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
-import { IQuery } from '~/domain/interfaces'
+import { ICommandBus, IQuery } from '~/domain/interfaces'
 import { ICheckResponse, IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
+import { CheckCommand } from '~/domain/commands'
 
 export class CheckQuery {}
 
 @injectable()
 export class CheckQueryHandler implements IQuery<void> {
   constructor(
+    @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
@@ -33,7 +35,7 @@ export class CheckQueryHandler implements IQuery<void> {
     }
     this.timeout = setTimeout(async (): Promise<void> => {
       try {
-        const resp: ICheckResponse = await this._store.dispatch('actionCheck')
+        const resp: ICheckResponse = await this._commandBus.do(new CheckCommand())
         this._store.commit('setError', false)
         if(!resp) {
           return void 0

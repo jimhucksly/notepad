@@ -11,10 +11,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $store: Vuex.Store<RootState>
     $electron: any
-    $popup: {
-      open: (s :string) => void
-      close: (s: string) => void
-    }
     $slideUp: (elem: HTMLElement, duration: number) => any
     $slideDown: (elem: HTMLElement, duration: number) => any
   }

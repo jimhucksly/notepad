@@ -4,10 +4,6 @@ import { IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
 
-export class PingCommand {
-  constructor(public param: boolean) {}
-}
-
 @injectable()
 export class PingCommandHandler implements ICommand<void> {
   interval: NodeJS.Timeout

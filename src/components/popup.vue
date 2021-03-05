@@ -2,7 +2,7 @@
   <div class="popup" v-show="showPopup">
     <div class="popup-about" v-if="aboutPopupShow">
       <popup-title>
-        <close-btn @click="$popup.close('about')" />
+        <close-btn @click="showAboutPopup(false)" />
       </popup-title>
       <div class="m-b-20">
         <img src="static/icon.svg" alt="">
@@ -19,7 +19,7 @@
     </div>
     <div class="popup-uploading" v-if="uploadingPopupShow">
       <popup-title>
-        <close-btn @click="$popup.close('uploading')" />
+        <close-btn @click="showUploadingPopup(false)" />
       </popup-title>
       <div class="uploading-label">
         Uploading file...
@@ -31,7 +31,7 @@
     <div class="popup-link-add" v-if="linkAddPopupShow">
       <popup-title>
         Add link
-        <close-btn @click="$popup.close('linkAdd')" />
+        <close-btn @click="showAddLinkPopup(false)" />
       </popup-title>
       <form>
         <div class="m-b-15">
