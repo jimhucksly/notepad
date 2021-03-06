@@ -10,7 +10,7 @@ import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 interface ITree {
   children: ITree[]
@@ -136,14 +136,11 @@ export default class Library extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setMdTree') setMdTree: (value: Array<ITree>) => void
+  @Getter('getLibraryData') initialValue: string
 
   editor: SimpleMDEExt = null
   isRendered = false
   links: string[] = []
-
-  get initialValue() {
-    return this.$store.getters.getLibraryData
-  }
 
   @Watch('initialValue')
   onInitialValueCahnged() {

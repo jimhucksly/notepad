@@ -7,6 +7,7 @@ import { _container } from '~/domain/container'
 import { ITodo, ITodoOrder } from '~/domain/models'
 import { TodoQuery } from '~/domain/queries'
 import { TodoOrderCommand, UpdateTodoCommand, DeleteTodoCommand } from '~/domain/commands'
+import { Getter } from 'vuex-class'
 
 const sortByOrder = (a: ITodo, b: ITodo) => {
   return a.order < b.order ? -1 : 1
@@ -19,14 +20,12 @@ export default class Todo extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Getter('getTodo') json: ITodo
+
   items: ITodo[] = []
   isPopupShow = false
   itemSelected: ITodo | null = null
   clickTimer: NodeJS.Timeout | null = null
-
-  get json() {
-    return this.$store.getters.getTodo
-  }
 
   get keys() {
     return this.items.map((item: ITodo) => item.id)

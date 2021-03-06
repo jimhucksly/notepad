@@ -10,7 +10,7 @@ import {
   UpdateJsonCommand,
   DeleteProjectCommand
 } from '~/domain/commands'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'Controls'
@@ -19,20 +19,17 @@ import { Mutation } from 'vuex-class'
 export default class Controls extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setFilter') setFilter: (value: IFilters) => void
-
   @Prop({ type: String, default: '' }) readonly itemKey: string
   @Prop({ type: Boolean, default: false }) isLock: false
   @Prop() readonly collection: string[]
 
+  @Mutation('setFilter') setFilter: (value: IFilters) => void
+
+  @Getter('getJson') json: IJson
+  @Getter('getFilter') filter: IFilters
+
   editableItems: string[] = []
 
-  get json(): IJson {
-    return this.$store.getters.getJson
-  }
-  get filter(): IFilters {
-    return this.$store.getters.getFilter
-  }
   get refs() {
     return this.$parent.$refs
   }

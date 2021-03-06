@@ -12,7 +12,7 @@ import { AuthCommand } from '~/domain/commands'
 import { NavigateCommand } from '~/domain/commands/nav.command'
 import { CreateElement, VNode } from 'vue'
 import { IJson } from './domain/models'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'App',
@@ -29,9 +29,8 @@ export default class App extends Vue {
   @Mutation('setLoading') setLoading: (value: boolean) => void
   @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
 
-  get notification() {
-    return this.$store.getters.getNotification
-  }
+  @Getter('getNotification') notification: boolean
+
 
   @Watch('notification')
   onNotificationChanged(flag: boolean) {

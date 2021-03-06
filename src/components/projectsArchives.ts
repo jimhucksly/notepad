@@ -10,7 +10,7 @@ import {
   ArchiveRestoreCommand,
   ArchiveRemoveCommand
 } from '~/domain/commands'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'ProjectsArchives'
@@ -23,13 +23,8 @@ export default class ProjectsArchives extends Vue {
 
   @Mutation('setArchives') setArchives: (value: Array<IArchive>) => void
 
-  get items(): IArchive[] {
-    return this.$store.getters.getArchives
-  }
-
-  get json(): IJson {
-    return this.$store.getters.getJson
-  }
+  @Getter('getArchives') items: IArchive[]
+  @Getter('getJson') json: IJson
 
   getDate(stamp: string): string {
     return now(stamp).date

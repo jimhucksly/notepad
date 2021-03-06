@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 import { uniqueid } from '~/helpers'
 
 Vue.component('CloseBtn', {
@@ -18,17 +18,12 @@ export default class Popup extends Vue {
   @Mutation('setIsUploadingPopupShow') showUploadingPopup: (value: boolean) => void
   @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
 
+  @Getter('getIsAboutPopupShow') aboutPopupShow: boolean
+  @Getter('getIsUploadingPopupShow') uploadingPopupShow: boolean
+  @Getter('getIsLinkAddPopupShow') linkAddPopupShow: boolean
+
   appName = ''
 
-  get aboutPopupShow() {
-    return this.$store.getters.getIsAboutPopupShow
-  }
-  get uploadingPopupShow() {
-    return this.$store.getters.getIsUploadingPopupShow
-  }
-  get linkAddPopupShow() {
-    return this.$store.getters.getIsLinkAddPopupShow
-  }
   get showPopup() {
     const flags: string[] = ['aboutPopupShow', 'uploadingPopupShow', 'linkAddPopupShow']
     return flags.map((key: string) => this[key]).reduce((res, el) => res || Boolean(el))

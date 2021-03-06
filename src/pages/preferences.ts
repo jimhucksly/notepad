@@ -6,7 +6,7 @@ import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { NavigateCommand } from '~/domain/commands/nav.command'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'Preferences'
@@ -15,6 +15,9 @@ export default class Preferences extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
+
+  @Getter('getUserDataPath') userDataPath: string
+  @Getter('getDownloadsTargetPath') downloadsTargetPath: string
 
   preferences = {
     downloadsTargetPath: ''
@@ -29,13 +32,6 @@ export default class Preferences extends Vue {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   appAutoLauncher: any = null
   isAutoLaunchEnabled = false
-
-  get userDataPath() {
-    return this.$store.getters.getUserDataPath
-  }
-  get downloadsTargetPath() {
-    return this.$store.getters.getDownloadsTargetPath
-  }
 
   save() {
     const form = this.$refs.form as HTMLFormElement

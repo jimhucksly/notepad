@@ -5,8 +5,9 @@ import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { EventsQuery } from '~/domain/queries'
-import { IEvent } from '~/domain/models'
+import { IEvent, IEvents } from '~/domain/models'
 import { UpdateEventCommand, DeleteEventCommand } from '~/domain/commands'
+import { Getter } from 'vuex-class'
 
 Vue.use(BCalendar)
 
@@ -34,6 +35,8 @@ export default class Events extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Getter('getEvents') items: IEvents
+
   bCalendarOptions: IBCalendarOptions = {
     eventsMode: true,
     items: null,
@@ -44,10 +47,6 @@ export default class Events extends Vue {
   header = ''
   search = ''
   itemsFiltered: Array<IFilteredItem> = []
-
-  get items() {
-    return this.$store.getters.getEvents
-  }
 
   @Watch('items')
   onItemsReceived(o: IEvent) {

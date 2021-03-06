@@ -6,7 +6,7 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'ProjectsEditor'
@@ -20,17 +20,12 @@ export default class ProjectsEditor extends Vue {
 
   @Mutation('setFilter') setFilter: (value: IFilters) => void
 
+  @Getter('getJson') json: IJson
+  @Getter('getFilter') filter: IFilters
+
   name = ''
   isLock = false
   isDialog = false
-
-  get json(): IJson {
-    return this.$store.getters.getJson
-  }
-
-  get filter(): IFilters {
-    return this.$store.getters.getFilter
-  }
 
   get item(): IJsonItem {
     return this.json[this.itemStamp] || null

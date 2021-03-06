@@ -4,6 +4,7 @@ import { IMenu } from '~/domain/models'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
+import { Getter } from 'vuex-class'
 
 @Component({
   name: 'SidebarSwitcher'
@@ -11,32 +12,18 @@ import { TYPES } from '~/domain/types'
 export default class SidebarSwitcher extends Vue {
   @Prop({ type: String, default: '' }) readonly legend!: string
 
+  @Getter('getMenu') menu: Array<IMenu>
+  @Getter('getIsProjectsShow') isProjects: boolean
+  @Getter('getIsTodoShow') isTodo: boolean
+  @Getter('getIsLibraryShow') isLibrary: boolean
+  @Getter('getIsEventsShow') isEvents: boolean
+  @Getter('getIsJsonViewerShow') isJsonViewer: boolean
+  @Getter('getIsLinksShow') isLinks: boolean
+
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   private isExpand = false
 
-  get menu(): IMenu[] {
-    return this.$store.getters.getMenu
-  }
-
-  get isProjects() {
-    return this.$store.getters.getIsProjectsShow
-  }
-  get isTodo() {
-    return this.$store.getters.getIsTodoShow
-  }
-  get isLibrary() {
-    return this.$store.getters.getIsLibraryShow
-  }
-  get isEvents() {
-    return this.$store.getters.getIsEventsShow
-  }
-  get isJsonViewer() {
-    return this.$store.getters.getIsJsonViewerShow
-  }
-  get isLinks() {
-    return this.$store.getters.getIsLinksShow
-  }
   get current() {
     if(this.isProjects) return 1
     if(this.isLibrary) return 2

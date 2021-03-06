@@ -6,7 +6,7 @@ import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'Projects'
@@ -20,15 +20,9 @@ export default class Projects extends Vue {
 
   @Mutation('setFilter') setFilter: (value: IFilters) => void
 
-  get isProjects(): boolean {
-    return this.$store.getters.getIsProjectsShow
-  }
-  get json(): IJson {
-    return this.$store.getters.getJson
-  }
-  get filter(): IFilters {
-    return this.$store.getters.getFilter
-  }
+  @Getter('getIsProjectsShow') isProjects: boolean
+  @Getter('getJson') json: IJson
+  @Getter('getFilter') filter: IFilters
 
   @Watch('isProjects')
   onIsProjectsChanged(v: boolean) {

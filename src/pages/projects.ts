@@ -7,6 +7,7 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { SetJsonCommand, UploadFileCommand, UpdateJsonCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
+import { Getter } from 'vuex-class'
 
 @Component({
   name: 'Notepad',
@@ -17,26 +18,21 @@ import { IFile, IFilters, IJson } from '~/domain/models'
 export default class Notepad extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Getter('getJson') json: IJson
+  @Getter('getFilter') filter: IFilters
+  @Getter('getError') isError: boolean
+
   message = ''
   newMsgFlag = false
   isRendered = false
 
   onScrollHandler: () => void = null
 
-  get json(): IJson {
-    return this.$store.getters.getJson
-  }
   get count(): number {
     return this.json ? Object.keys(this.json).length : 0
   }
   get lastStamp(): string {
     return this.count ? Object.keys(this.json)[this.count - 1] : ''
-  }
-  get filter(): IFilters {
-    return this.$store.getters.getFilter
-  }
-  get isError(): boolean {
-    return this.$store.getters.getError
   }
   get hasFilter(): boolean {
     return !isEmpty(this.filter)

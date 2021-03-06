@@ -7,6 +7,8 @@ import SidebarTree from '~/components/sidebarTree'
 import JsonViewerBtns from '~/components/jsonViewerBtns'
 import LinksBtns from '~/components/linksBtns'
 import TodoBtns from '~/components/todoBtns'
+import { Getter } from 'vuex-class'
+import { ITreeItem } from '~/domain/models'
 
 @Component({
   name: 'Sidebar',
@@ -22,47 +24,35 @@ import TodoBtns from '~/components/todoBtns'
   }
 })
 export default class Sidebar extends Vue {
-  isSwitcherMenuExpanded = false
+  @Getter('getIsPreferencesShow') isPreferences: boolean
+  @Getter('getIsProjectsShow') isProjects: boolean
+  @Getter('getIsLibraryShow') isLibrary: boolean
+  @Getter('getIsJsonViewerShow') isJsonViewer: boolean
+  @Getter('getIsLinksShow') isLinks: boolean
+  @Getter('getIsTodoShow') isTodo: boolean
+  @Getter('getMdTree') mdTree: Array<ITreeItem>
 
+  isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
   isProjectsArchivesInit = false
 
-  get isPreferences() {
-    return this.$store.getters.getIsPreferencesShow
-  }
-  get isProjects() {
-    return this.$store.getters.getIsProjectsShow
-  }
   get isProjectEditorVisibility() {
-    if(this.isPreferences) return false
-    if(!this.isProjects) return false
+    if(this.isPreferences || !this.isProjects) {
+      return false
+    }
     if(this.isSwitcherMenuExpanded) {
       return !!this.projectEditedItemKey
     }
     return true
   }
   get isProjectArchivesVisibility() {
-    if(this.isPreferences) return false
-    if(!this.isProjects) return false
+    if(this.isPreferences || !this.isProjects) {
+      return false
+    }
     if(this.isSwitcherMenuExpanded) {
       return this.isProjectsArchivesInit
     }
     return true
-  }
-  get isLibrary() {
-    return this.$store.getters.getIsLibraryShow
-  }
-  get isJsonViewer() {
-    return this.$store.getters.getIsJsonViewerShow
-  }
-  get isLinks() {
-    return this.$store.getters.getIsLinksShow
-  }
-  get isTodo() {
-    return this.$store.getters.getIsTodoShow
-  }
-  get mdTree() {
-    return this.$store.getters.getMdTree
   }
 
   @Watch('isProjects')

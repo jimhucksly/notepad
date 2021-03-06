@@ -1,7 +1,7 @@
 /* eslint-disable-next-line spaced-comment */
 /// <reference path="../../window.d.ts" />
 import { Vue, Component } from 'vue-property-decorator'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import { IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import {
@@ -11,7 +11,7 @@ import {
   LinksQuery
 } from '~/domain/queries'
 import { IEvent, IJson, ILink } from '~/domain/models'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'Titlebar'
@@ -20,16 +20,11 @@ export default class Titlebar extends Vue {
   title = ''
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
-  get isAuth() {
-    return this.$store.getters.getIsAuth
-  }
-  get preferencesShow() {
-    return this.$store.getters.isPreferencesShowed
-  }
+  @Getter('getIsAuth') isAuth: boolean
+  @Getter('getIsPreferencesShow') preferencesShow: boolean
 
   async reload() {
     this.setLoading(true)
