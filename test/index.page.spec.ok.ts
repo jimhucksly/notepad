@@ -1,10 +1,8 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import 'reflect-metadata'
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Index from '../src/pages/index'
-import Auth from '../src/pages/auth'
-import Titlebar from '../src/components/titlebar'
 
 const IndexTemplate = require('../src/pages/index.vue').default
 

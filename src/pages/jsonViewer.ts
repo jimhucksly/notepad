@@ -1,6 +1,7 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { debounce } from 'lodash'
 import { CreateElement, VNode } from 'vue'
+import { IEditor } from '~/domain/models'
 
 const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
@@ -8,12 +9,6 @@ require('brace/theme/twilight')
 
 const JSONFormatter = require('json-formatter-js')
 const fs = require('fs')
-
-interface IEditor {
-  getValue: () => string
-  on: (event: string, callback: () => void) => void
-  setValue: (value: string) => void
-}
 
 @Component({
   name: 'JsonViewer',

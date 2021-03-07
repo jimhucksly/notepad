@@ -4,6 +4,12 @@ export interface IMenu {
   id: number
 }
 
+export interface IEditor {
+  getValue: () => string
+  on: (event: string, callback: () => void) => void
+  setValue: (value: string) => void
+}
+
 export interface ITreeItem {
   id: string
   name: string
@@ -109,7 +115,7 @@ export interface IRootState {
   downloadsTargetPath: string
   component: TComponent
   library: string
-  mdTree: ITreeItem[]
+  libraryTree: ITreeItem[]
   filter: IFilters
   isAuth: boolean
   token: string
