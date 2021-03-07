@@ -30,7 +30,7 @@ export default class Sidebar extends Vue {
   @Getter('getIsJsonViewerShow') isJsonViewer: boolean
   @Getter('getIsLinksShow') isLinks: boolean
   @Getter('getIsTodoShow') isTodo: boolean
-  @Getter('getMdTree') mdTree: Array<ITreeItem>
+  @Getter('getLibraryTree') mdTree: Array<ITreeItem>
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''

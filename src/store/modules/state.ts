@@ -9,7 +9,7 @@ const _state: any = {
   userDataPath: '',
   downloadsTargetPath: '',
   library: '',
-  mdTree: [],
+  libraryTree: [],
   filter: {}
 }
 

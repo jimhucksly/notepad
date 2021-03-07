@@ -11,13 +11,7 @@ import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
-
-interface ITree {
-  children: ITree[]
-  name: string
-  slug: string
-  id: string
-}
+import { ITreeItem } from '~/domain/models'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -53,38 +47,6 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
 
 // let autosaveTimeout = null
 
-let nodes: ITree[] = []
-
-const md = new MarkdownIt({
-  html: false,
-  xhtmlOut: false,
-  breaks: false,
-  langPrefix: 'language-',
-  linkify: false,
-  typographer: false,
-  quotes: '“”‘’',
-  highlight(str: string, lang: string) {
-    return ''
-  }
-})
-
-md.use(MarkdownItAnchor, {
-  slugify: (s: string) => {
-    const slug = translit(s)
-    nodes.push({
-      name: s || '',
-      slug: slug || '',
-      id: uniqueid(8),
-      children: []
-    })
-    return slug
-  },
-  level: [1, 2, 3],
-  permalink: true,
-  permalinkClass: 'md-anchor',
-  permalinkBefore: false
-})
-
 const config = {
   autofocus: true,
   toolbar: [
@@ -112,8 +74,8 @@ const config = {
     underscoresBreakWords: true
   },
   previewRender(plainText: string) {
-    nodes = []
-    return md.render(plainText)
+    Library.nodes = []
+    return Library.md.render(plainText)
   },
   renderingConfig: {
     singleLineBreaks: false,
@@ -135,24 +97,32 @@ export default class Library extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setMdTree') setMdTree: (value: Array<ITree>) => void
+  @Mutation('setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
+
   @Getter('getLibraryData') initialValue: string
 
   editor: SimpleMDEExt = null
   isRendered = false
   links: string[] = []
 
+  static nodes: ITreeItem[] = []
+  static md: MarkdownIt = null
+
   @Watch('initialValue')
   onInitialValueCahnged() {
+    if(!this.editor) {
+      return
+    }
     this.editor.togglePreviewHandler()
     this.buildTree()
   }
 
-  buildTree() {
-    const tree: ITree[] = []
+  buildTree(nodes?: ITreeItem[]): Array<ITreeItem> {
+    const tree: Array<ITreeItem> = []
     let index = -1
-    nodes.forEach(item => {
-      const node = document.getElementById(item.slug)
+    const items = nodes || Library.nodes
+    items.forEach(item => {
+      const node = this.$el.querySelector('#' + item.slug)
       if(node) {
         const level = +node.tagName.slice(-1)
         switch(level) {
@@ -169,103 +139,135 @@ export default class Library extends Vue {
         }
       }
     })
-    this.setMdTree([...cloneDeep(tree)])
+    this.setLibraryTree([...cloneDeep(tree)])
+    return tree
   }
 
   mounted() {
-    const editor = document.getElementById('editor')
-    if(editor) {
-      const editorElement = document.getElementById('editor')
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      const conf: any = {
-        ...config
+    const editor = this.$refs.editor
+    if(!editor) {
+      return
+    }
+    Library.md = new MarkdownIt({
+      html: false,
+      xhtmlOut: false,
+      breaks: false,
+      langPrefix: 'language-',
+      linkify: false,
+      typographer: false,
+      quotes: '“”‘’',
+      highlight(str: string, lang: string) {
+        return ''
       }
-      if(editorElement) {
-        conf.element = editorElement
+    })
+
+    Library.md.use(MarkdownItAnchor, {
+      slugify: (s: string) => {
+        const slug = translit(s)
+        Library.nodes.push({
+          name: s || '',
+          slug: slug || '',
+          id: uniqueid(8),
+          children: []
+        })
+        return slug
+      },
+      level: [1, 2, 3],
+      permalink: true,
+      permalinkClass: 'md-anchor',
+      permalinkBefore: false
+    })
+
+    const editorElement = this.$refs.editor
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const conf: any = {
+      ...config
+    }
+    if(editorElement) {
+      conf.element = editorElement
+    }
+    this.editor = new SimpleMDE(conf)
+    this.editor.value(this.initialValue)
+    this.editor.togglePreviewHandler()
+    const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
+    if(toolbarItemPreview) {
+      toolbarItemPreview.action = () => {
+        this.editor.togglePreviewHandler((isActive: boolean) => {
+          isActive && this.buildTree()
+        })
       }
-      this.editor = new SimpleMDE(conf)
-      this.editor.value(this.initialValue)
-      this.editor.togglePreviewHandler()
-      const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
-      if(toolbarItemPreview) {
-        toolbarItemPreview.action = () => {
-          this.editor.togglePreviewHandler((isActive: boolean) => {
-            isActive && this.buildTree()
+    }
+    const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
+    if(toolbarItemSave) {
+      toolbarItemSave.action = () => {
+        const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
+          new UpdateLibraryCommand(this.editor.value())
+        )
+        Promise
+          .all([sRequest])
+          .then(() => {
+            const statusBar = this.$el.querySelector('.editor-statusbar')
+            if(statusBar) {
+              const savedSatus = statusBar.querySelector('.saved-status')
+              const message = 'Markdown is successfully saved!'
+              savedSatus && (savedSatus.innerHTML = message)
+              setTimeout(() => {
+                savedSatus && (savedSatus.innerHTML = '')
+              }, 3000)
+            }
           })
-        }
-      }
-      const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
-      if(toolbarItemSave) {
-        toolbarItemSave.action = () => {
-          const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
-            new UpdateLibraryCommand(this.editor.value())
-          )
-          Promise
-            .all([sRequest])
-            .then(() => {
-              const statusBar = document.querySelector('.editor-statusbar')
-              if(statusBar) {
-                const savedSatus = statusBar.querySelector('.saved-status')
-                const message = 'Markdown is successfully saved!'
-                savedSatus && (savedSatus.innerHTML = message)
-                setTimeout(() => {
-                  savedSatus && (savedSatus.innerHTML = '')
-                }, 3000)
-              }
-            })
-            .catch(e => {
-              console.log(e)
-            })
-        }
-      }
-      this.buildTree()
-      this.isRendered = true
-      const doc = this.editor.codemirror.getDoc()
-      const count = doc.lineCount()
-      const linkedDoc: ILinkedDoc = doc.linkedDoc({
-        from: 0,
-        to: count
-      })
-
-      const result: string[] = []
-
-      const linked = (o: ILinkedDoc) => {
-        if(o.children) {
-          o.children.forEach(item => {
-            if(item.lines) {
-              item.lines.forEach(line => {
-                result.push(line.text)
-              })
-            }
-            if(item.children) {
-              linked(item)
-            }
+          .catch(e => {
+            console.log(e)
           })
-        }
       }
-      linked(linkedDoc)
-      this.links = result
+    }
+    this.buildTree()
+    this.isRendered = true
+    const doc = this.editor.codemirror.getDoc()
+    const count = doc.lineCount()
+    const linkedDoc: ILinkedDoc = doc.linkedDoc({
+      from: 0,
+      to: count
+    })
 
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      this.$electron.ipcRenderer.on('codemirror-link-click', (event: any, text: string) => {
-        let scrolling = false
-        this.links.forEach((link: string, index: number): void | null => {
-          if(scrolling) return null
-          if(link.indexOf(text) > -1) {
-            scrolling = true
-            this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
-            if(index > 0) {
-              const scrollInfo = this.editor.codemirror.getScrollInfo()
-              this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
-            }
+    const result: string[] = []
+
+    const linked = (o: ILinkedDoc) => {
+      if(o.children) {
+        o.children.forEach(item => {
+          if(item.lines) {
+            item.lines.forEach(line => {
+              result.push(line.text)
+            })
+          }
+          if(item.children) {
+            linked(item)
           }
         })
-      })
+      }
     }
+    linked(linkedDoc)
+    this.links = result
+
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    this.$electron.ipcRenderer.on('codemirror-link-click', (event: any, text: string) => {
+      let scrolling = false
+      this.links.forEach((link: string, index: number): void | null => {
+        if(scrolling) return null
+        if(link.indexOf(text) > -1) {
+          scrolling = true
+          this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
+          if(index > 0) {
+            const scrollInfo = this.editor.codemirror.getScrollInfo()
+            this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
+          }
+        }
+      })
+    })
   }
 
   beforeDestroy() {
-    this.setMdTree([])
+    this.setLibraryTree([])
     this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(this.editor.value()))
   }
 
@@ -278,6 +280,7 @@ export default class Library extends Vue {
       'div',
       {
         staticClass: 'editor_wrapper',
+        ref: 'editor_wrapper',
         style: {
           display: this.isRendered ? 'flex' : 'none'
         }
@@ -286,6 +289,7 @@ export default class Library extends Vue {
         h(
           'textarea',
           {
+            ref: 'editor',
             attrs: {
               name: 'editor',
               id: 'editor'
