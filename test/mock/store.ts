@@ -1,5 +1,5 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
-import { IEvents, ITreeItem } from '../../src/domain/models'
+import { IEvents, ILink, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
   isAuth: boolean
@@ -7,6 +7,7 @@ interface IMockState {
   libraryData: string
   libraryTree: Array<ITreeItem>
   events: IEvents
+  links: Array<ILink>
 }
 
 const storeOptions: StoreOptions<IMockState> = {
@@ -16,7 +17,8 @@ const storeOptions: StoreOptions<IMockState> = {
     loading: false,
     libraryData: '',
     libraryTree: [],
-    events: null
+    events: null,
+    links: null
   },
   actions: {
     actionCheck() {
@@ -35,6 +37,16 @@ const storeOptions: StoreOptions<IMockState> = {
           content: 'Winter is coming'
         }
       })
+    },
+    actionGetLinks(store: ActionContext<IMockState, IMockState>) {
+      store.commit('setLinks', [
+        {
+          'CevUxZnx': {
+            url: 'http://google.ru',
+            name: 'Google'
+          }
+        }
+      ])
     }
   },
   mutations: {
@@ -52,6 +64,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     setEvents(state: IMockState, data: IEvents) {
       state.events = data
+    },
+    setLinks(state: IMockState, data: Array<ILink>) {
+      state.links = data
     }
   },
   getters: {
@@ -69,6 +84,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     getEvents(state: IMockState): IEvents {
       return state.events
+    },
+    getLinks(state: IMockState): Array<ILink> {
+      return state.links
     }
   }
 }

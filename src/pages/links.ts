@@ -5,7 +5,7 @@ import { _container } from '~/domain/container'
 import { LinksQuery } from '~/domain/queries'
 import { UpdateLinksCommand, DeleteLinkCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 interface IItem {
   key: string
@@ -22,15 +22,14 @@ export default class Links extends Vue {
 
   @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
 
-  items: IItem[] = []
+  @Getter('getLinks') links: ILink
 
-  getItems() {
-    const o: ILink = this.$store.getters.getLinks
-    this.items = Object.keys(o).map((key: string) => {
+  get items(): IItem[] {
+    return Object.keys(this.links).map((key: string) => {
       return {
         key,
-        url: o[key].url,
-        name: o[key].name
+        url: this.links[key].url,
+        name: this.links[key].name
       }
     })
   }
@@ -50,7 +49,7 @@ export default class Links extends Vue {
   async remove(key: string) {
     try {
       await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(key))
-      this.items = this.items.filter(el => el.key !== key)
+      await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     } catch(e) {
       console.log(e)
     }
@@ -58,7 +57,6 @@ export default class Links extends Vue {
 
   async mounted() {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
-    this.getItems()
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on('data-transfer', (event: any, data: any) => {
       if(data.target === 'links') {

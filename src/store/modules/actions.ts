@@ -594,6 +594,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         ipcRenderer.send('open-error-dialog', 'delete link failed')
         return Promise.reject(resp)
       }
+
       return Promise.resolve()
     } catch(e) {
       return Promise.reject(e)

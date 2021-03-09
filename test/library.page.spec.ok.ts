@@ -50,6 +50,11 @@ describe('Library page', () => {
     await flushPromises()
   })
 
+  afterEach(() => {
+    buildTreeFake.mockReset()
+    buildTreeFake.mockRestore()
+  })
+
   it('correctly rendered', () => {
     expect(wrapper.findComponent({ ref: 'editor_wrapper' }).exists()).toBe(true)
     expect(wrapper.findComponent({ ref: 'editor' }).exists()).toBe(true)
