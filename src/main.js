@@ -24,7 +24,6 @@ window.Vue = Vue
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  template: '<App/>',
   router,
   store,
   render: h => h(App)
