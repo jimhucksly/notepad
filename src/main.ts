@@ -1,25 +1,20 @@
 import 'reflect-metadata'
-import Vue from 'vue'
-import vueElectron from 'vue-electron'
-
-import App from './App'
-import router from './router/index.ts'
-import store from './store'
-import Anime from '~/plugins/anime'
-import BCheckbox from '~/modules/bcheckbox'
-
-import '~/assets/scss/main.scss'
 import '~/assets/css/simplemde.css'
+import '~/assets/scss/main.scss'
+import BCheckbox from '~/modules/bcheckbox'
+import Anime from '~/plugins/anime'
+import App from './App'
+import router from './router'
+import store from './store'
+import Vue from 'vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
 if(!process.env.IS_WEB) {
-  Vue.use(vueElectron)
+  Vue.prototype.$electron = require('electron')
 }
 Vue.use(Anime)
 Vue.use(BCheckbox)
-
-window.Vue = Vue
 
 /* eslint-disable no-new */
 new Vue({
