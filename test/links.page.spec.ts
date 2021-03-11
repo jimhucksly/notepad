@@ -47,12 +47,12 @@ describe('Links page', () => {
   })
 
   it('correctly rendered', () => {
-    expect(wrapper.find('.links_cont')).not.toBe(null)
+    expect(wrapper.find('.links_cont').exists()).toBe(true)
   })
 
-  it('correctly received links', async () => {
-    // expect(wrapper.vm.links.length).toEqual(1)
-    // expect(wrapper.vm.links[0].name).toEqual('Google')
-    // expect(wrapper.vm.items.length).toEqual(1)
+  it('correctly received links', () => {
+    expect(wrapper.vm.links.length).toEqual(1)
+    expect(wrapper.vm.items.length).toEqual(1)
+    expect(wrapper.vm.items[0].name).toEqual('Google')
   })
 })
