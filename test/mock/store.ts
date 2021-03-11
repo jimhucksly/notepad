@@ -87,6 +87,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     getLinks(state: IMockState): Array<ILink> {
       return state.links
+    },
+    getDownloadsTargetPath(state: IMockState): string {
+      return ''
     }
   }
 }

@@ -32,9 +32,7 @@
         <div class="form-group">
           <div class="form-group-inner flex-between items-center">
             <label class="m-b-5">Run App when Windows startup</label>
-            <b-checkbox
-              v-model="isAutoLaunchEnabled"
-            />
+            <b-checkbox v-model="isAutoLaunchEnabled" />
           </div>
         </div>
       </div>

@@ -29,11 +29,10 @@ export default class Preferences extends Vue {
     downloadsTargetPath: 0
   }
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  appAutoLauncher: any = null
+  appAutoLauncher: AutoLaunch = null
   isAutoLaunchEnabled = false
 
-  save() {
+  validate(): boolean {
     const form = this.$refs.form as HTMLFormElement
     const requireds: NodeListOf<HTMLInputElement> = form.querySelectorAll('[required]')
     if(requireds.length > 0) {
@@ -49,12 +48,14 @@ export default class Preferences extends Vue {
       })
     }
 
-    const valid = Object
+    return Object
       .keys(this.errors)
       .map((key: string) => this.errors[key])
       .reduce((a, b) => a + b) === 0
+  }
 
-    if(valid) {
+  save() {
+    if(this.validate()) {
       storage.append(this.userDataPath, 'UserPreferences', {
         downloadsTargetPath: this.preferences.downloadsTargetPath
       })
@@ -62,16 +63,20 @@ export default class Preferences extends Vue {
 
       if(this.isAutoLaunchEnabled) {
         this.appAutoLauncher.enable()
-      } else this.appAutoLauncher.disable()
+      } else {
+        this.appAutoLauncher.disable()
+      }
+
+      this.$electron.ipcRenderer.send('preferences-hide')
+      this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
     }
-    this.$electron.ipcRenderer.send('preferences-hide')
-    this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
 
   cancel() {
     this.$electron.ipcRenderer.send('preferences-hide')
     this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
   }
+
   openFolderDialog() {
     this.$electron.ipcRenderer.send('open-folder-dialog', {
       defaultPath: this.downloadsTargetPath
