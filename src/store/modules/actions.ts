@@ -79,16 +79,23 @@ class Actions implements ActionTree<IRootState, IRootState> {
         json = JSON.parse(command.json)
         const currentJson = store.getters['getJson']
         Object.keys(json).forEach(key => {
-          if(currentJson && currentJson[key] === undefined) json[key]['unread'] = true
+          if(currentJson && currentJson[key] === undefined) {
+            json[key]['unread'] = true
+          }
         })
         const haveUnread = Object.keys(json).find(key => json[key].unread) !== undefined
-        if(haveUnread) ipcRenderer.send('set-icon-notification')
-        else ipcRenderer.send('hide-icon-notification')
+        if(haveUnread) {
+          ipcRenderer.send('set-icon-notification')
+        } else {
+          ipcRenderer.send('hide-icon-notification')
+        }
       } catch(err) {
         console.error(err)
         ipcRenderer.send('open-error-dialog', 'json parse is failed')
       }
-    } else json = command.json
+    } else {
+      json = command.json
+    }
     store.commit('setJson', json)
   }
 

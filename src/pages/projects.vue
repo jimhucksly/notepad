@@ -12,7 +12,7 @@
         />
       </template>
     </div>
-    <div class="notepad_textarea">
+    <div class="notepad_textarea" ref="notepad_textarea">
       <textarea placeholder="New record" v-model="message" @keydown.enter.ctrl="send"></textarea>
       <div class="notepad_btns">
         <label class="notepad_attachments">

@@ -1,13 +1,26 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
-import { IEvents, ILink, ITreeItem } from '../../src/domain/models'
+import { IEvents, IFilters, IJson, ILink, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
   isAuth: boolean
   loading: boolean
+  json: IJson
+  filter: IFilters
   libraryData: string
   libraryTree: Array<ITreeItem>
   events: IEvents
   links: Array<ILink>
+  error: boolean
+}
+
+const projectMock = {
+  "20180506144311": {
+    key: "20180506144311",
+    date: "06.05.2018, 14:43",
+    name: "Winter",
+    lock: false,
+    message: "Winter is coming"
+  }
 }
 
 const storeOptions: StoreOptions<IMockState> = {
@@ -15,10 +28,13 @@ const storeOptions: StoreOptions<IMockState> = {
   state: {
     isAuth: false,
     loading: false,
+    json: projectMock,
+    filter: {},
     libraryData: '',
     libraryTree: [],
     events: null,
-    links: null
+    links: null,
+    error: false
   },
   actions: {
     actionCheck() {
@@ -75,6 +91,15 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     getLoading(state: IMockState): boolean {
       return state.loading
+    },
+    getJson(state: IMockState): IJson {
+      return state.json
+    },
+    getFilter(state: IMockState): IFilters {
+      return state.filter
+    },
+    getError(state: IMockState): boolean {
+      return state.error
     },
     getLibraryData(state: IMockState): string {
       return state.libraryData

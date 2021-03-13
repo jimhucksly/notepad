@@ -2,20 +2,18 @@ import 'reflect-metadata'
 import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Preferences from '../src/pages/preferences'
-import BCheckbox from '../src/modules/bcheckbox'
+import Projects from '../src/pages/projects'
 
-const PreferencesTemplate = require('../src/pages/preferences.vue').default
+const ProjectsTemplate = require('../src/pages/projects.vue').default
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
-localVue.use(BCheckbox)
 
 const store = require('./mock/store').default
 
 Vue.prototype.$electron = require('electron')
 
-let wrapper: Wrapper<Preferences>
+let wrapper: Wrapper<Projects>
 
 async function setupTest(props?: any) {
   try {
@@ -27,7 +25,7 @@ async function setupTest(props?: any) {
     if(props) {
       options = { ...options, ...props }
     }
-    wrapper = shallowMount(PreferencesTemplate, options)
+    wrapper = shallowMount(ProjectsTemplate, options)
     await Vue.nextTick()
   } catch (e) {
     console.error(e)
@@ -42,18 +40,25 @@ function flushPromises() {
   })
 }
 
-describe('Links page', () => {
+describe('Projects page', () => {
   beforeEach(async () => {
     await setupTest()
     await flushPromises()
   })
 
   it('correctly rendered', () => {
-    expect(wrapper.find('.preferences').exists()).toBe(true)
-    expect(wrapper.findComponent({ ref: 'form' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ ref: 'notepad_cont' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ ref: 'notepad_textarea' }).exists()).toBe(true)
+    expect(wrapper.find('textarea').exists()).toBe(true)
+    expect(wrapper.find('input[type="file"]').exists()).toBe(true)
+    expect(wrapper.find('button').exists()).toBe(true)
   })
 
-  it('fields validating is correct', () => {
-    expect(wrapper.vm.validate()).toBe(false)
+  it('correctly get json', () => {
+    expect(wrapper.vm.count).toEqual(1)
+    expect(wrapper.vm.lastStamp).toEqual('20180506144311')
+    const key = Object.keys(wrapper.vm.json)[0]
+    const item = wrapper.vm.json[key]
+    expect(item.name).toEqual('Winter')
   })
 })
