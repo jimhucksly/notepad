@@ -63,6 +63,14 @@ export interface IEvent {
 }
 
 export interface ITodo {
+  [key: string]: {
+    date: string
+    text: string
+    order: number
+  }
+}
+
+export interface ITodoItem {
   id: string
   date: string
   text: string

@@ -13,7 +13,8 @@ import {
   ILink,
   IEvent,
   IFile,
-  ITodoOrder
+  ITodoOrder,
+  ITodoItem
 } from '~/domain/models'
 import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
@@ -645,7 +646,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<void> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.post<{ body: ITodo }, void>('TODO', {
+      const resp = await $http.post<{ body: ITodoItem }, void>('TODO', {
         body: command.item
       }, jsonHeaders)
       if(!resp || resp.status !== 'success') {

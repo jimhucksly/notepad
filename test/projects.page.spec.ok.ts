@@ -66,6 +66,5 @@ describe('Projects page', () => {
     wrapper.vm.message = 'Summer is over'
     wrapper.vm.send()
     expect(wrapper.vm.count).toEqual(2)
-
   })
 })

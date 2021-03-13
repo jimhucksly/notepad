@@ -2,8 +2,8 @@ import {
   IJson,
   IEvent,
   ILink,
-  ITodo,
-  ITodoOrder
+  ITodoOrder,
+  ITodoItem
 } from '~/domain/models'
 
 export class AuthCommand {
@@ -76,7 +76,7 @@ export class TodoOrderCommand {
 }
 
 export class UpdateTodoCommand {
-  constructor(public item: ITodo) {}
+  constructor(public item: ITodoItem) {}
 }
 
 export class DeleteTodoCommand {

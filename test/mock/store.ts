@@ -1,6 +1,6 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
 import { SetJsonCommand } from '~/domain/commands'
-import { IEvents, IFilters, IJson, ILink, ITreeItem } from '../../src/domain/models'
+import { IEvents, IFilters, IJson, ILink, ITodo, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
   isAuth: boolean
@@ -11,6 +11,7 @@ interface IMockState {
   libraryTree: Array<ITreeItem>
   events: IEvents
   links: Array<ILink>
+  todo: ITodo
   error: boolean
 }
 
@@ -35,6 +36,7 @@ const storeOptions: StoreOptions<IMockState> = {
     libraryTree: [],
     events: null,
     links: null,
+    todo: null,
     error: false
   },
   actions: {
@@ -68,6 +70,21 @@ const storeOptions: StoreOptions<IMockState> = {
         }
       ])
     },
+    actionGetTodo(store: ActionContext<IMockState, IMockState>) {
+      store.commit('setTodo', {
+        '20200803135045': {
+          text: 'Winter is coming',
+          'date': '03.08.2020, 13:50',
+          'order': 1
+        }
+      })
+    },
+    actionUpdateTodo() {
+      return false
+    },
+    actionRemoveTodo() {
+      return false
+    },
     json(store: ActionContext<IMockState, IMockState>, command: SetJsonCommand): void {
       store.commit('setJson', command.json)
     }
@@ -93,6 +110,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     setLinks(state: IMockState, data: Array<ILink>) {
       state.links = data
+    },
+    setTodo(state: IMockState, data: ITodo) {
+      state.todo = data
     }
   },
   getters: {
@@ -122,6 +142,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     getLinks(state: IMockState): Array<ILink> {
       return state.links
+    },
+    getTodo(state: IMockState): ITodo {
+      return state.todo
     },
     getDownloadsTargetPath(state: IMockState): string {
       return ''

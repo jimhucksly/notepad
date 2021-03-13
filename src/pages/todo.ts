@@ -4,12 +4,12 @@ import { cloneDeep } from 'lodash'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
-import { ITodo, ITodoOrder } from '~/domain/models'
+import { ITodo, ITodoItem, ITodoOrder } from '~/domain/models'
 import { TodoQuery } from '~/domain/queries'
 import { TodoOrderCommand, UpdateTodoCommand, DeleteTodoCommand } from '~/domain/commands'
 import { Getter } from 'vuex-class'
 
-const sortByOrder = (a: ITodo, b: ITodo) => {
+const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   return a.order < b.order ? -1 : 1
 }
 
@@ -22,13 +22,15 @@ export default class Todo extends Vue {
 
   @Getter('getTodo') json: ITodo
 
-  items: ITodo[] = []
+  items: Array<ITodoItem> = []
   isPopupShow = false
-  itemSelected: ITodo | null = null
+  itemSelected: ITodoItem | null = null
   clickTimer: NodeJS.Timeout | null = null
 
+  addTodoHandler: () => void
+
   get keys() {
-    return this.items.map((item: ITodo) => item.id)
+    return this.items.map((item: ITodoItem) => item.id)
   }
 
   @Watch('json')
@@ -194,7 +196,7 @@ export default class Todo extends Vue {
       const id = el.dataset.id
       if(id) {
         result[id] = index + 1
-        const item = this.items.find((o: ITodo) => o.id === id)
+        const item = this.items.find((o: ITodoItem) => o.id === id)
         item && (item.order = index + 1)
       }
     })
@@ -205,7 +207,7 @@ export default class Todo extends Vue {
   edit(id: string) {
     document.onmousemove = null
     document.onmouseup = null
-    const o = this.items.find((item: ITodo) => item.id === id)
+    const o = this.items.find((item: ITodoItem) => item.id === id)
     this.itemSelected = o ? cloneDeep(o) : null
     if(this.itemSelected) {
       this.isPopupShow = true
@@ -225,7 +227,7 @@ export default class Todo extends Vue {
   save() {
     if(this.itemSelected) {
       const id = this.itemSelected.id
-      const o: ITodo | null = this.items.find((item: ITodo) => item.id === id) ?? null
+      const o: ITodoItem | null = this.items.find((item: ITodoItem) => item.id === id) ?? null
       if(o) {
         o.text = this.itemSelected.text
         this.items = [...this.items]
@@ -243,7 +245,7 @@ export default class Todo extends Vue {
   async remove() {
     if(this.itemSelected) {
       const id = this.itemSelected.id
-      this.items = this.items.filter((item: ITodo) => item.id !== id)
+      this.items = this.items.filter((item: ITodoItem) => item.id !== id)
       this.cancel()
       await this.commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
       this.setOrder()
@@ -251,8 +253,8 @@ export default class Todo extends Vue {
   }
 
   setItems() {
-    this.items = Object.keys(this.json).map((key: string): ITodo => {
-      const o: ITodo = {
+    this.items = Object.keys(this.json).map((key: string): ITodoItem => {
+      const o: ITodoItem = {
         id: key,
         date: now(key).date,
         text: this.json[key].text,
@@ -262,23 +264,29 @@ export default class Todo extends Vue {
     }).sort(sortByOrder)
   }
 
+  addTodo() {
+    const { date, stamp } = now()
+    let sstamp: number = +stamp
+    while(this.keys.includes(sstamp.toString())) {
+      sstamp += 1
+    }
+    const o: ITodoItem = {
+      id: sstamp.toString(),
+      date,
+      text: '',
+      order: this.items.length + 1
+    }
+    this.items.push(o)
+    this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
+  }
+
   async mounted() {
     await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
+    this.addTodoHandler = this.addTodo.bind(this)
+    this.$electron.ipcRenderer.on('todo-add', this.addTodoHandler)
+  }
 
-    this.$electron.ipcRenderer.on('todo-add', () => {
-      const { date, stamp } = now()
-      let sstamp: number = +stamp
-      while(this.keys.includes(sstamp.toString())) {
-        sstamp += 1
-      }
-      const o: ITodo = {
-        id: sstamp.toString(),
-        date,
-        text: '',
-        order: this.items.length + 1
-      }
-      this.items.push(o)
-      this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
-    })
+  beforeDestroy() {
+    this.$electron.ipcRenderer.off('todo-add', this.addTodoHandler)
   }
 }
