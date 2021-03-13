@@ -31,6 +31,10 @@ export class DeleteProjectCommand {
   constructor(public stamp: string | number) {}
 }
 
+export class ReadCommand {
+  constructor(public stamp: string | number) {}
+}
+
 export class UploadFileCommand {
   constructor(public file: FormData) {}
 }

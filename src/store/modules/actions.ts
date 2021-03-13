@@ -37,7 +37,8 @@ import {
   DeleteLinkCommand,
   TodoOrderCommand,
   UpdateTodoCommand,
-  DeleteTodoCommand
+  DeleteTodoCommand,
+  ReadCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 
@@ -123,12 +124,16 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setTodo', json)
   }
 
-  read(store: TStore, key: string): void {
+  @Commandable(TYPES.ReadCommand)
+  read(store: TStore, command: ReadCommand): void {
     const json = cloneDeep(store.getters['getJson'])
-    delete json[key]['unread']
+    delete json[command.stamp]['unread']
     const haveUnread = Object.keys(json).find(k => json[k].unread) !== undefined
-    if(haveUnread) ipcRenderer.send('set-icon-notification')
-    else ipcRenderer.send('hide-icon-notification')
+    if(haveUnread) {
+      ipcRenderer.send('set-icon-notification')
+    } else {
+      ipcRenderer.send('hide-icon-notification')
+    }
     store.commit('setJson', json)
   }
 
@@ -194,7 +199,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         password: query.password
       }, jsonHeaders)
       if(resp.token) {
-        store.commit('token', resp.token)
+        store.commit('setToken', resp.token)
         const userDataPath = store.getters.getUserDataPath
         await storage.set(userDataPath, userDataFileName, { token: resp.token })
         console.log('write to file is successfully completed')
@@ -259,7 +264,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.commit('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -286,7 +291,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       console.log(e)
       store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.commit('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -375,7 +380,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.commit('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -403,7 +408,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.commit('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -626,7 +631,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       console.log(e)
       store.commit('setLoading', false)
       store.dispatch('auth', false)
-      store.commit('token', null)
+      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }

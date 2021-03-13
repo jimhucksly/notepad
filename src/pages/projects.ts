@@ -5,7 +5,7 @@ import NotepadItem from '~/components/notepadItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { SetJsonCommand, UploadFileCommand, UpdateJsonCommand } from '~/domain/commands'
+import { SetJsonCommand, UploadFileCommand, UpdateJsonCommand, ReadCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter } from 'vuex-class'
 
@@ -137,7 +137,7 @@ export default class Notepad extends Vue {
       if(elRect.top < viewportHeight) {
         if(!el.classList.contains('.will-be-marked')) {
           setTimeout(() => {
-            this.$store.dispatch('read', el.dataset.stamp)
+            this.commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
             el.classList.remove('unread')
             el.classList.remove('will-be-marked')
             const hasStyle = el.attributes.getNamedItem('style')

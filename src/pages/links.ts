@@ -25,7 +25,7 @@ export default class Links extends Vue {
   @Getter('getLinks') links: Array<ILink>
 
   get items(): IItem[] {
-    if (!this.links) {
+    if(!this.links) {
       return []
     }
     return this.links.map(link => {

@@ -1,4 +1,5 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
+import { SetJsonCommand } from '~/domain/commands'
 import { IEvents, IFilters, IJson, ILink, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
@@ -43,6 +44,9 @@ const storeOptions: StoreOptions<IMockState> = {
     error() {
       return false
     },
+    actionUpdateJson() {
+      return false
+    },
     actionGetLibrary(store: ActionContext<IMockState, IMockState>) {
       store.commit('setLibraryData', '# Winter is comming\n## When the snows fall, and the white winds blow, the lone wolf dies, but the pack survives.')
     },
@@ -63,6 +67,9 @@ const storeOptions: StoreOptions<IMockState> = {
           }
         }
       ])
+    },
+    json(store: ActionContext<IMockState, IMockState>, command: SetJsonCommand): void {
+      store.commit('setJson', command.json)
     }
   },
   mutations: {
@@ -71,6 +78,9 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     setLoading(state: IMockState, flag: boolean) {
       state.loading = flag
+    },
+    setJson(state: IMockState, json: IJson) {
+      state.json = json
     },
     setLibraryData(state: IMockState, data: string) {
       state.libraryData = data

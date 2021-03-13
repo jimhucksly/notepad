@@ -61,4 +61,11 @@ describe('Projects page', () => {
     const item = wrapper.vm.json[key]
     expect(item.name).toEqual('Winter')
   })
+
+  it('correctly send new message', () => {
+    wrapper.vm.message = 'Summer is over'
+    wrapper.vm.send()
+    expect(wrapper.vm.count).toEqual(2)
+
+  })
 })
