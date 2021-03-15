@@ -51,7 +51,10 @@ describe('Links page', () => {
   })
 
   it('correctly received links', () => {
-    expect(wrapper.vm.links.length).toEqual(1)
+    expect(Object.keys(wrapper.vm.links).length).toEqual(1)
+  })
+
+  it('correctly get items', () => {
     expect(wrapper.vm.items.length).toEqual(1)
     expect(wrapper.vm.items[0].name).toEqual('Google')
   })

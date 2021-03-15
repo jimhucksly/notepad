@@ -63,14 +63,12 @@ const storeOptions: StoreOptions<IMockState> = {
       })
     },
     actionGetLinks(store: ActionContext<IMockState, IMockState>) {
-      store.commit('setLinks', [
-        {
-          'CevUxZnx': {
-            url: 'http://google.ru',
-            name: 'Google'
-          }
+      store.commit('setLinks', {
+        'CevUxZnx': {
+          url: 'http://google.ru',
+          name: 'Google'
         }
-      ])
+      })
     },
     actionGetTodo(store: ActionContext<IMockState, IMockState>) {
       store.commit('setTodo', {

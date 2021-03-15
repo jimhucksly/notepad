@@ -22,19 +22,18 @@ export default class Links extends Vue {
 
   @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
 
-  @Getter('getLinks') links: Array<ILink>
+  @Getter('getLinks') links: ILink
 
   get items(): IItem[] {
     if(!this.links) {
       return []
     }
-    return this.links.map(link => {
-      const key = Object.keys(link)[0]
-      const values = Object.values(link)
+    return Object.keys(this.links).map(key => {
+      const values = this.links[key]
       return {
         key,
-        url: values[0].url,
-        name: values[0].name
+        url: values.url,
+        name: values.name
       }
     })
   }
