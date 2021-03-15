@@ -4,10 +4,11 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '../src/router'
 import App from '../src/App'
-import store from '../src/store'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+
+const store = require('./mock/store').default
 
 Vue.prototype.$electron = require('electron')
 

@@ -3,12 +3,13 @@ import 'reflect-metadata'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from '../src/pages/auth'
-import store from '../src/store'
 
 const AuthTemplate  = require('../src/pages/auth.vue').default
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+
+const store = require('./mock/store').default
 
 Vue.prototype.$electron = require('electron')
 

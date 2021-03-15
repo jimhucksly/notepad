@@ -3,6 +3,7 @@ import { SetJsonCommand } from '~/domain/commands'
 import { IEvents, IFilters, IJson, ILink, ITodo, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
+  isDevelopment: boolean
   isAuth: boolean
   loading: boolean
   json: IJson
@@ -16,18 +17,19 @@ interface IMockState {
 }
 
 const projectMock = {
-  "20180506144311": {
-    key: "20180506144311",
-    date: "06.05.2018, 14:43",
-    name: "Winter",
+  '20180506144311': {
+    key: '20180506144311',
+    date: '06.05.2018, 14:43',
+    name: 'Winter',
     lock: false,
-    message: "Winter is coming"
+    message: 'Winter is coming'
   }
 }
 
 const storeOptions: StoreOptions<IMockState> = {
   strict: true,
   state: {
+    isDevelopment: true,
     isAuth: false,
     loading: false,
     json: projectMock,
@@ -116,6 +118,9 @@ const storeOptions: StoreOptions<IMockState> = {
     }
   },
   getters: {
+    getIsDevelopment(state: IMockState): boolean {
+      return state.isDevelopment
+    },
     getIsAuth(state: IMockState): boolean {
       return state.isAuth
     },

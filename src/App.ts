@@ -40,7 +40,10 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.setIsDevelopment(process.env.NODE_ENV === 'development')
+    this.setIsDevelopment(
+      process.env.NODE_ENV === 'development' ||
+      process.env.NODE_ENV === 'test'
+    )
     this.$electron.ipcRenderer.on('preferences-show', () => {
       this.commandBus.do<NavigateCommand, void>(new NavigateCommand('preferences'))
     })

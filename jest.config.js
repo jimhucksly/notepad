@@ -1,6 +1,16 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+let testRegex = [
+  "(spec).[tj]s?"
+]
+
+if(process.env.UNIT) {
+  testRegex = [
+    "(spec.unit).[tj]s?"
+  ]
+}
+
 module.exports = {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -158,7 +168,9 @@ module.exports = {
   testPathIgnorePatterns: ["node_modules"],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  // testRegex: [],
+  testRegex: [
+    ...testRegex
+  ],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
