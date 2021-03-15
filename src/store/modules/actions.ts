@@ -229,14 +229,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Ping
    */
-  @Commandable(TYPES.PingCommand)
+  @Queryable(TYPES.PingCommand)
   async actionPing(_: TStore): Promise<string> {
     try {
-      const resp = await $http.get<string>('PING', jsonHeaders)
-      if(!resp || !resp.data || resp.data !== 'PONG') {
-        return Promise.reject()
-      }
-      return resp.data
+      await $http.get<string>('PING', jsonHeaders)
+      return 'PONG'
     } catch(e) {
       return Promise.reject()
     }
