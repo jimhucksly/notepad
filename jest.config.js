@@ -7,7 +7,7 @@ let testRegex = [
 
 if(process.env.UNIT) {
   testRegex = [
-    "(spec.unit).[tj]s?"
+    process.argv[3] + ".*.spec.[tj]s?$"
   ]
 }
 
