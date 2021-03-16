@@ -1,4 +1,4 @@
-import { VueConstructor, VNode } from 'vue/types'
+import { CreateElement, VueConstructor, VNode } from 'vue/types'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import './bcheckbox.scss'
 
@@ -16,7 +16,7 @@ class BCheckboxComponent extends Vue {
     this.$emit('input', !this.value)
   }
 
-  render(h: typeof Vue.prototype.$createElement): VNode {
+  render(h: CreateElement): VNode {
     return h(
       'label',
       {

@@ -59,6 +59,7 @@ function createWindow() {
     webPreferences: {
       webSecurity: true,
       nodeIntegration: true,
+      contextIsolation: false,
       nativeWindowOpen: true,
       enableRemoteModule: false,
       partition: 'persist:tmp'
