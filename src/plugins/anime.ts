@@ -1,5 +1,5 @@
 import { VueConstructor } from 'vue/types'
-const anime = require('animejs')
+const anime = require('animejs').default
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const Anime = function _anime(options: any) {
@@ -10,12 +10,13 @@ function install(Constructor: VueConstructor) {
   const slideDown = (el: HTMLElement, duration = 300) => {
     el.style.overflow = 'hidden'
     el.style.display = 'block'
+    const h = el.clientHeight
     el.style.visibility = 'hidden'
     el.style.height = '0px'
     el.style.visibility = 'visible'
     anime({
       targets: el,
-      height: el.offsetHeight,
+      height: h,
       easing: 'linear',
       duration: duration,
       complete() {

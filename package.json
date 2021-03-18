@@ -7,8 +7,8 @@
   "license": "Jimhucksly Studio <admin@jimhucksly-studio.ru>",
   "main": "./dist/electron/main.js",
   "scripts": {
-    "dev": "node .electron-vue/dev-runner.js",
-    "build": "node .electron-vue/build.js && electron-builder -w",
+    "dev": "node config/runner.js",
+    "build": "node config/build.js && electron-builder -w",
     "test": "cross-env NODE_ENV=test DEBUG_MODE=1 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest --no-cache",
     "test:unit": "cross-env NODE_ENV=test DEBUG_MODE=1 UNIT=1 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest --no-cache"
   },
@@ -64,7 +64,7 @@
     "@types/simplemde": "^1.11.7",
     "@types/vue": "^2.0.0",
     "@types/webpack-env": "^1.16.0",
-    "animejs": "^3.1.0",
+    "animejs": "^3.2.1",
     "auto-updater": "^1.0.2",
     "axios": "^0.19.2",
     "electron-updater": "^4.0.14",
@@ -104,7 +104,7 @@
     "cross-env": "^5.2.1",
     "css-loader": "^5.0.1",
     "del": "^3.0.0",
-    "electron": "^11.0.3",
+    "electron": "^8.3.4",
     "electron-builder": "^22.9.1",
     "electron-debug": "^3.0.1",
     "electron-squirrel-startup": "^1.0.0",

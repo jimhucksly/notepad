@@ -114,31 +114,39 @@ export default class JsonViewer extends Vue {
   }
 
   mounted() {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('json-viewer-src-set', (_: any, value: any) => {
-      let json: Record<string, unknown> = null
-      try {
-        json = JSON.parse(value)
-        this.editor.setValue(JSON.stringify(json, null, 2))
-      } catch(e) {
-        this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
+    this.$electron.ipcRenderer.on(
+      'json-viewer-src-set',
+      (_: Electron.IpcRendererEvent, value: string) => {
+        let json: Record<string, unknown> = null
+        try {
+          json = JSON.parse(value)
+          this.editor.setValue(JSON.stringify(json, null, 2))
+        } catch(e) {
+          this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
+        }
       }
-    })
+    )
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('json-viewer-save', (_: any, fileName: string) => {
-      fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
-    })
+    this.$electron.ipcRenderer.on(
+      'json-viewer-save',
+      (_: Electron.IpcRendererEvent, fileName: string) => {
+        fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
+      }
+    )
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('json-viewer-clear', (_: any) => {
-      this.editor.setValue('')
-      const res: HTMLElement | null = document.querySelector('.json_viewer_res')
-      if(res) {
-        res.innerHTML = ''
+    this.$electron.ipcRenderer.on(
+      'json-viewer-clear',
+      (_: Electron.IpcRendererEvent) => {
+        this.editor.setValue('')
+        const res: HTMLElement | null = document.querySelector('.json_viewer_res')
+        if(res) {
+          res.innerHTML = ''
+        }
+        if(window.localStorage) {
+          localStorage.removeItem('json_viewer')
+        }
       }
-      if(window.localStorage) {
-        localStorage.removeItem('json_viewer')
-      }
-    })
+    )
 
     if(window.localStorage) {
       const value = localStorage.getItem('json_viewer')

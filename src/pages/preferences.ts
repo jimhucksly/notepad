@@ -81,12 +81,17 @@ export default class Preferences extends Vue {
     this.$electron.ipcRenderer.send('open-folder-dialog', {
       defaultPath: this.downloadsTargetPath
     })
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('open-dialog-paths-selected', (event: any, response: any) => {
-      const path = response && response.filePaths && response.filePaths[0] ? response.filePaths[0] : null
-      const currentPath = this.preferences.downloadsTargetPath || this.userDataPath
-      this.preferences.downloadsTargetPath = path ?? currentPath
-    })
+    this.$electron.ipcRenderer.on(
+      'open-dialog-paths-selected',
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      (event: Electron.IpcRendererEvent, response: any) => {
+        const path = response && response.filePaths && response.filePaths[0]
+          ? response.filePaths[0]
+          : null
+        const currentPath = this.preferences.downloadsTargetPath || this.userDataPath
+        this.preferences.downloadsTargetPath = path ?? currentPath
+      }
+    )
   }
 
   mounted() {

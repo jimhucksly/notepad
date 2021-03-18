@@ -63,17 +63,22 @@ export default class Popup extends Vue {
 
   mounted() {
     this.$electron.ipcRenderer.send('get-window-title')
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('set-window-title', (e: any, title: string) => {
-      this.appName = title
-    })
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('data-transfer', (e: any, data: any) => {
-      if(data.target === 'popup-link-edit') {
-        this.linkUrl = data.data.url
-        this.linkName = data.data.name
-        this.linkId = data.data.key
+    this.$electron.ipcRenderer.on(
+      'set-window-title',
+      (e: Electron.IpcRendererEvent, title: string) => {
+        this.appName = title
       }
-    })
+    )
+    this.$electron.ipcRenderer.on(
+      'data-transfer',
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      (e: Electron.IpcRendererEvent, data: any) => {
+        if(data.target === 'popup-link-edit') {
+          this.linkUrl = data.data.url
+          this.linkName = data.data.name
+          this.linkId = data.data.key
+        }
+      }
+    )
   }
 }

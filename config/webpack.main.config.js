@@ -5,7 +5,6 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 process.env.CHUNKS_LOG = 'true'
 
 const path = require('path')
-const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
@@ -14,9 +13,6 @@ let mainConfig = {
   entry: {
     main: path.join(__dirname, '../src/index.js')
   },
-  externals: [
-    ...Object.keys(dependencies || {})
-  ],
   module: {
     rules: [
       {

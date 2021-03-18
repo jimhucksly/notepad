@@ -61,12 +61,15 @@ export default class Links extends Vue {
 
   async mounted() {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('data-transfer', (event: any, data: any) => {
-      if(data.target === 'links') {
-        this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(data.data))
-        this.items.push(data.data)
+    this.$electron.ipcRenderer.on(
+      'data-transfer',
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      (event: Electron.IpcRendererEvent, data: any) => {
+        if(data.target === 'links') {
+          this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(data.data))
+          this.items.push(data.data)
+        }
       }
-    })
+    )
   }
 }

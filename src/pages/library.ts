@@ -248,22 +248,23 @@ export default class Library extends Vue {
     }
     linked(linkedDoc)
     this.links = result
-
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('codemirror-link-click', (event: any, text: string) => {
-      let scrolling = false
-      this.links.forEach((link: string, index: number): void | null => {
-        if(scrolling) return null
-        if(link.indexOf(text) > -1) {
-          scrolling = true
-          this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
-          if(index > 0) {
-            const scrollInfo = this.editor.codemirror.getScrollInfo()
-            this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
+    this.$electron.ipcRenderer.on(
+      'codemirror-link-click',
+      (event: Electron.IpcRendererEvent, text: string) => {
+        let scrolling = false
+        this.links.forEach((link: string, index: number): void | null => {
+          if(scrolling) return null
+          if(link.indexOf(text) > -1) {
+            scrolling = true
+            this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
+            if(index > 0) {
+              const scrollInfo = this.editor.codemirror.getScrollInfo()
+              this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
+            }
           }
-        }
-      })
-    })
+        })
+      }
+    )
   }
 
   beforeDestroy() {

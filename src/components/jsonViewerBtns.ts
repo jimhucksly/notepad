@@ -45,12 +45,14 @@ export default class JsonViewerBtns extends Vue {
 
   save() {
     this.$electron.ipcRenderer.send('save-file-dialog', {})
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('save-dialog-file-selected', (e: any, file: { filePath: string }) => {
-      if(file && file.filePath) {
-        this.$electron.ipcRenderer.send('json-viewer-save', file.filePath)
+    this.$electron.ipcRenderer.on(
+      'save-dialog-file-selected',
+      (e: Electron.IpcRendererEvent, file: { filePath: string }) => {
+        if(file && file.filePath) {
+          this.$electron.ipcRenderer.send('json-viewer-save', file.filePath)
+        }
       }
-    })
+    )
   }
 
   clear() {

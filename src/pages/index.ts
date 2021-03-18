@@ -120,10 +120,12 @@ export default class Index extends Vue {
 
   async created(): Promise<void> {
     this.$electron.ipcRenderer.send('get-app-path')
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    await this.$electron.ipcRenderer.on('set-app-path', async (e: any, appPath: any) => {
-      await this.setPath(appPath)
-      await this.checkToken(appPath)
-    })
+    await this.$electron.ipcRenderer.on(
+      'set-app-path',
+      async (e: Electron.IpcRendererEvent, appPath: string) => {
+        await this.setPath(appPath)
+        await this.checkToken(appPath)
+      }
+    )
   }
 }

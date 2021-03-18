@@ -42,9 +42,12 @@ export default class Titlebar extends Vue {
   mounted() {
     this.$electron.ipcRenderer.send('get-window-title')
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on('set-window-title', (e: any, title: string) => {
-      this.title = title
-    })
+    this.$electron.ipcRenderer.on(
+      'set-window-title',
+      (e: Electron.IpcRendererEvent, title: string) => {
+        this.title = title
+      }
+    )
     if(document && document.getElementById) {
       const menuBtn = document.getElementById('menu-button')
       menuBtn && menuBtn.addEventListener('click', () => {
