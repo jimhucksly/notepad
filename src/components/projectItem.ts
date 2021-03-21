@@ -1,20 +1,8 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
+import { IJsonItem } from '~/domain/models'
 import { downloadFile } from '~/helpers'
-
-interface IData {
-  key: string
-  name: string
-  date: string
-  lock: boolean
-  message?: string
-  file?: {
-    name: string
-    link: string
-    type: string
-  }
-}
 
 @Component({
   name: 'NotepadItem',
@@ -24,17 +12,13 @@ interface IData {
   }
 })
 export default class NotepadItem extends Vue {
-  @Prop()
-  item!: IData
-
-  @Prop()
-  isLast!: boolean
+  @Prop() item!: IJsonItem
+  @Prop() isLast!: boolean
 
   message = ''
   isEdit = false
 
-  @Watch('item')
-  onItemChanged(o: IData) {
+  @Watch('item') onItemChanged(o: IJsonItem) {
     this.message = this.item.message ?? ''
   }
 

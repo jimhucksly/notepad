@@ -2,7 +2,7 @@
   <div id="notepad_cont" :class="{ 'is-error' : isError }">
     <div class="notepad_cont" ref="notepad_cont">
       <template v-for="(item, stamp) in json">
-        <notepad-item
+        <project-item
           :key="stamp"
           v-if="!hasFilter || `${stamp}` in filter"
           :item="json[stamp]"

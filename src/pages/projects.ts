@@ -1,7 +1,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { isEmpty } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
-import NotepadItem from '~/components/notepadItem'
+import ProjectItem from '~/components/projectItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
@@ -12,7 +12,7 @@ import { Getter } from 'vuex-class'
 @Component({
   name: 'Notepad',
   components: {
-    NotepadItem
+    ProjectItem
   }
 })
 export default class Notepad extends Vue {

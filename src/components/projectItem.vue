@@ -23,4 +23,4 @@
     />
   </div>
 </template>
-<script src="./notepadItem.ts" lang="ts"></script>
+<script src="./projectItem.ts" lang="ts"></script>
