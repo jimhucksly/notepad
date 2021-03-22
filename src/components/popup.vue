@@ -14,7 +14,7 @@
         <p><small>v1.0.0</small></p>
       </div>
       <div>
-        <p><small>&copy; Jimhucksly-Studio, {{ new Date().getFullYear() }}</small></p>
+        <p><small>&copy; {{ author }}, {{ new Date().getFullYear() }}</small></p>
       </div>
     </div>
     <div class="popup-uploading" v-if="uploadingPopupShow">

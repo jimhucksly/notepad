@@ -1,11 +1,11 @@
 import 'reflect-metadata'
-import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import ProjectItem from '../src/components/projectItem'
 import { IJson, IJsonItem } from '../src/domain/models'
 
-const ProjectItemTemplate = require('../src/pages/projectItem.vue').default
+const ProjectItemTemplate = require('../src/components/projectItem.vue').default
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -20,6 +20,8 @@ Object.keys(json).forEach(key => {
   item = json[key]
 })
 
+item.unread = true
+
 Vue.prototype.$electron = require('electron')
 
 let wrapper: Wrapper<ProjectItem>
@@ -29,7 +31,7 @@ async function setupTest(props?: any) {
     let options = {
       sync: false,
       store,
-      props: {
+      propsData: {
         item,
         isLast: true
       },
@@ -38,7 +40,7 @@ async function setupTest(props?: any) {
     if(props) {
       options = { ...options, ...props }
     }
-    wrapper = mount(ProjectItemTemplate, options)
+    wrapper = shallowMount(ProjectItemTemplate, options)
     await Vue.nextTick()
   } catch (e) {
     console.error(e)
@@ -60,6 +62,10 @@ describe('ProjectItem component', () => {
   })
 
   it('correctly rendered', () => {
+    expect(wrapper.find('.notepad_item').exists()).toBe(true)
+  })
 
+  it('item is unread', async () => {
+    expect(wrapper.find('.unread').exists()).toBe(true)
   })
 })

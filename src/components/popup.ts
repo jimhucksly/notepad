@@ -1,6 +1,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { uniqueid } from '~/helpers'
+import { AUTHOR } from '~/constants'
 
 Vue.component('CloseBtn', {
   template: '<div class="popup-close-btn" @click="$emit(\'click\')"></div>'
@@ -80,5 +81,9 @@ export default class Popup extends Vue {
         }
       }
     )
+  }
+
+  get author() {
+    return AUTHOR
   }
 }
