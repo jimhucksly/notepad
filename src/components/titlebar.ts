@@ -17,14 +17,14 @@ import { Getter, Mutation } from 'vuex-class'
   name: 'Titlebar'
 })
 export default class Titlebar extends Vue {
-  title = ''
-
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getIsAuth') isAuth: boolean
   @Getter('getIsPreferencesShow') preferencesShow: boolean
+
+  title = ''
 
   async reload() {
     this.setLoading(true)

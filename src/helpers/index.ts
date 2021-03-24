@@ -6,6 +6,30 @@ import axios from 'axios'
 const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 const REGEXP_EMAIL = /.+@.+\..+/i
 
+export const htmlToText = (html: string): string => {
+  if(!html) {
+    return ''
+  }
+  const div = document.createElement('div')
+  div.innerHTML = html
+  const urls = div.querySelectorAll('a')
+  urls.length && urls.forEach((el: HTMLAnchorElement) => {
+    const href: string = el.href.replace(/\/$/, '')
+    const p = document.createElement('p')
+    p.innerHTML = href
+    div.insertBefore(p, el)
+    el.remove()
+  })
+  const marks = div.querySelectorAll('mark')
+  marks.length && marks.forEach((el: HTMLElement) => {
+    const p = document.createElement('p')
+    p.innerHTML = '###' + el.innerHTML
+    div.insertBefore(p, el)
+    el.remove()
+  })
+  return div.innerHTML.replace(/<br\/?>/g, '\n').replace(/<\/?p\/?>/g, '')
+}
+
 export const checkLinks = (message: string): string => {
   const m: string[] = message.replace(/\n/g, '<br>').split('<br>')
   m.forEach((str, i) => {
@@ -34,10 +58,11 @@ export const checkLinks = (message: string): string => {
 }
 
 export const now = (stamp?: string): { date: string, stamp: string } => {
-  let d: Date
-  if(stamp !== undefined) {
-    d = new Date(stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6'))
-  } else d = new Date()
+  let st: string = ''
+  if(stamp) {
+    st = stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6')
+  }
+  const d = new Date(st)
   const y: string | number = d.getFullYear()
   let mon: string | number = d.getMonth()
   let day: string | number = d.getDate()
