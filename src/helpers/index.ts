@@ -70,15 +70,15 @@ export const now = (stamp?: string): { date: string, stamp: string } => {
   let mm: string | number = d.getMinutes()
   let s: string | number = d.getSeconds()
 
-  mon = (mon + 1) < 10 ? '0' + (mon + 1) : (mon + 1)
-  day = day < 10 ? '0' + day : day
-  h = h < 10 ? '0' + h : h
-  mm = mm < 10 ? '0' + mm : mm
-  s = s < 10 ? '0' + s : s
+  mon = ('0' + (mon + 1)).slice(-2)
+  day = ('0' + day).slice(-2)
+  h = ('0' + h).slice(-2)
+  mm = ('0' + mm).slice(-2)
+  s = ('0' + s).slice(-2)
 
   return {
     date: `${day}.${mon}.${y}, ${h}:${mm}`,
-    stamp: `${y}${mon}${day}${h}${mm}${s}`
+    stamp: stamp || `${y}${mon}${day}${h}${mm}${s}`
   }
 }
 
@@ -241,7 +241,7 @@ export async function downloadFile(
   //   uri: encodeURI(fileUri)
   // })
 
-  const f = 'http://jimhucksly-studio.ru/files/uploads/2016/12/SmartBabyWatch.jpg'
+  const f = 'http://dn-web.ru/files/uploads/2016/12/SmartBabyWatch.jpg'
 
   await axios.get(f, {
     headers: {
@@ -335,6 +335,9 @@ export const uploadingFile = (received: number, total: number) => {
   }
 }
 
+/**
+ * Translit ru-Ru -> en-En
+ */
 export const translit = (val: string) => {
   const space = '_'
   /* eslint-disable object-property-newline */
@@ -398,23 +401,30 @@ export const lowerFirst = (s: string) => {
 
 export const indexOf = (DOMElement: HTMLElement): number => {
   let result = -1
-  if(!DOMElement) return -1
+  if(!DOMElement) {
+    return -1
+  }
   if(DOMElement.classList) {
-    DOMElement.classList.add('index-of-element-search-proc')
-  } else return -1
+    DOMElement.classList.add('__target-element__')
+  } else {
+    return -1
+  }
   const parent = DOMElement.parentNode
-  if(!parent) return -1
-  if(!parent.childNodes) return -1
+  if(!parent || !parent.childNodes) {
+    return -1
+  }
   if(parent.childNodes.length === 1) return 0
   const children: HTMLElement[] = []
   parent.childNodes.forEach(el => {
     if((el as HTMLElement).tagName) children.push((el as HTMLElement))
   })
-  if(!children.length) return -1
+  if(!children.length) {
+    return -1
+  }
   children.forEach((elem, i) => {
     if(elem.classList) {
-      if(elem.classList.contains('index-of-element-search-proc')) {
-        elem.classList.remove('index-of-element-search-proc')
+      if(elem.classList.contains('__target-element__')) {
+        elem.classList.remove('__target-element__')
         result = i
       }
     }
