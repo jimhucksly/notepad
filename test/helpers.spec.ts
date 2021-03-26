@@ -20,9 +20,15 @@ describe('Helpers', () => {
     expect(checkLinks(text)).toEqual(html)
   })
 
-  it('now', () => {
+  it('now: with stamp', () => {
     const { date } = now('20180506144311')
     expect(date).toEqual('06.05.2018, 14:43')
+  })
+
+  it('now: without stamp', () => {
+    const { date, stamp } = now()
+    expect(typeof date).toEqual('string')
+    expect(typeof stamp).toEqual('string')
   })
 
   it('isJSON', () => {

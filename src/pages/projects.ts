@@ -96,8 +96,8 @@ export default class Notepad extends Vue {
 
   async upload(file: FormData, fileType: string) {
     try {
-      const resp = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
-      this.addFile(resp.name, resp.link, fileType)
+      const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
+      this.addFile(newFile.name, newFile.link, fileType)
     } catch(e) {
       console.error(e)
     }

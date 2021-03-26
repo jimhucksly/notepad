@@ -58,12 +58,15 @@ export const checkLinks = (message: string): string => {
 }
 
 export const now = (stamp?: string): { date: string, stamp: string } => {
-  let st: string = ''
+  let st = ''
   if(stamp) {
     st = stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6')
   }
-  const d = new Date(st)
-  const y: string | number = d.getFullYear()
+  const d = st ? new Date(st) : new Date()
+  const y = d.getFullYear()
+  if(isNaN(y)) {
+    return null
+  }
   let mon: string | number = d.getMonth()
   let day: string | number = d.getDate()
   let h: string | number = d.getHours()
