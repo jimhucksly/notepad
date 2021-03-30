@@ -6,7 +6,7 @@ import {
   getFileType,
   translit,
   indexOf
-} from '../src/helpers/index'
+} from './index'
 
 const html = 'My site <br><a href=\"http:\/\/dn-web.ru\" target=\"_blank\">http:\/\/dn-web.ru<\/a>'
 const text = 'My site \nhttp://dn-web.ru'

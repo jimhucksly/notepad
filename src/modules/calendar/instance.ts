@@ -374,8 +374,11 @@ class CalendarComponent extends Vue {
       this.op.disableDaysBefore = null
     }
 
-    if(this.op.mode === 'd') this.renderCalendar(this.currentDate)
-    else this.fillHeader()
+    if(this.op.mode === 'd') {
+      this.renderCalendar(this.currentDate)
+    } else {
+      this.fillHeader()
+    }
   }
 
   render(h: CreateElement): VNode {

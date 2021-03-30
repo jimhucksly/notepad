@@ -8,7 +8,7 @@
     "paths": {
       "~/*": ["*"]
     },
-    "types": ["reflect-metadata", "node"],
+    "types": ["reflect-metadata", "node", "jest"],
     "outDir": "./dist",
     "newLine": "LF",
     "preserveConstEnums": true,

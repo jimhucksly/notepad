@@ -1,6 +1,6 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { VueConstructor, VNode } from 'vue/types'
-import CalendarInstance from './calendar'
+import CalendarInstance from './instance'
 import { IEvent } from '~/domain/models'
 import './calendar.scss'
 
@@ -102,7 +102,7 @@ export const defaults: IOptions = {
   items: null,
   mode: 'd',
   setDate: '', // 01.01.2001
-  disableDaysBefore: new Date(),
+  disableDaysBefore: null, // new Date(),
   disableDaysAfter: null, // new Date()
   onlyDates: [], // [31.10.2018, 01.11.2018, 02.11.2018, ...]
   labels: [], // [15000, 16000]
