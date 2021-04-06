@@ -37,9 +37,13 @@ export interface IOptions {
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function isDate(date: any): boolean {
-  return date instanceof Date
+  return date instanceof Date && !isNaN(date.getFullYear())
 }
 
+/**
+ * @param {string} d 15.01.2001
+ * @return {Date}
+ */
 export function getNativeDate(d: string): Date | null {
   if(/^(\d+).(\d+).(\d+)$/.test(d)) {
     return new Date(d.replace(/^(\d+)\.(\d+)\.(\d+)$/, '$2/$1/$3'))
@@ -178,17 +182,17 @@ class BCalendarComponent extends Vue {
     }
   }
 
-  public apply() {
+  apply() {
     if(this.range.length === 2) {
       this.emit()
     }
   }
 
-  public reset() {
+  reset() {
     this.range = []
   }
 
-  public daySelected(date: string) {
+  daySelected(date: string) {
     if(this.op.range) {
       if(!this.range.length) {
         this.range.push(date)
@@ -258,14 +262,14 @@ class BCalendarComponent extends Vue {
     }
   }
 
-  public prevMonth() {
+  prevMonth() {
     const date = getNativeDate(this.date1.toString())
     if(date) {
       this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
     }
   }
 
-  public nextMonth() {
+  nextMonth() {
     const date = getNativeDate(this.date1.toString())
     if(date) {
       date.setDate(1)
@@ -273,7 +277,7 @@ class BCalendarComponent extends Vue {
     }
   }
 
-  public nextRangeMonth() {
+  nextRangeMonth() {
     const date = getNativeDate(this.date1.toString())
     if(date) {
       date.setDate(1)
@@ -281,14 +285,14 @@ class BCalendarComponent extends Vue {
     }
   }
 
-  public prevRangeMonth() {
+  prevRangeMonth() {
     const date = getNativeDate(this.date1.toString())
     if(date) {
       this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
     }
   }
 
-  public setActiveDate(date: string) {
+  setActiveDate(date: string) {
     if(this.op.range && this.range.length === 1) {
       const d = getNativeDate(date)
       if(d) {
@@ -299,7 +303,7 @@ class BCalendarComponent extends Vue {
     this.active = ''
   }
 
-  public setMonth(instanceId: number, index: number) {
+  setMonth(instanceId: number, index: number) {
     if(instanceId === 1) {
       const date: Date = getNativeDate(this.date1.toString())
       if(date) {
@@ -318,34 +322,34 @@ class BCalendarComponent extends Vue {
     }
   }
 
-  public setYear(year: number) {
+  setYear(year: number) {
     const date: Date = getNativeDate(this.date1.toString())
     if(date) {
       this.op.setDate = new Date(date.setFullYear(year)).toString()
     }
   }
 
-  public setToday() {
+  setToday() {
     const date = getNativeDate(this.baseDate.toString())
     if(date) {
       this.op.setDate = new Date(date).toString()
     }
   }
 
-  public formClear() {
+  formClear() {
     this.event = { date: '', title: '', content: '' }
     this.formShow = false
     this.$emit('form-toggle', this.formShow)
   }
 
-  public formSave() {
+  formSave() {
     if(this.event.title && this.event.content) {
       this.$emit('save', this.event)
       this.formClear()
     }
   }
 
-  public formRemove() {
+  formRemove() {
     this.$emit('remove', this.event.date)
     this.formClear()
   }

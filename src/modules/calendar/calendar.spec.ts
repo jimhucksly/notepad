@@ -1,13 +1,14 @@
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
 import { Component } from 'vue-property-decorator'
 import Vue, { CreateElement, VNode } from 'vue'
-import BCalendar from './'
+import BCalendar, { getNativeDate, isDate } from './'
 
 const localVue = createLocalVue()
 localVue.use(BCalendar)
 
 const bCalendarOptions = {
-  eventsMode: true
+  eventsMode: true,
+  setDate: '15.01.2001'
 }
 
 @Component
@@ -68,14 +69,49 @@ describe('Calendar', () => {
   })
 
   it('rendered correctly: eventMode', () => {
-    console.log(wrapper.vm)
     expect(wrapper.find('.b-calendar-card').exists()).toBe(true)
-    // expect(wrapper.find('.b-calendar-wrap').exists()).toBe(true)
-    // expect(wrapper.findAll('.calendar-instance').length).toBe(1)
+    expect(wrapper.find('.b-calendar-wrap').exists()).toBe(true)
+    expect(wrapper.find('.b-calendar--events').exists()).toBe(true)
+  })
+
+  it('getNativeDate', () => {
+    const d = '15.01.2001'
+    expect(getNativeDate(d) instanceof Date).toBe(true)
+    expect(getNativeDate(d).toLocaleString()).toEqual('15.01.2001, 00:00:00')
+  })
+
+  it('isDate', () => {
+    const d = '15.01.2001'
+    expect(isDate(getNativeDate(d))).toBe(true)
+  })
+
+  it('show form when day is selected', async () => {
+    const d = '15.01.2001'
+    const calendar: any = wrapper.vm.$refs.calendar
+    calendar.daySelected(d)
+    await Vue.nextTick()
+    expect(wrapper.find('.b-calendar-form').exists()).toBe(true)
+  })
+
+  it('prev month', async () => {
+    const calendar: any = wrapper.vm.$refs.calendar
+    calendar.prevMonth()
+    await Vue.nextTick()
+    expect(getNativeDate(calendar.op.setDate).toLocaleDateString()).toEqual('15.12.2000')
+  })
+
+  it('next month', async () => {
+    const calendar: any = wrapper.vm.$refs.calendar
+    calendar.nextMonth()
+    await Vue.nextTick()
+    expect(getNativeDate(calendar.op.setDate).toLocaleDateString()).toEqual('01.02.2001')
+  })
+
+  it('set today', async () => {
+    const today = new Date().toLocaleDateString();
+    const calendar: any = wrapper.vm.$refs.calendar
+    calendar.setToday()
+    await Vue.nextTick()
+    expect(getNativeDate(calendar.op.setDate).toLocaleDateString()).toEqual(today)
   })
 })
-
-
-
-
-
