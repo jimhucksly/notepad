@@ -556,7 +556,7 @@ main {
       .json-formatter-toggler {
         opacity: 1;
         &:after {
-          content: '-';
+          content: '-' !important;
           transform: none;
         }
       }
@@ -577,7 +577,7 @@ main {
     font-size: 1.1rem;
 
     &:after {
-      content: '+';
+      content: '+' !important;
       position: absolute;
       top: 0;
       left: 0;
@@ -585,11 +585,12 @@ main {
       justify-content: center;
       width: 12px;
       height: 12px;
-      // color: $yellow_light;
-      // border: 1px solid $yellow_light;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
       color: $editor_blue;
       border: 1px solid $editor_blue;
-      line-height: 11px;
+      line-height: 10px;
       opacity: 0.8;
     }
   }
