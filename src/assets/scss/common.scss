@@ -129,7 +129,7 @@ a[href] {
 
 // projects|markdown scrollbar styling
 
-@each $elem in ('projects_inner', 'markdown',
+@each $elem in ('projects_inner', 'library_inner',
   'projects_editor_inner', 'projects_archives_inner'
 ) {
   .#{$elem}::-webkit-scrollbar-button {

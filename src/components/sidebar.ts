@@ -3,12 +3,12 @@ import SidebarSwitcher from '~/components/sidebarSwitcher'
 import Projects from '~/components/projects'
 import ProjectsEditor from '~/components/projectsEditor'
 import ProjectsArchives from '~/components/projectsArchives'
-import SidebarTree from '~/components/sidebarTree'
+import Library from '~/components/library'
+import LibraryFiles from '~/components/libraryFiles'
 import JsonViewerBtns from '~/components/jsonViewerBtns'
 import LinksBtns from '~/components/linksBtns'
 import TodoBtns from '~/components/todoBtns'
 import { Getter } from 'vuex-class'
-import { ITreeItem } from '~/domain/models'
 
 @Component({
   name: 'Sidebar',
@@ -17,7 +17,8 @@ import { ITreeItem } from '~/domain/models'
     Projects,
     ProjectsEditor,
     ProjectsArchives,
-    SidebarTree,
+    Library,
+    LibraryFiles,
     JsonViewerBtns,
     LinksBtns,
     TodoBtns
@@ -30,11 +31,11 @@ export default class Sidebar extends Vue {
   @Getter('getIsJsonViewerShow') isJsonViewer: boolean
   @Getter('getIsLinksShow') isLinks: boolean
   @Getter('getIsTodoShow') isTodo: boolean
-  @Getter('getLibraryTree') mdTree: Array<ITreeItem>
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
   isProjectsArchivesInit = false
+  isLibraryFilesInit = false
 
   get isProjectEditorVisibility() {
     if(this.isPreferences || !this.isProjects) {
@@ -51,6 +52,16 @@ export default class Sidebar extends Vue {
     }
     if(this.isSwitcherMenuExpanded) {
       return this.isProjectsArchivesInit
+    }
+    return true
+  }
+
+  get isLibraryFilesVisibility() {
+    if(!this.isLibrary) {
+      return false
+    }
+    if(this.isSwitcherMenuExpanded) {
+      return this.isLibraryFilesInit
     }
     return true
   }

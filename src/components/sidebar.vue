@@ -19,21 +19,25 @@
         isProjectsArchivesInit = v
       }"
     />
-    <projectsEditor
+    <projects-editor
       v-if="isProjectEditorVisibility"
       :item-stamp.sync="projectEditedItemKey"
     />
-    <projectsArchives
+    <projects-archives
       v-if="isProjectArchivesVisibility"
       :init="isProjectsArchivesInit"
     />
-    <div
-      class="markdown"
+    <library
       v-show="!isPreferences && isLibrary"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-    >
-      <sidebar-tree :tree="mdTree" />
-    </div>
+      @on-files="(v) => {
+        isLibraryFilesInit = v
+      }"
+    />
+    <library-files
+      v-if="isLibraryFilesVisibility"
+      :init="isLibraryFilesInit"
+    />
     <json-viewer-btns
       class="json_viewer"
       v-show="!isPreferences && isJsonViewer"
