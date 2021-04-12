@@ -10,8 +10,8 @@ import { AxiosError } from 'axios'
 import { Mutation } from 'vuex-class'
 
 interface IErrors {
-  login: number
-  pass: number
+  login: boolean
+  pass: boolean
 }
 
 @Component({
@@ -21,8 +21,8 @@ export default class Auth extends Vue {
   login = ''
   pass = ''
   errors: IErrors = {
-    login: 0,
-    pass: 0
+    login: false,
+    pass: false
   }
 
   timeout: NodeJS.Timeout | null = null
@@ -33,20 +33,20 @@ export default class Auth extends Vue {
 
   @Watch('login')
   onLoginChanged(val: string) {
-    this.errors.login = val.length > 0 ? 0 : 1
+    this.errors.login = !(val.length > 0)
   }
 
   @Watch('pass')
   onPassChanged(val: string) {
-    this.errors.pass = val.length > 0 ? 0 : 1
+    this.errors.pass = !(val.length > 0)
   }
 
   validate(): boolean {
     if(this.login.length === 0) {
-      this.errors.login = 1
+      this.errors.login = true
     }
     if(this.pass.length === 0) {
-      this.errors.pass = 1
+      this.errors.pass = true
     }
     return Object.keys(this.errors).map((key: string) => this.errors[key]).reduce((a, b) => a + b) === 0
   }
@@ -72,9 +72,10 @@ export default class Auth extends Vue {
 
   handleError(e: AxiosError<IResponse<void>>) {
     const data = (e.response ? e.response.data : (e.response || e)) as IResponse<void>
+    console.log(data.messages)
     if(data.messages && !_.isEmpty(data.messages)) {
-      this.errors.login = this.errors.login ? 1 : 0
-      this.errors.pass = this.errors.pass ? 1 : 0
+      this.errors.login = 'login' in data.messages
+      this.errors.pass = 'pass' in data.messages
       this.validate()
     } else {
       console.error(e)
