@@ -7,7 +7,7 @@
 @import './aside';
 
 html {
-  font-family: $regular;
+  font-family: var(--font-regular);
 }
 
 #app, #content {
@@ -70,7 +70,7 @@ main {
   position: relative;
   min-height: 30px;
   width: 100%;
-  background-color: #000;
+  background-color: var(--black);
   margin-bottom: 15px;
   color: #fff;
   font-size: 1rem;
@@ -92,7 +92,7 @@ main {
     left: 15px;
     width: 15px;
     height: 1px;
-    background-color: #ccc;
+    background-color: var(--blue-gray);
   }
 
   &:before {
@@ -123,7 +123,7 @@ main {
   margin-left: -150px;
   padding-bottom: 15px;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--blue-gray);
   box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
 
   img {
@@ -141,11 +141,11 @@ main {
   margin-left: -150px;
   padding-bottom: 15px;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--blue-gray);
   box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
 
   .uploading-label {
-    color: $blue_light;
+    color: var(--blue_light);
     font-size: 12px;
     margin-left: 30px;
     margin-bottom: 5px;
@@ -156,7 +156,7 @@ main {
     width: 0;
     height: 15px;
     margin-left: 30px;
-    background-color: $blue;
+    background-color: var(--blue);
 
     span {
       display: block;
@@ -180,7 +180,7 @@ main {
   margin-left: -250px;
   padding-bottom: 15px;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--blue-gray);
   box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
   form {
     padding: 6px;
@@ -200,7 +200,7 @@ main {
 .loading {
   width: 150px;
   height: 15px;
-  background-color: $blue;
+  background-color: var(--blue);
 
   &:after {
     content: '';
@@ -229,7 +229,7 @@ main {
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: #eee;
+  background-color: var(--blue-gray_light);
 
 
   .title {
@@ -253,8 +253,8 @@ main {
   padding: 6px;
   padding-bottom: 0;
   padding-right: 0;
-  background-color: #eee;
-  border-bottom: 1px solid #ccc;
+  background-color: var(--blue-gray_light);
+  border-bottom: 1px solid var(--blue-gray);
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -269,7 +269,7 @@ main {
     border: 1px solid transparent;
 
     &.unread {
-      background-color: lighten($blue_light, 50%);
+      background-color: lighten(var(--blue_light), 50%);
     }
 
     &:last-child {
@@ -305,9 +305,9 @@ main {
       width: 45px;
       height: 30px;
       border: none;
-      background: #eee;
+      background: var(--blue-gray_light);
       opacity: 0.3;
-      border: 1px solid #ccc;
+      border: 1px solid var(--blue-gray);
 
       svg {
         max-width: 65%;
@@ -345,7 +345,7 @@ main {
       display: none;
       position: relative;
       height: 13px;
-      background-color: $blue;
+      background-color: var(--blue);
       margin-left: 15px;
 
       span {
@@ -356,11 +356,11 @@ main {
         top: 0;
         right: -18px;
         font-size: 11px;
-        color: #333;
+        color: var(--dark);
         white-space: nowrap;
 
         &.error {
-          color: $red;
+          color: var(--red);
         }
       }
     }
@@ -373,7 +373,7 @@ main {
   flex-basis: 40%;
   flex-grow: 0;
   padding: 6px;
-  background-color: #eee;
+  background-color: var(--blue-gray_light);
 
   textarea {
     flex-basis: 100%;
@@ -391,7 +391,7 @@ main {
   button {
     width: 45px;
     flex-basis: 100%;
-    background-color: #eee;
+    background-color: var(--blue-gray_light);
     background-image: url('../../../static/icon-send.svg');
     background-repeat: no-repeat;
     background-position: center;
@@ -454,7 +454,7 @@ main {
     padding: 15px;
     flex-basis: 65px;
     flex-grow: 0;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--blue-gray);
   }
 }
 
@@ -533,16 +533,16 @@ main {
     display: block;
     width: 5px;
     height: 100%;
-    background-color: darken($dark, 5%);
-    border-left: 1px solid $blue-gray;
-    border-right: 1px solid $blue-gray;
+    background-color: var(--dark_darken-2);
+    border-left: 1px solid var(--blue-gray);
+    border-right: 1px solid var(--blue-gray);
     z-index: 999;
     cursor: e-resize;
   }
 
   .json_viewer_res {
     padding: 6px;
-    background-color: $editor_dark;
+    background-color: var(--editor_dark);
     max-height: 100%;
     overflow: auto;
   }
@@ -588,8 +588,8 @@ main {
       font-size: 13px;
       font-weight: 700;
       text-align: center;
-      color: $editor_blue;
-      border: 1px solid $editor_blue;
+      color: var(--editor_blue);
+      border: 1px solid var(--editor_blue);
       line-height: 10px;
       opacity: 0.8;
     }
@@ -601,7 +601,7 @@ main {
 
     .json-formatter-key {
       // color: #9b859d;
-      color: $editor_yellow;
+      color: var(--editor_yellow);
     }
 
     .json-formatter-bracket {
@@ -609,21 +609,20 @@ main {
     }
 
     .json-formatter-number {
-      color: $editor_blue;
+      color: var(--editor_blue);
     }
 
     .json-formatter-null,
     .json-formatter-boolean {
-      color: $editor_red;
+      color: var(--editor_red);
     }
 
     .json-formatter-string {
-      // color: #8F9D6A;
-      color: $editor_green;
+      color: var(--editor_green);
     }
 
     .json-formatter-empty {
-      color: #eee;
+      color: var(--blue-gray_light);
     }
   }
 }
@@ -715,7 +714,7 @@ main {
       left: 0;
       width: 100%;
       margin-top: -1px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--blue-gray);
       background-color: #fff;
       z-index: 999;
 
@@ -724,14 +723,14 @@ main {
           cursor: pointer;
           font-size: 0.9rem;
           padding: 8px 4px;
-          border-bottom: 1px solid #ccc;
+          border-bottom: 1px solid var(--blue-gray);
 
           &:last-child {
             border-bottom-color: transparent;
           }
 
           &:hover {
-            background-color: #eee;
+            background-color: var(--blue-gray_light);
           }
 
           &.not-clickable {
@@ -759,13 +758,13 @@ main {
   flex-grow: 1;
   padding: 6px;
   padding-right: 0;
-  background-color: #eee;
+  background-color: var(--blue-gray_light);
   overflow: hidden;
 
   .links_area {
     flex-basis: 100%;
     background-color: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid var(--blue-gray);
     border-right-width: 0;
     padding: 12px;
     padding-right: 0;
@@ -783,12 +782,12 @@ main {
           flex-basis: 100%;
           font-size: 1.1rem;
           padding: 6px 0;
-          color: $dark;
+          color: var(--dark);
           text-decoration: none;
           transition: all 0.2s;
 
           &:hover {
-            color: $blue;
+            color: var(--blue);
           }
         }
         button {
@@ -815,7 +814,7 @@ main {
           }
         }
         &:hover {
-          background-color: #eee;
+          background-color: var(--blue-gray_light);
           button {
             display: flex;
           }
@@ -834,7 +833,7 @@ main {
   padding: 3px;
   flex-basis: 100%;
   flex-grow: 1;
-  background-color: #eee;
+  background-color: var(--blue-gray_light);
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -870,7 +869,7 @@ main {
   }
 
   .todo_item-header {
-    background-color: $blue_light;
+    background-color: var(--blue_light);
     color: #fff;
     padding: 6px;
     font-size: 0.8rem;
@@ -919,7 +918,7 @@ main {
     z-index: 101;
 
     .todo_popup-header {
-      background-color: $blue_light;
+      background-color: var(--blue_light);
       color: #fff;
       padding: 12px;
       text-align: right;

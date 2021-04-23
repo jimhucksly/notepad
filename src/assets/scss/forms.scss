@@ -1,6 +1,3 @@
-
-@import './variables.scss';
-
 .form-group {
   display: flex;
   margin-bottom: 15px;
@@ -12,13 +9,13 @@
 
     label {
       display: block;
-      color: $blue;
+      color: var(--blue);
       font-size: 13px;
       line-height: 30px;
       transition: all 0.3s;
 
       &.error {
-        color: $red;
+        color: var(--red);
       }
     }
   }
@@ -34,7 +31,7 @@
 }
 
 .form-label-error {
-  color: $red;
+  color: var(--red);
   font-size: 12px;
 }
 
@@ -74,24 +71,24 @@
 
 input[type=text],
 input[type=password] {
-  border: 1px solid #ccc;
+  border: 1px solid var(--blue-gray);
   height: 30px;
   font-size: 14px;
   width: 100%;
   padding: 0 6px;
 
   &.error {
-    border: 1px solid $red;
+    border: 1px solid var(--red);
   }
 
   &[readonly] {
-    color: #bbb;
+    color: var(--blue-gray);
   }
 }
 
 input[type=text]:not([readonly]):focus,
 input[type=password]:not([readonly]):focus {
-  border-color: $blue_light;
+  border-color: var(--blue_light);
 }
 
 input[type="file"] {
@@ -102,15 +99,15 @@ textarea {
   width: 100%;
   height: 100%;
   padding: 6px;
-  font-family: $regular;
+  font-family: var(--font-regular);
   font-size: 13px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--blue-gray);
   resize: none;
   overflow: auto;
 
   &:focus {
     outline: none;
-    border: 1px solid $blue_light;
+    border: 1px solid var(--blue_light);
   }
 }
 
@@ -125,25 +122,25 @@ textarea {
 }
 
 .btn-primary {
-  background-color: $blue_light;
+  background-color: var(--blue_light);
   &:hover {
-    background-color: lighten($blue_light, 5%);
+    background-color: var(--blue_light-1);
   }
 }
 
 .btn-default {
   background-color: #fff;
-  border: 1px solid #ccc;
-  color: #333;
+  border: 1px solid var(--blue-gray);
+  color: var(--dark);
   &:hover {
-    background-color: #ccc;
+    background-color: var(--blue-gray);
   }
 }
 
 .btn-danger {
-  background-color: $editor_red;
+  background-color: var(--editor_red);
   &:hover {
-    background-color: lighten($editor_red, 5%);
+    background-color: var(--editor_red_light);
   }
 }
 
