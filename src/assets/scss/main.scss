@@ -269,7 +269,7 @@ main {
     border: 1px solid transparent;
 
     &.unread {
-      background-color: lighten(var(--blue_light), 50%);
+      background-color: var(--blue_light-2);
     }
 
     &:last-child {

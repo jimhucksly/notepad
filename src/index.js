@@ -218,6 +218,10 @@ ipcMain.on('get-window-title', (event) => {
   event.sender.send('set-window-title', mainWindow.getTitle())
 })
 
+ipcMain.on('get-is-maximized', (event) => {
+  event.sender.send('set-is-maximized', mainWindow.isMaximized())
+})
+
 ipcMain.on('minimize', (event) => {
   mainWindow.minimize()
 })
@@ -228,6 +232,7 @@ ipcMain.on('min-max', (event) => {
   } else {
     mainWindow.maximize()
   }
+  event.sender.send('set-is-maximized', mainWindow.isMaximized())
 })
 
 ipcMain.on('hide', (event) => {

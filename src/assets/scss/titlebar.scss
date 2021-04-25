@@ -154,6 +154,18 @@
   height: 100%;
   cursor: default;
 
+  &:not(.is-maximized) {
+    &:before {
+      display: none;
+    }
+    &:after {
+      top: 9px;
+      left: 17px;
+      width: 11px;
+      height: 11px;
+    }
+  }
+
   &:before,
   &:after {
     content: '';

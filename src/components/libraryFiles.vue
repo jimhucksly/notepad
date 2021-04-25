@@ -10,6 +10,18 @@
       <ul>
         <li>
           <span>SOLID</span>
+          <div>
+            <i
+              class="icon icon-read"
+            >
+              <svg-icon icon="readIcon" />
+            </i>
+            <i
+              class="icon icon-remove"
+            >
+              <svg-icon icon="removeIconSm" />
+            </i>
+          </div>
         </li>
         <li>
           <span>Алгоритмы</span>

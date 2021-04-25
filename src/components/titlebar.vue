@@ -1,7 +1,7 @@
 <template>
   <div class="title-bar">
     <div class="menu-button-container">
-      <button id="menu-button" class="menu-button">
+      <button id="menu-button" class="menu-button" @click="$electron.ipcRenderer.send('menu-popup')">
         <i></i>
         <i></i>
         <i></i>
@@ -21,9 +21,24 @@
       <p>{{ title }}</p>
     </div>
     <div class="window-controls-container">
-      <button id="minimize-button" class="minimize-button"></button>
-      <button id="min-max-button" class="min-max-button"></button>
-      <button id="close-button" class="close-button"></button>
+      <button
+        id="minimize-button"
+        class="minimize-button"
+        @click="$electron.ipcRenderer.send('minimize')"
+      ></button>
+      <button
+        id="min-max-button"
+        class="min-max-button"
+        :class="{
+          'is-maximized': isMaximized
+        }"
+        @click="$electron.ipcRenderer.send('min-max')"
+      ></button>
+      <button
+        id="close-button"
+        class="close-button"
+        @click="$electron.ipcRenderer.send('hide')"
+      ></button>
     </div>
   </div>
 </template>

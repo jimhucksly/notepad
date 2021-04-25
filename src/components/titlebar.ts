@@ -25,6 +25,7 @@ export default class Titlebar extends Vue {
   @Getter('getIsPreferencesShow') preferencesShow: boolean
 
   title = ''
+  isMaximized = false
 
   async reload() {
     this.setLoading(true)
@@ -41,33 +42,18 @@ export default class Titlebar extends Vue {
 
   mounted() {
     this.$electron.ipcRenderer.send('get-window-title')
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     this.$electron.ipcRenderer.on(
       'set-window-title',
       (e: Electron.IpcRendererEvent, title: string) => {
         this.title = title
       }
     )
-    if(document && document.getElementById) {
-      const menuBtn = document.getElementById('menu-button')
-      menuBtn && menuBtn.addEventListener('click', () => {
-        this.$electron.ipcRenderer.send('menu-popup')
-      })
-
-      const minimizeBtn = document.getElementById('minimize-button')
-      minimizeBtn && minimizeBtn.addEventListener('click', () => {
-        this.$electron.ipcRenderer.send('minimize')
-      })
-
-      const minMaxBtn = document.getElementById('min-max-button')
-      minMaxBtn && minMaxBtn.addEventListener('click', () => {
-        this.$electron.ipcRenderer.send('min-max')
-      })
-
-      const closebtn = document.getElementById('close-button')
-      closebtn && closebtn.addEventListener('click', () => {
-        this.$electron.ipcRenderer.send('hide')
-      })
-    }
+    this.$electron.ipcRenderer.send('get-is-maximized')
+    this.$electron.ipcRenderer.on(
+      'set-is-maximized',
+      (e: Electron.IpcRendererEvent, isMaximized: boolean) => {
+        this.isMaximized = isMaximized
+      }
+    )
   }
 }

@@ -15,6 +15,7 @@ $black_light: lighten($black, 20%);
 $blue: #2766BA;
 $blue_light: #2A86BB;
 $blue_light-1: lighten($blue_light, 5%);
+$blue_light-2: lighten($blue_light, 50%);
 
 $red: #FB004D;
 $red_light: #FB404F;
@@ -50,6 +51,7 @@ $editor_red: #CF6A4C;
   --blue: #{$blue};
   --blue_light: #{$blue_light};
   --blue_light-1: #{$blue_light-1};
+  --blue_light-2: #{$blue_light-2};
   --red: #{$red};
   --red_light: #{$red_light};
   --yellow: #{$yellow};
