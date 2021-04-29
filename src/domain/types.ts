@@ -7,6 +7,8 @@ const TYPES = {
   AuthQuery: Symbol.for('AuthQuery'),
   JsonQuery: Symbol.for('JsonQuery'),
   LibraryQuery: Symbol.for('LibraryQuery'),
+  LibraryFilesQuery: Symbol.for('LibraryFilesQuery'),
+  LibraryFileQuery: Symbol.for('LibraryFileQuery'),
   OAuthQuery: Symbol.for('OAuthQuery'),
   ArchivesQuery: Symbol.for('ArchivesQuery'),
   EventsQuery: Symbol.for('EventsQuery'),

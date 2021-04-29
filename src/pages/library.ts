@@ -8,10 +8,10 @@ import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
-import { LibraryQuery } from '~/domain/queries'
+import { LibraryFilesQuery, LibraryQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
-import { ITreeItem } from '~/domain/models'
+import { ILibraryFiles, ITreeItem } from '~/domain/models'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -100,6 +100,7 @@ export default class Library extends Vue {
   @Mutation('setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
 
   @Getter('getLibraryData') initialValue: string
+  @Getter('getLibraryFile') customValue: string
 
   editor: SimpleMDEExt = null
   isRendered = false
@@ -108,8 +109,7 @@ export default class Library extends Vue {
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
 
-  @Watch('initialValue')
-  onInitialValueCahnged() {
+  @Watch('initialValue') onInitialValueCahnged() {
     if(!this.editor) {
       return
     }
@@ -117,78 +117,30 @@ export default class Library extends Vue {
     this.buildTree()
   }
 
-  buildTree(nodes?: ITreeItem[]): Array<ITreeItem> {
-    const tree: Array<ITreeItem> = []
-    let index = -1
-    const items = nodes || Library.nodes
-    items.forEach(item => {
-      const node = this.$el.querySelector('#' + item.slug)
-      if(node) {
-        const level = +node.tagName.slice(-1)
-        switch(level) {
-          case 1:
-            tree.push(item)
-            index++
-            break
-          case 2:
-            tree[index].children.push(item)
-            break
-          case 3:
-            const lastIndex = tree[index].children.length - 1
-            tree[index].children[lastIndex].children.push(item)
-        }
-      }
-    })
-    this.setLibraryTree([...cloneDeep(tree)])
-    return tree
-  }
-
-  mounted() {
-    const editor = this.$refs.editor
-    if(!editor) {
+  @Watch('customValue') onCustomValueChanged() {
+    console.log('customValue!!!!!!!')
+    console.log(this.customValue)
+    console.log(this.editor)
+    const editorElement = this.$refs.editor as HTMLInputElement
+    if(!editorElement) {
       return
     }
-    Library.md = new MarkdownIt({
-      html: false,
-      xhtmlOut: false,
-      breaks: false,
-      langPrefix: 'language-',
-      linkify: false,
-      typographer: false,
-      quotes: '“”‘’',
-      highlight(str: string, lang: string) {
-        return ''
-      }
-    })
+    this.editor.codemirror.setValue(this.customValue)
+  }
 
-    Library.md.use(MarkdownItAnchor, {
-      slugify: (s: string) => {
-        const slug = translit(s)
-        Library.nodes.push({
-          name: s || '',
-          slug: slug || '',
-          id: uniqueid(8),
-          children: []
-        })
-        return slug
-      },
-      level: [1, 2, 3],
-      permalink: true,
-      permalinkClass: 'md-anchor',
-      permalinkBefore: false
-    })
-
-    const editorElement = this.$refs.editor
+  buildEditor(element: HTMLElement, value: string) {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const conf: any = {
       ...config
     }
-    if(editorElement) {
-      conf.element = editorElement
+    if(element) {
+      conf.element = element
     }
+
     this.editor = new SimpleMDE(conf)
-    this.editor.value(this.initialValue)
+    this.editor.value(value)
     this.editor.togglePreviewHandler()
+
     const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
     if(toolbarItemPreview) {
       toolbarItemPreview.action = () => {
@@ -197,6 +149,7 @@ export default class Library extends Vue {
         })
       }
     }
+
     const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
     if(toolbarItemSave) {
       toolbarItemSave.action = () => {
@@ -229,9 +182,7 @@ export default class Library extends Vue {
       from: 0,
       to: count
     })
-
     const result: string[] = []
-
     const linked = (o: ILinkedDoc) => {
       if(o.children) {
         o.children.forEach(item => {
@@ -267,6 +218,70 @@ export default class Library extends Vue {
     )
   }
 
+  buildTree(nodes?: ITreeItem[]): Array<ITreeItem> {
+    const tree: Array<ITreeItem> = []
+    let index = -1
+    const items = nodes || Library.nodes
+    items.forEach(item => {
+      const node = this.$el.querySelector('#' + item.slug)
+      if(node) {
+        const level = +node.tagName.slice(-1)
+        switch(level) {
+          case 1:
+            tree.push(item)
+            index++
+            break
+          case 2:
+            tree[index].children.push(item)
+            break
+          case 3:
+            const lastIndex = tree[index].children.length - 1
+            tree[index].children[lastIndex].children.push(item)
+        }
+      }
+    })
+    this.setLibraryTree([...cloneDeep(tree)])
+    return tree
+  }
+
+  mounted() {
+    Library.md = new MarkdownIt({
+      html: false,
+      xhtmlOut: false,
+      breaks: false,
+      langPrefix: 'language-',
+      linkify: false,
+      typographer: false,
+      quotes: '“”‘’',
+      highlight(str: string, lang: string) {
+        return ''
+      }
+    })
+
+    Library.md.use(MarkdownItAnchor, {
+      slugify: (s: string) => {
+        const slug = translit(s)
+        Library.nodes.push({
+          name: s || '',
+          slug: slug || '',
+          id: uniqueid(8),
+          children: []
+        })
+        return slug
+      },
+      level: [1, 2, 3],
+      permalink: true,
+      permalinkClass: 'md-anchor',
+      permalinkBefore: false
+    })
+
+    const editorElement = this.$refs.editor as HTMLElement
+    if(!editorElement) {
+      return
+    }
+    this.buildEditor(editorElement, this.initialValue)
+  }
+
   beforeDestroy() {
     this.setLibraryTree([])
     this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(this.editor.value()))
@@ -274,6 +289,7 @@ export default class Library extends Vue {
 
   created() {
     this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
+    this.queryBus.exec<LibraryFilesQuery, ILibraryFiles>(new LibraryFilesQuery())
   }
 
   render(h: CreateElement): VNode {

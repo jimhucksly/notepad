@@ -21,7 +21,7 @@ import { userDataFileName } from '~/constants'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import { AuthQuery } from '~/domain/queries'
+import { AuthQuery, LibraryFileQuery } from '~/domain/queries'
 import {
   AuthCommand,
   SetJsonCommand,
@@ -248,7 +248,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.get<IJson>('GET_JSON', jsonHeaders)
-      if(!resp || !resp.data || !resp.data) {
+      if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
       if(resp instanceof Error && resp.message === 'Network Error') {
@@ -276,7 +276,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.get<string>('GET_MD', jsonHeaders)
-      if(!resp || !resp.data || !resp.data) {
+      if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
       if(resp.message === 'Network Error') {
@@ -290,6 +290,48 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setLoading', false)
       store.dispatch('auth', false)
       store.commit('setToken', null)
+      return Promise.reject(e)
+    }
+  }
+
+  @Queryable(TYPES.LibraryFilesQuery)
+  async actionGetLibraryFiles(store: TStore): Promise<string> {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      const resp = await $http.get<string>('GET_LIBRARY_FILES', jsonHeaders)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      if(resp.message === 'Network Error') {
+        store.commit('setError', true)
+        return Promise.reject(resp)
+      }
+      if(isJSON(resp.data)) {
+        store.commit('setLibraryFiles', JSON.parse(resp.data))
+        return resp.data
+      } else {
+        return Promise.reject(new Error('library files not received!'))
+      }
+    } catch(e) {
+      console.log(e)
+      return Promise.reject(e)
+    }
+  }
+
+  @Queryable(TYPES.LibraryFileQuery)
+  async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      const resp = await $http.post<{ id: string }, string>('LIBRARY_FILE', {
+        id: query.id
+      }, jsonHeaders)
+      console.log(resp)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return Promise.resolve(resp.data)
+    } catch(e) {
+      console.log(e)
       return Promise.reject(e)
     }
   }
@@ -370,7 +412,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.get<Array<IArchive>>('GET_ARCHIVES', jsonHeaders)
-      if(!resp || !resp.data || !resp.data) {
+      if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
       store.commit('setArchives', resp.data)
@@ -467,7 +509,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.get<Array<IEvent>>('EVENTS', jsonHeaders)
-      if(!resp || !resp.data || !resp.data) {
+      if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
       store.dispatch('eventsJson', resp.data)
@@ -620,7 +662,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.get<Array<ITodo>>('GET_TODO', jsonHeaders)
-      if(!resp || !resp.data || !resp.data) {
+      if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
       store.dispatch('todoJson', resp.data)

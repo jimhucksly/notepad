@@ -46,6 +46,13 @@ export interface IArchive {
   date: string
 }
 
+export interface ILibraryFiles {
+  [key: string]: {
+    id: number
+    name: string
+  }
+}
+
 export interface IEvents {
   [date: string]: {
     title: string

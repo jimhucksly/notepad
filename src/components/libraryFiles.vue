@@ -7,13 +7,11 @@
   >
     <div class="library_files_title">Library: Files</div>
     <div class="library_files_inner">
-      <ul>
-        <li>
-          <span>SOLID</span>
+      <ul v-if="libraryFiles">
+        <li v-for="file in libraryFiles">
+          <span>{{ file.name }}</span>
           <div>
-            <i
-              class="icon icon-read"
-            >
+            <i class="icon icon-read" @click="openFile(file.id)">
               <svg-icon icon="readIcon" />
             </i>
             <i
@@ -22,12 +20,6 @@
               <svg-icon icon="removeIconSm" />
             </i>
           </div>
-        </li>
-        <li>
-          <span>Алгоритмы</span>
-        </li>
-        <li>
-          <span>Паттерны</span>
         </li>
       </ul>
     </div>

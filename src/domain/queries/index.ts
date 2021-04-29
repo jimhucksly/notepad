@@ -8,6 +8,12 @@ export class JsonQuery {}
 
 export class LibraryQuery {}
 
+export class LibraryFilesQuery {}
+
+export class LibraryFileQuery {
+  constructor(public id: string) {}
+}
+
 export class ArchivesQuery {}
 
 export class EventsQuery {}

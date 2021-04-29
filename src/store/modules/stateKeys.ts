@@ -7,6 +7,8 @@ const stateKeys: string[] = [
   'json',
   'archives',
   'libraryData',
+  'libraryFiles',
+  'libraryFile',
   'libraryTree',
   'todo',
   'events',

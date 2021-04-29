@@ -36,7 +36,7 @@
     />
     <library-files
       v-if="isLibraryFilesVisibility"
-      :init="isLibraryFilesInit"
+      :init.sync="isLibraryFilesInit"
     />
     <json-viewer-btns
       class="json_viewer"
