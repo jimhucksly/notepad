@@ -15,7 +15,7 @@ import storage from '~/plugins/storage'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { OAuthQuery, JsonQuery, LibraryQuery } from '~/domain/queries'
+import { OAuthQuery, JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand } from '~/domain/commands'
 import { CheckQuery } from '~/domain/queries/check.query'
@@ -78,7 +78,7 @@ export default class Index extends Vue {
         await this.queryBus.exec<OAuthQuery, void>(new OAuthQuery())
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
-          this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
+          this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {
           this.setLoading(false)

@@ -60,7 +60,7 @@ export class DeleteEventCommand {
 }
 
 export class UpdateLibraryCommand {
-  constructor(public value: string) {}
+  constructor(public id: string | number, public value: string) {}
 }
 
 export class UpdateLinksCommand {

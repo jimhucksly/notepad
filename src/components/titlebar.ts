@@ -6,9 +6,9 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import {
   JsonQuery,
-  LibraryQuery,
   EventsQuery,
-  LinksQuery
+  LinksQuery,
+  LibraryFileQuery
 } from '~/domain/queries'
 import { IEvent, IJson, ILink } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
@@ -31,7 +31,7 @@ export default class Titlebar extends Vue {
     this.setLoading(true)
     await Promise.all([
       this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
-      this.queryBus.exec<LibraryQuery, string>(new LibraryQuery()),
+      this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
       this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
       this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     ])

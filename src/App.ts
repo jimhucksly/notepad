@@ -6,7 +6,7 @@ import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { JsonQuery, LibraryQuery } from '~/domain/queries'
+import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { AuthCommand } from '~/domain/commands'
 import { NavigateCommand } from '~/domain/commands/nav.command'
@@ -51,7 +51,7 @@ export default class App extends Vue {
       this.setLoading(true)
       await Promise.all([
         this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
-        this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
+        this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       this.setLoading(false)
     })

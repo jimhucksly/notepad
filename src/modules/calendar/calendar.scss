@@ -1,8 +1,6 @@
-@import '../../assets/scss/variables.scss';
-
 .b-calendar-card {
   padding: 10px;
-  background-color: #fff;
+  background-color: var(--grey);
 
   &.b-calendar--mobile {
     padding-bottom: 2.4rem;
@@ -75,9 +73,9 @@
   flex-basis: 100%;
   max-width: 310px;
   min-height: 100px;
-  background-color: #222;
+  background-color: var(--dark);
   font-size: 14px;
-  font-family: $regular;
+  font-family: var(--font-regular);
 
   &.b-calendar--events {
     width: 100%;
@@ -94,7 +92,7 @@
 
       &:hover {
         span {
-          color: #222;
+          color: var(--dark);
         }
       }
 
@@ -119,7 +117,7 @@
           margin-top: -15px;
           margin-left: -15px;
           border: 4px solid #ccc;
-          border-bottom-color: $blue_light;
+          border-bottom-color: var(--blue_light);
           border-radius: 15px;
           animation: spin 1.3s linear 0s infinite;
         }
@@ -141,7 +139,7 @@
       }
 
       &.b-calendar__today {
-        color: #222;
+        color: var(--dark);
       }
 
       span {
@@ -177,8 +175,8 @@
 .b-calendar button {
   padding: 0px 3px;
   cursor: pointer;
-  background-color: #222;
-  color: #222;
+  background-color: var(--dark);
+  color: var(--dark);
   width: 100%;
   line-height: 30px;
   text-transform: none;
@@ -197,7 +195,7 @@
   border: none;
 
   &:hover {
-    background-color: darken(#222, 5%)
+    background-color: var(--dark_darken-2);
   }
 
   &:focus {
@@ -237,16 +235,16 @@
     margin-left: -4px;
     width: 8px;
     height: 8px;
-    border-bottom: 2px solid #222;
+    border-bottom: 2px solid var(--dark);
   }
 }
 
 .b-calendar-wrap .b-calendar__nav .b-calendar__back:after {
-  border-left: 2px solid #222;
+  border-left: 2px solid var(--dark);
   transform: rotate(45deg);
 }
 .b-calendar-wrap .b-calendar__nav .b-calendar__forward:after {
-  border-right: 2px solid #222;
+  border-right: 2px solid var(--dark);
   transform: rotate(-45deg);
 }
 
@@ -254,7 +252,7 @@
   width: 120px;
   height: 35px;
   line-height: 35px;
-  color: #222;
+  color: var(--dark);
   text-align: center; }
 
 .b-calendar-wrap .b-calendar__today-btn {
@@ -271,7 +269,7 @@
 .b-calendar-wrap .b-calendar__head > div {
   width: 14.28%;
   text-align: center;
-  color: #222;
+  color: var(--dark);
   background-color: #fff;
   padding: 5px 0px; }
 
@@ -338,7 +336,7 @@
 }
 
 .b-calendar-wrap .b-calendar__body div.b-calendar__today {
-  background-color: rgba($blue_light, 0.4);
+  background-color: rgba(var(--blue_light), 0.4);
   color: #fff;
 }
 
@@ -369,7 +367,7 @@
   justify-content: center;
   position: relative;
   width: 33%;
-  border: 1px solid #f3f2f2;
+  border: 1px solid var(--grey);
   background-color: #fff;
   cursor: pointer; }
 
@@ -439,15 +437,15 @@
 
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__range-start,
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__range-end {
-  background-color: #222;
+  background-color: var(--dark);
   color: #fff;
 }
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__in-range {
-  background-color: lighten(#222, 15%);
+  background-color: var(--dark_light);
   color: #fff;
 }
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__range-hover {
-  background-color: lighten(#222, 20%);
+  background-color: var(--dark_light_lighten);
   color: #fff;
 }
 
@@ -490,7 +488,7 @@
       left: -1px;
       width: 13px;
       height: 2px;
-      background-color: #222;
+      background-color: var(--dark);
     }
 
     &:after {

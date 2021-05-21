@@ -5,6 +5,7 @@ $thin: 'Roboto-Thin';
 
 $dark: #303d3c;
 $dark_light: lighten($dark, 15%);
+$dark_light_lighten: lighten($dark, 20%);
 $dark_darken-1: darken($dark, 3%);
 $dark_darken-2: darken($dark, 5%);
 
@@ -26,6 +27,7 @@ $yellow_light: #FFE680;
 $green: #86FF00;
 $green_light: #AEFF00;
 
+$grey: #E6EBEC;
 $magenta: #5F2F73;
 $magenta_light: #752F73;
 $magenta_light-1: lighten($magenta_light, 10%);
@@ -46,6 +48,7 @@ $editor_red: #CF6A4C;
   --black_light: #{$black_light};
   --dark: #{$dark};
   --dark_light: #{$dark_light};
+  --dark_light_lighten: #{$dark_light_lighten};
   --dark_darken-1: #{$dark_darken-1};
   --dark_darken-2: #{$dark_darken-2};
   --blue: #{$blue};
@@ -58,6 +61,7 @@ $editor_red: #CF6A4C;
   --yellow_light: #{$yellow_light};
   --green: #{$green};
   --green_light: #{$green_light};
+  --grey: #{$grey};
   --magenta:  #{$magenta};
   --magenta_light:  #{$magenta_light};
   --magenta_light-1: #{$magenta_light-1};

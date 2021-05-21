@@ -6,12 +6,10 @@ export class OAuthQuery {}
 
 export class JsonQuery {}
 
-export class LibraryQuery {}
-
 export class LibraryFilesQuery {}
 
 export class LibraryFileQuery {
-  constructor(public id: string) {}
+  constructor(public id?: string | number) {}
 }
 
 export class ArchivesQuery {}

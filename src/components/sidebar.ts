@@ -58,6 +58,7 @@ export default class Sidebar extends Vue {
 
   get isLibraryFilesVisibility() {
     if(!this.isLibrary) {
+      this.isLibraryFilesInit = false
       return false
     }
     if(this.isSwitcherMenuExpanded) {

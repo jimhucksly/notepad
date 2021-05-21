@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { JsonQuery, AuthQuery, LibraryQuery } from '~/domain/queries'
+import { JsonQuery, AuthQuery, LibraryFileQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
@@ -58,7 +58,7 @@ export default class Auth extends Vue {
         this.setLoading(true)
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
-          this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
+          this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {
           this.setLoading(false)
@@ -72,7 +72,6 @@ export default class Auth extends Vue {
 
   handleError(e: AxiosError<IResponse<void>>) {
     const data = (e.response ? e.response.data : (e.response || e)) as IResponse<void>
-    console.log(data.messages)
     if(data.messages && !_.isEmpty(data.messages)) {
       this.errors.login = 'login' in data.messages
       this.errors.pass = 'pass' in data.messages

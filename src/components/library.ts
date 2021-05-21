@@ -1,5 +1,5 @@
 import { CreateElement, VNode } from 'vue'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import SidebarTree from '~/components/sidebarTree'
 import { ITreeItem } from '~/domain/models'
@@ -11,13 +11,19 @@ import { ITreeItem } from '~/domain/models'
   }
 })
 export default class Library extends Vue {
+  @Prop() isFilesShow: boolean
+
   @Getter('getLibraryTree') mdTree: Array<ITreeItem>
 
   isFilesInit = false
 
   toggleFiles() {
     this.isFilesInit = !this.isFilesInit
-    this.$emit('on-files', this.isFilesInit)
+    this.$emit('on-toggle-files', this.isFilesInit)
+  }
+
+  @Watch('isFilesShow', { immediate: true }) onIsFilesShowChanged(v: boolean) {
+    this.isFilesInit = v
   }
 
   render(h: CreateElement): VNode {

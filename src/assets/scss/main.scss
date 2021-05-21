@@ -220,7 +220,6 @@ main {
 .title {
   font-size: 16px;
   font-weight: bold;
-  // margin-bottom: 30px;
   flex-shrink: 0;
 }
 
@@ -229,7 +228,7 @@ main {
   align-items: center;
   justify-content: center;
   height: 100%;
-  background-color: var(--blue-gray_light);
+  background-color: var(--grey);
 
 
   .title {
@@ -253,8 +252,8 @@ main {
   padding: 6px;
   padding-bottom: 0;
   padding-right: 0;
-  background-color: var(--blue-gray_light);
-  border-bottom: 1px solid var(--blue-gray);
+  background-color: var(--grey);
+  border-bottom: 1px solid var(--blue-gray_light);
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -373,7 +372,7 @@ main {
   flex-basis: 40%;
   flex-grow: 0;
   padding: 6px;
-  background-color: var(--blue-gray_light);
+  background-color: var(--grey);
 
   textarea {
     flex-basis: 100%;
@@ -630,6 +629,7 @@ main {
 .events {
   display: flex;
   flex-direction: column;
+  background-color: var(--grey);
 
   .events__top {
     display: flex;
@@ -758,13 +758,13 @@ main {
   flex-grow: 1;
   padding: 6px;
   padding-right: 0;
-  background-color: var(--blue-gray_light);
+  background-color: var(--grey);
   overflow: hidden;
 
   .links_area {
     flex-basis: 100%;
     background-color: #fff;
-    border: 1px solid var(--blue-gray);
+    border: 1px solid var(--blue-gray_light);
     border-right-width: 0;
     padding: 12px;
     padding-right: 0;
@@ -833,7 +833,7 @@ main {
   padding: 3px;
   flex-basis: 100%;
   flex-grow: 1;
-  background-color: var(--blue-gray_light);
+  background-color: var(--grey);
   overflow-x: hidden;
   overflow-y: auto;
 

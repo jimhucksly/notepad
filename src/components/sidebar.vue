@@ -30,13 +30,15 @@
     <library
       v-show="!isPreferences && isLibrary"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-      @on-files="(v) => {
+      :is-files-show="isLibraryFilesInit"
+      @on-toggle-files="(v) => {
         isLibraryFilesInit = v
       }"
     />
     <library-files
       v-if="isLibraryFilesVisibility"
-      :init.sync="isLibraryFilesInit"
+      :init="isLibraryFilesInit"
+      @on-open-file="isLibraryFilesInit = false"
     />
     <json-viewer-btns
       class="json_viewer"

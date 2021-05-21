@@ -129,7 +129,9 @@ export interface IRootState {
   userDataPath: string
   downloadsTargetPath: string
   component: TComponent
-  library: string
+  libraryData: string
+  libraryFiles: ILibraryFiles
+  libraryFileId: string | number
   libraryTree: ITreeItem[]
   filter: IFilters
   isAuth: boolean

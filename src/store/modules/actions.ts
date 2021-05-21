@@ -271,28 +271,28 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Library
    * @param store Store
    */
-  @Queryable(TYPES.LibraryQuery)
-  async actionGetLibrary(store: TStore): Promise<string> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
-    try {
-      const resp = await $http.get<string>('GET_MD', jsonHeaders)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      if(resp.message === 'Network Error') {
-        store.commit('setError', true)
-        return Promise.reject(resp)
-      }
-      store.commit('setLibraryData', resp.data)
-      return resp.data
-    } catch(e) {
-      console.log(e)
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
+  // @Queryable(TYPES.LibraryQuery)
+  // async actionGetLibrary(store: TStore): Promise<string> {
+  //   jsonHeaders.headers.Authorization = store.getters.getToken
+  //   try {
+  //     const resp = await $http.get<string>('GET_MD', jsonHeaders)
+  //     if(!resp || !resp.data) {
+  //       return Promise.reject(resp)
+  //     }
+  //     if(resp.message === 'Network Error') {
+  //       store.commit('setError', true)
+  //       return Promise.reject(resp)
+  //     }
+  //     store.commit('setLibraryData', resp.data)
+  //     return resp.data
+  //   } catch(e) {
+  //     console.log(e)
+  //     store.commit('setLoading', false)
+  //     store.dispatch('auth', false)
+  //     store.commit('setToken', null)
+  //     return Promise.reject(e)
+  //   }
+  // }
 
   @Queryable(TYPES.LibraryFilesQuery)
   async actionGetLibraryFiles(store: TStore): Promise<string> {
@@ -322,13 +322,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.post<{ id: string }, string>('LIBRARY_FILE', {
-        id: query.id
+      const resp = await $http.post<{ id: string | number }, string>('LIBRARY_FILE', {
+        id: query.id || 0
       }, jsonHeaders)
-      console.log(resp)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
+      store.commit('setLibraryData', resp.data)
       return Promise.resolve(resp.data)
     } catch(e) {
       console.log(e)
@@ -593,7 +593,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionUpdateLibrary(store: TStore, command: UpdateLibraryCommand): Promise<void> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.post<{ body: string }, void>('SAVE', {
+      const resp = await $http.post<{ id: string | number, body: string }, void>('SAVE', {
+        id: command.id || 0,
         body: command.value
       }, jsonHeaders)
       if(!resp || resp.status !== 'success') {

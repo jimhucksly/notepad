@@ -13,7 +13,7 @@ const _mutations: IMutations = {
     state.json = { ...json }
   },
   setLibrary(state: IRootState, data: string) {
-    state.library = data
+    state.libraryData = data
   },
   setEvents(state: IRootState, events: IEvents) {
     state.events = {}

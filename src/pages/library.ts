@@ -8,7 +8,7 @@ import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
-import { LibraryFilesQuery, LibraryQuery } from '~/domain/queries'
+import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFiles, ITreeItem } from '~/domain/models'
@@ -74,8 +74,8 @@ const config = {
     underscoresBreakWords: true
   },
   previewRender(plainText: string) {
-    Library.nodes = []
-    return Library.md.render(plainText)
+    LibraryPage.nodes = []
+    return LibraryPage.md.render(plainText)
   },
   renderingConfig: {
     singleLineBreaks: false,
@@ -93,14 +93,14 @@ const config = {
 @Component({
   name: 'Library'
 })
-export default class Library extends Vue {
+export default class LibraryPage extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
 
   @Getter('getLibraryData') initialValue: string
-  @Getter('getLibraryFile') customValue: string
+  @Getter('getLibraryFileId') currentId: string
 
   editor: SimpleMDEExt = null
   isRendered = false
@@ -109,23 +109,27 @@ export default class Library extends Vue {
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
 
-  @Watch('initialValue') onInitialValueCahnged() {
-    if(!this.editor) {
-      return
+  @Watch('currentId') async onCurrentIdChanged(id: string | number) {
+    try {
+      await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
+    } catch(e) {
+      console.log(e)
     }
-    this.editor.togglePreviewHandler()
-    this.buildTree()
   }
 
-  @Watch('customValue') onCustomValueChanged() {
-    console.log('customValue!!!!!!!')
-    console.log(this.customValue)
-    console.log(this.editor)
-    const editorElement = this.$refs.editor as HTMLInputElement
+  @Watch('initialValue') onInitialValueCahnged(value: string) {
+    let editorElement = document.getElementById('editor')
     if(!editorElement) {
       return
     }
-    this.editor.codemirror.setValue(this.customValue)
+    const parent = editorElement.parentElement
+    parent.innerHTML = ''
+    const textarea = document.createElement('textarea')
+    textarea.name = 'editor'
+    textarea.id = 'editor'
+    parent.appendChild(textarea)
+    editorElement = document.getElementById('editor')
+    this.buildEditor(editorElement, value)
   }
 
   buildEditor(element: HTMLElement, value: string) {
@@ -153,8 +157,10 @@ export default class Library extends Vue {
     const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
     if(toolbarItemSave) {
       toolbarItemSave.action = () => {
+        const id = this.currentId
+        const body = this.editor.value()
         const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
-          new UpdateLibraryCommand(this.editor.value())
+          new UpdateLibraryCommand(id, body)
         )
         Promise
           .all([sRequest])
@@ -221,7 +227,7 @@ export default class Library extends Vue {
   buildTree(nodes?: ITreeItem[]): Array<ITreeItem> {
     const tree: Array<ITreeItem> = []
     let index = -1
-    const items = nodes || Library.nodes
+    const items = nodes || LibraryPage.nodes
     items.forEach(item => {
       const node = this.$el.querySelector('#' + item.slug)
       if(node) {
@@ -245,7 +251,7 @@ export default class Library extends Vue {
   }
 
   mounted() {
-    Library.md = new MarkdownIt({
+    LibraryPage.md = new MarkdownIt({
       html: false,
       xhtmlOut: false,
       breaks: false,
@@ -258,10 +264,10 @@ export default class Library extends Vue {
       }
     })
 
-    Library.md.use(MarkdownItAnchor, {
+    LibraryPage.md.use(MarkdownItAnchor, {
       slugify: (s: string) => {
         const slug = translit(s)
-        Library.nodes.push({
+        LibraryPage.nodes.push({
           name: s || '',
           slug: slug || '',
           id: uniqueid(8),
@@ -275,7 +281,7 @@ export default class Library extends Vue {
       permalinkBefore: false
     })
 
-    const editorElement = this.$refs.editor as HTMLElement
+    const editorElement = document.getElementById('editor')
     if(!editorElement) {
       return
     }
@@ -284,11 +290,13 @@ export default class Library extends Vue {
 
   beforeDestroy() {
     this.setLibraryTree([])
-    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(this.editor.value()))
+    const id = this.currentId
+    const value = this.editor.value()
+    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
   }
 
   created() {
-    this.queryBus.exec<LibraryQuery, string>(new LibraryQuery())
+    this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
     this.queryBus.exec<LibraryFilesQuery, ILibraryFiles>(new LibraryFilesQuery())
   }
 
@@ -306,7 +314,6 @@ export default class Library extends Vue {
         h(
           'textarea',
           {
-            ref: 'editor',
             attrs: {
               name: 'editor',
               id: 'editor'
