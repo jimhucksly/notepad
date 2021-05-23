@@ -1,6 +1,6 @@
 <template>
   <div class="popup" v-show="showPopup">
-    <div class="popup-about" v-if="aboutPopupShow">
+    <div class="popup-window popup-about" v-if="aboutPopupShow">
       <popup-title>
         <close-btn @click="showAboutPopup(false)" />
       </popup-title>
@@ -17,7 +17,7 @@
         <p><small>&copy; {{ author }}, {{ new Date().getFullYear() }}</small></p>
       </div>
     </div>
-    <div class="popup-uploading" v-if="uploadingPopupShow">
+    <div class="popup-window popup-uploading" v-if="uploadingPopupShow">
       <popup-title>
         <close-btn @click="showUploadingPopup(false)" />
       </popup-title>
@@ -28,7 +28,7 @@
         <span></span>
       </div>
     </div>
-    <div class="popup-link-add" v-if="linkAddPopupShow">
+    <div class="popup-window popup-link-add" v-if="linkAddPopupShow">
       <popup-title>
         Add link
         <close-btn @click="showAddLinkPopup(false)" />
@@ -42,6 +42,23 @@
         </div>
         <div class="flex-end">
           <button class="btn btn-primary" @click.prevent="addLink">Save</button>
+        </div>
+      </form>
+    </div>
+    <div class="popup-window popup-library-file-add" v-if="libraryFileAddPopupShow">
+      <popup-title>
+        Create a new Library file
+        <close-btn @click="showLibraryFileAddPopup(false)" />
+      </popup-title>
+      <form>
+        <div class="m-b-15">
+          <input type="text" v-model="libraryFileTitle" placeholder="Title">
+        </div>
+        <div class="m-b-15">
+          <input type="text" v-model="libraryFileName" placeholder="File name">
+        </div>
+        <div class="flex-end">
+          <button class="btn btn-primary" @click.prevent="addLibraryFile">Save</button>
         </div>
       </form>
     </div>

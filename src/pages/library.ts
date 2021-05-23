@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
@@ -11,7 +11,7 @@ import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
-import { ILibraryFiles, ITreeItem } from '~/domain/models'
+import { ILibraryFile, ILibraryFiles, ITreeItem } from '~/domain/models'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -98,13 +98,17 @@ export default class LibraryPage extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
+  @Mutation('setLibraryData') setLibraryData: (body: string) => void
+  @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
 
   @Getter('getLibraryData') initialValue: string
   @Getter('getLibraryFileId') currentId: string
+  @Getter('getNewLibraryFile') newLibraryFile: ILibraryFile
 
   editor: SimpleMDEExt = null
   isRendered = false
   links: string[] = []
+  isNewFile = false
 
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
@@ -132,6 +136,11 @@ export default class LibraryPage extends Vue {
     this.buildEditor(editorElement, value)
   }
 
+  @Watch('newLibraryFile') onNewLibraryFileChanged(o: ILibraryFile) {
+    this.isNewFile = true
+    console.log(o)
+  }
+
   buildEditor(element: HTMLElement, value: string) {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const conf: any = {
@@ -156,29 +165,7 @@ export default class LibraryPage extends Vue {
 
     const toolbarItemSave = this.editor.toolbar.find(item => item.name === 'save')
     if(toolbarItemSave) {
-      toolbarItemSave.action = () => {
-        const id = this.currentId
-        const body = this.editor.value()
-        const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
-          new UpdateLibraryCommand(id, body)
-        )
-        Promise
-          .all([sRequest])
-          .then(() => {
-            const statusBar = this.$el.querySelector('.editor-statusbar')
-            if(statusBar) {
-              const savedSatus = statusBar.querySelector('.saved-status')
-              const message = 'Markdown is successfully saved!'
-              savedSatus && (savedSatus.innerHTML = message)
-              setTimeout(() => {
-                savedSatus && (savedSatus.innerHTML = '')
-              }, 3000)
-            }
-          })
-          .catch(e => {
-            console.log(e)
-          })
-      }
+      toolbarItemSave.action = this.save.bind(this)
     }
     this.buildTree()
     this.isRendered = true
@@ -250,6 +237,40 @@ export default class LibraryPage extends Vue {
     return tree
   }
 
+  save() {
+    if(this.isNewFile) {
+      this.isNewFile = false
+      this.add()
+      return
+    }
+    const id = this.currentId
+    const body = this.editor.value()
+    const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
+      new UpdateLibraryCommand(id, body)
+    )
+    Promise
+      .all([sRequest])
+      .then(() => {
+        const statusBar = this.$el.querySelector('.editor-statusbar')
+        if(statusBar) {
+          const savedSatus = statusBar.querySelector('.saved-status')
+          const message = 'Markdown is successfully saved!'
+          savedSatus && (savedSatus.innerHTML = message)
+          setTimeout(() => {
+            savedSatus && (savedSatus.innerHTML = '')
+          }, 3000)
+        }
+        this.setFileId(id)
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }
+  add() {
+    const { id, title, name } = this.newLibraryFile
+    console.log({ id, title, name })
+  }
+
   mounted() {
     LibraryPage.md = new MarkdownIt({
       html: false,
@@ -270,7 +291,7 @@ export default class LibraryPage extends Vue {
         LibraryPage.nodes.push({
           name: s || '',
           slug: slug || '',
-          id: uniqueid(8),
+          id: uniqueid(8) as string,
           children: []
         })
         return slug
@@ -289,10 +310,10 @@ export default class LibraryPage extends Vue {
   }
 
   beforeDestroy() {
-    this.setLibraryTree([])
-    const id = this.currentId
-    const value = this.editor.value()
-    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
+    // this.setLibraryTree([])
+    // const id = this.currentId
+    // const value = this.editor.value()
+    // this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
   }
 
   created() {

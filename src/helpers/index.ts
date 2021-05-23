@@ -376,18 +376,40 @@ export const translit = (val: string) => {
   return result.trim()
 }
 
-export const uniqueid = (len?: number) => {
-  if(len === undefined) len = 16
-  let idstr = String.fromCharCode(Math.floor((Math.random() * 25) + 65))
-  while(idstr.length < len) {
-    // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
-    const ascicode = Math.floor((Math.random() * 42) + 80)
-    if(ascicode < 58 || (ascicode > 64 && ascicode < 91) || ascicode > 96) {
-      // exclude all chars between : (58) and @ (64)
-      idstr += String.fromCharCode(ascicode)
-    }
+export const uniqueid = (len: number = 16, format?: string): string | number => {
+  let result = ''
+  let dic = ''
+  switch(format) {
+    case 'a-z':
+      dic = 'abcdefghijklmnopqrstuvwxyz'
+      break
+    case 'A-Z':
+      dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ'
+      break
+    case '0-9':
+      dic = '1234567890'
+      break
+    case 'a-zA-Z':
+      dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ'
+      break
+    case 'a-z0-9':
+      dic = 'abcdefghijklmnopqrstuvwxyz1234567890'
+      break
+    case 'A-Z0-9':
+      dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890'
+      break
+    default:
+      dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890'
   }
-  return (idstr)
+
+  for(let i = 0; i < len; i++) {
+    result += dic.charAt(Math.floor(Math.random() * dic.length))
+  }
+
+  if(format === '0-9') {
+    return Number(result)
+  }
+  return result
 }
 
 export const upperFirst = (s: string) => {

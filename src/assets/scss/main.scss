@@ -5,6 +5,7 @@
 @import './forms';
 @import './titlebar';
 @import './aside';
+@import './popup';
 
 html {
   font-family: var(--font-regular);
@@ -30,6 +31,7 @@ html {
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
 mark {
@@ -50,140 +52,6 @@ main {
     & > div {
       width: 100%;
     }
-  }
-}
-
-.popup {
-  position: absolute;
-  top: 30px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(255,255,255, 0);
-  z-index: 100;
-}
-
-.popup-title-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  min-height: 30px;
-  width: 100%;
-  background-color: var(--black);
-  margin-bottom: 15px;
-  color: #fff;
-  font-size: 1rem;
-}
-
-.popup-close-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 45px;
-  height: 30px;
-
-  &:before,
-  &:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 14px;
-    left: 15px;
-    width: 15px;
-    height: 1px;
-    background-color: var(--blue-gray);
-  }
-
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
-  }
-
-  &:hover {
-    background-color: #e60702;
-
-    &:before,
-    &:after {
-      background-color: #fff;
-    }
-  }
-}
-
-.popup-about {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 300px;
-  top: 20%;
-  left: 50%;
-  margin-left: -150px;
-  padding-bottom: 15px;
-  background-color: #fff;
-  border: 1px solid var(--blue-gray);
-  box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
-
-  img {
-    max-width: 80px;
-  }
-}
-
-.popup-uploading {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  top: 20%;
-  left: 50%;
-  margin-left: -150px;
-  padding-bottom: 15px;
-  background-color: #fff;
-  border: 1px solid var(--blue-gray);
-  box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
-
-  .uploading-label {
-    color: var(--blue_light);
-    font-size: 12px;
-    margin-left: 30px;
-    margin-bottom: 5px;
-  }
-
-  .uploading-progress {
-    position: relative;
-    width: 0;
-    height: 15px;
-    margin-left: 30px;
-    background-color: var(--blue);
-
-    span {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 105%;
-      height: 15px;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-  }
-}
-
-.popup-link-add {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  width: 500px;
-  top: 20%;
-  left: 50%;
-  margin-left: -250px;
-  padding-bottom: 15px;
-  background-color: #fff;
-  border: 1px solid var(--blue-gray);
-  box-shadow: 0px 0px 25px 2px rgba(0, 0, 0, 0.1);
-  form {
-    padding: 6px;
   }
 }
 

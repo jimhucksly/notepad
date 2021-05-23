@@ -9,7 +9,7 @@
     <div class="library_files_inner">
       <ul v-if="libraryFiles">
         <li v-for="file in libraryFiles">
-          <span>{{ file.name }}</span>
+          <span>{{ file.title }}</span>
           <div>
             <i class="icon icon-read" @click="openFile(file.id)">
               <svg-icon icon="readIcon" />
@@ -22,6 +22,9 @@
           </div>
         </li>
       </ul>
+      <button @click="add">
+        <svg-icon icon="btnAdd" width="32" height="23" />
+      </button>
     </div>
   </div>
 </template>

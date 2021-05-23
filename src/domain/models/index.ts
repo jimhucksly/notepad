@@ -46,11 +46,14 @@ export interface IArchive {
   date: string
 }
 
+export interface ILibraryFile {
+  id: number
+  name: string // имя физического файла на сервере
+  title: string // имя файла в интерфейсе приложения
+}
+
 export interface ILibraryFiles {
-  [key: string]: {
-    id: number
-    name: string
-  }
+  [key: string]: ILibraryFile
 }
 
 export interface IEvents {
@@ -132,6 +135,7 @@ export interface IRootState {
   libraryData: string
   libraryFiles: ILibraryFiles
   libraryFileId: string | number
+  newLibraryFile: ILibraryFile
   libraryTree: ITreeItem[]
   filter: IFilters
   isAuth: boolean
@@ -145,6 +149,7 @@ export interface IRootState {
   isAboutPopupShow: boolean
   isUploadingPopupShow: boolean
   isLinkAddPopupShow: boolean
+  isLibraryFileAddPopupShow: boolean
   isPreferencesShow: boolean
   isTodoShow: boolean
   isLibraryShow: boolean
