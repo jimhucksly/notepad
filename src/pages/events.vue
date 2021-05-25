@@ -13,11 +13,14 @@
       </div>
       <div class="events__search">
         <form ref="search-form">
-          <input
-            type="text"
-            v-model="search"
-            :readonly="bCalendarFormShow"
-          >
+          <div class="items-center blue--text">
+            <svg-icon icon="searchIcon" width="28" height="20" />
+            <input
+              type="text"
+              v-model="search"
+              :readonly="bCalendarFormShow"
+            >
+          </div>
           <div class="events__search-dropdown" ref="search-results" v-if="itemsFiltered.length">
             <ul>
               <li

@@ -389,3 +389,19 @@ ipcMain.on('todo-add', (event, text) => {
 ipcMain.on('data-transfer', (event, data) => {
   event.sender.send('data-transfer', data)
 })
+
+ipcMain.on('remove-library-file-confirm', (event) => {
+  dialog.showMessageBox(null, {
+    type: 'question',
+    buttons: ['Yes', 'No'],
+    defaultId: 1,
+    title: 'Confirm',
+    message: 'Remove the library file?'
+  }).then(data => {
+    if(data.response === 0) {
+      event.sender.send('remove-library-file-confirmed')
+    } else {
+      event.sender.send('remove-library-file-unconfirmed')
+    }
+  })
+})

@@ -1,8 +1,8 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
+import { Action, Getter, Mutation } from 'vuex-class'
 import { uniqueid } from '~/helpers'
 import { AUTHOR } from '~/constants'
-import { ILibraryFile } from '~/domain/models'
+import { AddLibraryFileCommand } from '~/domain/commands'
 
 Vue.component('CloseBtn', {
   template: '<div class="popup-close-btn" @click="$emit(\'click\')"></div>'
@@ -16,11 +16,12 @@ Vue.component('PopupTitle', {
   name: 'Popup'
 })
 export default class Popup extends Vue {
+  @Action('actionAddLibraryFile') sendData: (command: AddLibraryFileCommand) => void
+
   @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
   @Mutation('setIsUploadingPopupShow') showUploadingPopup: (value: boolean) => void
   @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
   @Mutation('setIsLibraryFileAddPopupShow') showLibraryFileAddPopup: (value: boolean) => void
-  @Mutation('setNewLibraryFile') newLibraryFile: (data: ILibraryFile) => void
 
   @Getter('getIsAboutPopupShow') aboutPopupShow: boolean
   @Getter('getIsUploadingPopupShow') uploadingPopupShow: boolean
@@ -39,7 +40,8 @@ export default class Popup extends Vue {
     const flags: string[] = [
       'aboutPopupShow',
       'uploadingPopupShow',
-      'linkAddPopupShow', 'libraryFileAddPopupShow'
+      'linkAddPopupShow',
+      'libraryFileAddPopupShow'
     ]
     return flags.map((key: string) => this[key]).reduce((res, el) => res || Boolean(el))
   }
@@ -75,11 +77,12 @@ export default class Popup extends Vue {
     if(!this.libraryFileTitle || !this.libraryFileName) {
       return
     }
-    this.newLibraryFile({
+    const command = new AddLibraryFileCommand({
       id: uniqueid(6, '0-9') as number,
       title: this.libraryFileTitle,
       name: this.libraryFileName
     })
+    this.sendData(command)
     this.showLibraryFileAddPopup(false)
   }
 

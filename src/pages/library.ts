@@ -11,7 +11,7 @@ import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
-import { ILibraryFile, ILibraryFiles, ITreeItem } from '~/domain/models'
+import { ILibraryFile, ITreeItem } from '~/domain/models'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -136,11 +136,6 @@ export default class LibraryPage extends Vue {
     this.buildEditor(editorElement, value)
   }
 
-  @Watch('newLibraryFile') onNewLibraryFileChanged(o: ILibraryFile) {
-    this.isNewFile = true
-    console.log(o)
-  }
-
   buildEditor(element: HTMLElement, value: string) {
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const conf: any = {
@@ -238,18 +233,13 @@ export default class LibraryPage extends Vue {
   }
 
   save() {
-    if(this.isNewFile) {
-      this.isNewFile = false
-      this.add()
-      return
-    }
     const id = this.currentId
     const body = this.editor.value()
-    const sRequest = this.commandBus.do<UpdateLibraryCommand, void>(
+    const promise = this.commandBus.do<UpdateLibraryCommand, void>(
       new UpdateLibraryCommand(id, body)
     )
     Promise
-      .all([sRequest])
+      .all([promise])
       .then(() => {
         const statusBar = this.$el.querySelector('.editor-statusbar')
         if(statusBar) {
@@ -265,10 +255,6 @@ export default class LibraryPage extends Vue {
       .catch(e => {
         console.log(e)
       })
-  }
-  add() {
-    const { id, title, name } = this.newLibraryFile
-    console.log({ id, title, name })
   }
 
   mounted() {
@@ -310,15 +296,16 @@ export default class LibraryPage extends Vue {
   }
 
   beforeDestroy() {
-    // this.setLibraryTree([])
-    // const id = this.currentId
-    // const value = this.editor.value()
-    // this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
+    this.setLibraryTree([])
+    const id = this.currentId
+    const value = this.editor.value()
+    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
+    this.setFileId(0)
   }
 
   created() {
     this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-    this.queryBus.exec<LibraryFilesQuery, ILibraryFiles>(new LibraryFilesQuery())
+    this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
   }
 
   render(h: CreateElement): VNode {

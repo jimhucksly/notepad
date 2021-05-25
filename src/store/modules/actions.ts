@@ -14,7 +14,8 @@ import {
   IEvent,
   IFile,
   ITodoOrder,
-  ITodoItem
+  ITodoItem,
+  ILibraryFile
 } from '~/domain/models'
 import storage from '~/plugins/storage'
 import { userDataFileName } from '~/constants'
@@ -39,7 +40,9 @@ import {
   TodoOrderCommand,
   UpdateTodoCommand,
   DeleteTodoCommand,
-  ReadCommand
+  ReadCommand,
+  AddLibraryFileCommand,
+  DeleteLibraryFileCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 
@@ -267,33 +270,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
-  /**
-   * Get Library
-   * @param store Store
-   */
-  // @Queryable(TYPES.LibraryQuery)
-  // async actionGetLibrary(store: TStore): Promise<string> {
-  //   jsonHeaders.headers.Authorization = store.getters.getToken
-  //   try {
-  //     const resp = await $http.get<string>('GET_MD', jsonHeaders)
-  //     if(!resp || !resp.data) {
-  //       return Promise.reject(resp)
-  //     }
-  //     if(resp.message === 'Network Error') {
-  //       store.commit('setError', true)
-  //       return Promise.reject(resp)
-  //     }
-  //     store.commit('setLibraryData', resp.data)
-  //     return resp.data
-  //   } catch(e) {
-  //     console.log(e)
-  //     store.commit('setLoading', false)
-  //     store.dispatch('auth', false)
-  //     store.commit('setToken', null)
-  //     return Promise.reject(e)
-  //   }
-  // }
-
   @Queryable(TYPES.LibraryFilesQuery)
   async actionGetLibraryFiles(store: TStore): Promise<string> {
     jsonHeaders.headers.Authorization = store.getters.getToken
@@ -310,7 +286,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         store.commit('setLibraryFiles', JSON.parse(resp.data))
         return resp.data
       } else {
-        return Promise.reject(new Error('library files not received!'))
+        return Promise.reject(resp)
       }
     } catch(e) {
       console.log(e)
@@ -318,6 +294,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Library File
+   * @param store Store
+   * @param query
+   */
   @Queryable(TYPES.LibraryFileQuery)
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
     jsonHeaders.headers.Authorization = store.getters.getToken
@@ -325,13 +306,87 @@ class Actions implements ActionTree<IRootState, IRootState> {
       const resp = await $http.post<{ id: string | number }, string>('LIBRARY_FILE', {
         id: query.id || 0
       }, jsonHeaders)
-      if(!resp || !resp.data) {
+      if(!resp || resp.data === undefined) {
         return Promise.reject(resp)
       }
       store.commit('setLibraryData', resp.data)
       return Promise.resolve(resp.data)
     } catch(e) {
       console.log(e)
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Add Library File
+   * @param store Store
+   * @param command
+   */
+  @Commandable(TYPES.AddLibraryFileCommand)
+  async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<string> {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      const resp = await $http.post<{ body: ILibraryFile }, string>('ADD_LIBRARY_FILE', {
+        body: command.data
+      }, jsonHeaders)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      if(isJSON(resp.data)) {
+        store.commit('setLibraryFiles', JSON.parse(resp.data))
+        store.commit('setLibraryFileId', command.data.id)
+        return resp.data
+      } else {
+        return Promise.reject(resp)
+      }
+    } catch(e) {
+      console.log(e)
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Update Library
+   * @param store Store
+   * @param command
+   */
+  @Commandable(TYPES.UpdateLibraryCommand)
+  async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<void> {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      const resp = await $http.post<{ id: string | number, body: string }, void>('SAVE_LIBRARY_FILE', {
+        id: command.id || 0,
+        body: command.value
+      }, jsonHeaders)
+      if(!resp || resp.status !== 'success') {
+        ipcRenderer.send('open-error-dialog', 'save markdown failed')
+        return Promise.reject(resp)
+      }
+      return Promise.resolve()
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Delete Library File
+   * @param store Store
+   * @param command
+   */
+  @Commandable(TYPES.DeleteLibraryFileCommand)
+  async actionDeleteLibraryFile(store: TStore, command: DeleteLibraryFileCommand): Promise<void> {
+    jsonHeaders.headers.Authorization = store.getters.getToken
+    try {
+      const resp = await $http.post<{ body: { id: string | number } }, void>('DELETE_LIBRARY_FILE', {
+        body: {
+          id: command.id
+        }
+      }, jsonHeaders)
+      if(!resp || resp.status !== 'success') {
+        return Promise.reject(resp)
+      }
+      return Promise.resolve()
+    } catch(e) {
       return Promise.reject(e)
     }
   }
@@ -576,29 +631,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }, jsonHeaders)
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'delete event failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Library
-   * @param store Store
-   * @param command { value: string }
-   */
-  @Commandable(TYPES.UpdateLibraryCommand)
-  async actionUpdateLibrary(store: TStore, command: UpdateLibraryCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
-    try {
-      const resp = await $http.post<{ id: string | number, body: string }, void>('SAVE', {
-        id: command.id || 0,
-        body: command.value
-      }, jsonHeaders)
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'save markdown failed')
         return Promise.reject(resp)
       }
       return Promise.resolve()

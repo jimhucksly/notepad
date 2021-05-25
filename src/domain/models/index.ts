@@ -52,10 +52,6 @@ export interface ILibraryFile {
   title: string // имя файла в интерфейсе приложения
 }
 
-export interface ILibraryFiles {
-  [key: string]: ILibraryFile
-}
-
 export interface IEvents {
   [date: string]: {
     title: string
@@ -133,9 +129,8 @@ export interface IRootState {
   downloadsTargetPath: string
   component: TComponent
   libraryData: string
-  libraryFiles: ILibraryFiles
+  libraryFiles: Array<ILibraryFile>
   libraryFileId: string | number
-  newLibraryFile: ILibraryFile
   libraryTree: ITreeItem[]
   filter: IFilters
   isAuth: boolean

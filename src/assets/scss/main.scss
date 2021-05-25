@@ -572,8 +572,13 @@ main {
       max-width: 300px;
     }
 
+    svg {
+      transform: translateX(30px);
+    }
+
     input {
       width: 100%;
+      padding-left: 30px;
     }
 
     .events__search-dropdown {

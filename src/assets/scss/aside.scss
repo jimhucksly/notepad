@@ -722,6 +722,25 @@ aside {
           }
         }
 
+        &:before {
+          content: '';
+          display: none;
+          position: absolute;
+          top: 50%;
+          left: 6px;
+          margin-top: -2px;
+          width: 4px;
+          height: 4px;
+          border-radius: 2px;
+          background-color: var(--green_light);
+        }
+
+        &.active {
+          &:before {
+            display: block;
+          }
+        }
+
         .icon {
           position: absolute;
           top: 9px;

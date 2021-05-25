@@ -8,15 +8,13 @@
     <div class="library_files_title">Library: Files</div>
     <div class="library_files_inner">
       <ul v-if="libraryFiles">
-        <li v-for="file in libraryFiles">
+        <li v-for="file in libraryFiles" :class="{ active: file.id === currentId }">
           <span>{{ file.title }}</span>
           <div>
             <i class="icon icon-read" @click="openFile(file.id)">
               <svg-icon icon="readIcon" />
             </i>
-            <i
-              class="icon icon-remove"
-            >
+            <i class="icon icon-remove" @click="removeFile(file.id)">
               <svg-icon icon="removeIconSm" />
             </i>
           </div>

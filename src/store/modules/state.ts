@@ -12,7 +12,7 @@ enum CurrentPage {
 
 let currentPage = ''
 
-currentPage = CurrentPage.Library as string
+currentPage = CurrentPage.Projects as string
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const _state: any = {

@@ -38,8 +38,7 @@
     <library-files
       v-if="isLibraryFilesVisibility"
       :init="isLibraryFilesInit"
-      @on-open-file="isLibraryFilesInit = false"
-      @on-add-file="isLibraryFilesInit = false"
+      @on-toggle="isLibraryFilesInit = false"
     />
     <json-viewer-btns
       class="json_viewer"
