@@ -1,14 +1,16 @@
 import { Container } from 'inversify'
-import { TYPES } from '~/domain/types'
-import QueryBus from '~/domain/queries/query.bus'
-import CommandBus from '~/domain/commands/command.bus'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
-import store from '~/store'
 import { Store } from 'vuex'
+import Application from '~/application/app'
+import Transitions from '~/application/transitions'
+import CommandBus from '~/domain/commands/command.bus'
+import { NavigateCommandHandler } from '~/domain/commands/nav.command'
+import { PingCommandHandler } from '~/domain/commands/ping.command'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { CheckQueryHandler } from '~/domain/queries/check.query'
-import { PingCommandHandler } from '~/domain/commands/ping.command'
-import { NavigateCommandHandler } from '~/domain/commands/nav.command'
+import QueryBus from '~/domain/queries/query.bus'
+import { TYPES } from '~/domain/types'
+import store from '~/store'
 import mockStore from '../../test/mock/store'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -19,6 +21,10 @@ if(process.env.NODE_ENV === 'test') {
 
 const _container = new Container()
 _container.bind<Container>(TYPES.Container).toConstantValue(_container)
+/* ------------ appliation ------------ */
+_container.bind<Application>(TYPES.Application).to(Application).inSingletonScope()
+_container.bind<Transitions>(TYPES.Transitions).to(Transitions)
+/* ------------ domain ------------ */
 _container.bind<IQueryBus>(TYPES.QueryBus).to(QueryBus)
 _container.bind<IQueryBus>(QueryBus).toSelf()
 _container.bind<ICommandBus>(TYPES.CommandBus).to(CommandBus)

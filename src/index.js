@@ -162,7 +162,7 @@ app.on('browser-window-created', (e, window) => {
       const menuItemFile = appMenu.items.find(item => item.label === 'File')
       const menuItemReload = menuItemFile.submenu.items.find(item => item.label === 'Reload')
       menuItemReload.visible = false
-      window.webContents.send('preferences-show')
+      window.webContents.send('gotoPreferences')
     }
   }))
   submenu.append(new MenuItem({

@@ -1,65 +1,45 @@
 /* eslint-disable-next-line */
 /// <reference path="../vue-shim.d.ts" />
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import Popup from './components/popup'
-import storage from '~/plugins/storage'
-import { userDataFileName } from '~/constants'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
-import { AuthCommand } from '~/domain/commands'
-import { NavigateCommand } from '~/domain/commands/nav.command'
 import { CreateElement, VNode } from 'vue'
 import { IJson } from './domain/models'
 import { Getter, Mutation } from 'vuex-class'
+import States from './application/states'
 
 @Component({
-  name: 'App',
-  components: {
-    Popup
-  }
+  name: 'App'
 })
 export default class App extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setIsDevelopment') setIsDevelopment: (value: boolean) => void
-  @Mutation('setToken') setToken: (value: string) => void
-  @Mutation('setLoading') setLoading: (value: boolean) => void
   @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
 
   @Getter('getNotification') notification: boolean
 
-
-  @Watch('notification')
-  onNotificationChanged(flag: boolean) {
+  @Watch('notification') onNotificationChanged(flag: boolean) {
     if(flag) {
       this.$electron.ipcRenderer.send('set-icon-notification')
     }
   }
 
   mounted() {
-    this.setIsDevelopment(
-      process.env.NODE_ENV === 'development' ||
-      process.env.NODE_ENV === 'test'
-    )
-    this.$electron.ipcRenderer.on('preferences-show', () => {
-      this.commandBus.do<NavigateCommand, void>(new NavigateCommand('preferences'))
+    this.$electron.ipcRenderer.on('gotoPreferences', () => {
+      this.$app.goto(States.Preferences)
     })
     this.$electron.ipcRenderer.on('reload', async () => {
-      this.setLoading(true)
+      this.$app.loading(true)
       await Promise.all([
         this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
         this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
-      this.setLoading(false)
+      this.$app.loading(false)
     })
     this.$electron.ipcRenderer.on('sign-out', () => {
-      this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
-      this.setToken(null)
-      const userDataPath = this.$store.getters.getUserDataPath
-      storage.set(userDataPath, userDataFileName, { token: '' })
+      this.$app.goto(States.None)
     })
     this.$electron.ipcRenderer.on('about', () => {
       this.showAboutPopup(true)

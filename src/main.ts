@@ -1,22 +1,38 @@
 import 'reflect-metadata'
 import '~/assets/css/simplemde.css'
 import '~/assets/scss/main.scss'
+
+import Vue, { VueConstructor } from 'vue'
+import Application from '~/application/app'
+import { _container } from '~/domain/container'
 import BCheckbox from '~/modules/bcheckbox'
 import SvgIcon from '~/modules/svgIcon'
 import Anime from '~/plugins/anime'
 import App from './app'
+import Popup from './components/popup'
+import { TYPES } from './domain/types'
 import router from './router'
 import store from './store'
-import Vue from 'vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
-if(!process.env.IS_WEB) {
-  Vue.prototype.$electron = require('electron')
+
+const app: Application = _container.get(TYPES.Application)
+const AppPlugin = {
+  install(vue: VueConstructor, applicationInstance: Application) {
+    vue.prototype.$app = applicationInstance
+  }
 }
+Vue.use(AppPlugin, app)
 Vue.use(Anime)
 Vue.use(BCheckbox)
 Vue.use(SvgIcon)
+
+if(!process.env.IS_WEB) {
+  Vue.prototype.$electron = require('electron')
+}
+
+Vue.component('popup', Popup)
 
 /* eslint-disable no-new */
 new Vue({

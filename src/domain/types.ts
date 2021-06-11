@@ -1,4 +1,6 @@
 const TYPES = {
+  Application: Symbol.for('Application'),
+  Transitions: Symbol.for('Transitions'),
   Container: Symbol.for('Container'),
   Store: Symbol.for('Store'),
   QueryBus: Symbol.for('QueryBus'),

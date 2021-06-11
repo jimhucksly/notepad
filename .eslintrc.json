@@ -83,6 +83,7 @@
     "vue/v-bind-style": ["error", "shorthand"],
     "vue/no-v-html": "off",
     "vue/require-default-prop": "off",
+    "vue/component-definition-name-casing": "off",
     "vue/order-in-components": [
       "error", {
         "order": [
