@@ -670,9 +670,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<void> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.post<{ body: { remove: string } }, void>('LINK', {
+      const resp = await $http.post<{ body: typeof command }, void>('DELETE_LINK', {
         body: {
-          remove: command.key
+          id: command.id
         }
       }, jsonHeaders)
       if(!resp || resp.status !== 'success') {

@@ -7,12 +7,6 @@ import { UpdateLinksCommand, DeleteLinkCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
 
-interface IItem {
-  key: string
-  name: string
-  url: string
-}
-
 @Component({
   name: 'Links'
 })
@@ -22,37 +16,23 @@ export default class Links extends Vue {
 
   @Mutation('setIsLinkAddPopupShow') showAddLinkPopup: (value: boolean) => void
 
-  @Getter('getLinks') links: ILink
-
-  get items(): IItem[] {
-    if(!this.links) {
-      return []
-    }
-    return Object.keys(this.links).map(key => {
-      const values = this.links[key]
-      return {
-        key,
-        url: values.url,
-        name: values.name
-      }
-    })
-  }
+  @Getter('getLinks') links: Array<ILink>
 
   open(url: string) {
     this.$electron.shell.openExternal(url)
   }
 
-  edit(key: string) {
+  edit(id: string) {
     this.showAddLinkPopup(true)
     this.$electron.ipcRenderer.send('data-transfer', {
       target: 'popup-link-edit',
-      data: this.items.find((el: IItem) => el.key === key)
+      data: this.links.find((el: ILink) => el.id === id)
     })
   }
 
-  async remove(key: string) {
+  async remove(id: string) {
     try {
-      await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(key))
+      await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(id))
       await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     } catch(e) {
       console.log(e)
@@ -63,11 +43,13 @@ export default class Links extends Vue {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     this.$electron.ipcRenderer.on(
       'data-transfer',
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      (event: Electron.IpcRendererEvent, data: any) => {
+      async (
+        event: Electron.IpcRendererEvent,
+        data: { target: string, data: { id: string, url: string, name: string } }
+      ) => {
         if(data.target === 'links') {
-          this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(data.data))
-          this.items.push(data.data)
+          await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(data.data))
+          await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
         }
       }
     )

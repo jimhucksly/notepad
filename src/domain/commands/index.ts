@@ -77,7 +77,7 @@ export class UpdateLinksCommand {
 }
 
 export class DeleteLinkCommand {
-  constructor(public key: string) {}
+  constructor(public id: string) {}
 }
 
 export class TodoOrderCommand {

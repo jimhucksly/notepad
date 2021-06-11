@@ -62,7 +62,7 @@ export default class Popup extends Vue {
           name: this.linkName
         }
       })
-      this.showAddLinkPopup(true)
+      this.showAddLinkPopup(false)
       this.clear()
     }
   }
@@ -101,7 +101,7 @@ export default class Popup extends Vue {
         if(data.target === 'popup-link-edit') {
           this.linkUrl = data.data.url
           this.linkName = data.data.name
-          this.linkId = data.data.key
+          this.linkId = data.data.id
         }
       }
     )

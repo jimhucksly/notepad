@@ -88,10 +88,9 @@ export interface ITodoOrder {
 }
 
 export interface ILink {
-  key: {
-    url: string
-    name: string
-  }
+  id: string
+  url: string
+  name: string
 }
 
 export interface IJsonHeaders {
