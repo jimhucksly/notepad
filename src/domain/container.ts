@@ -1,7 +1,6 @@
 import { Container } from 'inversify'
 import { Store } from 'vuex'
 import Application from '~/application/app'
-import Transitions from '~/application/transitions'
 import CommandBus from '~/domain/commands/command.bus'
 import { NavigateCommandHandler } from '~/domain/commands/nav.command'
 import { PingCommandHandler } from '~/domain/commands/ping.command'
@@ -23,12 +22,12 @@ const _container = new Container()
 _container.bind<Container>(TYPES.Container).toConstantValue(_container)
 /* ------------ appliation ------------ */
 _container.bind<Application>(TYPES.Application).to(Application).inSingletonScope()
-_container.bind<Transitions>(TYPES.Transitions).to(Transitions)
 /* ------------ domain ------------ */
 _container.bind<IQueryBus>(TYPES.QueryBus).to(QueryBus)
 _container.bind<IQueryBus>(QueryBus).toSelf()
 _container.bind<ICommandBus>(TYPES.CommandBus).to(CommandBus)
 _container.bind<CommandBus>(CommandBus).toSelf()
+/* ------------ store ------------ */
 _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(_store || store)
 /* ------------ queries ------------ */
 _container.bind<CheckQueryHandler>(TYPES.CheckQuery)

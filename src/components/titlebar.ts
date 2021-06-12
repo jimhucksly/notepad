@@ -11,7 +11,7 @@ import {
   LibraryFileQuery
 } from '~/domain/queries'
 import { IEvent, IJson, ILink } from '~/domain/models'
-import { Getter, Mutation } from 'vuex-class'
+import { Getter } from 'vuex-class'
 
 @Component({
   name: 'Titlebar'
@@ -19,16 +19,13 @@ import { Getter, Mutation } from 'vuex-class'
 export default class Titlebar extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
-  @Mutation('setLoading') setLoading: (value: boolean) => void
-
-  @Getter('getIsAuth') isAuth: boolean
-  @Getter('getIsPreferencesShow') preferencesShow: boolean
+  @Getter('getFsmState') fsmState: string
 
   title = ''
   isMaximized = false
 
   async reload() {
-    this.setLoading(true)
+    this.$app.loading(true)
     await Promise.all([
       this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
       this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
@@ -36,7 +33,7 @@ export default class Titlebar extends Vue {
       this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     ])
     setTimeout(() => {
-      this.setLoading(false)
+      this.$app.loading(false)
     }, 1500)
   }
 
@@ -55,5 +52,13 @@ export default class Titlebar extends Vue {
         this.isMaximized = isMaximized
       }
     )
+  }
+
+  get isAuth(): boolean {
+    return this.$app.isAuth
+  }
+
+  get isPreferences(): boolean {
+    return this.fsmState === 'Preferences'
   }
 }

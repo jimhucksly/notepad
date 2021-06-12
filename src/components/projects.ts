@@ -20,12 +20,10 @@ export default class Projects extends Vue {
 
   @Mutation('setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('getIsProjectsShow') isProjects: boolean
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
 
-  @Watch('isProjects')
-  onIsProjectsChanged(v: boolean) {
+  @Watch('isProjects') onIsProjectsChanged(v: boolean) {
     this.checked = ''
     this.isArchivesInit = false
     this.$emit('on-archives', this.isArchivesInit)
@@ -115,5 +113,9 @@ export default class Projects extends Vue {
     } catch(e) {
       console.log(e)
     }
+  }
+
+  get isProjects() {
+    return this.$app.state === 'Projects'
   }
 }

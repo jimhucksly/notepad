@@ -2,18 +2,12 @@ import { Vue, Component } from 'vue-property-decorator'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
 import AutoLaunch from 'auto-launch'
-import { ICommandBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
-import { NavigateCommand } from '~/domain/commands/nav.command'
 import { Getter, Mutation } from 'vuex-class'
 
 @Component({
   name: 'Preferences'
 })
 export default class Preferences extends Vue {
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
 
   @Getter('getUserDataPath') userDataPath: string
@@ -54,27 +48,33 @@ export default class Preferences extends Vue {
       .reduce((a, b) => a + b) === 0
   }
 
-  save() {
+  async save() {
     if(this.validate()) {
       storage.append(this.userDataPath, 'UserPreferences', {
         downloadsTargetPath: this.preferences.downloadsTargetPath
       })
       this.setDownloadsTargetPath(this.preferences.downloadsTargetPath)
 
+      const isAutoLauncherEnabled = await this.appAutoLauncher.isEnabled()
+
       if(this.isAutoLaunchEnabled) {
-        this.appAutoLauncher.enable()
+        if(!isAutoLauncherEnabled) {
+          this.appAutoLauncher.enable()
+        }
       } else {
-        this.appAutoLauncher.disable()
+        if(isAutoLauncherEnabled) {
+          this.appAutoLauncher.disable()
+        }
       }
 
       this.$electron.ipcRenderer.send('preferences-hide')
-      this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
+      this.$app.goBack()
     }
   }
 
   cancel() {
     this.$electron.ipcRenderer.send('preferences-hide')
-    this.commandBus.do<NavigateCommand, void>(new NavigateCommand('goBack'))
+    this.$app.goBack()
   }
 
   openFolderDialog() {

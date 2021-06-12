@@ -141,55 +141,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setJson', json)
   }
 
-  preferences(store: TStore, flag: boolean): void {
-    store.commit('setIsPreferencesShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Preferences')
-    }
-  }
-
-  projects(store: TStore, flag: boolean): void {
-    store.commit('setIsProjectsShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Projects')
-    }
-  }
-
-  library(store: TStore, flag: boolean): void {
-    store.commit('setIsLibraryShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Library')
-    }
-  }
-
-  todo(store: TStore, flag: boolean): void {
-    store.commit('setIsTodoShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Todo')
-    }
-  }
-
-  events(store: TStore, flag: boolean): void {
-    store.commit('setIsEventsShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Events')
-    }
-  }
-
-  links(store: TStore, flag: boolean): void {
-    store.commit('setIsLinksShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'Links')
-    }
-  }
-
-  jsonViewer(store: TStore, flag: boolean): void {
-    store.commit('setIsJsonViewerShow', flag)
-    if(flag) {
-      store.commit('setComponent', 'JsonViewer')
-    }
-  }
-
   /**
    * Auth
    * @param store Store
@@ -206,7 +157,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
         store.commit('setToken', resp.token)
         const userDataPath = store.getters.getUserDataPath
         await storage.set(userDataPath, userDataFileName, { token: resp.token })
-        console.log('write to file is successfully completed')
         return resp.token
       }
       return Promise.reject(resp)

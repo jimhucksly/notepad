@@ -7,7 +7,7 @@
         <i></i>
       </button>
     </div>
-    <div class="reload-button-container" v-if="isAuth && !preferencesShow">
+    <div class="reload-button-container" v-if="isAuth && !isPreferences">
       <button id="reload-button" class="reload-button" @click.prevent="reload">
         <span>
           <svg-icon icon="reloadIcon" />

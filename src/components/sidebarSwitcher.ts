@@ -13,12 +13,6 @@ export default class SidebarSwitcher extends Vue {
   @Prop({ type: String, default: '' }) readonly legend!: string
 
   @Getter('getMenu') menu: Array<IMenu>
-  @Getter('getIsProjectsShow') isProjects: boolean
-  @Getter('getIsTodoShow') isTodo: boolean
-  @Getter('getIsLibraryShow') isLibrary: boolean
-  @Getter('getIsEventsShow') isEvents: boolean
-  @Getter('getIsJsonViewerShow') isJsonViewer: boolean
-  @Getter('getIsLinksShow') isLinks: boolean
 
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
@@ -76,5 +70,29 @@ export default class SidebarSwitcher extends Vue {
   select(item: IMenu) {
     this.commandBus.do<NavigateCommand, void>(new NavigateCommand(item.name))
     this.toggle()
+  }
+
+  get isProjects(): boolean {
+    return this.$app.state === 'Projects'
+  }
+
+  get isTodo(): boolean {
+    return this.$app.state === 'Todo'
+  }
+
+  get isLibrary(): boolean {
+    return this.$app.state === 'Library'
+  }
+
+  get isEvents(): boolean {
+    return this.$app.state === 'Events'
+  }
+
+  get isJsonViewer(): boolean {
+    return this.$app.state === 'JsonViewer'
+  }
+
+  get isLinks(): boolean {
+    return this.$app.state === 'Links'
   }
 }

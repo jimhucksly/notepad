@@ -3,7 +3,7 @@ import { JsonQuery, AuthQuery, LibraryFileQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
-import { AuthCommand, PingCommand } from '~/domain/commands'
+import { PingCommand } from '~/domain/commands'
 import _ from 'lodash'
 import { IJson, IResponse } from '~/domain/models'
 import { AxiosError } from 'axios'
@@ -31,13 +31,11 @@ export default class Auth extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
-  @Watch('login')
-  onLoginChanged(val: string) {
+  @Watch('login') onLoginChanged(val: string) {
     this.errors.login = !(val.length > 0)
   }
 
-  @Watch('pass')
-  onPassChanged(val: string) {
+  @Watch('pass') onPassChanged(val: string) {
     this.errors.pass = !(val.length > 0)
   }
 
@@ -55,14 +53,14 @@ export default class Auth extends Vue {
     if(this.validate()) {
       try {
         await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
-        this.setLoading(true)
+        this.$app.loading(true)
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {
-          this.setLoading(false)
-          this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
+          this.$app.loading(false)
+          this.$app.login()
         }, 1500)
       } catch(e) {
         this.handleError(e)

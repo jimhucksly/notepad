@@ -18,6 +18,7 @@ Vue.config.productionTip = false
 Vue.config.devtools = true
 
 const app: Application = _container.get(TYPES.Application)
+app.init()
 const AppPlugin = {
   install(vue: VueConstructor, applicationInstance: Application) {
     vue.prototype.$app = applicationInstance

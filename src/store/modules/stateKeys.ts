@@ -15,22 +15,15 @@ const stateKeys: string[] = [
   'links',
   'todo',
   'filter',
+  'fsmState',
   'isAboutPopupShow',
   'isUploadingPopupShow',
   'isLinkAddPopupShow',
   'isLibraryFileAddPopupShow',
-  'isPreferencesShow',
-  'isProjectsShow',
-  'isTodoShow',
-  'isLibraryShow',
-  'isEventsShow',
-  'isJsonViewerShow',
-  'isLinksShow',
   'downloadsTargetPath',
   'notification',
   'error',
-  'previousPage',
-  'component'
+  'previousPage'
 ]
 
 export default stateKeys

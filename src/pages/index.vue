@@ -7,7 +7,7 @@
         <loading v-if="loading" />
         <template v-else>
           <auth v-if="!isAuth" id="auth" />
-          <component v-else :is="component" />
+          <component v-else-if="!isNoneState" :is="component" />
         </template>
         <error v-if="isError" />
       </section>

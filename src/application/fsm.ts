@@ -10,7 +10,8 @@ const fsm = new StateMachine({
   transitions: [
     { name: 'none', from: '*', to: toStr(States.None) },
     { name: 'auth', from: '*', to: toStr(States.Auth) },
-    { name: 'preferences', from: '*', to: toStr(States.Preferences) }
+    { name: 'preferences', from: '*', to: toStr(States.Preferences) },
+    { name: 'projects', from: '*', to: toStr(States.Projects) }
   ]
 })
 

@@ -13,11 +13,10 @@ import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
+import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { OAuthQuery, JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
-import { AuthCommand } from '~/domain/commands'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { IJson } from '~/domain/models'
 import { Mutation, Getter } from 'vuex-class'
@@ -45,7 +44,6 @@ interface IUserPreferences {
 })
 export default class Index extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
@@ -53,10 +51,9 @@ export default class Index extends Vue {
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getLoading') loading: boolean
-  @Getter('getIsAuth') isAuth: boolean
   @Getter('getToken') token: string
   @Getter('getError') isError: boolean
-  @Getter('getComponent') component: string
+  @Getter('getFsmState') fsmState: string
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -69,7 +66,7 @@ export default class Index extends Vue {
   }
 
   async checkToken(appPath: string): Promise<boolean> {
-    this.setLoading(true)
+    this.$app.loading(true)
     try {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
@@ -81,18 +78,18 @@ export default class Index extends Vue {
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {
-          this.setLoading(false)
-          this.commandBus.do<AuthCommand, void>(new AuthCommand(true))
+          this.$app.loading(false)
+          this.$app.login(true)
         }, 1500)
         return true
       } else {
-        this.setLoading(false)
-        this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
+        this.$app.loading(false)
+        this.$app.login(false)
         return false
       }
     } catch(e) {
-      this.setLoading(false)
-      this.commandBus.do<AuthCommand, void>(new AuthCommand(false))
+      this.$app.loading(false)
+      this.$app.login(false)
       this.setToken(null)
       const userDataPath = this.$store.getters.getUserDataPath
       await storage.createFile(userDataPath, userDataFileName)
@@ -127,5 +124,17 @@ export default class Index extends Vue {
         await this.checkToken(appPath)
       }
     )
+  }
+
+  get isAuth(): boolean {
+    return this.$app.isAuth
+  }
+
+  get isNoneState(): boolean {
+    return this.fsmState === 'none'
+  }
+
+  get component() {
+    return this.fsmState
   }
 }

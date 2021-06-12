@@ -119,14 +119,11 @@ export interface ICheckResponse {
   todo: string
 }
 
-type TComponent = 'Preferences' | 'Projects' | 'Library' | 'Todo' | 'Events' | 'Links' | 'JsonViewer'
-
 export interface IRootState {
   loading: boolean
-  isProjectsShow: boolean
   userDataPath: string
   downloadsTargetPath: string
-  component: TComponent
+  fsmState: symbol
   libraryData: string
   libraryFiles: Array<ILibraryFile>
   libraryFileId: string | number
@@ -144,12 +141,6 @@ export interface IRootState {
   isUploadingPopupShow: boolean
   isLinkAddPopupShow: boolean
   isLibraryFileAddPopupShow: boolean
-  isPreferencesShow: boolean
-  isTodoShow: boolean
-  isLibraryShow: boolean
-  isEventsShow: boolean
-  isJsonViewerShow: boolean
-  isLinksShow: boolean
   timeout: NodeJS.Timeout | null
   notification: boolean
   error: boolean

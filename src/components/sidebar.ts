@@ -25,12 +25,7 @@ import { Getter } from 'vuex-class'
   }
 })
 export default class Sidebar extends Vue {
-  @Getter('getIsPreferencesShow') isPreferences: boolean
-  @Getter('getIsProjectsShow') isProjects: boolean
-  @Getter('getIsLibraryShow') isLibrary: boolean
-  @Getter('getIsJsonViewerShow') isJsonViewer: boolean
-  @Getter('getIsLinksShow') isLinks: boolean
-  @Getter('getIsTodoShow') isTodo: boolean
+  @Getter('getFsmState') fsmState: string
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
@@ -78,5 +73,29 @@ export default class Sidebar extends Vue {
       const cont = this.$refs.projects as Projects
       cont.clearCheck()
     }
+  }
+
+  get isPreferences() {
+    return this.fsmState === 'Preferences'
+  }
+
+  get isProjects(): boolean {
+    return this.fsmState === 'Projects'
+  }
+
+  get isLibrary(): boolean {
+    return this.fsmState === 'Library'
+  }
+
+  get isJsonViewer(): boolean {
+    return this.fsmState === 'JsonViewer'
+  }
+
+  get isLinks(): boolean {
+    return this.fsmState === 'Links'
+  }
+
+  get isTodo(): boolean {
+    return this.fsmState === 'Todo'
   }
 }
