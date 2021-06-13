@@ -23,7 +23,9 @@ const stateKeys: string[] = [
   'downloadsTargetPath',
   'notification',
   'error',
-  'prevTransition'
+  'prevTransition',
+  'component',
+  'selectedProjectKey'
 ]
 
 export default stateKeys

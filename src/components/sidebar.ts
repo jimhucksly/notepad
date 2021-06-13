@@ -30,26 +30,13 @@ export default class Sidebar extends Vue {
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
-  isProjectsArchivesInit = false
   isLibraryFilesInit = false
 
   get isProjectEditorVisibility() {
-    if(this.isPreferences || !this.isProjects) {
-      return false
-    }
-    if(this.isSwitcherMenuExpanded) {
-      return !!this.projectEditedItemKey
-    }
-    return true
+    return this.fsmState === FsmStates.ProjectsEditor
   }
   get isProjectArchivesVisibility() {
-    if(this.isPreferences || !this.isProjects) {
-      return false
-    }
-    if(this.isSwitcherMenuExpanded) {
-      return this.isProjectsArchivesInit
-    }
-    return true
+    return this.fsmState === FsmStates.ProjectsArchives
   }
 
   get isLibraryFilesVisibility() {
@@ -81,7 +68,11 @@ export default class Sidebar extends Vue {
   }
 
   get isProjects(): boolean {
-    return this.fsmState === FsmStates.Projects
+    return [
+      FsmStates.Projects,
+      FsmStates.ProjectsArchives,
+      FsmStates.ProjectsEditor
+    ].includes(this.fsmState)
   }
 
   get isLibrary(): boolean {

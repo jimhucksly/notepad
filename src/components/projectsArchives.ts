@@ -16,15 +16,14 @@ import { Getter, Mutation } from 'vuex-class'
   name: 'ProjectsArchives'
 })
 export default class ProjectsArchives extends Vue {
-  @Prop({ type: Boolean, default: false })
-  init!: boolean
-
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setArchives') setArchives: (value: Array<IArchive>) => void
 
   @Getter('getArchives') items: IArchive[]
   @Getter('getJson') json: IJson
+
+  @Prop() expanded: boolean
 
   getDate(stamp: string): string {
     return now(stamp).date

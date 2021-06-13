@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
 import _fsm, { toStr } from '~/application/fsm'
-import FsmStates from '~/application/fsm.states'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
@@ -9,6 +9,16 @@ import { IRootState } from '~/domain/models'
 import { OAuthQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
+
+interface IAppComponents {
+  Projects: string
+  Preferences: string
+  Library: string
+  Events: string
+  JsonViewer: string
+  Links: string
+  Todo: string
+}
 
 const AppComponents = {
   [toStr(FsmStates.Projects)]: 'Projects',
@@ -57,6 +67,9 @@ export default class Application {
   }
 
   async goto(transition: symbol) {
+    if(this.state === transition) {
+      return
+    }
     const func = this.getTransitionFunc(transition)
     const transitionResult: boolean = await func.call(this.fsm)
     console.log('transition complete:  ->', this.state)
@@ -70,14 +83,11 @@ export default class Application {
       storage.set(userDataPath, userDataFileName, { token: '' })
       return
     }
-    if(AppComponents[this.stateName]) {
-      this.go()
-    }
-  }
-
-  go() {
     this._store.commit('setPrevTransition', this._store.getters.getFsmState)
     this._store.commit('setFsmState', this.state)
+    if(AppComponents[this.stateName]) {
+      this._store.commit('setComponent', AppComponents[this.stateName])
+    }
   }
 
   goBack() {
@@ -95,12 +105,12 @@ export default class Application {
     return _fsm
   }
 
-  get state() {
+  get state(): symbol {
     return FsmStates[this.fsm.state]
   }
 
-  get stateName() {
-    return toStr(this.state)
+  get stateName(): keyof IFsmStates {
+    return toStr(this.state) as keyof IFsmStates
   }
 
   get isDev(): boolean {
@@ -114,8 +124,8 @@ export default class Application {
     return this._store.getters.getIsAuth
   }
 
-  get component() {
-    return AppComponents[this.stateName] || ''
+  get component(): keyof IAppComponents {
+    return AppComponents[this.stateName] as keyof IAppComponents
   }
 
   private getTransitionFunc(transition: symbol): () => Promise<boolean> {

@@ -10,7 +10,7 @@
         :class="{
           lock: item.lock,
           active: filter[item.key],
-          checked: item.key === checked
+          checked: item.key === selected
         }"
         @click="toggleFilter($event, item.key)"
       >
@@ -21,7 +21,7 @@
                 type="checkbox"
                 @change="toggleCheck"
                 :data-stamp="item.key"
-                :checked="item.key === checked"
+                :checked="item.key === selected"
               >
             </label>
           </span>

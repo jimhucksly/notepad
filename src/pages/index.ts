@@ -15,7 +15,7 @@ import storage from '~/plugins/storage'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { OAuthQuery, JsonQuery, LibraryFileQuery } from '~/domain/queries'
+import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { IJson } from '~/domain/models'
@@ -48,12 +48,11 @@ export default class Index extends Vue {
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
 
+  @Getter('getIsAuth') isAuth: boolean
   @Getter('getLoading') loading: boolean
-  @Getter('getToken') token: string
   @Getter('getError') isError: boolean
   @Getter('getFsmState') fsmState: symbol
-
-  component = ''
+  @Getter('getComponent') component: string
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -65,18 +64,13 @@ export default class Index extends Vue {
     }
   }
 
-  @Watch('fsmState', { immediate: true }) onFsmStateChanged() {
-    this.component = this.$app.component
-  }
-
   async checkToken(appPath: string): Promise<boolean> {
     this.$app.loading(true)
     try {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if(token) {
-        this.$app.login()
-        await this.queryBus.exec<OAuthQuery, void>(new OAuthQuery())
+        await this.$app.login(token)
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
@@ -126,9 +120,5 @@ export default class Index extends Vue {
         await this.checkToken(appPath)
       }
     )
-  }
-
-  get isAuth(): boolean {
-    return this.$app.isAuth
   }
 }

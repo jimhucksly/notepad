@@ -1,20 +1,18 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
-import { IArchive, IFilters, IJson } from '~/domain/models'
-import { TYPES } from '~/domain/types'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
-import { ArchivesQuery } from '~/domain/queries'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
+import { SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IArchive, IFilters, IJson } from '~/domain/models'
+import { ArchivesQuery } from '~/domain/queries'
+import { TYPES } from '~/domain/types'
 
 @Component({
   name: 'Projects'
 })
 export default class Projects extends Vue {
-  checked = ''
-  isArchivesInit = false
-
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
@@ -22,15 +20,17 @@ export default class Projects extends Vue {
 
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
+  @Getter('getFsmState') fsmState: symbol
 
-  @Watch('isProjects') onIsProjectsChanged(v: boolean) {
-    this.checked = ''
-    this.isArchivesInit = false
-    this.$emit('on-archives', this.isArchivesInit)
+  selected = ''
+
+  @Watch('fsmState') onFsmStateChanged() {
+    if(this.fsmState !== FsmStates.ProjectsEditor) {
+      this.selected = ''
+    }
   }
 
   public clearCheck() {
-    this.checked = ''
     const input: NodeListOf<Element> = document.querySelectorAll('input[type="checkbox"]:checked')
     if(input && input[0]) {
       (input[0] as HTMLInputElement).checked = false
@@ -95,16 +95,20 @@ export default class Projects extends Vue {
     const target = e.target as HTMLInputElement
     const isChecked = target.checked
     if(isChecked) {
-      this.isArchivesInit = false
-      this.$emit('on-archives', false)
+      this.$app.goto(FsmStates.ProjectsEditor)
+    } else {
+      this.$app.goto(FsmStates.Projects)
     }
-    this.checked = isChecked ? target.dataset?.stamp ?? '' : ''
-    this.$emit('on-edit', this.checked)
+    this.selected = isChecked ? target.dataset?.stamp ?? '' : ''
+    this.$store.commit('setSelectedProjectKey', this.selected)
   }
 
   toggleArchives() {
-    this.isArchivesInit = !this.isArchivesInit
-    this.$emit('on-archives', this.isArchivesInit)
+    if(this.fsmState === FsmStates.ProjectsArchives) {
+      this.$app.goto(FsmStates.Projects)
+      return
+    }
+    this.$app.goto(FsmStates.ProjectsArchives)
   }
 
   created() {
@@ -115,7 +119,7 @@ export default class Projects extends Vue {
     }
   }
 
-  get isProjects() {
-    return this.$app.state === 'Projects'
+  get isArchivesInit(): boolean {
+    return this.fsmState === FsmStates.ProjectsArchives
   }
 }

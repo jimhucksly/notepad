@@ -8,27 +8,13 @@
     <projects
       ref="projects"
       class="projects"
-      v-show="!isPreferences && isProjects"
+      v-show="isProjects"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-      @on-edit="(stamp) => {
-        isProjectsArchivesInit = false
-        projectEditedItemKey = stamp
-      }"
-      @on-archives="(v) => {
-        projectEditedItemKey = ''
-        isProjectsArchivesInit = v
-      }"
     />
-    <projects-editor
-      v-if="isProjectEditorVisibility"
-      :item-stamp.sync="projectEditedItemKey"
-    />
-    <projects-archives
-      v-if="isProjectArchivesVisibility"
-      :init="isProjectsArchivesInit"
-    />
+    <projects-editor :expanded="isProjectEditorVisibility" />
+    <projects-archives :expanded="isProjectArchivesVisibility" />
     <library
-      v-show="!isPreferences && isLibrary"
+      v-show="isLibrary"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
       :is-files-show="isLibraryFilesInit"
       @on-toggle-files="(v) => {
@@ -42,17 +28,17 @@
     />
     <json-viewer-btns
       class="json_viewer"
-      v-show="!isPreferences && isJsonViewer"
+      v-show="isJsonViewer"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
     <links-btns
       class="links"
-      v-show="!isPreferences && isLinks"
+      v-show="isLinks"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
     <todo-btns
       class="todo"
-      v-show="!isPreferences && isTodo"
+      v-show="isTodo"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
   </aside>

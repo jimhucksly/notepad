@@ -2,7 +2,7 @@
   <div
     class="projects_archives"
     :class="{
-      expanded: init
+      expanded: expanded
     }"
   >
     <div class="projects_archives_title">Projects: Archives</div>

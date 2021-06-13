@@ -1,8 +1,9 @@
-export interface IStates {
+export interface IFsmStates {
   None: symbol
   Preferences: symbol
   Projects: symbol
   ProjectsArchives: symbol
+  ProjectsEditor: symbol
   Library: symbol
   Todo: symbol
   Events: symbol
@@ -10,11 +11,12 @@ export interface IStates {
   JsonViewer: symbol
 }
 
-const FsmStates: IStates = {
+const FsmStates: IFsmStates = {
   None: Symbol.for('None'),
   Preferences: Symbol.for('Preferences'),
   Projects: Symbol.for('Projects'),
   ProjectsArchives: Symbol.for('ProjectsArchives'),
+  ProjectsEditor: Symbol.for('ProjectsEditor'),
   Library: Symbol.for('Library'),
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),

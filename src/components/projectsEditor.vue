@@ -2,7 +2,7 @@
   <div
     class="projects_editor"
     :class="{
-      expanded: !!itemStamp
+      expanded: expanded
     }"
   >
     <div class="projects_editor_title">Projects: Item properties</div>

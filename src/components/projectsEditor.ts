@@ -12,8 +12,7 @@ import { Getter, Mutation } from 'vuex-class'
   name: 'ProjectsEditor'
 })
 export default class ProjectsEditor extends Vue {
-  @Prop()
-  itemStamp!: string
+  @Prop() expanded: boolean
 
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -22,21 +21,13 @@ export default class ProjectsEditor extends Vue {
 
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
+  @Getter('getSelectedProjectKey') selected: string
 
   name = ''
   isLock = false
   isDialog = false
 
-  get item(): IJsonItem {
-    return this.json[this.itemStamp] || null
-  }
-
-  get isFile(): boolean {
-    return this.item && !!this.item.file
-  }
-
-  @Watch('item')
-  onItemChanged(o: IJsonItem) {
+  @Watch('item') onItemChanged(o: IJsonItem) {
     if(o) {
       this.name = o.name
       this.isLock = o.lock
@@ -44,6 +35,14 @@ export default class ProjectsEditor extends Vue {
       this.name = ''
       this.isLock = false
     }
+  }
+
+  get item(): IJsonItem {
+    return this.json[this.selected] || null
+  }
+
+  get isFile(): boolean {
+    return this.item && !!this.item.file
   }
 
   toggleLock(v: boolean): void {
@@ -56,7 +55,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async archive() {
-    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.itemStamp))
+    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
     this.removeHandler()
     await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
@@ -71,18 +70,18 @@ export default class ProjectsEditor extends Vue {
   async removeHandler() {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, this.itemStamp)
-    unset(buffFilter, this.itemStamp)
+    unset(buffJson, this.selected)
+    unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
-    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.itemStamp))
+    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
     this.$emit('update:itemStamp', '')
   }
 
   async save() {
     const o: IJson = {
-      [this.itemStamp]: {
-        key: this.itemStamp,
+      [this.selected]: {
+        key: this.selected,
         date: this.item.date,
         name: this.name,
         lock: this.isLock,

@@ -145,4 +145,5 @@ export interface IRootState {
   timeout: NodeJS.Timeout | null
   notification: boolean
   error: boolean
+  component: string
 }

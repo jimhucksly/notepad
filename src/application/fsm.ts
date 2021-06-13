@@ -11,6 +11,8 @@ const fsm = new StateMachine({
     { name: 'none', from: '*', to: toStr(FsmStates.None) },
     { name: 'preferences', from: '*', to: toStr(FsmStates.Preferences) },
     { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },
+    { name: 'projectsarchives', from: '*', to: toStr(FsmStates.ProjectsArchives) },
+    { name: 'projectseditor', from: '*', to: toStr(FsmStates.ProjectsEditor) },
     { name: 'library', from: '*', to: toStr(FsmStates.Library) },
     { name: 'todo', from: '*', to: toStr(FsmStates.Todo) },
     { name: 'events', from: '*', to: toStr(FsmStates.Events) },
