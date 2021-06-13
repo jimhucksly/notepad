@@ -23,7 +23,7 @@ const stateKeys: string[] = [
   'downloadsTargetPath',
   'notification',
   'error',
-  'previousPage'
+  'prevTransition'
 ]
 
 export default stateKeys

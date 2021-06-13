@@ -1,6 +1,7 @@
 export interface IMenu {
   name: string
   nameAlt: string
+  fsmState: symbol
   id: number
 }
 

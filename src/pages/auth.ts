@@ -54,13 +54,13 @@ export default class Auth extends Vue {
       try {
         await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
         this.$app.loading(true)
+        this.$app.login()
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {
           this.$app.loading(false)
-          this.$app.login()
         }, 1500)
       } catch(e) {
         this.handleError(e)

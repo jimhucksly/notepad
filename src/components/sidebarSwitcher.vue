@@ -16,7 +16,7 @@
           v-for="(item, index) in menu"
           :key="index"
           :class="{ active: item.id === current }"
-          @click="select(item)"
+          @click="select(item.fsmState)"
         >
           {{ item.nameAlt }}
         </li>

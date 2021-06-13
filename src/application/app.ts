@@ -1,25 +1,32 @@
-import { Container, inject, injectable } from 'inversify'
+import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
-import _fsm, { StateMachine, toStr } from '~/application/fsm'
-import States from '~/application/states'
+import _fsm, { toStr } from '~/application/fsm'
+import FsmStates from '~/application/fsm.states'
+import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
-import { NavigateCommand } from '~/domain/commands/nav.command'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { ICommandBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
-import { userDataFileName } from '~/constants'
+
+const AppComponents = {
+  [toStr(FsmStates.Projects)]: 'Projects',
+  [toStr(FsmStates.Preferences)]: 'Preferences',
+  [toStr(FsmStates.Library)]: 'Library',
+  [toStr(FsmStates.Events)]: 'Events',
+  [toStr(FsmStates.JsonViewer)]: 'JsonViewer',
+  [toStr(FsmStates.Links)]: 'Links',
+  [toStr(FsmStates.Todo)]: 'Todo'
+}
 
 @injectable()
 export default class Application {
   constructor(
-    @inject(TYPES.Container) private readonly _container: Container,
-    @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus,
     @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  _transition: symbol = States.None
+  _transition: symbol = FsmStates.None
   _transitionKey = ''
 
   init() {
@@ -31,14 +38,18 @@ export default class Application {
   }
 
   login() {
+    console.log('call login')
     if(this.isAuth) {
+      console.log('return')
       return
     }
     this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
+    console.log('go home')
     this.goHome()
   }
 
   logout() {
+    this.goto(FsmStates.None)
     this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
     this._store.commit('setToken', null)
     const userDataPath = this._store.getters.getUserDataPath
@@ -52,35 +63,37 @@ export default class Application {
     if(!transitionResult) {
       return
     }
-    if(transition === States.None) {
-      this.logout()
-    } else {
+    if(AppComponents[this.stateName]) {
       this.go()
     }
   }
 
   go() {
-    this._commandBus.do<NavigateCommand, void>(new NavigateCommand(this.state))
+    this._store.commit('setPrevTransition', this._store.getters.getFsmState)
+    this._store.commit('setFsmState', this.state)
   }
 
   goBack() {
-    const prevPage = this._store.getters.getPreviousPage
-    const transition = States[prevPage]
-    if(transition) {
-      this.goto(transition)
+    const prevTransition = this._store.getters.getPrevTransition
+    if(prevTransition) {
+      this.goto(prevTransition)
     }
   }
 
   goHome() {
-    this.goto(States.Projects)
+    this.goto(FsmStates.Projects)
   }
 
-  get fsm(): typeof StateMachine {
+  get fsm() {
     return _fsm
   }
 
   get state() {
-    return this.fsm.state
+    return FsmStates[this.fsm.state]
+  }
+
+  get stateName() {
+    return toStr(this.state)
   }
 
   get isDev(): boolean {
@@ -94,13 +107,13 @@ export default class Application {
     return this._store.getters.getIsAuth
   }
 
+  get component() {
+    return AppComponents[this.stateName] || ''
+  }
+
   private getTransitionFunc(transition: symbol): () => Promise<boolean> {
-    this._transition = transition
-    this._transitionKey = toStr(transition).toLowerCase()
-    const func = this.fsm[this._transitionKey]
+    const func = this.fsm[toStr(transition).toLowerCase()]
     if(!func) {
-      this._transition = States.None
-      this._transitionKey = ''
       throw new Error(`The transition ${toStr(transition)} is not exist in FSM`)
     }
     return func

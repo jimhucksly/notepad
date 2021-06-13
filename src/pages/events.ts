@@ -48,8 +48,7 @@ export default class Events extends Vue {
   search = ''
   itemsFiltered: Array<IFilteredItem> = []
 
-  @Watch('items')
-  onItemsReceived(o: IEvent) {
+  @Watch('items') onItemsReceived(o: IEvent) {
     this.bCalendarOptions = {
       ...this.bCalendarOptions,
       items: o
@@ -101,8 +100,7 @@ export default class Events extends Vue {
     })
   }, 600)
 
-  @Watch('search')
-  onSearchChanged(val: string) {
+  @Watch('search') onSearchChanged(val: string) {
     if(!val) {
       return
     }

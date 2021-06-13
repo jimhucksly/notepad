@@ -47,13 +47,13 @@ export default class Index extends Vue {
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
-  @Mutation('setToken') setToken: (value: string) => void
-  @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getLoading') loading: boolean
   @Getter('getToken') token: string
   @Getter('getError') isError: boolean
-  @Getter('getFsmState') fsmState: string
+  @Getter('getFsmState') fsmState: symbol
+
+  component = ''
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -65,13 +65,17 @@ export default class Index extends Vue {
     }
   }
 
+  @Watch('fsmState', { immediate: true }) onFsmStateChanged() {
+    this.component = this.$app.component
+  }
+
   async checkToken(appPath: string): Promise<boolean> {
     this.$app.loading(true)
     try {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if(token) {
-        this.setToken(token)
+        this.$app.login()
         await this.queryBus.exec<OAuthQuery, void>(new OAuthQuery())
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
@@ -79,18 +83,16 @@ export default class Index extends Vue {
         ])
         setTimeout(() => {
           this.$app.loading(false)
-          this.$app.login(true)
         }, 1500)
         return true
       } else {
         this.$app.loading(false)
-        this.$app.login(false)
+        this.$app.logout()
         return false
       }
     } catch(e) {
       this.$app.loading(false)
-      this.$app.login(false)
-      this.setToken(null)
+      this.$app.logout()
       const userDataPath = this.$store.getters.getUserDataPath
       await storage.createFile(userDataPath, userDataFileName)
       storage.set(userDataPath, userDataFileName, { token: '' })
@@ -128,13 +130,5 @@ export default class Index extends Vue {
 
   get isAuth(): boolean {
     return this.$app.isAuth
-  }
-
-  get isNoneState(): boolean {
-    return this.fsmState === 'none'
-  }
-
-  get component() {
-    return this.fsmState
   }
 }

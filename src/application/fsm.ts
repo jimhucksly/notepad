@@ -1,4 +1,4 @@
-import States from '~/application/states'
+import FsmStates from '~/application/fsm.states'
 
 const StateMachine = require('javascript-state-machine')
 
@@ -6,17 +6,20 @@ const toStr = (s: symbol): string => Symbol.keyFor(s)
 
 const fsm = new StateMachine({
   observeUnchangedState: true,
-  init: toStr(States.None),
+  init: toStr(FsmStates.None),
   transitions: [
-    { name: 'none', from: '*', to: toStr(States.None) },
-    { name: 'auth', from: '*', to: toStr(States.Auth) },
-    { name: 'preferences', from: '*', to: toStr(States.Preferences) },
-    { name: 'projects', from: '*', to: toStr(States.Projects) }
+    { name: 'none', from: '*', to: toStr(FsmStates.None) },
+    { name: 'preferences', from: '*', to: toStr(FsmStates.Preferences) },
+    { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },
+    { name: 'library', from: '*', to: toStr(FsmStates.Library) },
+    { name: 'todo', from: '*', to: toStr(FsmStates.Todo) },
+    { name: 'events', from: '*', to: toStr(FsmStates.Events) },
+    { name: 'links', from: '*', to: toStr(FsmStates.Links) },
+    { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) }
   ]
 })
 
 export default fsm
 export {
-  StateMachine,
   toStr
 }

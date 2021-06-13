@@ -8,7 +8,7 @@ import { _container } from '~/domain/container'
 import { CreateElement, VNode } from 'vue'
 import { IJson } from './domain/models'
 import { Getter, Mutation } from 'vuex-class'
-import States from './application/states'
+import States from './application/fsm.states'
 
 @Component({
   name: 'App'

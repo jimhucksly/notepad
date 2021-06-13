@@ -9,6 +9,7 @@ import JsonViewerBtns from '~/components/jsonViewerBtns'
 import LinksBtns from '~/components/linksBtns'
 import TodoBtns from '~/components/todoBtns'
 import { Getter } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
 
 @Component({
   name: 'Sidebar',
@@ -25,7 +26,7 @@ import { Getter } from 'vuex-class'
   }
 })
 export default class Sidebar extends Vue {
-  @Getter('getFsmState') fsmState: string
+  @Getter('getFsmState') fsmState: symbol
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
@@ -75,27 +76,27 @@ export default class Sidebar extends Vue {
     }
   }
 
-  get isPreferences() {
-    return this.fsmState === 'Preferences'
+  get isPreferences(): boolean {
+    return this.fsmState === FsmStates.Preferences
   }
 
   get isProjects(): boolean {
-    return this.fsmState === 'Projects'
+    return this.fsmState === FsmStates.Projects
   }
 
   get isLibrary(): boolean {
-    return this.fsmState === 'Library'
+    return this.fsmState === FsmStates.Library
   }
 
   get isJsonViewer(): boolean {
-    return this.fsmState === 'JsonViewer'
+    return this.fsmState === FsmStates.JsonViewer
   }
 
   get isLinks(): boolean {
-    return this.fsmState === 'Links'
+    return this.fsmState === FsmStates.Links
   }
 
   get isTodo(): boolean {
-    return this.fsmState === 'Todo'
+    return this.fsmState === FsmStates.Todo
   }
 }
