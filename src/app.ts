@@ -39,7 +39,7 @@ export default class App extends Vue {
       this.$app.loading(false)
     })
     this.$electron.ipcRenderer.on('sign-out', () => {
-      this.$app.goto(States.None)
+      this.$app.logout()
     })
     this.$electron.ipcRenderer.on('about', () => {
       this.showAboutPopup(true)

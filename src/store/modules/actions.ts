@@ -17,8 +17,6 @@ import {
   ITodoItem,
   ILibraryFile
 } from '~/domain/models'
-import storage from '~/plugins/storage'
-import { userDataFileName } from '~/constants'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
@@ -154,9 +152,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
         password: query.password
       }, jsonHeaders)
       if(resp.token) {
-        store.commit('setToken', resp.token)
-        const userDataPath = store.getters.getUserDataPath
-        await storage.set(userDataPath, userDataFileName, { token: resp.token })
         return resp.token
       }
       return Promise.reject(resp)

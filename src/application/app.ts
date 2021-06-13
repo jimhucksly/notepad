@@ -4,8 +4,9 @@ import _fsm, { toStr } from '~/application/fsm'
 import FsmStates from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
-import { ICommandBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
+import { OAuthQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 
@@ -22,12 +23,10 @@ const AppComponents = {
 @injectable()
 export default class Application {
   constructor(
+    @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus,
     @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
-
-  _transition: symbol = FsmStates.None
-  _transitionKey = ''
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
@@ -37,23 +36,24 @@ export default class Application {
     this._store.commit('setLoading', state)
   }
 
-  login() {
-    console.log('call login')
+  async login(token: string) {
     if(this.isAuth) {
-      console.log('return')
       return
     }
-    this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
-    console.log('go home')
-    this.goHome()
+    try {
+      this._store.commit('setToken', token)
+      const userDataPath = this._store.getters.getUserDataPath
+      await storage.set(userDataPath, userDataFileName, { token: token })
+      await this._queryBus.exec<OAuthQuery, void>(new OAuthQuery())
+      this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
+      this.goHome()
+    } catch(e) {
+      throw new Error('Authentication is failed')
+    }
   }
 
   logout() {
     this.goto(FsmStates.None)
-    this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
-    this._store.commit('setToken', null)
-    const userDataPath = this._store.getters.getUserDataPath
-    storage.set(userDataPath, userDataFileName, { token: '' })
   }
 
   async goto(transition: symbol) {
@@ -61,6 +61,13 @@ export default class Application {
     const transitionResult: boolean = await func.call(this.fsm)
     console.log('transition complete:  ->', this.state)
     if(!transitionResult) {
+      return
+    }
+    if(transition === FsmStates.None) {
+      this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
+      this._store.commit('setToken', null)
+      const userDataPath = this._store.getters.getUserDataPath
+      storage.set(userDataPath, userDataFileName, { token: '' })
       return
     }
     if(AppComponents[this.stateName]) {

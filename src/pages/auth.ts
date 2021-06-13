@@ -51,10 +51,10 @@ export default class Auth extends Vue {
 
   async submit() {
     if(this.validate()) {
+      this.$app.loading(true)
       try {
-        await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
-        this.$app.loading(true)
-        this.$app.login()
+        const token = await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
+        this.$app.login(token)
         await Promise.all([
           this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
@@ -63,6 +63,7 @@ export default class Auth extends Vue {
           this.$app.loading(false)
         }, 1500)
       } catch(e) {
+        this.$app.loading(false)
         this.handleError(e)
       }
     }

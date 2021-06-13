@@ -12,6 +12,7 @@ import {
 } from '~/domain/queries'
 import { IEvent, IJson, ILink } from '~/domain/models'
 import { Getter } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
 
 @Component({
   name: 'Titlebar'
@@ -19,7 +20,8 @@ import { Getter } from 'vuex-class'
 export default class Titlebar extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
-  @Getter('getFsmState') fsmState: string
+  @Getter('getIsAuth') isAuth: boolean
+  @Getter('getFsmState') fsmState: symbol
 
   title = ''
   isMaximized = false
@@ -54,11 +56,7 @@ export default class Titlebar extends Vue {
     )
   }
 
-  get isAuth(): boolean {
-    return this.$app.isAuth
-  }
-
   get isPreferences(): boolean {
-    return this.fsmState === 'Preferences'
+    return this.fsmState === FsmStates.Preferences
   }
 }
