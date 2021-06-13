@@ -11,8 +11,8 @@
       v-show="isProjects"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
-    <projects-editor :expanded="isProjectEditorVisibility" />
-    <projects-archives :expanded="isProjectArchivesVisibility" />
+    <projects-editor v-if="isProjects" :expanded="isProjectEditorVisibility" />
+    <projects-archives v-if="isProjects" :expanded="isProjectArchivesVisibility" />
     <library
       v-show="isLibrary"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
