@@ -53,6 +53,10 @@ export default class SidebarSwitcher extends Vue {
     return ''
   }
 
+  get isNotClickable() {
+    return this.isPreferences
+  }
+
   toggle() {
     if(this.isPreferences) {
       return

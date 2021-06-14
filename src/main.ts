@@ -13,6 +13,7 @@ import Popup from './components/popup'
 import { TYPES } from './domain/types'
 import router from './router'
 import store from './store'
+import CreateEditLink from '~/modules/createEditLink/index.vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -28,6 +29,8 @@ Vue.use(AppPlugin, app)
 Vue.use(Anime)
 Vue.use(BCheckbox)
 Vue.use(SvgIcon)
+
+Vue.component('create-edit-link', CreateEditLink)
 
 if(!process.env.IS_WEB) {
   Vue.prototype.$electron = require('electron')

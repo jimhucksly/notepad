@@ -3,7 +3,7 @@
     class="switcher"
     :class="{
       'switcher--expanded': isExpand,
-      'switcher--not-clickable': !!legend
+      'switcher--not-clickable': isNotClickable
     }"
   >
     <span class="switcher__legend" @click="toggle">
