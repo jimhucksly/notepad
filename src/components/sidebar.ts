@@ -84,10 +84,29 @@ export default class Sidebar extends Vue {
   }
 
   get isLinks(): boolean {
-    return this.fsmState === FsmStates.Links
+    return [
+      FsmStates.Links,
+      FsmStates.AddLinkPopup
+    ].includes(this.fsmState)
   }
 
   get isTodo(): boolean {
     return this.fsmState === FsmStates.Todo
+  }
+
+  get isEvents(): boolean {
+    return this.fsmState === FsmStates.Events
+  }
+
+  get switcherProps() {
+    return {
+      isPreferences: this.isPreferences,
+      isProjects: this.isProjects,
+      isLibrary: this.isLibrary,
+      isEvents: this.isEvents,
+      isJsonViewer: this.isJsonViewer,
+      isLinks: this.isLinks,
+      isTodo: this.isTodo
+    }
   }
 }

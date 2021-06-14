@@ -17,7 +17,8 @@ const fsm = new StateMachine({
     { name: 'todo', from: '*', to: toStr(FsmStates.Todo) },
     { name: 'events', from: '*', to: toStr(FsmStates.Events) },
     { name: 'links', from: '*', to: toStr(FsmStates.Links) },
-    { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) }
+    { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) },
+    { name: 'addlinkpopup', from: toStr(FsmStates.Links), to: toStr(FsmStates.AddLinkPopup) }
   ]
 })
 

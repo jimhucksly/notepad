@@ -9,6 +9,7 @@ export interface IFsmStates {
   Events: symbol
   Links: symbol
   JsonViewer: symbol
+  AddLinkPopup: symbol
 }
 
 const FsmStates: IFsmStates = {
@@ -21,7 +22,8 @@ const FsmStates: IFsmStates = {
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),
   Links: Symbol.for('Links'),
-  JsonViewer: Symbol.for('JsonViewer')
+  JsonViewer: Symbol.for('JsonViewer'),
+  AddLinkPopup: Symbol.for('AddLinkPopup')
 }
 
 export default FsmStates

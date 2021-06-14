@@ -15,10 +15,7 @@ export class PingCommand {
   constructor(public param: boolean) {}
 }
 
-export class CheckCommand {
-  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-useless-constructor */
-  constructor() {}
-}
+export class CheckCommand {}
 
 export class UpdateJsonCommand {
   constructor(public data: IJson) {}

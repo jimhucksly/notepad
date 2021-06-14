@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
-import { ICommandBus, IQuery } from '~/domain/interfaces'
+import { ICommandBus, IQueryHandler } from '~/domain/interfaces'
 import { ICheckResponse, IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { CheckCommand } from '~/domain/commands'
@@ -8,7 +8,7 @@ import { CheckCommand } from '~/domain/commands'
 export class CheckQuery {}
 
 @injectable()
-export class CheckQueryHandler implements IQuery<void> {
+export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
   constructor(
     @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
@@ -24,7 +24,7 @@ export class CheckQueryHandler implements IQuery<void> {
     return this._store.getters.getIsAuth
   }
 
-  exec<CheckQuery>(query: CheckQuery): Promise<void> {
+  exec(query: CheckQuery): Promise<void> {
     if(this.isDevelopment) {
       return void 0
     }

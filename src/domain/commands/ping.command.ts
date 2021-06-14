@@ -1,11 +1,13 @@
 import { inject, injectable } from 'inversify'
-import { ICommand, IQueryBus } from '~/domain/interfaces'
+import { ICommandHandler, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
+import { PingCommand } from '.'
+import { delay } from '~/helpers'
 
 @injectable()
-export class PingCommandHandler implements ICommand<void> {
+export class PingCommandHandler implements ICommandHandler<PingCommand, void> {
   interval: NodeJS.Timeout
 
   constructor(
@@ -17,21 +19,22 @@ export class PingCommandHandler implements ICommand<void> {
     return this._store.getters.getIsDevelopment
   }
 
-  do<PingCommand>(command: PingCommand): void {
-    const _command = (command as unknown) as Record<string, unknown>
-    if(!this.isDev) {
-      if(_command.param) {
-        this.interval = setInterval(async (): Promise<void> => {
-          try {
-            await this._queryBus.exec<PingCommand, string>(command)
-            this._store.commit('setError', false)
-          } catch(e) {
-            this._store.commit('setError', true)
-          }
-        }, 3000)
-      } else {
-        clearInterval(this.interval)
-      }
+  async do(command: PingCommand): Promise<void> {
+    if(this.isDev) {
+      return
+    }
+    if(command.param) {
+      await delay(0)
+      this.interval = setInterval(async (): Promise<void> => {
+        try {
+          await this._queryBus.exec<PingCommand, string>(command)
+          this._store.commit('setError', false)
+        } catch(e) {
+          this._store.commit('setError', true)
+        }
+      }, 3000)
+    } else {
+      clearInterval(this.interval)
     }
   }
 }

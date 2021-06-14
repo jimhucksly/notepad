@@ -10,12 +10,16 @@ import QueryBus from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import store from '~/store'
 import mockStore from '../../test/mock/store'
+import { CreateEditCommandHandler } from './commands/createEdit.command'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 let _store: Store<any> = null
 if(process.env.NODE_ENV === 'test') {
   _store = mockStore
 }
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+type TAnyResult = any
 
 const _container = new Container()
 _container.bind<Container>(TYPES.Container).toConstantValue(_container)
@@ -34,6 +38,8 @@ _container.bind<CheckQueryHandler>(TYPES.CheckQuery)
 /* ------------ commands ------------ */
 _container.bind<PingCommandHandler>(TYPES.PingCommand)
   .to(PingCommandHandler).inSingletonScope()
+_container.bind<CreateEditCommandHandler<TAnyResult>>(TYPES.CreateEditCommand)
+  .to(CreateEditCommandHandler).inSingletonScope()
 
 export {
   _container

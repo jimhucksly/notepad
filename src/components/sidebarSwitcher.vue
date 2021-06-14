@@ -7,7 +7,7 @@
     }"
   >
     <span class="switcher__legend" @click="toggle">
-      {{ legendInternal }}
+      {{ legend }}
       <i class="switcher__legend_caret"></i>
     </span>
     <div class="switcher__menu">

@@ -1,6 +1,5 @@
 const TYPES = {
   Application: Symbol.for('Application'),
-  Transitions: Symbol.for('Transitions'),
   Container: Symbol.for('Container'),
   Store: Symbol.for('Store'),
   QueryBus: Symbol.for('QueryBus'),
@@ -20,7 +19,7 @@ const TYPES = {
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
   CheckCommand: Symbol.for('CheckCommand'),
-  NavigateCommand: Symbol.for('NavigateCommand'),
+  CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
   SetJsonCommand: Symbol.for('SetJsonCommand'),
   UpdateJsonCommand: Symbol.for('UpdateJsonCommand'),

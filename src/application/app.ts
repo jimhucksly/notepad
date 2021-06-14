@@ -38,6 +38,8 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
+  homeState = FsmStates.Links
+
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
   }
@@ -98,7 +100,7 @@ export default class Application {
   }
 
   goHome() {
-    this.goto(FsmStates.Projects)
+    this.goto(this.homeState)
   }
 
   get fsm() {

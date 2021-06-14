@@ -1,5 +1,5 @@
 import { Container, inject, injectable } from 'inversify'
-import { ICommand, ICommandBus } from '~/domain/interfaces'
+import { ICommandBus, ICommandHandler } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { Store } from 'vuex'
 import { IRootState } from '~/domain/models'
@@ -11,16 +11,20 @@ class CommandBus implements ICommandBus {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  do<TCommand, TResult>(command: TCommand) {
+  /**
+   * T - Command
+   * R - Result
+   */
+  do<T, R>(command: T) {
     const actionName = Reflect.getMetadata(TYPES[command.constructor.name], CommandBus)
     if(actionName) {
       return this._store.dispatch(actionName, command)
     }
-    const handler: ICommand<TResult> = this._container.get(TYPES[command.constructor.name])
+    const handler: ICommandHandler<T, R> = this._container.get(TYPES[command.constructor.name])
     if(handler) {
-      return handler.do<TCommand>(command)
+      return handler.do(command)
     }
-    return Promise.reject(`Не найден обработчик для команды: ${command.constructor.name}`)
+    return Promise.reject(`Command handler is not found: ${command.constructor.name}`)
   }
 }
 

@@ -1,14 +1,19 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { toStr } from '~/application/fsm'
-import FsmStates from '~/application/fsm.states'
 import { IMenu } from '~/domain/models'
 
 @Component({
   name: 'SidebarSwitcher'
 })
 export default class SidebarSwitcher extends Vue {
-  @Prop({ type: String, default: '' }) readonly legend!: string
+  @Prop() isPreferences: boolean
+  @Prop() isProjects: boolean
+  @Prop() isLibrary: boolean
+  @Prop() isEvents: boolean
+  @Prop() isJsonViewer: boolean
+  @Prop() isLinks: boolean
+  @Prop() isTodo: boolean
 
   @Getter('getMenu') menu: Array<IMenu>
   @Getter('getFsmState') fsmState: symbol
@@ -23,19 +28,33 @@ export default class SidebarSwitcher extends Vue {
     return 1
   }
 
-  get legendInternal() {
-    let result = ''
-    if(this.legend) return this.legend
-    else {
-      this.menu.forEach((item: IMenu) => {
-        item.id === this.current && (result = item.nameAlt)
-      })
-      return result
+  get legend() {
+    if(this.isPreferences) {
+      return 'Preferences'
     }
+    if(this.isProjects) {
+      return 'Prjects'
+    }
+    if(this.isLibrary) {
+      return 'Library'
+    }
+    if(this.isEvents) {
+      return 'Events'
+    }
+    if(this.isJsonViewer) {
+      return 'Json Viewer'
+    }
+    if(this.isLinks) {
+      return 'Links'
+    }
+    if(this.isTodo) {
+      return 'Todo'
+    }
+    return ''
   }
 
   toggle() {
-    if(this.legend) {
+    if(this.isPreferences) {
       return
     }
     this.isExpand = !this.isExpand
@@ -66,29 +85,5 @@ export default class SidebarSwitcher extends Vue {
   select(transition: symbol) {
     this.$app.goto(transition)
     this.toggle()
-  }
-
-  get isProjects(): boolean {
-    return this.fsmState === FsmStates.Projects
-  }
-
-  get isTodo(): boolean {
-    return this.fsmState === FsmStates.Todo
-  }
-
-  get isLibrary(): boolean {
-    return this.fsmState === FsmStates.Library
-  }
-
-  get isEvents(): boolean {
-    return this.fsmState === FsmStates.Events
-  }
-
-  get isJsonViewer(): boolean {
-    return this.fsmState === FsmStates.JsonViewer
-  }
-
-  get isLinks(): boolean {
-    return this.fsmState === FsmStates.Links
   }
 }

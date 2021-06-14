@@ -1,7 +1,7 @@
 <template>
   <aside>
     <sidebar-switcher
-      :legend="isPreferences ? 'Preferences' : ''"
+      v-bind="switcherProps"
       @on-expand="isSwitcherMenuExpanded = true"
       @on-hide="isSwitcherMenuExpanded = false"
     />

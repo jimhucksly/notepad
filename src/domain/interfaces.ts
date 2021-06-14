@@ -6,10 +6,10 @@ export interface ICommandBus {
   do<TCommand, TResult>(command: TCommand): Promise<TResult>
 }
 
-export interface ICommand<TResult> {
-  do<TCommand>(command: TCommand): TResult
+export interface ICommandHandler<TCommand, TResult> {
+  do(command: TCommand): Promise<TResult>
 }
 
-export interface IQuery<TResult> {
-  exec<TQuery>(query: TQuery): Promise<TResult>
+export interface IQueryHandler<TQuery, TResult> {
+  exec(query: TQuery): Promise<TResult>
 }
