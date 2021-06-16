@@ -1,23 +1,20 @@
 <template>
   <div class="popup" v-show="showPopup">
-    <div class="popup-window popup-about" v-if="aboutPopupShow">
-      <popup-title>
-        <close-btn @click="showAboutPopup(false)" />
-      </popup-title>
-      <div class="m-b-20">
-        <img src="static/icon.svg" alt="">
+    <div class="popup-window" :style="`width: ${width}`">
+      <div class="popup-title-bar">
+        <span>{{ title }}</span>
+        <div class="popup-close-btn" @click="close"></div>
       </div>
-      <div class="m-b-5">
-        <p>{{ appName }}</p>
-      </div>
-      <div class="m-b-5">
-        <p><small>v1.0.0</small></p>
-      </div>
-      <div>
-        <p><small>&copy; {{ author }}, {{ new Date().getFullYear() }}</small></p>
+      <div class="popup-inner">
+        <component
+          v-if="component"
+          :is="component"
+          v-bind="props"
+          @set-result="onSetResult"
+          />
       </div>
     </div>
-    <div class="popup-window popup-uploading" v-if="uploadingPopupShow">
+    <!-- <div class="popup-window popup-uploading" v-if="uploadingPopupShow">
       <popup-title>
         <close-btn @click="showUploadingPopup(false)" />
       </popup-title>
@@ -27,8 +24,8 @@
       <div class="uploading-progress">
         <span></span>
       </div>
-    </div>
-    <div class="popup-window popup-link-add" v-if="linkAddPopupShow">
+    </div> -->
+    <!-- <div class="popup-window popup-link-add" v-if="linkAddPopupShow">
       <popup-title>
         Add link
         <close-btn @click="showAddLinkPopup(false)" />
@@ -44,8 +41,8 @@
           <button class="btn btn-primary" @click.prevent="addLink">Save</button>
         </div>
       </form>
-    </div>
-    <div class="popup-window popup-library-file-add" v-if="libraryFileAddPopupShow">
+    </div> -->
+    <!-- <div class="popup-window popup-library-file-add" v-if="libraryFileAddPopupShow">
       <popup-title>
         Create a new Library file
         <close-btn @click="showLibraryFileAddPopup(false)" />
@@ -61,7 +58,7 @@
           <button class="btn btn-primary" @click.prevent="addLibraryFile">Save</button>
         </div>
       </form>
-    </div>
+    </div> -->
   </div>
 </template>
 <script src="./popup.ts" lang="ts"></script>

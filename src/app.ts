@@ -1,22 +1,22 @@
 /* eslint-disable-next-line */
-/// <reference path="../vue-shim.d.ts" />
+/// <reference path="../typings/vue.d.ts" />
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { IQueryBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CreateElement, VNode } from 'vue'
 import { IJson } from './domain/models'
-import { Getter, Mutation } from 'vuex-class'
-import States from './application/fsm.states'
+import { Getter } from 'vuex-class'
+import FsmStates from './application/fsm.states'
+import { CreateEditCommand } from './domain/commands/createEdit.command'
 
 @Component({
   name: 'App'
 })
 export default class App extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-
-  @Mutation('setIsAboutPopupShow') showAboutPopup: (value: boolean) => void
+  private readonly queryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Getter('getNotification') notification: boolean
 
@@ -28,7 +28,7 @@ export default class App extends Vue {
 
   mounted() {
     this.$electron.ipcRenderer.on('gotoPreferences', () => {
-      this.$app.goto(States.Preferences)
+      this.$app.goto(FsmStates.Preferences)
     })
     this.$electron.ipcRenderer.on('reload', async () => {
       this.$app.loading(true)
@@ -42,7 +42,16 @@ export default class App extends Vue {
       this.$app.logout()
     })
     this.$electron.ipcRenderer.on('about', () => {
-      this.showAboutPopup(true)
+      const command = new CreateEditCommand({
+        component: 'about-popup',
+        componentProps: {},
+        modal: {
+          title: 'About',
+          width: '25%'
+        },
+        fsmState: FsmStates.About
+      })
+      this.commandBus.do<CreateEditCommand, void>(command)
     })
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault()

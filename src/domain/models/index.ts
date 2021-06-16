@@ -123,7 +123,7 @@ export interface ICheckResponse {
 export type IResolveFunc<T> = (value: T) => void
 
 export interface IModalInfo {
-  title: string
+  title?: string
   width?: string
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   resolveFunction?: IResolveFunc<any>

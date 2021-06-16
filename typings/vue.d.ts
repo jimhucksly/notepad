@@ -1,12 +1,11 @@
-import Vue from 'vue'
 import * as Vuex from 'vuex'
-import { RootState } from 'store/types'
-import Application from '~/assets/application/app'
+import { IRootState } from '../src/domain/models'
+import Application from '../src/application/app'
 
 declare module 'vue/types/vue' {
   interface Vue {
     $app: Application
-    $store: Vuex.Store<RootState>
+    $store: Vuex.Store<IRootState>
     $electron: any
     $slideUp: (elem: HTMLElement, duration: number) => any
     $slideDown: (elem: HTMLElement, duration: number) => any

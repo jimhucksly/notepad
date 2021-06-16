@@ -38,7 +38,9 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Links
+  homeState = process.env.NODE_ENV === 'production'
+    ? FsmStates.Projects
+    : FsmStates.Projects
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
