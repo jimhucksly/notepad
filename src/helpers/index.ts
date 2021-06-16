@@ -327,13 +327,16 @@ export async function downloadFile(
 
 export const uploadingFile = (received: number, total: number) => {
   const percentage = Math.ceil((received * 100) / total)
-  const cont: HTMLElement | null = document.querySelector('.popup-uploading')
+  const percentageText = `${percentage}%`
+  const cont: HTMLElement | null = document.getElementById('uploading-popup')
   if(cont) {
+    const textField: HTMLElement | null = cont.querySelector('.uploading-percentage')
+    if(textField) {
+      textField.textContent = percentageText
+    }
     const progress: HTMLElement | null = cont.querySelector('.uploading-progress')
     if(progress) {
-      const text = progress.firstElementChild
-      progress.style.width = `${percentage}px`
-      text && (text.textContent = `${percentage}%`)
+      progress.style.width = percentageText
     }
   }
 }

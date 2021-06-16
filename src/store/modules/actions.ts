@@ -389,13 +389,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
     jsonHeaders.headers.Authorization = store.getters.getToken
     jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
-    store.commit('setIsUploadingPopupShow', true)
     try {
       const resp = await $http.post<FormData, IFile>('FILE', command.file, jsonHeaders)
       if(!resp || !resp.data || !resp.data.name || !resp.data.link) {
         return Promise.reject(resp)
       }
-      store.commit('setIsUploadingPopupShow', false)
       return Promise.resolve(resp.data)
     } catch(e) {
       return Promise.reject(e)

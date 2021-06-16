@@ -17,6 +17,7 @@ import router from './router'
 import store from './store'
 import CreateEditLink from '~/modules/createEditLink/index.vue'
 import AboutPopup from '~/modules/aboutPopup/index.vue'
+import UploadingPopup from '~/modules/uploadingPopup/index.vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -35,6 +36,7 @@ Vue.use(SvgIcon)
 
 Vue.component('create-edit-link', CreateEditLink)
 Vue.component('about-popup', AboutPopup)
+Vue.component('uploading-popup', UploadingPopup)
 
 if(!process.env.IS_WEB) {
   Vue.prototype.$electron = require('electron')

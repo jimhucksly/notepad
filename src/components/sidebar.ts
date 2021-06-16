@@ -10,6 +10,8 @@ import LinksBtns from '~/components/linksBtns'
 import TodoBtns from '~/components/todoBtns'
 import { Getter } from 'vuex-class'
 import FsmStates from '~/application/fsm.states'
+import { AppComponents } from '~/application/app'
+import { toStr } from '~/application/fsm'
 
 @Component({
   name: 'Sidebar',
@@ -27,6 +29,7 @@ import FsmStates from '~/application/fsm.states'
 })
 export default class Sidebar extends Vue {
   @Getter('getFsmState') fsmState: symbol
+  @Getter('getComponent') component: string
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
@@ -64,38 +67,31 @@ export default class Sidebar extends Vue {
   }
 
   get isPreferences(): boolean {
-    return this.fsmState === FsmStates.Preferences
+    return this.component === AppComponents[toStr(FsmStates.Preferences)]
   }
 
   get isProjects(): boolean {
-    return [
-      FsmStates.Projects,
-      FsmStates.ProjectsArchives,
-      FsmStates.ProjectsEditor
-    ].includes(this.fsmState)
+    return this.component === AppComponents[toStr(FsmStates.Projects)]
   }
 
   get isLibrary(): boolean {
-    return this.fsmState === FsmStates.Library
+    return this.component === AppComponents[toStr(FsmStates.Library)]
   }
 
   get isJsonViewer(): boolean {
-    return this.fsmState === FsmStates.JsonViewer
+    return this.component === AppComponents[toStr(FsmStates.JsonViewer)]
   }
 
   get isLinks(): boolean {
-    return [
-      FsmStates.Links,
-      FsmStates.AddLinkPopup
-    ].includes(this.fsmState)
+    return this.component === AppComponents[toStr(FsmStates.Links)]
   }
 
   get isTodo(): boolean {
-    return this.fsmState === FsmStates.Todo
+    return this.component === AppComponents[toStr(FsmStates.Todo)]
   }
 
   get isEvents(): boolean {
-    return this.fsmState === FsmStates.Events
+    return this.component === AppComponents[toStr(FsmStates.Events)]
   }
 
   get switcherProps() {

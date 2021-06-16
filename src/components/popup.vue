@@ -11,19 +11,13 @@
           :is="component"
           v-bind="props"
           @set-result="onSetResult"
-          />
+        />
       </div>
     </div>
     <!-- <div class="popup-window popup-uploading" v-if="uploadingPopupShow">
       <popup-title>
         <close-btn @click="showUploadingPopup(false)" />
       </popup-title>
-      <div class="uploading-label">
-        Uploading file...
-      </div>
-      <div class="uploading-progress">
-        <span></span>
-      </div>
     </div> -->
     <!-- <div class="popup-window popup-link-add" v-if="linkAddPopupShow">
       <popup-title>

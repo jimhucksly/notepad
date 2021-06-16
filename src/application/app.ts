@@ -20,7 +20,7 @@ interface IAppComponents {
   Todo: string
 }
 
-const AppComponents = {
+export const AppComponents = {
   [toStr(FsmStates.Projects)]: 'Projects',
   [toStr(FsmStates.Preferences)]: 'Preferences',
   [toStr(FsmStates.Library)]: 'Library',

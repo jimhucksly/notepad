@@ -147,10 +147,6 @@ export interface IRootState {
   todo: ITodo
   events: IEvents
   links: ILink
-  isAboutPopupShow: boolean
-  isUploadingPopupShow: boolean
-  isLinkAddPopupShow: boolean
-  isLibraryFileAddPopupShow: boolean
   timeout: NodeJS.Timeout | null
   notification: boolean
   error: boolean

@@ -5,9 +5,11 @@ import ProjectItem from '~/components/projectItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { SetJsonCommand, UploadFileCommand, UpdateJsonCommand, ReadCommand } from '~/domain/commands'
+import { SetJsonCommand, UpdateJsonCommand, ReadCommand, UploadFileCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter } from 'vuex-class'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import FsmStates from '~/application/fsm.states'
 
 @Component({
   name: 'Notepad',
@@ -96,7 +98,17 @@ export default class Notepad extends Vue {
 
   async upload(file: FormData, fileType: string) {
     try {
+      const command = new CreateEditCommand({
+        component: 'uploading-popup',
+        componentProps: {},
+        modal: {
+          title: 'Uploading'
+        },
+        fsmState: FsmStates.Uploading
+      })
+      this.commandBus.do<CreateEditCommand, void>(command)
       const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
+      this.$app.goBack()
       this.addFile(newFile.name, newFile.link, fileType)
     } catch(e) {
       console.error(e)
