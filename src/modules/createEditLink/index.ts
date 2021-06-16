@@ -1,20 +1,34 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { ILink } from '~/domain/models'
 
 @Component
 export default class CreateEditLinkComponent extends Vue {
-  url = ''
-  name = ''
+  @Prop() id: string
+  @Prop() url: string
+  @Prop() name: string
+
+  link: ILink = {
+    id: '',
+    url: '',
+    name: ''
+  }
 
   errors = {
     url: false,
     name: false
   }
 
+  created() {
+    this.link.id = this.id
+    this.link.url = this.url
+    this.link.name = this.name
+  }
+
   validate() {
-    if(!this.url) {
+    if(!this.link.url) {
       this.errors.url = true
     }
-    if(!this.name) {
+    if(!this.link.name) {
       this.errors.name = true
     }
     return !Object.values(this.errors).includes(true)
@@ -22,10 +36,7 @@ export default class CreateEditLinkComponent extends Vue {
 
   save() {
     if(this.validate()) {
-      this.$emit('set-result', {
-        url: this.url,
-        name: this.name
-      })
+      this.$emit('set-result', this.link)
     }
   }
 

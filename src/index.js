@@ -386,10 +386,6 @@ ipcMain.on('todo-add', (event, text) => {
   event.sender.send('todo-add')
 })
 
-ipcMain.on('data-transfer', (event, data) => {
-  event.sender.send('data-transfer', data)
-})
-
 ipcMain.on('remove-library-file-confirm', (event) => {
   dialog.showMessageBox(null, {
     type: 'question',

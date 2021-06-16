@@ -4,7 +4,7 @@
       <input
         type="text"
         ref="url"
-        v-model="url"
+        v-model="link.url"
         placeholder="URL"
         :class="{ 'input--error': errors.url }"
         >
@@ -14,7 +14,7 @@
       <input
         type="text"
         ref="name"
-        v-model="name"
+        v-model="link.name"
         placeholder="Name"
         :class="{ 'input--error': errors.name }"
       >
