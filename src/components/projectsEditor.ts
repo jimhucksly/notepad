@@ -7,6 +7,7 @@ import { TYPES } from '~/domain/types'
 import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
 
 @Component({
   name: 'ProjectsEditor'
@@ -22,6 +23,7 @@ export default class ProjectsEditor extends Vue {
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
   @Getter('getSelectedProjectKey') selected: string
+  @Getter('getFsmState') fsmState: symbol
 
   name = ''
   isLock = false
@@ -109,5 +111,9 @@ export default class ProjectsEditor extends Vue {
     this.$electron.ipcRenderer.on('unlock-is-unconfimed', () => {
       this.isDialog = false
     })
+  }
+
+  get active(): boolean {
+    return this.fsmState === FsmStates.ProjectsEditor
   }
 }

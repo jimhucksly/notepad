@@ -3,19 +3,19 @@
     <div class="m-b-15">
       <input
         type="text"
-        ref="url"
-        v-model="link.url"
-        placeholder="URL"
-        :class="{ 'input--error': errors.url }"
+        ref="title"
+        v-model="file.title"
+        placeholder="File title"
+        :class="{ 'input--error': errors.title }"
       >
-      <span class="error-hint" v-if="errors.url">This field is required</span>
+      <span class="error-hint" v-if="errors.title">This field is required</span>
     </div>
     <div class="m-b-15">
       <input
         type="text"
         ref="name"
-        v-model="link.name"
-        placeholder="Name"
+        v-model="file.name"
+        placeholder="File name"
         :class="{ 'input--error': errors.name }"
       >
       <span class="error-hint" v-if="errors.name">This field is required</span>
@@ -26,4 +26,3 @@
   </form>
 </template>
 <script src="./index.ts" lang="ts"></script>
-

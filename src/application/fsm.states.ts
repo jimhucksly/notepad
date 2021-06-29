@@ -12,6 +12,7 @@ export interface IFsmStates {
   AddLinkPopup: symbol
   About: symbol
   Uploading: symbol
+  AddLibraryFilePopup: symbol
 }
 
 const FsmStates: IFsmStates = {
@@ -27,7 +28,8 @@ const FsmStates: IFsmStates = {
   JsonViewer: Symbol.for('JsonViewer'),
   AddLinkPopup: Symbol.for('AddLinkPopup'),
   About: Symbol.for('About'),
-  Uploading: Symbol.for('Uploading')
+  Uploading: Symbol.for('Uploading'),
+  AddLibraryFilePopup: Symbol.for('AddLibraryFilePopup')
 }
 
 export default FsmStates

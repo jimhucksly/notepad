@@ -52,7 +52,8 @@ export default class CreateEditLinkComponent extends Vue {
   }
 
   beforeDestroy() {
-    this.url = ''
-    this.name = ''
+    this.link.id = ''
+    this.link.url = ''
+    this.link.name = ''
   }
 }

@@ -18,6 +18,7 @@ import store from './store'
 import CreateEditLink from '~/modules/createEditLink/index.vue'
 import AboutPopup from '~/modules/aboutPopup/index.vue'
 import UploadingPopup from '~/modules/uploadingPopup/index.vue'
+import CreateEditLibraryFile from './modules/createEditLibraryFile/index.vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -34,15 +35,15 @@ Vue.use(Anime)
 Vue.use(BCheckbox)
 Vue.use(SvgIcon)
 
+Vue.component('popup', Popup)
 Vue.component('create-edit-link', CreateEditLink)
 Vue.component('about-popup', AboutPopup)
 Vue.component('uploading-popup', UploadingPopup)
+Vue.component('create-edit-library-file', CreateEditLibraryFile)
 
 if(!process.env.IS_WEB) {
   Vue.prototype.$electron = require('electron')
 }
-
-Vue.component('popup', Popup)
 
 /* eslint-disable no-new */
 new Vue({

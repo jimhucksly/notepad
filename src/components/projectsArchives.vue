@@ -2,6 +2,7 @@
   <div
     class="projects_archives"
     :class="{
+      active: active,
       expanded: expanded
     }"
   >

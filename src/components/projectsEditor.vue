@@ -2,6 +2,7 @@
   <div
     class="projects_editor"
     :class="{
+      active: active,
       expanded: expanded
     }"
   >

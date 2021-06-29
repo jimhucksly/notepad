@@ -33,7 +33,7 @@ export default class Links extends Vue {
           name: found.name
         },
         modal: {
-          title: 'Add link',
+          title: 'Edit link',
           width: '30%'
         },
         fsmState: FsmStates.AddLinkPopup

@@ -18,9 +18,18 @@ const fsm = new StateMachine({
     { name: 'events', from: '*', to: toStr(FsmStates.Events) },
     { name: 'links', from: '*', to: toStr(FsmStates.Links) },
     { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) },
-    { name: 'addlinkpopup', from: toStr(FsmStates.Links), to: toStr(FsmStates.AddLinkPopup) },
+    {
+      name: 'addlinkpopup',
+      from: toStr(FsmStates.Links),
+      to: toStr(FsmStates.AddLinkPopup)
+    },
     { name: 'about', from: '*', to: toStr(FsmStates.About) },
-    { name: 'uploading', from: '*', to: toStr(FsmStates.Uploading) }
+    { name: 'uploading', from: '*', to: toStr(FsmStates.Uploading) },
+    {
+      name: 'addlibraryfilepopup',
+      from: toStr(FsmStates.Library),
+      to: toStr(FsmStates.AddLibraryFilePopup)
+    }
   ]
 })
 

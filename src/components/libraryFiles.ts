@@ -6,6 +6,8 @@ import { ILibraryFile } from '~/domain/models'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { LibraryFilesQuery } from '~/domain/queries'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import FsmStates from '~/application/fsm.states'
 
 @Component({
   name: 'LibraryFiles'
@@ -17,7 +19,6 @@ export default class LibraryFiles extends Vue {
   @Prop({ type: Boolean, default: false }) init: boolean
 
   @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
-  @Mutation('setIsLibraryFileAddPopupShow') popupShow: (state: boolean) => void
 
   @Getter('getLibraryFiles') libraryFiles: Array<ILibraryFile>
   @Getter('getLibraryFileId') currentId: string
@@ -29,9 +30,22 @@ export default class LibraryFiles extends Vue {
     this.$emit('on-toggle')
   }
 
-  add() {
-    this.popupShow(true)
+  async add() {
     this.$emit('on-toggle')
+    const command = new CreateEditCommand({
+      component: 'create-edit-library-file',
+      componentProps: {},
+      modal: {
+        title: 'Add library file',
+        width: '30%'
+      },
+      fsmState: FsmStates.AddLibraryFilePopup
+    })
+    const result = await this.commandBus.do<CreateEditCommand, ILibraryFile>(command)
+    if(!result) {
+      return
+    }
+    console.log(result)
   }
 
   removeFile(id: string) {

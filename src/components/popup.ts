@@ -62,24 +62,8 @@ export default class Popup extends Vue {
     return [
       FsmStates.AddLinkPopup,
       FsmStates.About,
-      FsmStates.Uploading
+      FsmStates.Uploading,
+      FsmStates.AddLibraryFilePopup
     ].includes(this.fsmState)
   }
-
-  // libraryFileTitle = ''
-  // libraryFileName = ''
-
-
-  // addLibraryFile() {
-  //   if(!this.libraryFileTitle || !this.libraryFileName) {
-  //     return
-  //   }
-  //   const command = new AddLibraryFileCommand({
-  //     id: uniqueid(6, '0-9') as number,
-  //     title: this.libraryFileTitle,
-  //     name: this.libraryFileName
-  //   })
-  //   this.sendData(command)
-  //   this.showLibraryFileAddPopup(false)
-  // }
 }
