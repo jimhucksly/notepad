@@ -1,3 +1,5 @@
+import FsmStates from '~/application/fsm.states'
+
 export interface IMenu {
   name: string
   nameAlt: string
@@ -151,4 +153,6 @@ export interface IRootState {
   notification: boolean
   error: boolean
   component: string
+  selectedProjectKey: string
+  history: Array<keyof typeof FsmStates>
 }

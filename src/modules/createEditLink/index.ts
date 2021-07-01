@@ -36,7 +36,7 @@ export default class CreateEditLinkComponent extends Vue {
 
   save() {
     if(this.validate()) {
-      this.$emit('set-result', this.link)
+      this.$emit('set-result', { ...this.link })
     }
   }
 

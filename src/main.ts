@@ -19,6 +19,7 @@ import CreateEditLink from '~/modules/createEditLink/index.vue'
 import AboutPopup from '~/modules/aboutPopup/index.vue'
 import UploadingPopup from '~/modules/uploadingPopup/index.vue'
 import CreateEditLibraryFile from './modules/createEditLibraryFile/index.vue'
+import ConfirmPopupComponent from './modules/confirmPopup/index.vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true
@@ -40,6 +41,7 @@ Vue.component('create-edit-link', CreateEditLink)
 Vue.component('about-popup', AboutPopup)
 Vue.component('uploading-popup', UploadingPopup)
 Vue.component('create-edit-library-file', CreateEditLibraryFile)
+Vue.component('confirm-popup', ConfirmPopupComponent)
 
 if(!process.env.IS_WEB) {
   Vue.prototype.$electron = require('electron')

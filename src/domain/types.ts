@@ -16,6 +16,7 @@ const TYPES = {
   LinksQuery: Symbol.for('LinksQuery'),
   TodoQuery: Symbol.for('TodoQuery'),
   CheckQuery: Symbol.for('CheckQuery'),
+  ConfirmQuery: Symbol.for('ConfirmQuery'),
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
   CheckCommand: Symbol.for('CheckCommand'),

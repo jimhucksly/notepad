@@ -8,6 +8,14 @@
         #{$name}-#{$type}: #{$i*5}px !important;
       }
     }
+    .#{$n}-x-#{$i*5} {
+      #{$name}-left: #{$i*5}px;
+      #{$name}-right: #{$i*5}px;
+    }
+    .#{$n}-y-#{$i*5} {
+      #{$name}-top: #{$i*5}px;
+      #{$name}-bottom: #{$i*5}px;
+    }
   }
 }
 

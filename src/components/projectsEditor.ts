@@ -7,7 +7,8 @@ import { TYPES } from '~/domain/types'
 import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
+import { IFsmStates } from '~/application/fsm.states'
+import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
 @Component({
   name: 'ProjectsEditor'
@@ -23,7 +24,7 @@ export default class ProjectsEditor extends Vue {
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
   @Getter('getSelectedProjectKey') selected: string
-  @Getter('getFsmState') fsmState: symbol
+  @Getter('getHistory') history: Array<keyof IFsmStates>
 
   name = ''
   isLock = false
@@ -47,13 +48,27 @@ export default class ProjectsEditor extends Vue {
     return this.item && !!this.item.file
   }
 
-  toggleLock(v: boolean): void {
-    if(!v) {
-      this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
-      this.isDialog = true
-    } else {
-      this.isLock = v
+  async toggleLock(): Promise<void> {
+    const isLocked = this.item.lock
+    const updateJson = () => {
+      const o: IJson = {
+        [this.item.key]: {
+          ...this.item,
+          lock: !isLocked
+        }
+      }
+      this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
     }
+    if(isLocked) {
+      const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+        'Do you want to unlock this project?'
+      ))
+      if(!isConfirm) {
+        return
+      }
+    }
+    updateJson()
   }
 
   async archive() {
@@ -93,27 +108,14 @@ export default class ProjectsEditor extends Vue {
     }
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
     await this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
-    this.$emit('update:itemStamp', '')
+    this.$app.goBack()
   }
 
   hide() {
-    this.$emit('update:itemStamp', '')
-  }
-
-  mounted() {
-    this.$electron.ipcRenderer.on('unlock-is-confimed', () => {
-      this.isLock = false
-      this.$nextTick(() => {
-        this.isDialog = false
-      })
-    })
-
-    this.$electron.ipcRenderer.on('unlock-is-unconfimed', () => {
-      this.isDialog = false
-    })
+    this.$app.goBack()
   }
 
   get active(): boolean {
-    return this.fsmState === FsmStates.ProjectsEditor
+    return this.history.includes('ProjectsEditor')
   }
 }

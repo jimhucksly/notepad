@@ -38,7 +38,9 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Library
+  homeState = FsmStates.Projects
+
+  history: Array<keyof IFsmStates> = []
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
@@ -83,24 +85,37 @@ export default class Application {
       this._store.commit('setToken', null)
       const userDataPath = this._store.getters.getUserDataPath
       storage.set(userDataPath, userDataFileName, { token: '' })
+      this.history = []
+      this._store.commit('setHistory', [])
       return
     }
-    this._store.commit('setPrevTransition', this._store.getters.getFsmState)
     this._store.commit('setFsmState', this.state)
+    if(this.lastState !== this.stateName) {
+      this.setHistory()
+    }
     if(AppComponents[this.stateName]) {
       this._store.commit('setComponent', AppComponents[this.stateName])
     }
   }
 
   goBack() {
-    const prevTransition = this._store.getters.getPrevTransition
-    if(prevTransition) {
-      this.goto(prevTransition)
+    if(this.history.length === 1) {
+      return
     }
+    this.history.splice(-1, 1)
+    this._store.commit('setHistory', [...this.history])
+    this.goto(FsmStates[this.lastState])
   }
 
   goHome() {
-    this.goto(process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState)
+    const state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
+    this.history.push(toStr(state))
+    this.goto(state)
+  }
+
+  setHistory() {
+    this.history.push(this.stateName)
+    this._store.commit('setHistory', [...this.history])
   }
 
   get fsm() {
@@ -112,7 +127,11 @@ export default class Application {
   }
 
   get stateName(): keyof IFsmStates {
-    return toStr(this.state) as keyof IFsmStates
+    return toStr(this.state)
+  }
+
+  get lastState(): keyof IFsmStates {
+    return this.history[this.history.length - 1]
   }
 
   get isDev(): boolean {

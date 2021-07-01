@@ -16,12 +16,13 @@ const stateKeys: string[] = [
   'todo',
   'filter',
   'fsmState',
+  'timeout',
   'downloadsTargetPath',
   'notification',
   'error',
-  'prevTransition',
   'component',
-  'selectedProjectKey'
+  'selectedProjectKey',
+  'history'
 ]
 
 export default stateKeys

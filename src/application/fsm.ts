@@ -1,8 +1,8 @@
-import FsmStates from '~/application/fsm.states'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 
 const StateMachine = require('javascript-state-machine')
 
-const toStr = (s: symbol): string => Symbol.keyFor(s)
+const toStr = (s: symbol): keyof IFsmStates => Symbol.keyFor(s) as keyof IFsmStates
 
 const fsm = new StateMachine({
   observeUnchangedState: true,
@@ -29,7 +29,8 @@ const fsm = new StateMachine({
       name: 'addlibraryfilepopup',
       from: toStr(FsmStates.Library),
       to: toStr(FsmStates.AddLibraryFilePopup)
-    }
+    },
+    { name: 'confirmpopup', from: '*', to: toStr(FsmStates.ConfirmPopup) }
   ]
 })
 

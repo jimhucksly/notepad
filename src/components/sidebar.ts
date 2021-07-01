@@ -9,7 +9,7 @@ import JsonViewerBtns from '~/components/jsonViewerBtns'
 import LinksBtns from '~/components/linksBtns'
 import TodoBtns from '~/components/todoBtns'
 import { Getter } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { AppComponents } from '~/application/app'
 import { toStr } from '~/application/fsm'
 
@@ -28,7 +28,7 @@ import { toStr } from '~/application/fsm'
   }
 })
 export default class Sidebar extends Vue {
-  @Getter('getFsmState') fsmState: symbol
+  @Getter('getHistory') history: Array<keyof IFsmStates>
   @Getter('getComponent') component: string
 
   isSwitcherMenuExpanded = false
@@ -36,10 +36,11 @@ export default class Sidebar extends Vue {
   isLibraryFilesInit = false
 
   get isProjectEditorVisibility() {
-    return this.fsmState === FsmStates.ProjectsEditor
+    return this.history.includes('ProjectsEditor')
   }
+
   get isProjectArchivesVisibility() {
-    return this.fsmState === FsmStates.ProjectsArchives
+    return this.history.includes('ProjectsArchives')
   }
 
   get isLibraryFilesVisibility() {

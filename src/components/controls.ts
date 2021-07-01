@@ -2,7 +2,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
 import { checkLinks, htmlToText } from '~/helpers'
 import { IFilters, IJson } from '~/domain/models'
-import { ICommandBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import {
@@ -11,12 +11,14 @@ import {
   DeleteProjectCommand
 } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
+import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
 @Component({
   name: 'Controls'
 })
 
 export default class Controls extends Vue {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Prop({ type: String, default: '' }) readonly itemKey: string
@@ -99,12 +101,16 @@ export default class Controls extends Vue {
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
     this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
-  remove(stamp: string) {
+
+  async remove(stamp: string) {
     if(this.isLock) {
-      this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
-      this.$electron.ipcRenderer.once('remove-is-confimed', () => {
-        this.removeHandler(stamp)
-      })
-    } else this.removeHandler(stamp)
+      const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+        'Do you realy want to remove this project?'
+      ))
+      if(!isConfirm) {
+        return
+      }
+    }
+    this.removeHandler(stamp)
   }
 }

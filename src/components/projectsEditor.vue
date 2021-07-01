@@ -21,7 +21,7 @@
       <div class="form-group">
         <div class="form-group-inner flex-between items-center">
           <label class="m-b-5">Protected</label>
-          <b-checkbox :value="isLock" @input="(v) => { toggleLock(v) }" />
+          <b-checkbox :value="isLock" @input="toggleLock" />
         </div>
       </div>
       <div class="form-group" v-if="!isFile">
@@ -42,7 +42,12 @@
       </div>
     </div>
     <div class="projects_editor_footer">
-      <a href="" @click.prevent="hide">Cancel</a>
+      <button
+        class="btn btn-transparency m-r-15"
+        @click="hide"
+      >
+        Cancel
+      </button>
       <button
         class="btn btn-primary"
         @click="save"

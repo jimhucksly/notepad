@@ -1,6 +1,7 @@
 import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
 import { IRootState, IJson, IFilters, IEvents, ILibraryFile } from '~/domain/models'
+import { IFsmStates } from '~/application/fsm.states'
 
 interface IMutations {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -23,6 +24,10 @@ const _mutations: IMutations = {
   setLibraryFiles(state: IRootState, files: Array<ILibraryFile>) {
     state.libraryFiles = []
     state.libraryFiles = files
+  },
+  setHistory(state: IRootState, history: Array<keyof IFsmStates>) {
+    state.history = []
+    state.history = history
   }
 }
 

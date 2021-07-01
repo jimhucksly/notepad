@@ -348,36 +348,6 @@ ipcMain.on('open-error-dialog', (event, msg) => {
   })
 })
 
-ipcMain.on('open-dialog-remove-confirm', (event) => {
-  dialog.showMessageBox(null, {
-    type: 'question',
-    buttons: ['Yes', 'No'],
-    defaultId: 1,
-    title: 'Confirm',
-    message: 'Remove record?'
-  }).then(data => {
-    if(data.response === 0) {
-      event.sender.send('remove-is-confimed')
-    }
-  })
-})
-
-ipcMain.on('open-dialog-unlock-confirm', (event) => {
-  dialog.showMessageBox(null, {
-    type: 'question',
-    buttons: ['Yes', 'No'],
-    defaultId: 1,
-    title: 'Confirm',
-    message: 'Remove the protection?'
-  }).then(data => {
-    if(data.response === 0) {
-      event.sender.send('unlock-is-confimed')
-    } else {
-      event.sender.send('unlock-is-unconfimed')
-    }
-  })
-})
-
 ipcMain.on('codemirror-link-click', (event, text) => {
   event.sender.send('codemirror-link-click', text)
 })

@@ -2,7 +2,6 @@ import { cloneDeep, unset } from 'lodash'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import FsmStates from '~/application/fsm.states'
-import { SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IArchive, IFilters, IJson } from '~/domain/models'
@@ -34,39 +33,6 @@ export default class Projects extends Vue {
     const input: NodeListOf<Element> = document.querySelectorAll('input[type="checkbox"]:checked')
     if(input && input[0]) {
       (input[0] as HTMLInputElement).checked = false
-    }
-  }
-
-  toggleLock(e: InputEvent, stamp: string) {
-    const items = this.$refs.projects_item as Array<HTMLElement>
-    const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
-    if(!item) {
-      return
-    }
-    const isLocked = item.classList.contains('lock')
-    const updateJson = () => {
-      const o: IJson = {
-        [stamp]: {
-          key: stamp,
-          date: this.json[stamp].date,
-          name: this.json[stamp].name,
-          lock: !isLocked,
-          message: this.json[stamp].message,
-          file: this.json[stamp].file
-        }
-      }
-      this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
-      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
-    }
-    if(isLocked) {
-      this.$electron.ipcRenderer.send('open-dialog-unlock-confirm')
-      this.$electron.ipcRenderer.once('unlock-is-confimed', () => {
-        item.classList.remove('lock')
-        updateJson()
-      })
-    } else {
-      item.classList.add('lock')
-      updateJson()
     }
   }
 

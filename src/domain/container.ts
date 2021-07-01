@@ -11,6 +11,7 @@ import { TYPES } from '~/domain/types'
 import store from '~/store'
 import mockStore from '../../test/mock/store'
 import { CreateEditCommandHandler } from './commands/createEdit.command'
+import { ConfirmQueryHandler } from './queries/confirm.query'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 let _store: Store<any> = null
@@ -35,6 +36,8 @@ _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(_store || store)
 /* ------------ queries ------------ */
 _container.bind<CheckQueryHandler>(TYPES.CheckQuery)
   .to(CheckQueryHandler).inSingletonScope()
+_container.bind<ConfirmQueryHandler>(TYPES.ConfirmQuery)
+  .to(ConfirmQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */
 _container.bind<PingCommandHandler>(TYPES.PingCommand)
   .to(PingCommandHandler).inSingletonScope()

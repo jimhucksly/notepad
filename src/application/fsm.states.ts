@@ -13,6 +13,7 @@ export interface IFsmStates {
   About: symbol
   Uploading: symbol
   AddLibraryFilePopup: symbol
+  ConfirmPopup: symbol
 }
 
 const FsmStates: IFsmStates = {
@@ -29,7 +30,8 @@ const FsmStates: IFsmStates = {
   AddLinkPopup: Symbol.for('AddLinkPopup'),
   About: Symbol.for('About'),
   Uploading: Symbol.for('Uploading'),
-  AddLibraryFilePopup: Symbol.for('AddLibraryFilePopup')
+  AddLibraryFilePopup: Symbol.for('AddLibraryFilePopup'),
+  ConfirmPopup: Symbol.for('ConfirmPopup')
 }
 
 export default FsmStates
