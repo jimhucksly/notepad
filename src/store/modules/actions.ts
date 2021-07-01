@@ -5,7 +5,6 @@ import { isJSON } from '~/helpers'
 import {
   IRootState,
   IJson,
-  IJsonHeaders,
   IArchive,
   ICheckResponse,
   IResponse,
@@ -45,13 +44,6 @@ import {
 import { ActionTree, ActionContext } from 'vuex'
 
 type TStore = ActionContext<IRootState, IRootState>
-
-const jsonHeaders: IJsonHeaders = {
-  headers: {
-    'X-Honeypot': 'App',
-    'Content-Type': 'application/json'
-  }
-}
 
 function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
   const arr = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
@@ -150,7 +142,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       const resp = await $http.post<{ login: string, password: string }, void>('AUTH', {
         login: query.login,
         password: query.password
-      }, jsonHeaders)
+      })
       if(resp.token) {
         return resp.token
       }
@@ -165,9 +157,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.OAuthQuery)
   async actionAuthentication(store: TStore): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      await $http.get<IResponse<void>>('OAUTH', jsonHeaders)
+      await $http.get<IResponse<void>>('OAUTH')
       return
     } catch(e) {
       return Promise.reject(e)
@@ -180,7 +171,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.PingCommand)
   async actionPing(_: TStore): Promise<string> {
     try {
-      await $http.get<string>('PING', jsonHeaders)
+      await $http.get<string>('PING')
       return 'PONG'
     } catch(e) {
       return Promise.reject()
@@ -193,9 +184,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.JsonQuery)
   async actionGetJson(store: TStore): Promise<IJson> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<IJson>('GET_JSON', jsonHeaders)
+      const resp = await $http.get<IJson>('GET_JSON')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -217,9 +207,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
 
   @Queryable(TYPES.LibraryFilesQuery)
   async actionGetLibraryFiles(store: TStore): Promise<string> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<string>('GET_LIBRARY_FILES', jsonHeaders)
+      const resp = await $http.get<string>('GET_LIBRARY_FILES')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -246,11 +235,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.LibraryFileQuery)
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ id: string | number }, string>('LIBRARY_FILE', {
         id: query.id || 0
-      }, jsonHeaders)
+      })
       if(!resp || resp.data === undefined) {
         return Promise.reject(resp)
       }
@@ -269,11 +257,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.AddLibraryFileCommand)
   async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<string> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: ILibraryFile }, string>('ADD_LIBRARY_FILE', {
         body: command.data
-      }, jsonHeaders)
+      })
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -297,12 +284,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateLibraryCommand)
   async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ id: string | number, body: string }, void>('SAVE_LIBRARY_FILE', {
         id: command.id || 0,
         body: command.value
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'save markdown failed')
         return Promise.reject(resp)
@@ -320,13 +306,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteLibraryFileCommand)
   async actionDeleteLibraryFile(store: TStore, command: DeleteLibraryFileCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.post<{ body: { id: string | number } }, void>('DELETE_LIBRARY_FILE', {
-        body: {
-          id: command.id
-        }
-      }, jsonHeaders)
+      const resp = await $http.delete(
+        'DELETE_LIBRARY_FILE',
+        command
+      )
       if(!resp || resp.status !== 'success') {
         return Promise.reject(resp)
       }
@@ -343,11 +327,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateJsonCommand)
   async actionUpdateJson(store: TStore, json: UpdateJsonCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ json: IJson }, void>('UPDATE', {
         json: json.data
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'send message is failed')
         return Promise.reject(resp)
@@ -365,11 +348,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteProjectCommand)
   async actionDelete(store: TStore, command: DeleteProjectCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ key: string | number }, void>('DELETE', {
         key: command.stamp
-      }, jsonHeaders)
+      })
       if(!resp) {
         ipcRenderer.send('open-error-dialog', 'delete message is failed')
         throw new Error('error')
@@ -387,10 +369,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UploadFileCommand)
   async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
-    jsonHeaders.headers['Content-Type'] = 'multipart/form-data'
     try {
-      const resp = await $http.post<FormData, IFile>('FILE', command.file, jsonHeaders)
+      const resp = await $http.post<FormData, IFile>('FILE', command.file)
       if(!resp || !resp.data || !resp.data.name || !resp.data.link) {
         return Promise.reject(resp)
       }
@@ -407,9 +387,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.ArchivesQuery)
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<Array<IArchive>>('GET_ARCHIVES', jsonHeaders)
+      const resp = await $http.get<Array<IArchive>>('GET_ARCHIVES')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -430,11 +409,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.ArchiveRestoreCommand)
   async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<string> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ name: string }, void>('ARCHIVE_RESTORE', {
         name: command.name
-      }, jsonHeaders)
+      })
       if(!resp || !resp.message) {
         ipcRenderer.send('open-error-dialog', 'archive restore is failed')
         return Promise.reject(resp)
@@ -458,11 +436,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.ArchiveRemoveCommand)
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ name: string }, void>('ARCHIVE_REMOVE', {
         name: command.name
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'archive remove is failed')
         return Promise.reject(resp)
@@ -483,11 +460,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.ArchivingCommand)
   async actionArchiving(store: TStore, command: ArchivingCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ key: string | number }, void>('ARCHIVE', {
         key: command.stamp
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'archive project is failed')
         return Promise.reject(resp)
@@ -504,9 +480,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.EventsQuery)
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<Array<IEvent>>('EVENTS', jsonHeaders)
+      const resp = await $http.get<Array<IEvent>>('EVENTS')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -523,9 +498,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.LinksQuery)
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<Array<ILink>>('LINKS', jsonHeaders)
+      const resp = await $http.get<Array<ILink>>('LINKS')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -543,11 +517,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateEventCommand)
   async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: IEvent }, void>('EVENT', {
         body: command.event
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'save event failed')
         return Promise.reject(resp)
@@ -565,13 +538,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteEventCommand)
   async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: { remove: string } }, void>('EVENT', {
         body: {
           remove: command.date
         }
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'delete event failed')
         return Promise.reject(resp)
@@ -589,11 +561,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateLinksCommand)
   async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: ILink }, void>('LINK', {
         body: command.link
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'save link failed')
         return Promise.reject(resp)
@@ -611,13 +582,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteLinkCommand)
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: typeof command }, void>('DELETE_LINK', {
         body: {
           id: command.id
         }
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'delete link failed')
         return Promise.reject(resp)
@@ -635,9 +605,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Queryable(TYPES.TodoQuery)
   async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<Array<ITodo>>('GET_TODO', jsonHeaders)
+      const resp = await $http.get<Array<ITodo>>('GET_TODO')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -659,11 +628,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateTodoCommand)
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: ITodoItem }, void>('TODO', {
         body: command.item
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'todo item add failed')
         return Promise.reject(resp)
@@ -681,13 +649,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteTodoCommand)
   async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: { remove: string } }, void>('TODO', {
         body: {
           remove: command.id
         }
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         ipcRenderer.send('open-error-dialog', 'todo item add failed')
         return Promise.reject(resp)
@@ -705,11 +672,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.TodoOrderCommand)
   async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<void> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
       const resp = await $http.post<{ body: ITodoOrder }, void>('TODO_SET_ORDER', {
         body: command.result
-      }, jsonHeaders)
+      })
       if(!resp || resp.status !== 'success') {
         return Promise.reject(resp)
       }
@@ -724,9 +690,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.CheckCommand)
   async actionCheck(store: TStore): Promise<ICheckResponse> {
-    jsonHeaders.headers.Authorization = store.getters.getToken
     try {
-      const resp = await $http.get<ICheckResponse>('CHECK', jsonHeaders)
+      const resp = await $http.get<ICheckResponse>('CHECK')
       if(!resp || !resp.data) {
         return void 0
       }

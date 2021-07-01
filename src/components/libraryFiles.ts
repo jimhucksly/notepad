@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { DeleteLibraryFileCommand } from '~/domain/commands'
+import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ILibraryFile } from '~/domain/models'
 import { _container } from '~/domain/container'
@@ -41,11 +41,11 @@ export default class LibraryFiles extends Vue {
       },
       fsmState: FsmStates.AddLibraryFilePopup
     })
-    const result = await this.commandBus.do<CreateEditCommand, ILibraryFile>(command)
-    if(!result) {
+    const file = await this.commandBus.do<CreateEditCommand, ILibraryFile>(command)
+    if(!file) {
       return
     }
-    console.log(result)
+    await this.commandBus.do(new AddLibraryFileCommand(file))
   }
 
   removeFile(id: string) {
@@ -56,9 +56,8 @@ export default class LibraryFiles extends Vue {
   mounted() {
     this.$electron.ipcRenderer.on('remove-library-file-confirmed', async () => {
       this.$emit('on-toggle')
-      const command = new DeleteLibraryFileCommand(this.idForDelete)
       try {
-        await this.commandBus.do(command)
+        await this.commandBus.do(new DeleteLibraryFileCommand(this.idForDelete))
         await this.queryBus.exec(new LibraryFilesQuery())
         this.setFileId(this.libraryFiles[0]?.id || 0)
       } catch(e) {

@@ -38,9 +38,7 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = process.env.NODE_ENV === 'production'
-    ? FsmStates.Projects
-    : FsmStates.Projects
+  homeState = FsmStates.Library
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
@@ -102,7 +100,7 @@ export default class Application {
   }
 
   goHome() {
-    this.goto(this.homeState)
+    this.goto(process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState)
   }
 
   get fsm() {

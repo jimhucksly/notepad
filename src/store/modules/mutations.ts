@@ -1,6 +1,6 @@
 import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
-import { IRootState, IJson, IFilters, IEvents } from '~/domain/models'
+import { IRootState, IJson, IFilters, IEvents, ILibraryFile } from '~/domain/models'
 
 interface IMutations {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -19,6 +19,10 @@ const _mutations: IMutations = {
   setFilter(state: IRootState, filter: IFilters) {
     state.filter = {}
     state.filter = Object.assign({}, filter)
+  },
+  setLibraryFiles(state: IRootState, files: Array<ILibraryFile>) {
+    state.libraryFiles = []
+    state.libraryFiles = files
   }
 }
 
