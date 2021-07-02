@@ -35,6 +35,25 @@ export default class Sidebar extends Vue {
   projectEditedItemKey = ''
   isLibraryFilesInit = false
 
+  toggleLibraryFiles() {
+    if(this.isLibraryFilesVisibility) {
+      this.$app.goBack()
+    } else {
+      this.$app.goto(FsmStates.LibraryFiles)
+    }
+  }
+
+  @Watch('isProjects') onIsProjectsChanged() {
+    this.projectEditedItemKey = ''
+  }
+
+  @Watch('projectEditedItemKey') onProjectEditedItemKeyChanged(v: string) {
+    if(!v) {
+      const cont = this.$refs.projects as Projects
+      cont.clearCheck()
+    }
+  }
+
   get isProjectEditorVisibility() {
     return this.history.includes('ProjectsEditor')
   }
@@ -44,27 +63,15 @@ export default class Sidebar extends Vue {
   }
 
   get isLibraryFilesVisibility() {
-    if(!this.isLibrary) {
-      this.isLibraryFilesInit = false
-      return false
-    }
-    if(this.isSwitcherMenuExpanded) {
-      return this.isLibraryFilesInit
-    }
-    return true
-  }
-
-  @Watch('isProjects')
-  onIsProjectsChanged(v: boolean) {
-    this.projectEditedItemKey = ''
-  }
-
-  @Watch('projectEditedItemKey')
-  onProjectEditedItemKeyChanged(v: string) {
-    if(!v) {
-      const cont = this.$refs.projects as Projects
-      cont.clearCheck()
-    }
+    return this.history.includes('LibraryFiles')
+    // if(!this.isLibrary) {
+    //   this.isLibraryFilesInit = false
+    //   return false
+    // }
+    // if(this.isSwitcherMenuExpanded) {
+    //   return this.isLibraryFilesInit
+    // }
+    // return true
   }
 
   get isPreferences(): boolean {

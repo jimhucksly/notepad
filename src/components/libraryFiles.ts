@@ -1,13 +1,14 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import { _container } from '~/domain/container'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ILibraryFile } from '~/domain/models'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
 import { LibraryFilesQuery } from '~/domain/queries'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import FsmStates from '~/application/fsm.states'
+import { ConfirmQuery } from '~/domain/queries/confirm.query'
+import { TYPES } from '~/domain/types'
 
 @Component({
   name: 'LibraryFiles'
@@ -16,22 +17,21 @@ export default class LibraryFiles extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Prop({ type: Boolean, default: false }) init: boolean
-
   @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
 
   @Getter('getLibraryFiles') libraryFiles: Array<ILibraryFile>
   @Getter('getLibraryFileId') currentId: string
+  @Getter('getHistory') history: Array<keyof IFsmStates>
 
   idForDelete = ''
 
   openFile(id: string) {
     this.setFileId(id)
-    this.$emit('on-toggle')
+    this.$app.goBack()
   }
 
   async add() {
-    this.$emit('on-toggle')
+    this.$app.goBack()
     const command = new CreateEditCommand({
       component: 'create-edit-library-file',
       componentProps: {},
@@ -48,21 +48,23 @@ export default class LibraryFiles extends Vue {
     await this.commandBus.do(new AddLibraryFileCommand(file))
   }
 
-  removeFile(id: string) {
-    this.idForDelete = id
-    this.$electron.ipcRenderer.send('remove-library-file-confirm')
+  async removeFile(id: string) {
+    const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+      'Do you want to remove the library file?'
+    ))
+    if(!isConfirm) {
+      return
+    }
+    try {
+      await this.commandBus.do(new DeleteLibraryFileCommand(id))
+      await this.queryBus.exec(new LibraryFilesQuery())
+      this.setFileId(this.libraryFiles[0]?.id || 0)
+    } catch(e) {
+      console.log(e)
+    }
   }
 
-  mounted() {
-    this.$electron.ipcRenderer.on('remove-library-file-confirmed', async () => {
-      this.$emit('on-toggle')
-      try {
-        await this.commandBus.do(new DeleteLibraryFileCommand(this.idForDelete))
-        await this.queryBus.exec(new LibraryFilesQuery())
-        this.setFileId(this.libraryFiles[0]?.id || 0)
-      } catch(e) {
-        console.log(e)
-      }
-    })
+  get init() {
+    return this.history.includes('LibraryFiles')
   }
 }

@@ -77,11 +77,13 @@ export default class ProjectsEditor extends Vue {
     await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
-  remove() {
-    this.$electron.ipcRenderer.send('open-dialog-remove-confirm')
-    this.$electron.ipcRenderer.once('remove-is-confimed', () => {
-      this.removeHandler()
-    })
+  async remove() {
+    const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+      'Do you want to remove this project?'
+    ))
+    if(!isConfirm) {
+      return
+    }
   }
 
   async removeHandler() {

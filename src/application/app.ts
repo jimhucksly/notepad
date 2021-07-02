@@ -74,27 +74,31 @@ export default class Application {
     if(this.state === transition) {
       return
     }
-    const func = this.getTransitionFunc(transition)
-    const transitionResult: boolean = await func.call(this.fsm)
-    console.log('transition complete:  ->', this.state)
-    if(!transitionResult) {
-      return
-    }
-    if(transition === FsmStates.None) {
-      this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
-      this._store.commit('setToken', null)
-      const userDataPath = this._store.getters.getUserDataPath
-      storage.set(userDataPath, userDataFileName, { token: '' })
-      this.history = []
-      this._store.commit('setHistory', [])
-      return
-    }
-    this._store.commit('setFsmState', this.state)
-    if(this.lastState !== this.stateName) {
-      this.setHistory()
-    }
-    if(AppComponents[this.stateName]) {
-      this._store.commit('setComponent', AppComponents[this.stateName])
+    try {
+      const func = this.getTransitionFunc(transition)
+      const transitionResult: boolean = await func.call(this.fsm)
+      console.log('transition complete:  ->', this.state)
+      if(!transitionResult) {
+        return
+      }
+      if(transition === FsmStates.None) {
+        this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
+        this._store.commit('setToken', null)
+        const userDataPath = this._store.getters.getUserDataPath
+        storage.set(userDataPath, userDataFileName, { token: '' })
+        this.history = []
+        this._store.commit('setHistory', [])
+        return
+      }
+      this._store.commit('setFsmState', this.state)
+      if(this.lastState !== this.stateName) {
+        this.setHistory()
+      }
+      if(AppComponents[this.stateName]) {
+        this._store.commit('setComponent', AppComponents[this.stateName])
+      }
+    } catch(e) {
+      console.log(e)
     }
   }
 

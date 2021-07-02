@@ -19,9 +19,9 @@
             <label>
               <input
                 type="checkbox"
-                @change="toggleCheck"
                 :data-stamp="item.key"
                 :checked="item.key === selected"
+                @change="toggleCheck"
               >
             </label>
           </span>

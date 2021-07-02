@@ -1,6 +1,7 @@
 import { CreateElement, VNode } from 'vue'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import SidebarTree from '~/components/sidebarTree'
 import { ITreeItem } from '~/domain/models'
 
@@ -11,19 +12,15 @@ import { ITreeItem } from '~/domain/models'
   }
 })
 export default class Library extends Vue {
-  @Prop() isFilesShow: boolean
-
+  @Getter('getHistory') history: Array<keyof IFsmStates>
   @Getter('getLibraryTree') mdTree: Array<ITreeItem>
 
-  isFilesInit = false
-
   toggleFiles() {
-    this.isFilesInit = !this.isFilesInit
-    this.$emit('on-toggle-files', this.isFilesInit)
-  }
-
-  @Watch('isFilesShow', { immediate: true }) onIsFilesShowChanged(v: boolean) {
-    this.isFilesInit = v
+    if(this.isFilesInit) {
+      this.$app.goBack()
+    } else {
+      this.$app.goto(FsmStates.LibraryFiles)
+    }
   }
 
   render(h: CreateElement): VNode {
@@ -67,5 +64,9 @@ export default class Library extends Vue {
         )
       ]
     )
+  }
+
+  get isFilesInit() {
+    return this.history.includes('LibraryFiles')
   }
 }

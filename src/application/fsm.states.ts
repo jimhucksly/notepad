@@ -5,6 +5,7 @@ export interface IFsmStates {
   ProjectsArchives: symbol
   ProjectsEditor: symbol
   Library: symbol
+  LibraryFiles: symbol
   Todo: symbol
   Events: symbol
   Links: symbol
@@ -23,6 +24,7 @@ const FsmStates: IFsmStates = {
   ProjectsArchives: Symbol.for('ProjectsArchives'),
   ProjectsEditor: Symbol.for('ProjectsEditor'),
   Library: Symbol.for('Library'),
+  LibraryFiles: Symbol.for('LibraryFiles'),
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),
   Links: Symbol.for('Links'),
