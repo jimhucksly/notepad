@@ -11,7 +11,6 @@ import {
   ArchiveRemoveCommand
 } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
-import { IFsmStates } from '~/application/fsm.states'
 
 @Component({
   name: 'ProjectsArchives'
@@ -23,7 +22,6 @@ export default class ProjectsArchives extends Vue {
 
   @Getter('getArchives') items: IArchive[]
   @Getter('getJson') json: IJson
-  @Getter('getHistory') history: Array<keyof IFsmStates>
 
   @Prop() expanded: boolean
 
@@ -68,9 +66,5 @@ export default class ProjectsArchives extends Vue {
     } catch(e) {
       console.log(e)
     }
-  }
-
-  get active(): boolean {
-    return this.history.includes('ProjectsArchives')
   }
 }

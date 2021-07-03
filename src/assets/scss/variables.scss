@@ -15,6 +15,7 @@ $black_light: lighten($black, 20%);
 
 $blue: #2766BA;
 $blue_light: #2A86BB;
+$blue_light-op-04: rgba($blue_light, 0.4);
 $blue_light-1: lighten($blue_light, 5%);
 $blue_light-2: lighten($blue_light, 50%);
 
@@ -40,6 +41,7 @@ $editor_dark:  #141414;
 $editor_blue: #35bdff;
 $editor_yellow: #eeea53 ;
 $editor_red: #CF6A4C;
+$editor_red_light: lighten($editor_red, 3%);
 
 :root {
   --font-regular: #{$regular};
@@ -53,6 +55,7 @@ $editor_red: #CF6A4C;
   --dark_darken-2: #{$dark_darken-2};
   --blue: #{$blue};
   --blue_light: #{$blue_light};
+  --blue_light-op-04: #{$blue_light-op-04};
   --blue_light-1: #{$blue_light-1};
   --blue_light-2: #{$blue_light-2};
   --red: #{$red};
@@ -72,5 +75,5 @@ $editor_red: #CF6A4C;
   --editor_blue: #{$editor_blue};
   --editor_yellow: #{$editor_yellow};
   --editor_red: #{$editor_red};
+  --editor_red_light: #{$editor_red_light};
 }
-

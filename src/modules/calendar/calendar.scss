@@ -336,7 +336,7 @@
 }
 
 .b-calendar-wrap .b-calendar__body div.b-calendar__today {
-  background-color: rgba(var(--blue_light), 0.4);
+  background-color: var(--blue_light-op-04);
   color: #fff;
 }
 

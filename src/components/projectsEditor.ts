@@ -7,7 +7,6 @@ import { TYPES } from '~/domain/types'
 import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
-import { IFsmStates } from '~/application/fsm.states'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
 @Component({
@@ -24,7 +23,6 @@ export default class ProjectsEditor extends Vue {
   @Getter('getJson') json: IJson
   @Getter('getFilter') filter: IFilters
   @Getter('getSelectedProjectKey') selected: string
-  @Getter('getHistory') history: Array<keyof IFsmStates>
 
   name = ''
   isLock = false
@@ -115,9 +113,5 @@ export default class ProjectsEditor extends Vue {
 
   hide() {
     this.$app.goBack()
-  }
-
-  get active(): boolean {
-    return this.history.includes('ProjectsEditor')
   }
 }

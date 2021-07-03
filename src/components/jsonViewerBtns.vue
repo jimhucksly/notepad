@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="json_viewer">
     <button @click="open">
       <svg-icon icon="btnOpen" width="32" height="23" />
     </button>

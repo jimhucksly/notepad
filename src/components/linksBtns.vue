@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="links">
     <button @click="add">
       <svg-icon icon="btnAdd" width="32" height="23" />
     </button>

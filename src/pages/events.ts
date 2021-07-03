@@ -75,29 +75,29 @@ export default class Events extends Vue {
           title: context.items[key].title
         })
       }
-      if(context.itemsFiltered.length === 0) {
-        context.itemsFiltered.push({
-          key: '0',
-          title: 'Nothing to show'
-        })
-      }
-      document.onkeydown = (e) => {
-        if(e.code === 'Escape') {
-          context.itemsFiltered = []
-          context.search = ''
-          document.onclick = null
-          document.onkeydown = null
-        }
-      }
-      document.onclick = (e) => {
-        e.preventDefault()
-        const el = e.target as HTMLElement
-        if(el.closest('.events__search') === null) {
-          context.itemsFiltered = []
-          context.search = ''
-        }
-      }
     })
+    if(context.itemsFiltered.length === 0) {
+      context.itemsFiltered.push({
+        key: '0',
+        title: 'Nothing to show'
+      })
+    }
+    document.onkeydown = (e) => {
+      if(e.code === 'Escape') {
+        context.itemsFiltered = []
+        context.search = ''
+        document.onclick = null
+        document.onkeydown = null
+      }
+    }
+    document.onclick = (e) => {
+      e.preventDefault()
+      const el = e.target as HTMLElement
+      if(el.closest('.events__search > form') === null) {
+        context.itemsFiltered = []
+        context.search = ''
+      }
+    }
   }, 600)
 
   @Watch('search') onSearchChanged(val: string) {

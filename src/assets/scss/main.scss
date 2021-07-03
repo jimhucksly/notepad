@@ -467,7 +467,6 @@ main {
     font-size: 1.1rem;
 
     .json-formatter-key {
-      // color: #9b859d;
       color: var(--editor_yellow);
     }
 
@@ -573,7 +572,9 @@ main {
     }
 
     svg {
-      transform: translateX(30px);
+      position: absolute;
+      top: 5px;
+      left: 0;
     }
 
     input {

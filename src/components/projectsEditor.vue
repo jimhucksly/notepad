@@ -2,7 +2,6 @@
   <div
     class="projects_editor"
     :class="{
-      active: active,
       expanded: expanded
     }"
   >
@@ -10,7 +9,7 @@
     <div class="projects_editor_inner">
       <div class="form-group">
         <div class="form-group-inner">
-          <label>Name</label>
+          <label class="-m-t-10">Name</label>
           <div>
             <form>
               <input type="text" v-model="name" @keydown.enter.prevent="save">

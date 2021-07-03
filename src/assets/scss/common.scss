@@ -7,6 +7,11 @@
       .#{$n}-#{$t}-#{$i*5}i {
         #{$name}-#{$type}: #{$i*5}px !important;
       }
+      @if $name == 'margin' {
+        .-#{$n}-#{$t}-#{$i*5} {
+          #{$name}-#{$type}: -#{$i*5}px;
+        }
+      }
     }
     .#{$n}-x-#{$i*5} {
       #{$name}-left: #{$i*5}px;

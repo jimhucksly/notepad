@@ -1,6 +1,6 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
+import FsmStates from '~/application/fsm.states'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { _container } from '~/domain/container'
@@ -17,11 +17,12 @@ export default class LibraryFiles extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
+  @Prop() expanded: boolean
+
   @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
 
   @Getter('getLibraryFiles') libraryFiles: Array<ILibraryFile>
   @Getter('getLibraryFileId') currentId: string
-  @Getter('getHistory') history: Array<keyof IFsmStates>
 
   idForDelete = ''
 
@@ -62,9 +63,5 @@ export default class LibraryFiles extends Vue {
     } catch(e) {
       console.log(e)
     }
-  }
-
-  get init() {
-    return this.history.includes('LibraryFiles')
   }
 }

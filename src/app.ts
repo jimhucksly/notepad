@@ -3,10 +3,10 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
+import { EventsQuery, JsonQuery, LibraryFileQuery, LinksQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CreateElement, VNode } from 'vue'
-import { IJson } from './domain/models'
+import { IEvent, IJson, ILink } from './domain/models'
 import { Getter } from 'vuex-class'
 import FsmStates from './application/fsm.states'
 import { CreateEditCommand } from './domain/commands/createEdit.command'
@@ -34,9 +34,13 @@ export default class App extends Vue {
       this.$app.loading(true)
       await Promise.all([
         this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
-        this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
+        this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
+        this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
       ])
-      this.$app.loading(false)
+      setTimeout(() => {
+        this.$app.loading(false)
+      }, 1500)
     })
     this.$electron.ipcRenderer.on('sign-out', () => {
       this.$app.logout()

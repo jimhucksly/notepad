@@ -302,14 +302,9 @@ aside {
     background-color: var(--dark_darken-2);
     z-index: 8;
     transition: 0.3s;
-    opacity: 0;
 
     &.expanded {
       transform: translateX(100%);
-    }
-
-    &.active {
-      opacity: 1;
     }
 
     .projects_editor_inner {
@@ -392,16 +387,10 @@ aside {
     background-color: var(--dark_darken-2);
     z-index: 8;
     transition: 0.3s;
-    opacity: 0;
 
     &.expanded {
       transform: translateX(100%);
     }
-
-    &.active {
-      opacity: 1;
-    }
-
   }
 
   .projects_archives_inner {
@@ -409,7 +398,6 @@ aside {
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    padding-top: 5px;
 
     ul {
       li {
@@ -420,6 +408,10 @@ aside {
         color: var(--yellow_light);
         cursor: default;
         transition: 0.2s;
+
+        &:first-child {
+          padding-top: 0;
+        }
 
         &:hover {
           .icon {

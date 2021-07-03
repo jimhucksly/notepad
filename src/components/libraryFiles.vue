@@ -2,7 +2,7 @@
   <div
     class="library_files"
     :class="{
-      expanded: init
+      expanded: expanded
     }"
   >
     <div class="library_files_title">Library: Files</div>
