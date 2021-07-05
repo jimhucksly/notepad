@@ -7,8 +7,8 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import {
   SetJsonCommand,
-  UpdateJsonCommand,
-  DeleteProjectCommand
+  DeleteProjectCommand,
+  EditProjectCommand
 } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
@@ -87,7 +87,7 @@ export default class Controls extends Vue {
         }
         this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
         this.$nextTick(() => {
-          this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
+          this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
         })
       }
     }

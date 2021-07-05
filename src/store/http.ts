@@ -70,19 +70,50 @@ class Http {
     return resp.data
   }
 
-  public async delete(
-    action: string, data: { id: string | number }
-  ): Promise<IResponse<string>> {
-    const query = `action=${action}&id=${data.id}`
-    let resp: AxiosResponse<IResponse<string>>
+  public async put<TPayload, TResponse>(url: string, data: TPayload): Promise<IResponse<TResponse>> {
+    let resp: AxiosResponse<IResponse<TResponse>>
+    // if(action === 'FILE') {
+    //   const config = {
+    //     'X-Honeypot': 'App',
+    //     Authorization: store.getters.getToken,
+    //     'Content-Type': 'multipart/form-data',
+    //     onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
+    //       uploadingFile(loaded, total)
+    //     }
+    //   }
+    //   resp = await axios.post('?' + query, data, config)
+    // } else {
     try {
-      resp = await axios.delete('?' + query)
+      resp = await axios.put(url, data)
     } catch(e) {
       if(e.response === undefined) {
         store.commit('setError', true)
         if(interval === undefined) {
           interval = setInterval(() => {
-            this.post(action, data)
+            this.put(url, data)
+          }, 2000)
+        }
+        return Promise.reject()
+      } else {
+        interval && clearInterval(interval)
+        return e.response.data
+      }
+    }
+    store.commit('setError', false)
+    interval && clearInterval(interval)
+    return resp.data
+  }
+
+  public async delete(url: string): Promise<IResponse<string>> {
+    let resp: AxiosResponse<IResponse<string>>
+    try {
+      resp = await axios.delete(url)
+    } catch(e) {
+      if(e.response === undefined) {
+        store.commit('setError', true)
+        if(interval === undefined) {
+          interval = setInterval(() => {
+            this.delete(url)
           }, 2000)
         }
         return Promise.reject()

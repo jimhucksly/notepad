@@ -4,7 +4,7 @@ import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { ArchivingCommand, DeleteProjectCommand, SetJsonCommand, UpdateJsonCommand } from '~/domain/commands'
+import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand, SetJsonCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
@@ -56,7 +56,7 @@ export default class ProjectsEditor extends Vue {
         }
       }
       this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
-      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
+      this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if(isLocked) {
       const isConfirm = await this.queryBus.exec(new ConfirmQuery(
@@ -107,7 +107,7 @@ export default class ProjectsEditor extends Vue {
       }
     }
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
-    await this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
+    await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.$app.goBack()
   }
 

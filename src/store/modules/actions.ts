@@ -24,7 +24,6 @@ import {
   AuthCommand,
   SetJsonCommand,
   UploadFileCommand,
-  UpdateJsonCommand,
   DeleteProjectCommand,
   ArchiveRestoreCommand,
   ArchiveRemoveCommand,
@@ -39,7 +38,9 @@ import {
   DeleteTodoCommand,
   ReadCommand,
   AddLibraryFileCommand,
-  DeleteLibraryFileCommand
+  DeleteLibraryFileCommand,
+  CreateProjectCommand,
+  EditProjectCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 
@@ -155,6 +156,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * ==============================
+   * ************ Projects ********
+   * ==============================
+  */
+
+  /**
    * Get Projects
    * @param {Store} store
    */
@@ -182,13 +189,64 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * Create New Project
+   * @param store Store
+   * @param {CreateProjectCommand} command
+   */
+  @Commandable(TYPES.CreateProjectCommand)
+  async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
+    try {
+      await $http.put<IJson, boolean>('project', command.data)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Edit Project
+   * @param store Store
+   * @param data
+   */
+  @Commandable(TYPES.EditProjectCommand)
+  async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
+    try {
+      await $http.post<IJson, boolean>('project', command.data)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Delete Project
+   * @param store Store
+   * @param {DeleteProjectCommand} command
+   */
+  @Commandable(TYPES.DeleteProjectCommand)
+  async actionDeleteProject(store: TStore, command: DeleteProjectCommand): Promise<boolean> {
+    try {
+      await $http.delete(`project/?key=${command.stamp}`)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * ==============================
+   * ************ Library *********
+   * ==============================
+  */
+
+  /**
    * Get Library Files
    * @param {Store} store
    */
   @Queryable(TYPES.LibraryFilesQuery)
-  async actionGetLibraryFiles(store: TStore): Promise<string> {
+  async actionGetLibraryFiles(store: TStore): Promise<Array<ILibraryFile>> {
     try {
-      const resp = await $http.get<string>('library')
+      const resp = await $http.get<Array<ILibraryFile>>('library/list')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -196,12 +254,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
         store.commit('setError', true)
         return Promise.reject(resp)
       }
-      if(isJSON(resp.data)) {
-        store.commit('setLibraryFiles', JSON.parse(resp.data))
-        return resp.data
-      } else {
-        return Promise.reject(resp)
-      }
+      store.commit('setLibraryFiles', resp.data)
+      return resp.data
     } catch(e) {
       console.log(e)
       return Promise.reject(e)
@@ -288,60 +342,18 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.DeleteLibraryFileCommand)
   async actionDeleteLibraryFile(store: TStore, command: DeleteLibraryFileCommand): Promise<void> {
-    try {
-      const resp = await $http.delete(
-        'DELETE_LIBRARY_FILE',
-        command
-      )
-      if(!resp || resp.status !== 'success') {
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * UpdateJson
-   * @param store Store
-   * @param data
-   */
-  @Commandable(TYPES.UpdateJsonCommand)
-  async actionUpdateJson(store: TStore, json: UpdateJsonCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ json: IJson }, void>('UPDATE', {
-        json: json.data
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'send message is failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Delete Project
-   * @param store Store
-   * @param data
-   */
-  @Commandable(TYPES.DeleteProjectCommand)
-  async actionDelete(store: TStore, command: DeleteProjectCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ key: string | number }, void>('DELETE', {
-        key: command.stamp
-      })
-      if(!resp) {
-        ipcRenderer.send('open-error-dialog', 'delete message is failed')
-        throw new Error('error')
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
+    // try {
+    //   const resp = await $http.delete(
+    //     'DELETE_LIBRARY_FILE',
+    //     command
+    //   )
+    //   if(!resp || resp.status !== 'success') {
+    //     return Promise.reject(resp)
+    //   }
+    //   return Promise.resolve()
+    // } catch(e) {
+    //   return Promise.reject(e)
+    // }
   }
 
   /**
@@ -463,7 +475,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.EventsQuery)
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
     try {
-      const resp = await $http.get<Array<IEvent>>('EVENTS')
+      const resp = await $http.get<Array<IEvent>>('events')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -481,7 +493,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.LinksQuery)
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
     try {
-      const resp = await $http.get<Array<ILink>>('LINKS')
+      const resp = await $http.get<Array<ILink>>('links')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -673,7 +685,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.CheckCommand)
   async actionCheck(store: TStore): Promise<ICheckResponse> {
     try {
-      const resp = await $http.get<ICheckResponse>('CHECK')
+      const resp = await $http.get<ICheckResponse>('check')
       if(!resp || !resp.data) {
         return void 0
       }

@@ -17,7 +17,11 @@ export class PingCommand {
 
 export class CheckCommand {}
 
-export class UpdateJsonCommand {
+export class CreateProjectCommand {
+  constructor(public data: IJson) {}
+}
+
+export class EditProjectCommand {
   constructor(public data: IJson) {}
 }
 

@@ -6,9 +6,9 @@ import { _container } from '~/domain/container'
 import { IArchive, IJson } from '~/domain/models'
 import {
   SetJsonCommand,
-  UpdateJsonCommand,
   ArchiveRestoreCommand,
-  ArchiveRemoveCommand
+  ArchiveRemoveCommand,
+  CreateProjectCommand
 } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
 
@@ -47,7 +47,7 @@ export default class ProjectsArchives extends Vue {
           }
         }
         this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...json }))
-        await this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(json))
+        await this.commandBus.do<CreateProjectCommand, void>(new CreateProjectCommand(json))
         this.remove(o)
       }
     } catch(e) {

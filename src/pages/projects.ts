@@ -5,7 +5,7 @@ import ProjectItem from '~/components/projectItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { SetJsonCommand, UpdateJsonCommand, ReadCommand, UploadFileCommand } from '~/domain/commands'
+import { SetJsonCommand, ReadCommand, UploadFileCommand, CreateProjectCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
@@ -80,7 +80,7 @@ export default class Notepad extends Vue {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
+      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
     })
   }
 
@@ -135,7 +135,7 @@ export default class Notepad extends Vue {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<UpdateJsonCommand, void>(new UpdateJsonCommand(o))
+      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
     })
   }
 
