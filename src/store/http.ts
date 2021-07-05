@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { API_URL } from '~/constants'
-import { uploadingFile } from '~/helpers'
+import { IResponse } from '~/domain/models'
+import { parseURI } from '~/helpers'
 import store from '~/store'
-import { IJsonHeaders, IResponse } from '~/domain/models'
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -10,6 +9,11 @@ axios.interceptors.request.use(
     config.headers['X-Honeypot'] = 'App'
     config.headers['Content-Type'] = 'application/json'
     config.headers.Authorization = store.getters.getToken
+    config.url = store.getters.getApiPath + config.url
+    const { path, query } = parseURI(config.url)
+    if(!path.endsWith('/')) {
+      config.url = path + '/' + (query ? '?' + query : '')
+    }
     return config
   },
   error => {
@@ -21,11 +25,8 @@ axios.interceptors.request.use(
 let interval: NodeJS.Timeout | null = null
 
 class Http {
-  public async get<TResponse>(
-    action: string
-  ): Promise<IResponse<TResponse>> {
-    const query = `action=${action}`
-    const resp: AxiosResponse<IResponse<TResponse>> = await axios.get(API_URL + '?' + query)
+  public async get<TResponse>(url: string): Promise<IResponse<TResponse>> {
+    const resp: AxiosResponse<IResponse<TResponse>> = await axios.get(url)
     if(resp.status === 204) {
       return Promise.resolve(void 0)
     }
@@ -35,37 +36,33 @@ class Http {
     return resp.data
   }
 
-  public async post<TPayload, TResponse>(
-    action: string, data: TPayload, headers?: IJsonHeaders
-  ): Promise<IResponse<TResponse>> {
-    const query = `action=${action}`
+  public async post<TPayload, TResponse>(url: string, data: TPayload): Promise<IResponse<TResponse>> {
     let resp: AxiosResponse<IResponse<TResponse>>
-    if(action === 'FILE') {
-      const config = {
-        'X-Honeypot': 'App',
-        Authorization: store.getters.getToken,
-        'Content-Type': 'multipart/form-data',
-        onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
-          uploadingFile(loaded, total)
+    // if(action === 'FILE') {
+    //   const config = {
+    //     'X-Honeypot': 'App',
+    //     Authorization: store.getters.getToken,
+    //     'Content-Type': 'multipart/form-data',
+    //     onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
+    //       uploadingFile(loaded, total)
+    //     }
+    //   }
+    //   resp = await axios.post('?' + query, data, config)
+    // } else {
+    try {
+      resp = await axios.post(url, data)
+    } catch(e) {
+      if(e.response === undefined) {
+        store.commit('setError', true)
+        if(interval === undefined) {
+          interval = setInterval(() => {
+            this.post(url, data)
+          }, 2000)
         }
-      }
-      resp = await axios.post(API_URL + '?' + query, data, config)
-    } else {
-      try {
-        resp = await axios.post(API_URL + '?' + query, data)
-      } catch(e) {
-        if(e.response === undefined) {
-          store.commit('setError', true)
-          if(interval === undefined) {
-            interval = setInterval(() => {
-              this.post(action, data)
-            }, 2000)
-          }
-          return Promise.reject()
-        } else {
-          interval && clearInterval(interval)
-          return e.response.data
-        }
+        return Promise.reject()
+      } else {
+        interval && clearInterval(interval)
+        return e.response.data
       }
     }
     store.commit('setError', false)
@@ -79,7 +76,7 @@ class Http {
     const query = `action=${action}&id=${data.id}`
     let resp: AxiosResponse<IResponse<string>>
     try {
-      resp = await axios.delete(API_URL + '?' + query)
+      resp = await axios.delete('?' + query)
     } catch(e) {
       if(e.response === undefined) {
         store.commit('setError', true)

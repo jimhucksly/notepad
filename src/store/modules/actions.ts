@@ -94,30 +94,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store.commit('setJson', json)
   }
 
-  eventsJson(store: TStore, data: Array<IEvent> | string): void {
-    let json: Array<IEvent>
-    if(typeof data === 'string' && isJSON(data)) {
-      json = JSON.parse(data)
-    } else json = data as Array<IEvent>
-    store.commit('setEvents', json)
-  }
-
-  linksJson(store: TStore, data: Array<ILink> | string): void {
-    let json: Array<ILink>
-    if(typeof data === 'string' && isJSON(data)) {
-      json = JSON.parse(data)
-    } else json = data as Array<ILink>
-    store.commit('setLinks', json)
-  }
-
-  todoJson(store: TStore, data: Array<ITodo> | string): void {
-    let json: Array<ITodo>
-    if(typeof data === 'string' && isJSON(data)) {
-      json = JSON.parse(data)
-    } else json = data as Array<ITodo>
-    store.commit('setTodo', json)
-  }
-
   @Commandable(TYPES.ReadCommand)
   read(store: TStore, command: ReadCommand): void {
     const json = cloneDeep(store.getters['getJson'])
@@ -139,7 +115,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<string> {
     try {
-      const resp = await $http.post<{ login: string, password: string }, void>('AUTH', {
+      const resp = await $http.post<{ login: string, password: string }, void>('auth', {
         login: query.login,
         password: query.password
       })
@@ -158,7 +134,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.OAuthQuery)
   async actionAuthentication(store: TStore): Promise<void> {
     try {
-      await $http.get<IResponse<void>>('OAUTH')
+      await $http.get<IResponse<void>>('oauth')
       return
     } catch(e) {
       return Promise.reject(e)
@@ -179,13 +155,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
-   * Get Json
+   * Get Projects
    * @param {Store} store
    */
   @Queryable(TYPES.JsonQuery)
   async actionGetJson(store: TStore): Promise<IJson> {
     try {
-      const resp = await $http.get<IJson>('GET_JSON')
+      const resp = await $http.get<IJson>('projects')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -205,10 +181,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Get Library Files
+   * @param {Store} store
+   */
   @Queryable(TYPES.LibraryFilesQuery)
   async actionGetLibraryFiles(store: TStore): Promise<string> {
     try {
-      const resp = await $http.get<string>('GET_LIBRARY_FILES')
+      const resp = await $http.get<string>('library')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -236,9 +216,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.LibraryFileQuery)
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
     try {
-      const resp = await $http.post<{ id: string | number }, string>('LIBRARY_FILE', {
-        id: query.id || 0
-      })
+      let url = 'library'
+      if(query.id) {
+        url = url + '?id=' + query.id
+      }
+      const resp = await $http.get<string>(url)
       if(!resp || resp.data === undefined) {
         return Promise.reject(resp)
       }
@@ -388,7 +370,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.ArchivesQuery)
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
     try {
-      const resp = await $http.get<Array<IArchive>>('GET_ARCHIVES')
+      const resp = await $http.get<Array<IArchive>>('projects/archives')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -485,7 +467,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      store.dispatch('eventsJson', resp.data)
+      store.commit('setEvents', resp.data)
       return resp.data
     } catch(e) {
       return Promise.reject(e)
@@ -503,7 +485,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      store.dispatch('linksJson', resp.data)
+      store.commit('setLinks', resp.data)
       return resp.data
     } catch(e) {
       return Promise.reject(e)
@@ -610,7 +592,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      store.dispatch('todoJson', resp.data)
+      store.commit('setTodo', resp.data)
       return resp.data
     } catch(e) {
       console.log(e)
@@ -696,6 +678,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
         return void 0
       }
       return resp.data
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  async actionTest() {
+    try {
+      const resp = await $http.get('')
+      return resp
     } catch(e) {
       return Promise.reject(e)
     }

@@ -7,6 +7,7 @@ import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ILink } from '~/domain/models'
 import { LinksQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
+import { uniqueid } from '~/helpers'
 
 @Component({
   name: 'LinksBtns'
@@ -31,6 +32,9 @@ export default class LinksBtns extends Vue {
     const result = await this.commandBus.do<CreateEditCommand, ILink>(command)
     if(!result) {
       return
+    }
+    if(!result.id) {
+      result.id = uniqueid(6) as string
     }
     await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())

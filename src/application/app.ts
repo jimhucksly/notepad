@@ -9,6 +9,7 @@ import { IRootState } from '~/domain/models'
 import { OAuthQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
+import webApi from '../../config/api.config.json'
 
 interface IAppComponents {
   Projects: string
@@ -44,6 +45,7 @@ export default class Application {
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
+    this._store.commit('setApiPath', webApi.apiPath)
   }
 
   loading(state: boolean) {

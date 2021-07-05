@@ -8,8 +8,13 @@ const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 
+const { endpoint } = require('./api.config.json')
+
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
+
+delete mainConfig.optimization
+delete rendererConfig.optimization
 
 let electronProcess = null
 let manualRestart = false
@@ -100,10 +105,6 @@ function startRenderer () {
   return new Promise((resolve, reject) => {
     rendererConfig.mode = 'development'
 
-    // rendererConfig.entry.renderer = [
-    //   path.join(__dirname, 'dev-client')
-    // ].concat(rendererConfig.entry.renderer)
-
     const compiler = webpack(rendererConfig)
 
     hotMiddleware = webpackHotMiddleware(compiler, {
@@ -127,14 +128,28 @@ function startRenderer () {
     const server = new WebpackDevServer(
       compiler,
       {
+        port: 9080,
+        host: 'localhost',
+        historyApiFallback: true,
+        hot: true,
         contentBase: path.join(__dirname, '../'),
         quiet: true,
         openPage: '',
+        watchOptions: {
+          aggregateTimeout: 300,
+          poll: 1000
+        },
         before (app, ctx) {
           app.use(hotMiddleware)
           ctx.middleware.waitUntilValid(() => {
             resolve()
           })
+        },
+        proxy: {
+          '/api': {
+            target: endpoint,
+            changeOrigin: true,
+          }
         }
       }
     )
