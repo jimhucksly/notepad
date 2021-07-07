@@ -1,5 +1,5 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { JsonQuery, AuthQuery, LibraryFileQuery } from '~/domain/queries'
+import { AuthQuery, LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
@@ -56,7 +56,7 @@ export default class Auth extends Vue {
         const token = await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
         this.$app.login(token)
         await Promise.all([
-          this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+          this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {

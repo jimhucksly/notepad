@@ -15,7 +15,7 @@ import storage from '~/plugins/storage'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { JsonQuery, LibraryFileQuery } from '~/domain/queries'
+import { LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { IJson } from '~/domain/models'
@@ -72,7 +72,7 @@ export default class Index extends Vue {
       if(token) {
         await this.$app.login(token)
         await Promise.all([
-          this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+          this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         setTimeout(() => {

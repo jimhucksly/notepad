@@ -4,7 +4,7 @@ export class AuthQuery {
 
 export class OAuthQuery {}
 
-export class JsonQuery {}
+export class ProjectsQuery {}
 
 export class LibraryFilesQuery {}
 

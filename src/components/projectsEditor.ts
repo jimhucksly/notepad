@@ -71,7 +71,8 @@ export default class ProjectsEditor extends Vue {
 
   async archive() {
     await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
-    this.removeHandler()
+    this.$app.goBack()
+    await this.removeHandler()
     await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
@@ -82,6 +83,7 @@ export default class ProjectsEditor extends Vue {
     if(!isConfirm) {
       return
     }
+    this.removeHandler()
   }
 
   async removeHandler() {
@@ -92,7 +94,6 @@ export default class ProjectsEditor extends Vue {
     this.setFilter(buffFilter)
     this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
     await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
-    this.$emit('update:itemStamp', '')
   }
 
   async save() {

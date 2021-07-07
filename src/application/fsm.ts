@@ -21,18 +21,18 @@ const fsm = new StateMachine({
     { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },
     {
       name: 'projectsarchives',
-      from: toStr(FsmStates.Projects),
+      from: '*',
       to: toStr(FsmStates.ProjectsArchives)
     },
     {
       name: 'projectseditor',
-      from: toStr(FsmStates.Projects),
+      from: '*',
       to: toStr(FsmStates.ProjectsEditor)
     },
     { name: 'library', from: '*', to: toStr(FsmStates.Library) },
     {
       name: 'libraryfiles',
-      from: toStr(FsmStates.Library),
+      from: '*',
       to: toStr(FsmStates.LibraryFiles)
     },
     { name: 'todo', from: '*', to: toStr(FsmStates.Todo) },
@@ -48,7 +48,7 @@ const fsm = new StateMachine({
     { name: 'uploading', from: '*', to: toStr(FsmStates.Uploading) },
     {
       name: 'addlibraryfilepopup',
-      from: toStr(FsmStates.Library),
+      from: '*',
       to: toStr(FsmStates.AddLibraryFilePopup)
     },
     { name: 'confirmpopup', from: '*', to: toStr(FsmStates.ConfirmPopup) }

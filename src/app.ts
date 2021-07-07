@@ -3,7 +3,7 @@
 import { Vue, Component, Watch } from 'vue-property-decorator'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { EventsQuery, JsonQuery, LibraryFileQuery, LinksQuery } from '~/domain/queries'
+import { EventsQuery, LibraryFileQuery, LinksQuery, ProjectsQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CreateElement, VNode } from 'vue'
 import { IEvent, IJson, ILink } from './domain/models'
@@ -33,7 +33,7 @@ export default class App extends Vue {
     this.$electron.ipcRenderer.on('reload', async () => {
       this.$app.loading(true)
       await Promise.all([
-        this.queryBus.exec<JsonQuery, IJson>(new JsonQuery()),
+        this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
         this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
         this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
         this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())

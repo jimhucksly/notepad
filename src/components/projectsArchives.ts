@@ -1,21 +1,18 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { now } from '~/helpers'
-import { ICommandBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { IArchive, IJson } from '~/domain/models'
-import {
-  SetJsonCommand,
-  ArchiveRestoreCommand,
-  ArchiveRemoveCommand,
-  CreateProjectCommand
-} from '~/domain/commands'
+import { ArchiveRestoreCommand, ArchiveRemoveCommand } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
+import { ArchivesQuery, ProjectsQuery } from '~/domain/queries'
 
 @Component({
   name: 'ProjectsArchives'
 })
 export default class ProjectsArchives extends Vue {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setArchives') setArchives: (value: Array<IArchive>) => void
@@ -32,24 +29,12 @@ export default class ProjectsArchives extends Vue {
   async restore(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
-      const html: string = await this.commandBus.do<ArchiveRestoreCommand, string>(
+      await this.commandBus.do<ArchiveRestoreCommand, string>(
         new ArchiveRestoreCommand(name)
       )
-      if(html) {
-        const { date, stamp } = now()
-        const json: IJson = {
-          [stamp]: {
-            key: stamp,
-            date,
-            name: o.name,
-            lock: false,
-            message: html
-          }
-        }
-        this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...json }))
-        await this.commandBus.do<CreateProjectCommand, void>(new CreateProjectCommand(json))
-        this.remove(o)
-      }
+      this.queryBus.exec(new ArchivesQuery())
+      this.queryBus.exec(new ProjectsQuery())
+      this.$app.goBack()
     } catch(e) {
       console.log(e)
     }
