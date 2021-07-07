@@ -336,18 +336,6 @@ ipcMain.on('hide-icon-notification', () => {
   }, 2000)
 })
 
-ipcMain.on('open-error-dialog', (event, msg) => {
-  dialog.showMessageBox(null, {
-    type: 'error',
-    buttons: ['Cancel'],
-    defaultId: 2,
-    title: 'Error',
-    message: msg
-  }).then(() => {
-    event.sender.send('dialog-error-callback')
-  })
-})
-
 ipcMain.on('codemirror-link-click', (event, text) => {
   event.sender.send('codemirror-link-click', text)
 })

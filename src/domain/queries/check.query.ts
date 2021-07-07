@@ -46,7 +46,7 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
         this._store.commit('setLibraryData', resp.md)
         this._store.commit('setEvents', resp.events)
         this._store.commit('setLinks', resp.links)
-        this._store.commit('setTodos', resp.todo)
+        this._store.commit('setTodo', resp.todo)
       } catch(e) {
         console.log(e)
         this._store.commit('setError', true)

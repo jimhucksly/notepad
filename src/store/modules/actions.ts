@@ -12,8 +12,6 @@ import {
   ILink,
   IEvent,
   IFile,
-  ITodoOrder,
-  ITodoItem,
   ILibraryFile
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
@@ -87,7 +85,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
         }
       } catch(err) {
         console.error(err)
-        ipcRenderer.send('open-error-dialog', 'json parse is failed')
       }
     } else {
       json = command.json
@@ -303,10 +300,28 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * Upload File
+   * @param store Store
+   * @param data
+   */
+  @Commandable(TYPES.UploadFileCommand)
+  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
+    try {
+      const resp = await $http.post<FormData, IFile>('FILE', command.file)
+      if(!resp || !resp.data || !resp.data.name || !resp.data.link) {
+        return Promise.reject(resp)
+      }
+      return Promise.resolve(resp.data)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
    * ==============================
    * ************ Library *********
    * ==============================
-  */
+   */
 
   /**
    * Get Library Files
@@ -379,20 +394,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Update Library
    * @param store Store
-   * @param command
+   * @param {UpdateLibraryCommand} command
    */
   @Commandable(TYPES.UpdateLibraryCommand)
-  async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<void> {
+  async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<boolean> {
     try {
-      const resp = await $http.post<{ id: string | number, body: string }, void>('SAVE_LIBRARY_FILE', {
-        id: command.id || 0,
-        body: command.value
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'save markdown failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
+      await $http.post('library', command)
+      return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
     }
@@ -401,42 +409,95 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Delete Library File
    * @param store Store
-   * @param command
+   * @param {DeleteLibraryFileCommand} command
    */
   @Commandable(TYPES.DeleteLibraryFileCommand)
-  async actionDeleteLibraryFile(store: TStore, command: DeleteLibraryFileCommand): Promise<void> {
-    // try {
-    //   const resp = await $http.delete(
-    //     'DELETE_LIBRARY_FILE',
-    //     command
-    //   )
-    //   if(!resp || resp.status !== 'success') {
-    //     return Promise.reject(resp)
-    //   }
-    //   return Promise.resolve()
-    // } catch(e) {
-    //   return Promise.reject(e)
-    // }
-  }
-
-  /**
-   * Upload File
-   * @param store Store
-   * @param data
-   */
-  @Commandable(TYPES.UploadFileCommand)
-  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
+  async actionDeleteLibraryFile(
+    store: TStore, command: DeleteLibraryFileCommand
+  ): Promise<boolean> {
     try {
-      const resp = await $http.post<FormData, IFile>('FILE', command.file)
-      if(!resp || !resp.data || !resp.data.name || !resp.data.link) {
-        return Promise.reject(resp)
-      }
-      return Promise.resolve(resp.data)
+      await $http.delete(`library/?id=${command.id}`)
+      return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
     }
   }
 
+  /**
+   * ==============================
+   * ************ Todo *********
+   * ==============================
+   */
+
+  /**
+   * Get Todo
+   * @param store Store
+   */
+  @Queryable(TYPES.TodoQuery)
+  async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
+    try {
+      const resp = await $http.get<Array<ITodo>>('todo')
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      store.commit('setTodo', resp.data)
+      return resp.data
+    } catch(e) {
+      console.log(e)
+      return Promise.reject(e)
+    }
+  }
+ 
+  /**
+   * Update Todo
+   * @param store Store
+   * @param command { item: ITodo }
+   */
+  @Commandable(TYPES.UpdateTodoCommand)
+  async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
+    try {
+      await $http.put('todo', command.item)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+ 
+  /**
+   * Remove Todo
+   * @param store Store
+   * @param {DeleteTodoCommand} command
+   */
+  @Commandable(TYPES.DeleteTodoCommand)
+  async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<boolean> {
+    try {
+      await $http.delete(`todo/?id=${command.id}`)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+ 
+  /**
+   * Todo Order
+   * @param store Store
+   * @param command { result: ITodoOrder}
+   */
+  @Commandable(TYPES.TodoOrderCommand)
+  async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
+    try {
+      await $http.post('todo/order', command.result)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * ==============================
+   * ************ Events *********
+   * ==============================
+   */
 
   /**
    * Get Events
@@ -457,6 +518,42 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * Update Event
+   * @param store Store
+   * @param {UpdateEventCommand} command
+   */
+  @Commandable(TYPES.UpdateEventCommand)
+  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<boolean> {
+    try {
+      await $http.put('events', command.event)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Remove Event
+   * @param store Store
+   * @param {DeleteEventCommand} command
+   */
+  @Commandable(TYPES.DeleteEventCommand)
+  async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<boolean> {
+    try {
+      await $http.delete(`events/?date=${command.date}`)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * ==============================
+   * ************ Links *********
+   * ==============================
+   */
+
+  /**
    * Get Links
    * @param store Store
    */
@@ -475,50 +572,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
-   * Update Event
-   * @param store Store
-   * @param command { event: IEvent }
-   */
-  @Commandable(TYPES.UpdateEventCommand)
-  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ body: IEvent }, void>('EVENT', {
-        body: command.event
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'save event failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Remove Event
-   * @param store Store
-   * @param command { date: string }
-   */
-  @Commandable(TYPES.DeleteEventCommand)
-  async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ body: { remove: string } }, void>('EVENT', {
-        body: {
-          remove: command.date
-        }
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'delete event failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
    * Update Links
    * @param store Store
    * @param command { link: ILink }
@@ -526,13 +579,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UpdateLinksCommand)
   async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<void> {
     try {
-      const resp = await $http.post<{ body: ILink }, void>('LINK', {
+      await $http.post<{ body: ILink }, void>('LINK', {
         body: command.link
       })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'save link failed')
-        return Promise.reject(resp)
-      }
       return Promise.resolve()
     } catch(e) {
       return Promise.reject(e)
@@ -547,102 +596,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.DeleteLinkCommand)
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<void> {
     try {
-      const resp = await $http.post<{ body: typeof command }, void>('DELETE_LINK', {
+      await $http.post<{ body: typeof command }, void>('DELETE_LINK', {
         body: {
           id: command.id
         }
       })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'delete link failed')
-        return Promise.reject(resp)
-      }
-
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Get Todo
-   * @param store Store
-   */
-  @Queryable(TYPES.TodoQuery)
-  async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
-    try {
-      const resp = await $http.get<Array<ITodo>>('GET_TODO')
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setTodo', resp.data)
-      return resp.data
-    } catch(e) {
-      console.log(e)
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Todo
-   * @param store Store
-   * @param command { item: ITodo }
-   */
-  @Commandable(TYPES.UpdateTodoCommand)
-  async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ body: ITodoItem }, void>('TODO', {
-        body: command.item
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'todo item add failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Remove Todo
-   * @param store Store
-   * @param command { id: string }
-   */
-  @Commandable(TYPES.DeleteTodoCommand)
-  async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ body: { remove: string } }, void>('TODO', {
-        body: {
-          remove: command.id
-        }
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'todo item add failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Todo Order
-   * @param store Store
-   * @param command { result: ITodoOrder}
-   */
-  @Commandable(TYPES.TodoOrderCommand)
-  async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ body: ITodoOrder }, void>('TODO_SET_ORDER', {
-        body: command.result
-      })
-      if(!resp || resp.status !== 'success') {
-        return Promise.reject(resp)
-      }
       return Promise.resolve()
     } catch(e) {
       return Promise.reject(e)
