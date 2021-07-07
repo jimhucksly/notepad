@@ -165,7 +165,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * Get Projects
    * @param {Store} store
    */
-  @Queryable(TYPES.JsonQuery)
+  @Queryable(TYPES.ProjectsQuery)
   async actionGetJson(store: TStore): Promise<IJson> {
     try {
       const resp = await $http.get<IJson>('projects')
@@ -234,6 +234,75 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * Archiving
+   * @param store Store
+   * @param {ArchivingCommand} command
+   */
+  @Commandable(TYPES.ArchivingCommand)
+  async actionArchiving(store: TStore, command: ArchivingCommand): Promise<boolean> {
+    try {
+      await $http.put<{ key: string | number }, void>('project/archive', {
+        key: command.stamp
+      })
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Get Archives
+   * @param store Store
+   * @param data
+   */
+  @Queryable(TYPES.ArchivesQuery)
+  async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
+    try {
+      const resp = await $http.get<Array<IArchive>>('projects/archives')
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      store.commit('setArchives', resp.data)
+      return resp.data
+    } catch(e) {
+      store.commit('setLoading', false)
+      store.dispatch('auth', false)
+      store.commit('setToken', null)
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Archive Restore
+   * @param store Store
+   * @param command { name: string}
+   */
+  @Commandable(TYPES.ArchiveRestoreCommand)
+  async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<boolean> {
+    try {
+      await $http.post('project/archive/restore', command)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Archive Remove
+   * @param store Store
+   * @param {ArchiveRemoveCommand} command
+   */
+  @Commandable(TYPES.ArchiveRemoveCommand)
+  async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
+    try {
+      await $http.delete(`project/archive/?name=${command.name}`)
+      return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
    * ==============================
    * ************ Library *********
    * ==============================
@@ -292,21 +361,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param command
    */
   @Commandable(TYPES.AddLibraryFileCommand)
-  async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<string> {
+  async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<Array<ILibraryFile>> {
     try {
-      const resp = await $http.post<{ body: ILibraryFile }, string>('ADD_LIBRARY_FILE', {
-        body: command.data
-      })
+      const resp = await $http.put<ILibraryFile, Array<ILibraryFile>>('library', command.data)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      if(isJSON(resp.data)) {
-        store.commit('setLibraryFiles', JSON.parse(resp.data))
-        store.commit('setLibraryFileId', command.data.id)
-        return resp.data
-      } else {
-        return Promise.reject(resp)
-      }
+      store.commit('setLibraryFiles', resp.data)
+      store.commit('setLibraryFileId', command.data.id)
+      return resp.data
     } catch(e) {
       console.log(e)
       return Promise.reject(e)
@@ -374,99 +437,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
-  /**
-   * Get Archives
-   * @param store Store
-   * @param data
-   */
-  @Queryable(TYPES.ArchivesQuery)
-  async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
-    try {
-      const resp = await $http.get<Array<IArchive>>('projects/archives')
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setArchives', resp.data)
-      return resp.data
-    } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archive Restore
-   * @param store Store
-   * @param command { name: string}
-   */
-  @Commandable(TYPES.ArchiveRestoreCommand)
-  async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<string> {
-    try {
-      const resp = await $http.post<{ name: string }, void>('ARCHIVE_RESTORE', {
-        name: command.name
-      })
-      if(!resp || !resp.message) {
-        ipcRenderer.send('open-error-dialog', 'archive restore is failed')
-        return Promise.reject(resp)
-      }
-      if(resp.status === 'success' && resp.message) {
-        return resp.message
-      }
-      return Promise.reject(resp)
-    } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archive Remove
-   * @param store Store
-   * @param command { name: string}
-   */
-  @Commandable(TYPES.ArchiveRemoveCommand)
-  async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ name: string }, void>('ARCHIVE_REMOVE', {
-        name: command.name
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'archive remove is failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archiving
-   * @param store Store
-   * @param command { stamp: string}
-   */
-  @Commandable(TYPES.ArchivingCommand)
-  async actionArchiving(store: TStore, command: ArchivingCommand): Promise<void> {
-    try {
-      const resp = await $http.post<{ key: string | number }, void>('ARCHIVE', {
-        key: command.stamp
-      })
-      if(!resp || resp.status !== 'success') {
-        ipcRenderer.send('open-error-dialog', 'archive project is failed')
-        return Promise.reject(resp)
-      }
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
 
   /**
    * Get Events
