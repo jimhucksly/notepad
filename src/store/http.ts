@@ -1,13 +1,20 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
-import { parseURI } from '~/helpers'
+import { parseURI, uploadingFile } from '~/helpers'
 import store from '~/store'
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     config = config || {}
     config.headers['X-Honeypot'] = 'App'
-    config.headers['Content-Type'] = 'application/json'
+    if(config.url.indexOf('upload') > -1) {
+      config.headers['Content-Type'] = 'multipart/form-data'
+      config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+        uploadingFile(loaded, total)
+      }
+    } else {
+      config.headers['Content-Type'] = 'application/json'
+    }
     config.headers.Authorization = store.getters.getToken
     config.url = store.getters.getApiPath + config.url
     const { path, query } = parseURI(config.url)
@@ -38,17 +45,6 @@ class Http {
 
   public async post<TPayload, TResponse>(url: string, data: TPayload): Promise<IResponse<TResponse>> {
     let resp: AxiosResponse<IResponse<TResponse>>
-    // if(action === 'FILE') {
-    //   const config = {
-    //     'X-Honeypot': 'App',
-    //     Authorization: store.getters.getToken,
-    //     'Content-Type': 'multipart/form-data',
-    //     onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
-    //       uploadingFile(loaded, total)
-    //     }
-    //   }
-    //   resp = await axios.post('?' + query, data, config)
-    // } else {
     try {
       resp = await axios.post(url, data)
     } catch(e) {
@@ -70,19 +66,10 @@ class Http {
     return resp.data
   }
 
-  public async put<TPayload, TResponse>(url: string, data: TPayload): Promise<IResponse<TResponse>> {
+  public async put<TPayload, TResponse>(
+    url: string, data: TPayload
+  ): Promise<IResponse<TResponse>> {
     let resp: AxiosResponse<IResponse<TResponse>>
-    // if(action === 'FILE') {
-    //   const config = {
-    //     'X-Honeypot': 'App',
-    //     Authorization: store.getters.getToken,
-    //     'Content-Type': 'multipart/form-data',
-    //     onUploadProgress: ({ loaded, total }: { loaded: number, total: number }) => {
-    //       uploadingFile(loaded, total)
-    //     }
-    //   }
-    //   resp = await axios.post('?' + query, data, config)
-    // } else {
     try {
       resp = await axios.put(url, data)
     } catch(e) {

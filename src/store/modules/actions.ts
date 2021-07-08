@@ -153,6 +153,22 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
+   * Check
+   */
+  @Commandable(TYPES.CheckCommand)
+  async actionCheck(store: TStore): Promise<ICheckResponse> {
+    try {
+      const resp = await $http.get<ICheckResponse>('check')
+      if(!resp || !resp.data) {
+        return void 0
+      }
+      return resp.data
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  /**
    * ==============================
    * ************ Projects ********
    * ==============================
@@ -302,15 +318,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Upload File
    * @param store Store
-   * @param data
+   * @param {UploadFileCommand} command
    */
   @Commandable(TYPES.UploadFileCommand)
   async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
     try {
-      const resp = await $http.post<FormData, IFile>('FILE', command.file)
-      if(!resp || !resp.data || !resp.data.name || !resp.data.link) {
-        return Promise.reject(resp)
-      }
+      const resp = await $http.post<FormData, IFile>('upload', command.file)
       return Promise.resolve(resp.data)
     } catch(e) {
       return Promise.reject(e)
@@ -349,7 +362,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Library File
    * @param store Store
-   * @param query
+   * @param {LibraryFileQuery} query
    */
   @Queryable(TYPES.LibraryFileQuery)
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
@@ -373,7 +386,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Add Library File
    * @param store Store
-   * @param command
+   * @param {AddLibraryFileCommand} command
    */
   @Commandable(TYPES.AddLibraryFileCommand)
   async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<Array<ILibraryFile>> {
@@ -447,11 +460,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return Promise.reject(e)
     }
   }
- 
+
   /**
    * Update Todo
    * @param store Store
-   * @param command { item: ITodo }
+   * @param {UpdateTodoCommand} command
    */
   @Commandable(TYPES.UpdateTodoCommand)
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
@@ -462,7 +475,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return Promise.reject(e)
     }
   }
- 
+
   /**
    * Remove Todo
    * @param store Store
@@ -477,11 +490,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return Promise.reject(e)
     }
   }
- 
+
   /**
    * Todo Order
    * @param store Store
-   * @param command { result: ITodoOrder}
+   * @param {TodoOrderCommand} command
    */
   @Commandable(TYPES.TodoOrderCommand)
   async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
@@ -574,15 +587,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Update Links
    * @param store Store
-   * @param command { link: ILink }
+   * @param {UpdateLinksCommand} command
    */
   @Commandable(TYPES.UpdateLinksCommand)
-  async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<void> {
+  async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<boolean> {
     try {
-      await $http.post<{ body: ILink }, void>('LINK', {
-        body: command.link
-      })
-      return Promise.resolve()
+      await $http.put('links', command.link)
+      return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
     }
@@ -591,42 +602,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Remove Links
    * @param store Store
-   * @param command { key: string }
+   * @param {DeleteLinkCommand} command
    */
   @Commandable(TYPES.DeleteLinkCommand)
-  async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<void> {
+  async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<boolean> {
     try {
-      await $http.post<{ body: typeof command }, void>('DELETE_LINK', {
-        body: {
-          id: command.id
-        }
-      })
-      return Promise.resolve()
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Check
-   */
-  @Commandable(TYPES.CheckCommand)
-  async actionCheck(store: TStore): Promise<ICheckResponse> {
-    try {
-      const resp = await $http.get<ICheckResponse>('check')
-      if(!resp || !resp.data) {
-        return void 0
-      }
-      return resp.data
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  async actionTest() {
-    try {
-      const resp = await $http.get('')
-      return resp
+      await $http.delete(`links/?id=${command.id}`)
+      return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
     }
