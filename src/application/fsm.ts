@@ -59,7 +59,7 @@ const fsm = new StateMachine({
 })
 
 function onBeforeTransition(lifecycle: LifeCycle) {
-  console.log('onBeforeTransition', lifecycle)
+  // console.log('onBeforeTransition', lifecycle)
 }
 
 export default fsm

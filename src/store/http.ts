@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
-import { parseURI, uploadingFile } from '~/helpers'
+import { uploadingFile } from '~/helpers'
 import store from '~/store'
 
 axios.interceptors.request.use(
@@ -17,10 +17,6 @@ axios.interceptors.request.use(
     }
     config.headers.Authorization = store.getters.getToken
     config.url = store.getters.getApiPath + config.url
-    const { path, query } = parseURI(config.url)
-    if(!path.endsWith('/')) {
-      config.url = path + '/' + (query ? '?' + query : '')
-    }
     return config
   },
   error => {

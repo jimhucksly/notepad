@@ -2,7 +2,7 @@ export class AuthQuery {
   constructor(public login: string, public password: string) {}
 }
 
-export class OAuthQuery {}
+export class StartQuery {}
 
 export class ProjectsQuery {}
 

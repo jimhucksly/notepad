@@ -6,7 +6,7 @@ import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
-import { OAuthQuery } from '~/domain/queries'
+import { StartQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import webApi from '../../config/api.config.json'
@@ -60,7 +60,7 @@ export default class Application {
       this._store.commit('setToken', token)
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
-      await this._queryBus.exec<OAuthQuery, void>(new OAuthQuery())
+      await this._queryBus.exec<StartQuery, void>(new StartQuery())
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.goHome()
     } catch(e) {

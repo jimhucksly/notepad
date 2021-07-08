@@ -149,6 +149,18 @@ function startRenderer () {
           '/api': {
             target: endpoint,
             changeOrigin: true,
+            onProxyReq: (proxyReq) => {
+              let path = proxyReq.path;
+              let query = '';
+              if (proxyReq.path.indexOf('?') > -1) {
+                path = proxyReq.path.split('?')[0];
+                query = proxyReq.path.split('?')[1];
+              }
+              if(path && !path.endsWith('/')) {
+                path = path + '/';
+              }
+              proxyReq.path = path + (query ? '?' + query : '');
+            }
           }
         }
       }

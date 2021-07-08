@@ -127,13 +127,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
-   * OAuth
+   * Start
    */
-  @Queryable(TYPES.OAuthQuery)
-  async actionAuthentication(store: TStore): Promise<void> {
+  @Queryable(TYPES.StartQuery)
+  async actionAuthentication(store: TStore): Promise<boolean> {
     try {
-      await $http.get<IResponse<void>>('oauth')
-      return
+      await $http.get<IResponse<boolean>>('start')
+      return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
     }
