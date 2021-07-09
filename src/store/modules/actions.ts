@@ -108,7 +108,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Auth
    * @param store Store
-   * @param data { login, password }
+   * @param {AuthQuery} data
    */
   @Queryable(TYPES.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<string> {
@@ -145,8 +145,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.PingCommand)
   async actionPing(_: TStore): Promise<string> {
     try {
-      await $http.get<string>('PING')
-      return 'PONG'
+      await $http.get<string>('ping')
+      return 'pong'
     } catch(e) {
       return Promise.reject()
     }

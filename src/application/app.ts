@@ -46,6 +46,7 @@ export default class Application {
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
     this._store.commit('setApiPath', webApi.apiPath)
+    this._store.commit('setEndpoint', webApi.endpoint)
   }
 
   loading(state: boolean) {

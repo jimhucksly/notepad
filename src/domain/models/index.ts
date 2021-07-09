@@ -132,6 +132,8 @@ export interface IModalInfo {
 }
 
 export interface IRootState {
+  endpoint: string
+  apiPath: string
   loading: boolean
   userDataPath: string
   downloadsTargetPath: string

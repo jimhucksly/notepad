@@ -1,4 +1,5 @@
 const stateKeys: string[] = [
+  'endpoint',
   'apiPath',
   'loading',
   'isAuth',

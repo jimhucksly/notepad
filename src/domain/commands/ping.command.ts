@@ -15,12 +15,12 @@ export class PingCommandHandler implements ICommandHandler<PingCommand, void> {
     @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus
   ) {}
 
-  get isDev(): boolean {
+  get isDevelopment(): boolean {
     return this._store.getters.getIsDevelopment
   }
 
   async do(command: PingCommand): Promise<void> {
-    if(this.isDev) {
+    if(this.isDevelopment) {
       return
     }
     if(command.param) {
