@@ -12,8 +12,8 @@ import { downloadFile } from '~/helpers'
   }
 })
 export default class NotepadItem extends Vue {
-  @Prop() item!: IJsonItem
-  @Prop() isLast!: boolean
+  @Prop() item: IJsonItem
+  @Prop() isLast: boolean
 
   message = ''
   isEdit = false

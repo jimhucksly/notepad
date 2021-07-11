@@ -40,8 +40,7 @@ export default class Notepad extends Vue {
     return !isEmpty(this.filter)
   }
 
-  @Watch('hasFilter')
-  onHasFilterChanged(flag: boolean) {
+  @Watch('hasFilter') onHasFilterChanged(flag: boolean) {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
     if(flag) {
       notepadCont.scrollTo(0, 0)
@@ -52,8 +51,7 @@ export default class Notepad extends Vue {
     }
   }
 
-  @Watch('isRendered')
-  onIsRenderedChange() {
+  @Watch('isRendered') onIsRenderedChange() {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight

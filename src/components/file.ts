@@ -5,9 +5,8 @@ import { IFile } from '~/domain/models'
   name: 'File'
 })
 export default class File extends Vue {
-  @Prop() readonly itemKey!: string
-
-  @Prop() readonly itemFile!: IFile
+  @Prop() readonly itemKey: string
+  @Prop() readonly itemFile: IFile
 
   get stamp() {
     return this.itemKey

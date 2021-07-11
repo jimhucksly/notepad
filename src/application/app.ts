@@ -99,7 +99,7 @@ export default class Application {
       }
       if(AppComponents[this.stateName]) {
         this._store.commit('setComponent', AppComponents[this.stateName])
-        this.history = this.history.slice(-1)
+        this.history = this.history.filter(item => item in AppComponents)
       }
     } catch(e) {
       console.log(e)

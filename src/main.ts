@@ -18,8 +18,8 @@ import store from './store'
 import CreateEditLink from '~/modules/createEditLink/index.vue'
 import AboutPopup from '~/modules/aboutPopup/index.vue'
 import UploadingPopup from '~/modules/uploadingPopup/index.vue'
-import CreateEditLibraryFile from './modules/createEditLibraryFile/index.vue'
-import ConfirmPopupComponent from './modules/confirmPopup/index.vue'
+import CreateEditLibraryFile from '~/modules/createEditLibraryFile/index.vue'
+import ConfirmPopupComponent from '~/modules/confirmPopup/index.vue'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true

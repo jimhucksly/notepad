@@ -1,6 +1,6 @@
-import axios from 'axios'
+// import axios from 'axios'
+// import * as fs from 'fs-web'
 
-// const fs = require('fs')
 // const path = require('path')
 
 const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
@@ -244,14 +244,33 @@ export async function downloadFile(
   //   uri: encodeURI(fileUri)
   // })
 
-  const f = 'http://dn-web.ru/files/uploads/2016/12/SmartBabyWatch.jpg'
-
-  await axios.get(f, {
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    },
-    responseType: 'blob'
+  // const f = 'app/notepad/settings.json'
+  const fetchRes = await fetch('https://dn-web.ru/app/notepad/files/___2.jpg', {
+    mode: 'no-cors'
   })
+  const blob = await fetchRes.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  document.body.appendChild(a)
+  a.style.display = 'none'
+  a.href = url
+  a.download = '___2.jpg'
+  a.click()
+  URL.revokeObjectURL(url)
+  // fs.writeFile('C:/Users/jimhucksly/Desktop' + '/settings.json', 'aaaaaa')
+  //   .then(() => {
+  //     return fs.readString('C:\\Users\\jimhucksly\\Desktop' + '\\settings.json')
+  //   })
+  //   .then((a: unknown) => {
+  //     console.log(a)
+  //   })
+  //   .catch((e: unknown) => {
+  //     console.log(e)
+  //   })
+
+  // await axios.get(f, {
+  //   responseType: 'blob'
+  // })
   //   .then((response) => {
   //     console.log(response)
   //     //  const url = window.URL.createObjectURL(new Blob([response.data]));
