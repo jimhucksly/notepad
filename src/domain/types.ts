@@ -22,7 +22,6 @@ const TYPES = {
   CheckCommand: Symbol.for('CheckCommand'),
   CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
-  SetJsonCommand: Symbol.for('SetJsonCommand'),
   CreateProjectCommand: Symbol.for('CreateProjectCommand'),
   EditProjectCommand: Symbol.for('EditProjectCommand'),
   DeleteProjectCommand: Symbol.for('DeleteProjectCommand'),

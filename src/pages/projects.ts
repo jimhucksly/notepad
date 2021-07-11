@@ -5,7 +5,7 @@ import ProjectItem from '~/components/projectItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { SetJsonCommand, ReadCommand, UploadFileCommand, CreateProjectCommand } from '~/domain/commands'
+import { ReadCommand, UploadFileCommand, CreateProjectCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
@@ -76,7 +76,7 @@ export default class Notepad extends Vue {
       }
     }
     this.message = ''
-    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+    this.$store.commit('setJson', { ...this.json, ...o })
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
@@ -85,9 +85,13 @@ export default class Notepad extends Vue {
   }
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  onFileChange(e: any) {
-    const files = e.target.files || e.dataTransfer.files
-    if(files.length === 0) {
+  onFileChange(e: InputEvent | DragEvent) {
+    const target = e.target as HTMLInputElement
+    let files = target.files
+    if(!files?.length) {
+      files = (e as DragEvent).dataTransfer.files
+    }
+    if(files?.length === 0) {
       return
     }
     const formData = new FormData()
@@ -131,7 +135,7 @@ export default class Notepad extends Vue {
         }
       }
     }
-    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+    this.$store.commit('setJson', { ...this.json, ...o })
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight

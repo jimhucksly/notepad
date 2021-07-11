@@ -1,7 +1,6 @@
 import { ipcRenderer } from 'electron'
 import { cloneDeep } from 'lodash'
 import $http from '~/store/http'
-import { isJSON } from '~/helpers'
 import {
   IRootState,
   IJson,
@@ -20,7 +19,6 @@ import { Commandable } from '~/domain/commands/command.bus'
 import { AuthQuery, LibraryFileQuery } from '~/domain/queries'
 import {
   AuthCommand,
-  SetJsonCommand,
   UploadFileCommand,
   DeleteProjectCommand,
   ArchiveRestoreCommand,
@@ -63,33 +61,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
     ipcRenderer.send(command.flag ? 'authorized' : 'unauthorized')
-  }
-
-  @Commandable(TYPES.SetJsonCommand)
-  json(store: TStore, command: SetJsonCommand): void {
-    let json: IJson = {}
-    if(typeof command.json === 'string' && isJSON(command.json)) {
-      try {
-        json = JSON.parse(command.json)
-        const currentJson = store.getters['getJson']
-        Object.keys(json).forEach(key => {
-          if(currentJson && currentJson[key] === undefined) {
-            json[key]['unread'] = true
-          }
-        })
-        const haveUnread = Object.keys(json).find(key => json[key].unread) !== undefined
-        if(haveUnread) {
-          ipcRenderer.send('set-icon-notification')
-        } else {
-          ipcRenderer.send('hide-icon-notification')
-        }
-      } catch(err) {
-        console.error(err)
-      }
-    } else {
-      json = command.json
-    }
-    store.commit('setJson', json)
   }
 
   @Commandable(TYPES.ReadCommand)
@@ -189,9 +160,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
         store.commit('setError', true)
         return Promise.reject(resp)
       }
-      store.dispatch('json', {
-        json: resp.data
-      })
+      store.commit('setJson', resp.data)
       return resp.data
     } catch(e) {
       store.commit('setLoading', false)

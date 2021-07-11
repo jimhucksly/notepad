@@ -4,7 +4,7 @@ import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand, SetJsonCommand } from '~/domain/commands'
+import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
 import { ArchivesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
@@ -39,7 +39,10 @@ export default class ProjectsEditor extends Vue {
   }
 
   get item(): IJsonItem {
-    return this.json[this.selected] || null
+    if(!this.json) {
+      return null
+    }
+    return this.json[this.selected]
   }
 
   get isFile(): boolean {
@@ -55,7 +58,7 @@ export default class ProjectsEditor extends Vue {
           lock: !isLocked
         }
       }
-      this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+      this.$store.commit('setJson', { ...this.json, ...o })
       this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if(isLocked) {
@@ -92,8 +95,9 @@ export default class ProjectsEditor extends Vue {
     unset(buffJson, this.selected)
     unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
-    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
+    this.$store.commit('setJson', buffJson)
     await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
+    this.$app.goBack()
   }
 
   async save() {
@@ -107,7 +111,7 @@ export default class ProjectsEditor extends Vue {
         file: this.item.file
       }
     }
-    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+    this.$store.commit('setJson', { ...this.json, ...o })
     await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.$app.goBack()
   }

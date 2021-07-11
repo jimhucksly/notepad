@@ -25,10 +25,6 @@ export class EditProjectCommand {
   constructor(public data: IJson) {}
 }
 
-export class SetJsonCommand {
-  constructor(public json: IJson) {}
-}
-
 export class DeleteProjectCommand {
   constructor(public stamp: string | number) {}
 }

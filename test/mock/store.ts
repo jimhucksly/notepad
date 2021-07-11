@@ -1,5 +1,4 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
-import { SetJsonCommand } from '~/domain/commands'
 import { IEvents, IFilters, IJson, ILink, ITodo, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
@@ -84,9 +83,6 @@ const storeOptions: StoreOptions<IMockState> = {
     },
     actionRemoveTodo() {
       return false
-    },
-    json(store: ActionContext<IMockState, IMockState>, command: SetJsonCommand): void {
-      store.commit('setJson', command.json)
     }
   },
   mutations: {

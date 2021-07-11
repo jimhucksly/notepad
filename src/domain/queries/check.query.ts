@@ -40,10 +40,8 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
         if(!resp) {
           return void 0
         }
-        this._store.dispatch('json', {
-          json: resp.json
-        })
-        this._store.commit('setLibraryData', resp.md)
+        this._store.commit('setJson', resp.json)
+        // this._store.commit('setLibraryData', resp.md)
         this._store.commit('setEvents', resp.events)
         this._store.commit('setLinks', resp.links)
         this._store.commit('setTodo', resp.todo)

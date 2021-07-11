@@ -135,7 +135,7 @@ export const getFileType = (name: string): string => {
 export function dragAndDropLoader(
   DOMElementId: string,
   CSSClassHighlight: string,
-  Callback: (e: MouseEvent) => void
+  Callback: (e: InputEvent | DragEvent) => void
 ): void {
   const id = DOMElementId
   const cls = CSSClassHighlight
@@ -185,7 +185,7 @@ export function dragAndDropLoader(
       }
     }
 
-    dropArea.ondrop = function(e: MouseEvent) {
+    dropArea.ondrop = function(e: DragEvent) {
       e.preventDefault()
       e.stopPropagation()
       cb(e)

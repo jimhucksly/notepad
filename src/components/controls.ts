@@ -5,11 +5,7 @@ import { IFilters, IJson } from '~/domain/models'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import {
-  SetJsonCommand,
-  DeleteProjectCommand,
-  EditProjectCommand
-} from '~/domain/commands'
+import { DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
@@ -85,7 +81,7 @@ export default class Controls extends Vue {
             message: checkLinks(value)
           }
         }
-        this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand({ ...this.json, ...o }))
+        this.$store.commit('setJson', { ...this.json, ...o })
         this.$nextTick(() => {
           this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
         })
@@ -98,7 +94,7 @@ export default class Controls extends Vue {
     unset(buffJson, stamp)
     unset(buffFilter, stamp)
     this.setFilter(buffFilter)
-    this.commandBus.do<SetJsonCommand, void>(new SetJsonCommand(buffJson))
+    this.$store.commit('setJson', buffJson)
     this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
 
