@@ -750,19 +750,9 @@ main {
 
   .todo_item-content {
     padding: 6px;
-    height: 100px;
+    height: 98px;
     font-size: 0.9rem;
     line-height: 1.1rem;
-
-    p {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 6;
-      line-height: 1.1rem;
-      max-height: 88px;
-    }
   }
 
   .todo_popup_overlay {

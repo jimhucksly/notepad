@@ -12,6 +12,7 @@ import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 import { CreateElement, VNode } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
+import { Hub } from '~/plugins/hub'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -113,6 +114,8 @@ export default class LibraryPage extends Vue {
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
 
+  linkClickHandler: (event: Electron.IpcRendererEvent, name: string) => void
+
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
       await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
@@ -187,23 +190,21 @@ export default class LibraryPage extends Vue {
     }
     linked(linkedDoc)
     this.links = result
-    this.$electron.ipcRenderer.on(
-      'codemirror-link-click',
-      (event: Electron.IpcRendererEvent, text: string) => {
-        let scrolling = false
-        this.links.forEach((link: string, index: number): void | null => {
-          if(scrolling) return null
-          if(link.indexOf(text) > -1) {
-            scrolling = true
-            this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
-            if(index > 0) {
-              const scrollInfo = this.editor.codemirror.getScrollInfo()
-              this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
-            }
+    this.linkClickHandler = (event: Electron.IpcRendererEvent, name: string) => {
+      let scrolling = false
+      this.links.forEach((link: string, index: number): void | null => {
+        if(scrolling) return null
+        if(link.indexOf(name) > -1) {
+          scrolling = true
+          this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
+          if(index > 0) {
+            const scrollInfo = this.editor.codemirror.getScrollInfo()
+            this.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
           }
-        })
-      }
-    )
+        }
+      })
+    }
+    Hub.$on('codemirror-link-click', this.linkClickHandler)
   }
 
   buildTree(nodes?: ITreeItem[]): Array<ITreeItem> {
@@ -301,6 +302,7 @@ export default class LibraryPage extends Vue {
     const value = this.editor.value()
     this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
     this.setFileId(0)
+    Hub.$off('codemirror-link-click', this.linkClickHandler)
   }
 
   created() {

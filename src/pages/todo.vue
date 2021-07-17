@@ -10,11 +10,7 @@
       <div class="todo_item-header">
         {{ item.date }}
       </div>
-      <div class="todo_item-content">
-        <p>
-          {{ item.text }}
-        </p>
-      </div>
+      <div class="todo_item-content" v-html="getText(item.text)"></div>
     </div>
     <template v-if="isPopupShow">
       <div class="todo_popup_overlay" ref="overlay"></div>

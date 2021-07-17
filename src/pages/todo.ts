@@ -8,6 +8,7 @@ import { ITodo, ITodoItem, ITodoOrder } from '~/domain/models'
 import { TodoQuery } from '~/domain/queries'
 import { TodoOrderCommand, UpdateTodoCommand, DeleteTodoCommand } from '~/domain/commands'
 import { Getter } from 'vuex-class'
+import { Hub } from '~/plugins/hub'
 
 const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   return a.order < b.order ? -1 : 1
@@ -25,7 +26,7 @@ export default class Todo extends Vue {
   items: Array<ITodoItem> = []
   isPopupShow = false
   itemSelected: ITodoItem | null = null
-  clickTimer: NodeJS.Timeout | null = null
+  isDrag = false
 
   addTodoHandler: () => void
 
@@ -46,14 +47,8 @@ export default class Todo extends Vue {
       return
     }
 
-    this.clickTimer = setTimeout(() => {
-      this.move(event, id)
-      document.onmouseup = null
-      document.onmousemove = null
-      clearTimeout(this.clickTimer)
-    }, 600)
-
     document.onmouseup = () => {
+      this.isDrag = false
       const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
       if(!elem) {
         return
@@ -65,20 +60,23 @@ export default class Todo extends Vue {
         elem.style.transform = 'scale(1)'
         elem.removeAttribute('style')
       }, 100)
-      clearTimeout(this.clickTimer)
     }
 
     document.onmousemove = () => {
+      this.isDrag = true
       this.move(event, id)
-      document.onmouseup = null
-      clearTimeout(this.clickTimer)
     }
   }
 
   move(event: MouseEvent, id: string): void {
-    const container: HTMLElement | null = document.querySelector('.todo_cont')
+    if(!this.isDrag) {
+      return
+    }
+    const container: HTMLElement = document.querySelector('.todo_cont')
     const elemsClassName = 'todo_item'
-    if(!container || container.childElementCount === 1) return null
+    if(!container || container.childElementCount === 1) {
+      return null
+    }
     const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
 
     const startPos = {
@@ -86,11 +84,36 @@ export default class Todo extends Vue {
       y: event.clientY
     }
 
+    let dragItem: HTMLElement = null
+    let avatar: HTMLElement = null
+
+    const finishDrag = () => {
+      if(!dragItem || !avatar) {
+        return
+      }
+      dragItem.classList.remove('dragable')
+      dragItem.removeAttribute('style')
+      const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
+      dropableElems.forEach(el => {
+        el.classList.remove('dropable')
+        el.removeAttribute('style')
+      })
+      container.classList.remove('todo_cont--drag')
+      container.insertBefore(dragItem, avatar)
+      container.removeChild(avatar)
+      document.onmousemove = null
+      document.onmouseup = null
+      dragItem = null
+      avatar = null
+      this.isDrag = false
+      this.setOrder()
+    }
+
     document.onmousemove = (ev: MouseEvent) => {
       if(Math.abs(ev.clientX - startPos.x) > 10 || Math.abs(ev.clientY - startPos.y) > 10) {
         container.classList.add('todo_cont--drag')
 
-        const avatar: HTMLElement = document.createElement('div')
+        avatar = document.createElement('div')
         avatar.style.display = 'block'
         avatar.style.float = 'left'
         avatar.style.width = elem.offsetWidth + 'px'
@@ -122,23 +145,7 @@ export default class Todo extends Vue {
           }
         })
 
-        const dragItem = elem
-
-        const finishDrag = () => {
-          dragItem.classList.remove('dragable')
-          dragItem.removeAttribute('style')
-          const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
-          dropableElems.forEach(el => {
-            el.classList.remove('dropable')
-            el.removeAttribute('style')
-          })
-          container.classList.remove('todo_cont--drag')
-          container.insertBefore(dragItem, avatar)
-          container.removeChild(avatar)
-          document.onmousemove = null
-          document.onmouseup = null
-          this.setOrder()
-        }
+        dragItem = elem
 
         document.onmousemove = (e: MouseEvent) => {
           const moveX = startPos.x - e.clientX
@@ -178,11 +185,13 @@ export default class Todo extends Vue {
             }
           }
         }
-
-        document.onmouseup = () => {
-          finishDrag()
-        }
       }
+    }
+
+    document.onmouseup = () => {
+      setTimeout(() => {
+        finishDrag()
+      }, 100)
     }
   }
 
@@ -205,6 +214,9 @@ export default class Todo extends Vue {
   }
 
   edit(id: string) {
+    if(this.isDrag) {
+      return
+    }
     document.onmousemove = null
     document.onmouseup = null
     const o = this.items.find((item: ITodoItem) => item.id === id)
@@ -280,13 +292,18 @@ export default class Todo extends Vue {
     this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
   }
 
+  getText(text: string) {
+    const split = text.split('\n').map(s => `<p>${s.replace(/[  ]+/g, ' ').trim()}</p>`)
+    return split.join('')
+  }
+
   async mounted() {
     await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
     this.addTodoHandler = this.addTodo.bind(this)
-    this.$electron.ipcRenderer.on('todo-add', this.addTodoHandler)
+    Hub.$on('todo-add', this.addTodoHandler)
   }
 
   beforeDestroy() {
-    this.$electron.ipcRenderer.off('todo-add', this.addTodoHandler)
+    Hub.$off('todo-add', this.addTodoHandler)
   }
 }

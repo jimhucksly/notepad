@@ -321,25 +321,17 @@ ipcMain.on('json-viewer-clear', (event) => {
   event.sender.send('json-viewer-clear')
 })
 
-ipcMain.on('set-icon-notification', () => {
-  mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
-  appTray.displayBalloon({
-    icon: iconOverlay,
-    title: 'my app',
-    content: 'Access app settings from tray menu.'
-  })
-})
+// ipcMain.on('set-icon-notification', () => {
+//   mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
+//   appTray.displayBalloon({
+//     icon: iconOverlay,
+//     title: 'my app',
+//     content: 'Access app settings from tray menu.'
+//   })
+// })
 
-ipcMain.on('hide-icon-notification', () => {
-  setTimeout(() => {
-    mainWindow.setOverlayIcon(null, '')
-  }, 2000)
-})
-
-ipcMain.on('codemirror-link-click', (event, text) => {
-  event.sender.send('codemirror-link-click', text)
-})
-
-ipcMain.on('todo-add', (event, text) => {
-  event.sender.send('todo-add')
-})
+// ipcMain.on('hide-icon-notification', () => {
+//   setTimeout(() => {
+//     mainWindow.setOverlayIcon(null, '')
+//   }, 2000)
+// })

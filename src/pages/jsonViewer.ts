@@ -2,6 +2,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import { debounce } from 'lodash'
 import { CreateElement, VNode } from 'vue'
 import { IEditor } from '~/domain/models'
+import { Hub } from '~/plugins/hub'
 
 const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
@@ -19,6 +20,10 @@ const fs = require('fs')
 export default class JsonViewer extends Vue {
   editor: IEditor = null
   content = ''
+
+  onJsonHandler: (value: string) => void
+  onJsonSaveHandler: (fileName: string) => void
+  onJsonClearHandler: () => void
 
   editorInit(instance: IEditor) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
@@ -49,14 +54,7 @@ export default class JsonViewer extends Vue {
         res.appendChild(formatter.render())
       }
       formatter.openAtDepth(1)
-
-      const notice: HTMLElement | null = document.querySelector('.json_viewer_notice')
-      if(notice) {
-        notice.style.display = 'flex'
-        setTimeout(() => {
-          notice.style.display = 'none'
-        }, 3000)
-      }
+      this.notice('Json parse successed!')
     }, 3000)
 
     instance.on('change', debounced)
@@ -113,41 +111,50 @@ export default class JsonViewer extends Vue {
     }
   }
 
-  mounted() {
-    this.$electron.ipcRenderer.on(
-      'json-viewer-src-set',
-      (_: Electron.IpcRendererEvent, value: string) => {
-        let json: Record<string, unknown> = null
-        try {
-          json = JSON.parse(value)
-          this.editor.setValue(JSON.stringify(json, null, 2))
-        } catch(e) {
-          this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
-        }
-      }
-    )
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on(
-      'json-viewer-save',
-      (_: Electron.IpcRendererEvent, fileName: string) => {
-        fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
-      }
-    )
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    this.$electron.ipcRenderer.on(
-      'json-viewer-clear',
-      (_: Electron.IpcRendererEvent) => {
-        this.editor.setValue('')
-        const res: HTMLElement | null = document.querySelector('.json_viewer_res')
-        if(res) {
-          res.innerHTML = ''
-        }
-        if(window.localStorage) {
-          localStorage.removeItem('json_viewer')
-        }
-      }
-    )
+  notice(text: string) {
+    const notice: HTMLElement = document.querySelector('.json_viewer_notice')
+    if(notice) {
+      notice.innerText = text
+      notice.style.display = 'flex'
+      setTimeout(() => {
+        notice.style.display = 'none'
+      }, 3000)
+    }
+  }
 
+  onJson(value: string) {
+    let json: Record<string, unknown> = null
+    try {
+      json = JSON.parse(value)
+      this.editor.setValue(JSON.stringify(json, null, 2))
+    } catch(e) {
+      this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
+    }
+  }
+
+  onJsonSave(fileName: string) {
+    fs.writeFileSync(fileName, this.editor.getValue(), 'utf-8')
+    this.notice('Json saved succesfully!')
+  }
+
+  onJsonClear() {
+    this.editor.setValue('')
+    const res: HTMLElement = document.querySelector('.json_viewer_res')
+    if(res) {
+      res.innerHTML = ''
+    }
+    if(window.localStorage) {
+      localStorage.removeItem('json_viewer')
+    }
+  }
+
+  mounted() {
+    this.onJsonHandler = this.onJson.bind(this)
+    Hub.$on('json-viewer-set', this.onJsonHandler)
+    this.onJsonSaveHandler = this.onJsonSave.bind(this)
+    Hub.$on('json-viewer-save', this.onJsonSaveHandler)
+    this.onJsonClearHandler = this.onJsonClear.bind(this)
+    Hub.$on('json-viewer-clear', this.onJsonClearHandler)
     if(window.localStorage) {
       const value = localStorage.getItem('json_viewer')
       let json: Record<string, unknown> = null
@@ -160,6 +167,12 @@ export default class JsonViewer extends Vue {
         }
       }
     }
+  }
+
+  beforeDestroy() {
+    Hub.$off('json-viewer-src-set', this.onJsonHandler)
+    Hub.$off('json-viewer-save', this.onJsonSaveHandler)
+    Hub.$off('json-viewer-clear', this.onJsonClearHandler)
   }
 
   render(h: CreateElement): VNode {
@@ -220,8 +233,7 @@ export default class JsonViewer extends Vue {
           'div',
           {
             staticClass: 'json_viewer_notice'
-          },
-          'Json parse successed!'
+          }
         )
       ]
     )

@@ -1,6 +1,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import SidebarTree from '~/components/sidebarTree'
 import { ITreeItem } from '~/domain/models'
+import { Hub } from '~/plugins/hub'
 
 @Component({
   name: 'SidebarTree',
@@ -13,7 +14,7 @@ export default class SidebarTreeComponent extends Vue {
   @Prop({ default: 1 }) level!: number
 
   selectNode(item: ITreeItem) {
-    this.$electron.ipcRenderer.send('codemirror-link-click', item.name)
+    Hub.$emit('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor-preview')
     if(editor) {
       const link: HTMLAnchorElement | null = editor.querySelector(`a[href*=${item.slug}]`)

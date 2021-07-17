@@ -1,4 +1,5 @@
 import { Vue, Component } from 'vue-property-decorator'
+import { Hub } from '~/plugins/hub'
 
 @Component({
   name: 'JsonViewerBtns'
@@ -10,7 +11,7 @@ export default class JsonViewerBtns extends Vue {
       element.type = 'file'
       element.accept = '.txt, .json'
       element.onchange = function() {
-        readText(this)
+        readText(this as HTMLInputElement)
         document.body.removeChild(element)
       }
 
@@ -19,8 +20,7 @@ export default class JsonViewerBtns extends Vue {
       element.click()
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const readText = (filePath: any) => {
+    const readText = (filePath: HTMLInputElement) => {
       let reader = null
       if(window.File && window.FileReader && window.FileList && window.Blob) {
         reader = new FileReader()
@@ -30,10 +30,9 @@ export default class JsonViewerBtns extends Vue {
       }
       let output = ''
       if(filePath.files && filePath.files[0]) {
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        reader.onload = (e: any) => {
-          output = e.target.result
-          this.$electron.ipcRenderer.send('json-viewer-src-set', output)
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          output = e.target.result as string
+          Hub.$emit('json-viewer-set', output)
         }
         reader.readAsText(filePath.files[0])
       } else return false
@@ -49,13 +48,13 @@ export default class JsonViewerBtns extends Vue {
       'save-dialog-file-selected',
       (e: Electron.IpcRendererEvent, file: { filePath: string }) => {
         if(file && file.filePath) {
-          this.$electron.ipcRenderer.send('json-viewer-save', file.filePath)
+          Hub.$emit('json-viewer-save', file.filePath)
         }
       }
     )
   }
 
   clear() {
-    this.$electron.ipcRenderer.send('json-viewer-clear')
+    Hub.$emit('json-viewer-clear')
   }
 }
