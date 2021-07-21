@@ -1,18 +1,13 @@
 <template>
   <div class="title-bar">
-    <div class="menu-button-container">
-      <button id="menu-button" class="menu-button" @click="$electron.ipcRenderer.send('menu-popup')">
-        <i></i>
-        <i></i>
-        <i></i>
-      </button>
+    <div class="menu-button-container" v-if="isAuth">
+      <button @click="toPreferences">Preferences</button>
     </div>
-    <div class="reload-button-container" v-if="isAuth && !isPreferences">
-      <button id="reload-button" class="reload-button" @click.prevent="reload">
-        <span>
-          <svg-icon icon="reloadIcon" />
-        </span>
-      </button>
+    <div class="menu-button-container button--reload" v-if="isAuth">
+      <button @click="reload">Reload</button>
+    </div>
+    <div class="menu-button-container button--about" v-if="isAuth">
+      <button @click="toAbout">About</button>
     </div>
     <div class="app-name-container">
       <span class="titlebar-logo">
@@ -20,25 +15,19 @@
       </span>
       <p>{{ title }}</p>
     </div>
+    <div class="menu-button-container button--logout" v-if="isAuth">
+      <button @click="logout">Log Out</button>
+    </div>
     <div class="window-controls-container">
+      <button class="minimize-button" @click="$electron.ipcRenderer.send('minimize')"></button>
       <button
-        id="minimize-button"
-        class="minimize-button"
-        @click="$electron.ipcRenderer.send('minimize')"
-      ></button>
-      <button
-        id="min-max-button"
         class="min-max-button"
         :class="{
           'is-maximized': isMaximized
         }"
         @click="$electron.ipcRenderer.send('min-max')"
       ></button>
-      <button
-        id="close-button"
-        class="close-button"
-        @click="$electron.ipcRenderer.send('hide')"
-      ></button>
+      <button class="close-button" @click="$electron.ipcRenderer.send('hide')"></button>
     </div>
   </div>
 </template>

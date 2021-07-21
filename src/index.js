@@ -153,42 +153,6 @@ app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
   window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
-
-  const submenu = new Menu()
-  submenu.append(new MenuItem({
-    label: 'Preferences...',
-    click: () => {
-      const appMenu = Menu.getApplicationMenu()
-      const menuItemFile = appMenu.items.find(item => item.label === 'File')
-      const menuItemReload = menuItemFile.submenu.items.find(item => item.label === 'Reload')
-      menuItemReload.visible = false
-      window.webContents.send('gotoPreferences')
-    }
-  }))
-  submenu.append(new MenuItem({
-    label: 'Reload',
-    click: () => {
-      window.webContents.send('reload')
-    }
-  }))
-  submenu.append(new MenuItem({
-    label: 'Sign Out',
-    click: () => {
-      window.webContents.send('sign-out')
-    }
-  }))
-  const menu = new Menu()
-  menu.append(new MenuItem({
-    label: 'File',
-    submenu
-  }))
-  menu.append(new MenuItem({
-    label: 'About',
-    click: () => {
-      window.webContents.send('about')
-    }
-  }))
-  Menu.setApplicationMenu(menu)
 })
 
 app.on('activate', () => {
