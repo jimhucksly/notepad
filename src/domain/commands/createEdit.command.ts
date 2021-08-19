@@ -3,10 +3,10 @@ import { ICommandHandler } from '~/domain/interfaces'
 import { IModalInfo, IResolveFunc } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
-export class CreateEditCommand {
+export class CreateEditCommand<R> {
   public component: string
   public componentProps: Record<string, unknown>
-  public modal: IModalInfo
+  public modal: IModalInfo<R>
   public fsmState: symbol
   constructor({
     component,
@@ -16,7 +16,7 @@ export class CreateEditCommand {
   }: {
     component: string
     componentProps: Record<string, unknown>
-    modal: IModalInfo
+    modal: IModalInfo<R>
     fsmState: symbol
   }) {
     this.component = component
@@ -27,8 +27,8 @@ export class CreateEditCommand {
 }
 
 @injectable()
-export class CreateEditCommandHandler<R> implements ICommandHandler<CreateEditCommand, R> {
-  async do(command: CreateEditCommand): Promise<R> {
+export class CreateEditCommandHandler<R> implements ICommandHandler<CreateEditCommand<R>, R> {
+  async do(command: CreateEditCommand<R>): Promise<R> {
     return new Promise((resolve: IResolveFunc<R>) => {
       Hub.$nextTick(() => {
         command.modal.resolveFunction = resolve

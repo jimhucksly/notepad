@@ -42,7 +42,7 @@ export default class LibraryFiles extends Vue {
       },
       fsmState: FsmStates.AddLibraryFilePopup
     })
-    const file = await this.commandBus.do<CreateEditCommand, ILibraryFile>(command)
+    const file = await this.commandBus.do<CreateEditCommand<ILibraryFile>, ILibraryFile>(command)
     if(!file) {
       return
     }

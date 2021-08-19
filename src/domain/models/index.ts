@@ -124,11 +124,10 @@ export interface ICheckResponse {
 
 export type IResolveFunc<T> = (value: T) => void
 
-export interface IModalInfo {
+export interface IModalInfo<R> {
   title?: string
   width?: string
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  resolveFunction?: IResolveFunc<any>
+  resolveFunction?: IResolveFunc<R>
 }
 
 export interface IRootState {

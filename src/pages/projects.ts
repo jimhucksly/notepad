@@ -108,7 +108,7 @@ export default class Notepad extends Vue {
         },
         fsmState: FsmStates.Uploading
       })
-      this.commandBus.do<CreateEditCommand, void>(command)
+      this.commandBus.do<CreateEditCommand<void>, void>(command)
       const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
       this.$app.goBack()
       this.addFile(newFile.name, newFile.link, fileType)

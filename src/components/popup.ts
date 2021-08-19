@@ -4,10 +4,6 @@ import FsmStates from '~/application/fsm.states'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IModalInfo } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
-// import { Action, Getter, Mutation } from 'vuex-class'
-// import { uniqueid } from '~/helpers'
-// import { AUTHOR } from '~/constants'
-// import { AddLibraryFileCommand } from '~/domain/commands'
 
 @Component({
   name: 'Popup'
@@ -17,8 +13,8 @@ export default class Popup extends Vue {
 
   component = ''
   props: Record<string, unknown> = null
-  modal: IModalInfo = null
-  openDialogHandler: (command: CreateEditCommand) => void
+  modal: IModalInfo<unknown> = null
+  openDialogHandler: (command: CreateEditCommand<unknown>) => void
 
   @Watch('showPopup') onShowPopupChanged(state: boolean) {
     if(!state) {
@@ -33,7 +29,7 @@ export default class Popup extends Vue {
     Hub.$on('open-dialog', this.openDialogHandler)
   }
 
-  openDialog(command: CreateEditCommand) {
+  openDialog(command: CreateEditCommand<unknown>) {
     this.component = command.component
     this.props = command.componentProps
     this.modal = command.modal

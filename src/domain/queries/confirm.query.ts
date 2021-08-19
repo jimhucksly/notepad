@@ -26,6 +26,6 @@ export class ConfirmQueryHandler implements IQueryHandler<ConfirmQuery, boolean>
       },
       fsmState: FsmStates.ConfirmPopup
     })
-    return this._commandBus.do<CreateEditCommand, boolean>(command)
+    return this._commandBus.do<CreateEditCommand<boolean>, boolean>(command)
   }
 }

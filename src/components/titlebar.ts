@@ -56,7 +56,7 @@ export default class Titlebar extends Vue {
       },
       fsmState: FsmStates.About
     })
-    this.commandBus.do<CreateEditCommand, void>(command)
+    this.commandBus.do<CreateEditCommand<void>, void>(command)
   }
 
   async reload() {

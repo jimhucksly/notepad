@@ -29,7 +29,7 @@ export default class LinksBtns extends Vue {
       },
       fsmState: FsmStates.AddLinkPopup
     })
-    const result = await this.commandBus.do<CreateEditCommand, ILink>(command)
+    const result = await this.commandBus.do<CreateEditCommand<ILink>, ILink>(command)
     if(!result) {
       return
     }
