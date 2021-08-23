@@ -1,13 +1,31 @@
-import { Vue, Component } from 'vue-property-decorator'
+import AutoLaunch from 'auto-launch'
+import { Component, Vue } from 'vue-property-decorator'
+import { Getter, Mutation } from 'vuex-class'
+import { YandexDiskAppID, YandexApiTokenFileName } from '~/constants'
+import { _container } from '~/domain/container'
+import { IQueryBus } from '~/domain/interfaces'
+import { YandexTokenQuery } from '~/domain/queries'
+import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
-import AutoLaunch from 'auto-launch'
-import { Getter, Mutation } from 'vuex-class'
+
+interface IYandexResponse {
+  /* eslint-disable-next-line camelcase */
+  access_token: string
+  /* eslint-disable-next-line camelcase */
+  expires_in: number
+  /* eslint-disable-next-line camelcase */
+  refresh_token: string
+  /* eslint-disable-next-line camelcase */
+  token_type: string
+}
 
 @Component({
   name: 'Preferences'
 })
 export default class Preferences extends Vue {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
 
   @Getter('getUserDataPath') userDataPath: string
@@ -25,6 +43,7 @@ export default class Preferences extends Vue {
 
   appAutoLauncher: AutoLaunch = null
   isAutoLaunchEnabled = false
+  yandexDiskResponseCode = '6698469'
 
   validate(): boolean {
     const form = this.$refs.form as HTMLFormElement
@@ -92,6 +111,31 @@ export default class Preferences extends Vue {
         this.preferences.downloadsTargetPath = path ?? currentPath
       }
     )
+  }
+
+  createYandexDiskPath() {
+    let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
+    href = href + YandexDiskAppID
+    this.$electron.shell.openExternal(href)
+  }
+
+  async yandexCodeApply() {
+    const query = new YandexTokenQuery(Number(this.yandexDiskResponseCode))
+    try {
+      const resp: IYandexResponse = await this.queryBus.exec(query)
+      if(resp.access_token) {
+        await storage.createFile(this.userDataPath, YandexApiTokenFileName)
+        storage.set(this.userDataPath, YandexApiTokenFileName, {
+          access_token: resp.access_token
+        })
+        this.$toasted.success('Access token successfully saved')
+      }
+    } catch(e) {
+      let message = 'Access token request failed'
+      message = e.error_description || e.message || e.response?.message || message
+      this.$toasted.error(message)
+      console.log(e)
+    }
   }
 
   mounted() {

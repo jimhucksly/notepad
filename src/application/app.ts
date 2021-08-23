@@ -39,7 +39,7 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Projects
+  homeState = FsmStates.Preferences
 
   history: Array<keyof IFsmStates> = []
 
@@ -108,6 +108,10 @@ export default class Application {
 
   goBack() {
     if(this.history.length === 1) {
+      if(this.state === FsmStates.Projects) {
+        return
+      }
+      this.goto(FsmStates.Projects)
       return
     }
     this.history.splice(-1, 1)

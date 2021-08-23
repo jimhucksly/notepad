@@ -10,8 +10,10 @@ import { _container } from '~/domain/container'
 import BCheckbox from '~/modules/bcheckbox'
 import SvgIcon from '~/modules/svgIcon'
 import Anime from '~/plugins/anime'
+import ToastedPlugin from '~/plugins/toasted'
 import App from './app'
 import Popup from './components/popup'
+import Toasted from './components/toasted'
 import { TYPES } from './domain/types'
 import router from './router'
 import store from './store'
@@ -35,8 +37,10 @@ Vue.use(AppPlugin, app)
 Vue.use(Anime)
 Vue.use(BCheckbox)
 Vue.use(SvgIcon)
+Vue.use(ToastedPlugin)
 
 Vue.component('popup', Popup)
+Vue.component('toasted', Toasted)
 Vue.component('create-edit-link', CreateEditLink)
 Vue.component('about-popup', AboutPopup)
 Vue.component('uploading-popup', UploadingPopup)

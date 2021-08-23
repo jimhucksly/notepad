@@ -9,5 +9,9 @@ declare module 'vue/types/vue' {
     $electron: any
     $slideUp: (elem: HTMLElement, duration: number) => any
     $slideDown: (elem: HTMLElement, duration: number) => any
+    $toasted: {
+      success: (subject: string) => void,
+      error: (subject: string) => void
+    }
   }
 }

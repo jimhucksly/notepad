@@ -16,7 +16,7 @@ import {
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import { AuthQuery, LibraryFileQuery } from '~/domain/queries'
+import { AuthQuery, LibraryFileQuery, YandexTokenQuery } from '~/domain/queries'
 import {
   AuthCommand,
   UploadFileCommand,
@@ -578,6 +578,19 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       await $http.delete(`links/?id=${command.id}`)
       return Promise.resolve(true)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  @Queryable(TYPES.YandexTokenQuery)
+  async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
+    try {
+      const resp = await $http.post<YandexTokenQuery, string>('yandexapi', query)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return resp.data
     } catch(e) {
       return Promise.reject(e)
     }

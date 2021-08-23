@@ -1,5 +1,6 @@
 export const AUTHOR = 'DN-WEB'
 export const VK = 'vk.com/jimhucksly'
-export const API_URL = 'https://dn-web.ru/api/v1/'
 export const userDataFileName = 'App'
 export const userPreferencesFileName = 'UserPreferences'
+export const YandexDiskAppID = '2151dc1a8f3d49abbbdcc4178356dadb'
+export const YandexApiTokenFileName = 'YandexAPIToken'

@@ -51,6 +51,9 @@ export default class App extends Vue {
         ),
         h(
           'popup'
+        ),
+        h(
+          'toasted'
         )
       ]
     )

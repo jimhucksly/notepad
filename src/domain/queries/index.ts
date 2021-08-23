@@ -19,3 +19,7 @@ export class EventsQuery {}
 export class LinksQuery {}
 
 export class TodoQuery {}
+
+export class YandexTokenQuery {
+  constructor(public code: number) {}
+}
