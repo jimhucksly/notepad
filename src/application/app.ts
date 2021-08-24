@@ -2,10 +2,10 @@ import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
 import _fsm, { toStr } from '~/application/fsm'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
-import { userDataFileName } from '~/constants'
+import { userDataFileName, YandexApiTokenFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IRootState } from '~/domain/models'
+import { IRootState, IYandexTokenResponse } from '~/domain/models'
 import { StartQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
@@ -43,10 +43,21 @@ export default class Application {
 
   history: Array<keyof IFsmStates> = []
 
-  init() {
+  async init() {
     this._store.commit('setIsDevelopment', this.isDev)
     this._store.commit('setApiPath', webApi.apiPath)
     this._store.commit('setEndpoint', webApi.endpoint)
+    this._store.commit('setUserDataPath', this.userDataPath)
+    try {
+      const yandexToken = await storage.get<string>(
+        this.userDataPath, YandexApiTokenFileName, 'access_token'
+      )
+      if(yandexToken) {
+        this._store.commit('setYandexApiToken', yandexToken)
+      }
+    } catch(e) {
+      console.log(e)
+    }
   }
 
   loading(state: boolean) {
@@ -130,6 +141,24 @@ export default class Application {
     this._store.commit('setHistory', [...this.history])
   }
 
+  async setYandexApiToken(data: IYandexTokenResponse) {
+    await storage.createFile(this.userDataPath, YandexApiTokenFileName)
+    storage.set(this.userDataPath, YandexApiTokenFileName, {
+      access_token: data.access_token
+    })
+    this._store.commit('setYandexApiToken', data.access_token)
+    storage.append(this.userDataPath, YandexApiTokenFileName, {
+      refresh_token: data.refresh_token
+    })
+  }
+
+  revokeYandexApiToken() {
+    storage.set(this.userDataPath, YandexApiTokenFileName, {
+      access_token: ''
+    })
+    this._store.commit('setYandexApiToken', null)
+  }
+
   get fsm() {
     return _fsm
   }
@@ -159,6 +188,10 @@ export default class Application {
 
   get component(): keyof IAppComponents {
     return AppComponents[this.stateName] as keyof IAppComponents
+  }
+
+  get userDataPath() {
+    return process.env.USER_DATA_PATH
   }
 
   private getTransitionFunc(transition: symbol): () => Promise<boolean> {

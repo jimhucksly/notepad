@@ -12,13 +12,13 @@ import JsonViewer from '~/pages/jsonViewer'
 import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
-import { userDataFileName, userPreferencesFileName } from '~/constants'
+import { userDataFileName, userPreferencesFileName, YandexApiTokenFileName } from '~/constants'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
+import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
-import { IJson } from '~/domain/models'
+import { IJson, IYandexTokenResponse } from '~/domain/models'
 import { Mutation, Getter } from 'vuex-class'
 
 interface IUserPreferences {
@@ -48,6 +48,7 @@ export default class Index extends Vue {
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
 
+  @Getter('getIsDevelopment') isDev: boolean
   @Getter('getIsAuth') isAuth: boolean
   @Getter('getLoading') loading: boolean
   @Getter('getError') isError: boolean
@@ -75,6 +76,19 @@ export default class Index extends Vue {
           this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
+        if(!this.isDev) {
+          const yandexRefreshToken = await storage.get<string>(
+            this.$app.userDataPath, YandexApiTokenFileName, 'refresh_token'
+          )
+          if(yandexRefreshToken) {
+            const resp = await this.queryBus.exec<RefreshYandexTokenQuery, IYandexTokenResponse>(
+              new RefreshYandexTokenQuery(yandexRefreshToken)
+            )
+            if(resp.access_token && resp.refresh_token) {
+              this.$app.setYandexApiToken(resp)
+            }
+          }
+        }
         setTimeout(() => {
           this.$app.loading(false)
         }, 1500)
@@ -112,13 +126,8 @@ export default class Index extends Vue {
   }
 
   async created(): Promise<void> {
-    this.$electron.ipcRenderer.send('get-app-path')
-    await this.$electron.ipcRenderer.on(
-      'set-app-path',
-      async (e: Electron.IpcRendererEvent, appPath: string) => {
-        await this.setPath(appPath)
-        await this.checkToken(appPath)
-      }
-    )
+    const appPath = process.env.USER_DATA_PATH
+    await this.setPath(appPath)
+    await this.checkToken(appPath)
   }
 }

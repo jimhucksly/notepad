@@ -130,6 +130,17 @@ export interface IModalInfo<R> {
   resolveFunction?: IResolveFunc<R>
 }
 
+export interface IYandexTokenResponse {
+  /* eslint-disable-next-line camelcase */
+  access_token: string
+  /* eslint-disable-next-line camelcase */
+  expires_in: number
+  /* eslint-disable-next-line camelcase */
+  refresh_token: string
+  /* eslint-disable-next-line camelcase */
+  token_type: string
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -156,4 +167,5 @@ export interface IRootState {
   component: string
   selectedProjectKey: string
   history: Array<keyof typeof FsmStates>
+  yandexApiToken: string
 }

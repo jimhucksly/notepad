@@ -1,24 +1,14 @@
 import AutoLaunch from 'auto-launch'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { YandexDiskAppID, YandexApiTokenFileName } from '~/constants'
 import { _container } from '~/domain/container'
 import { IQueryBus } from '~/domain/interfaces'
+import { IYandexTokenResponse } from '~/domain/models'
 import { YandexTokenQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
-
-interface IYandexResponse {
-  /* eslint-disable-next-line camelcase */
-  access_token: string
-  /* eslint-disable-next-line camelcase */
-  expires_in: number
-  /* eslint-disable-next-line camelcase */
-  refresh_token: string
-  /* eslint-disable-next-line camelcase */
-  token_type: string
-}
 
 @Component({
   name: 'Preferences'
@@ -27,9 +17,11 @@ export default class Preferences extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
+  @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void
 
   @Getter('getUserDataPath') userDataPath: string
   @Getter('getDownloadsTargetPath') downloadsTargetPath: string
+  @Getter('getYandexApiToken') yandexApiToken: string
 
   preferences = {
     downloadsTargetPath: ''
@@ -43,7 +35,39 @@ export default class Preferences extends Vue {
 
   appAutoLauncher: AutoLaunch = null
   isAutoLaunchEnabled = false
-  yandexDiskResponseCode = '6698469'
+  yandexDiskResponseCode = ''
+  createYandexDiskStepTwo = false
+
+  mounted() {
+    this.preferences.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
+    this.defaults.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
+
+    const appAutoLauncher = new AutoLaunch({
+      name: pkg.build.productName.replace(/ /g, '')
+    })
+
+    this.appAutoLauncher = appAutoLauncher
+
+    appAutoLauncher.isEnabled()
+      .then((isEnabled: boolean) => {
+        this.isAutoLaunchEnabled = isEnabled
+      }).catch(e => {
+        console.log(e)
+      })
+  }
+
+  @Watch('yandexApiToken', { immediate: true }) async onYandexApiTokenChanged() {
+    const yandexToken = await storage.get<string>(
+      this.userDataPath, YandexApiTokenFileName, 'access_token'
+    )
+    if(yandexToken) {
+      this.setYandexApiToken(yandexToken)
+    } else {
+      if(this.yandexApiToken) {
+        this.setYandexApiToken(null)
+      }
+    }
+  }
 
   validate(): boolean {
     const form = this.$refs.form as HTMLFormElement
@@ -85,14 +109,11 @@ export default class Preferences extends Vue {
           this.appAutoLauncher.disable()
         }
       }
-
-      this.$electron.ipcRenderer.send('preferences-hide')
       this.$app.goBack()
     }
   }
 
   cancel() {
-    this.$electron.ipcRenderer.send('preferences-hide')
     this.$app.goBack()
   }
 
@@ -117,42 +138,32 @@ export default class Preferences extends Vue {
     let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
     href = href + YandexDiskAppID
     this.$electron.shell.openExternal(href)
+    setTimeout(() => {
+      this.createYandexDiskStepTwo = true
+    }, 1000)
   }
 
   async yandexCodeApply() {
     const query = new YandexTokenQuery(Number(this.yandexDiskResponseCode))
     try {
-      const resp: IYandexResponse = await this.queryBus.exec(query)
-      if(resp.access_token) {
-        await storage.createFile(this.userDataPath, YandexApiTokenFileName)
-        storage.set(this.userDataPath, YandexApiTokenFileName, {
-          access_token: resp.access_token
-        })
+      const resp: IYandexTokenResponse = await this.queryBus.exec(query)
+      if(resp.access_token && resp.refresh_token) {
+        await this.$app.setYandexApiToken(resp)
         this.$toasted.success('Access token successfully saved')
       }
     } catch(e) {
       let message = 'Access token request failed'
-      message = e.error_description || e.message || e.response?.message || message
+      message = e.message || e.response?.message || message
       this.$toasted.error(message)
       console.log(e)
     }
   }
 
-  mounted() {
-    this.preferences.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
-    this.defaults.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
+  revoke() {
+    this.$app.revokeYandexApiToken()
+  }
 
-    const appAutoLauncher = new AutoLaunch({
-      name: pkg.build.productName.replace(/ /g, '')
-    })
-
-    this.appAutoLauncher = appAutoLauncher
-
-    appAutoLauncher.isEnabled()
-      .then((isEnabled: boolean) => {
-        this.isAutoLaunchEnabled = isEnabled
-      }).catch(e => {
-        console.log(e)
-      })
+  get isYandexApiTokenExist() {
+    return Boolean(this.yandexApiToken)
   }
 }

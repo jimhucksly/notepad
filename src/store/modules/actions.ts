@@ -16,7 +16,7 @@ import {
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import { AuthQuery, LibraryFileQuery, YandexTokenQuery } from '~/domain/queries'
+import { AuthQuery, LibraryFileQuery, RefreshYandexTokenQuery, YandexTokenQuery } from '~/domain/queries'
 import {
   AuthCommand,
   UploadFileCommand,
@@ -586,7 +586,20 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.YandexTokenQuery)
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
     try {
-      const resp = await $http.post<YandexTokenQuery, string>('yandexapi', query)
+      const resp = await $http.post<YandexTokenQuery, string>('yandexapi/token', query)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return resp.data
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
+  @Queryable(TYPES.RefreshYandexTokenQuery)
+  async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<string> {
+    try {
+      const resp = await $http.post<RefreshYandexTokenQuery, string>('yandexapi/refreshToken', query)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }

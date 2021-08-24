@@ -36,27 +36,37 @@
           </div>
         </div>
       </div>
-      <div>
-        <div class="form-group">
-          <div class="form-group-inner flex-between items-center">
-            <label class="m-b-5">Create Yandex.Disk Path</label>
-            <button class="btn btn-primary" @click="createYandexDiskPath">Create</button>
+      <template v-if="!isYandexApiTokenExist">
+        <div v-if="!createYandexDiskStepTwo">
+          <div class="form-group">
+            <div class="form-group-inner flex-between items-center">
+              <label class="m-b-5">Create Yandex.Disk Path</label>
+              <button class="btn btn-primary" @click="createYandexDiskPath">Create</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div class="form-group">
-          <div class="form-group-inner">
-            <label class="m-b-5">Paste the Code here:</label>
-            <div class="flex-between items-center">
-              <input type="text" v-model="yandexDiskResponseCode">
-              <div class="form-group-btn">
-                <button class="btn btn-primary" @click.stop.prevent="yandexCodeApply">Apply</button>
+        <div v-else>
+          <div class="form-group">
+            <div class="form-group-inner">
+              <label class="m-b-5">Paste the Code here:</label>
+              <div class="flex-between items-center">
+                <input type="text" v-model="yandexDiskResponseCode">
+                <div class="form-group-btn">
+                  <button class="btn btn-primary" @click.prevent="yandexCodeApply">Apply</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
+      <template v-else>
+        <div class="form-group">
+          <div class="form-group-inner flex-between items-center">
+            <label class="m-b-5">Yandex.Disk Api Token received</label>
+            <button class="btn btn-default" @click.prevent="revoke">Revoke</button>
+          </div>
+        </div>
+      </template>
     </form>
     <div class="btn_wrapper">
       <button class="btn btn-primary" @click.prevent="save">Save</button>

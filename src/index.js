@@ -41,8 +41,6 @@ const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
-const appIconOverlay = path.resolve(__static, 'iconOverlay.png')
-let iconOverlay = nativeImage.createFromPath(appIconOverlay)
 const appIconTray = path.resolve(__static, 'iconTray.ico')
 let iconTray = nativeImage.createFromPath(appIconTray)
 
@@ -153,6 +151,8 @@ app.on('browser-window-created', (e, window) => {
   window.setMenu(null)
   window.setOverlayIcon(null, '')
   window.setTitle(pkg.build.productName)
+  process.env.WINDOW_TITLE = window.getTitle()
+  process.env.IS_MAXIMAZED = Number(window.isMaximized())
 })
 
 app.on('activate', () => {
@@ -172,19 +172,8 @@ app.on('before-quit', () => {
   mainWindow.close()
 })
 
-app.setPath('userData', path.resolve(app.getPath('userData'), '../JimhuckslyStudio/notepad-app'))
-
-ipcMain.on('get-app-path', (event) => {
-  event.sender.send('set-app-path', app.getPath('userData'))
-})
-
-ipcMain.on('get-window-title', (event) => {
-  event.sender.send('set-window-title', mainWindow.getTitle())
-})
-
-ipcMain.on('get-is-maximized', (event) => {
-  event.sender.send('set-is-maximized', mainWindow.isMaximized())
-})
+app.setPath('userData', path.resolve(app.getPath('userData'), '../dnweb/notepad-app'))
+process.env.USER_DATA_PATH = app.getPath('userData')
 
 ipcMain.on('minimize', (event) => {
   mainWindow.minimize()
@@ -228,13 +217,6 @@ ipcMain.on('unauthorized', () => {
   const appMenu = Menu.getApplicationMenu()
   const menuItemFile = appMenu.items.find(item => item.label === 'File')
   menuItemFile.visible = false
-})
-
-ipcMain.on('preferences-hide', () => {
-  const appMenu = Menu.getApplicationMenu()
-  const menuItemFile = appMenu.items.find(item => item.label === 'File')
-  const menuItemReload = menuItemFile.submenu.items.find(item => item.label === 'Reload')
-  menuItemReload.visible = true
 })
 
 ipcMain.on('open-folder-dialog', (event, arg) => {
@@ -284,18 +266,3 @@ ipcMain.on('json-viewer-save', (event, fileName) => {
 ipcMain.on('json-viewer-clear', (event) => {
   event.sender.send('json-viewer-clear')
 })
-
-// ipcMain.on('set-icon-notification', () => {
-//   mainWindow.setOverlayIcon(iconOverlay, 'You have an unread message')
-//   appTray.displayBalloon({
-//     icon: iconOverlay,
-//     title: 'my app',
-//     content: 'Access app settings from tray menu.'
-//   })
-// })
-
-// ipcMain.on('hide-icon-notification', () => {
-//   setTimeout(() => {
-//     mainWindow.setOverlayIcon(null, '')
-//   }, 2000)
-// })

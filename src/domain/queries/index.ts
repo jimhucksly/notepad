@@ -23,3 +23,7 @@ export class TodoQuery {}
 export class YandexTokenQuery {
   constructor(public code: number) {}
 }
+
+export class RefreshYandexTokenQuery {
+  constructor(public code: string) {}
+}

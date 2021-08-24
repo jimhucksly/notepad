@@ -24,7 +24,8 @@ const stateKeys: string[] = [
   'error',
   'component',
   'selectedProjectKey',
-  'history'
+  'history',
+  'yandexApiToken'
 ]
 
 export default stateKeys

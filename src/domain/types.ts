@@ -18,6 +18,7 @@ const TYPES = {
   CheckQuery: Symbol.for('CheckQuery'),
   ConfirmQuery: Symbol.for('ConfirmQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
+  RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
   CheckCommand: Symbol.for('CheckCommand'),
