@@ -6,8 +6,7 @@ import { _container } from '~/domain/container'
 import { PingCommand } from '~/domain/commands'
 import _ from 'lodash'
 import { IJson, IResponse } from '~/domain/models'
-import { AxiosError } from 'axios'
-import { Mutation } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 
 interface IErrors {
   login: boolean
@@ -18,6 +17,13 @@ interface IErrors {
   name: 'Auth'
 })
 export default class Auth extends Vue {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('setLoading') setLoading: (value: boolean) => void
+
+  @Getter('getEndpoint') endpoint: string
+
   login = ''
   pass = ''
   errors: IErrors = {
@@ -26,10 +32,6 @@ export default class Auth extends Vue {
   }
 
   timeout: NodeJS.Timeout | null = null
-
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-  @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Watch('login') onLoginChanged(val: string) {
     this.errors.login = !(val.length > 0)
@@ -51,10 +53,10 @@ export default class Auth extends Vue {
 
   async submit() {
     if(this.validate()) {
-      this.$app.loading(true)
       try {
         const token = await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
         this.$app.login(token)
+        this.$app.loading(true)
         await Promise.all([
           this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
@@ -69,15 +71,19 @@ export default class Auth extends Vue {
     }
   }
 
-  handleError(e: AxiosError<IResponse<void>>) {
-    const data = (e.response ? e.response.data : (e.response || e)) as IResponse<void>
-    if(data.messages && !_.isEmpty(data.messages)) {
-      this.errors.login = 'login' in data.messages
-      this.errors.pass = 'pass' in data.messages
+  handleError(e: IResponse<void>) {
+    if(e.messages && !_.isEmpty(e.messages)) {
+      this.errors.login = 'login' in e.messages
+      this.errors.pass = 'pass' in e.messages
       this.validate()
     } else {
       console.error(e)
     }
+  }
+
+  signup() {
+    const href = this.endpoint + '/registration'
+    this.$electron.shell.openExternal(href)
   }
 
   mounted() {

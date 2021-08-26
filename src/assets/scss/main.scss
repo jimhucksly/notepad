@@ -104,6 +104,15 @@ main {
     margin-bottom: 30px;
     text-align: center;
   }
+
+  .signup {
+    cursor: pointer;
+    color: var(--blue);
+
+    &:hover {
+      color: var(--blue_light);
+    }
+  }
 }
 
 #notepad_cont {
