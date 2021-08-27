@@ -12,10 +12,10 @@ import JsonViewer from '~/pages/jsonViewer'
 import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
-import { userDataFileName, userPreferencesFileName } from '~/constants'
+import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { LibraryFileQuery, ProjectsQuery, SessionQuery } from '~/domain/queries'
+import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { IJson, IResponse, IUser } from '~/domain/models'
@@ -55,6 +55,10 @@ export default class Index extends Vue {
   @Getter('getFsmState') fsmState: symbol
   @Getter('getComponent') component: string
   @Getter('getCurrentUser') currentUser: IUser
+  @Getter('getUserDataPath') userDataPath: string
+
+  createYandexDiskStepTwo = false
+  yandexDiskResponseCode = ''
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -72,7 +76,7 @@ export default class Index extends Vue {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if(token) {
-        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery())
+        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
         if(data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
@@ -82,17 +86,9 @@ export default class Index extends Vue {
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         ])
         if(!this.isDev) {
-          const yandexRefreshToken = await storage.get<string>(
-            this.$app.userDataPath, YandexApiTokenFileName, 'refresh_token'
+          await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
+            new RefreshYandexTokenQuery(Number(this.currentUser.id))
           )
-          if(yandexRefreshToken) {
-            const resp = await this.queryBus.exec<RefreshYandexTokenQuery, IYandexTokenResponse>(
-              new RefreshYandexTokenQuery(yandexRefreshToken)
-            )
-            if(resp.access_token && resp.refresh_token) {
-              this.$app.setYandexApiToken(resp)
-            }
-          }
         }
         setTimeout(() => {
           this.$app.loading(false)
@@ -134,6 +130,38 @@ export default class Index extends Vue {
     const appPath = process.env.USER_DATA_PATH
     await this.setPath(appPath)
     await this.checkToken(appPath)
+  }
+
+  createYandexDiskPath() {
+    let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
+    href = href + YandexDiskAppID
+    this.$electron.shell.openExternal(href)
+    setTimeout(() => {
+      this.createYandexDiskStepTwo = true
+    }, 1000)
+  }
+
+  async yandexCodeApply() {
+    const query = new YandexTokenQuery(
+      Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
+    )
+    try {
+      const resp: boolean = await this.queryBus.exec(query)
+      const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
+      if(resp && token) {
+        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
+        if(data.token) {
+          await this.$app.login(data.token)
+          this.$app.user(data.user)
+        }
+        this.$toasted.success('Access token successfully saved')
+      }
+    } catch(e) {
+      let message = 'Access token request failed'
+      message = e.message || e.response?.message || message
+      this.$toasted.error(message)
+      console.log(e)
+    }
   }
 
   get yandexDiskAccessToken() {

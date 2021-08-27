@@ -1,11 +1,10 @@
 import AutoLaunch from 'auto-launch'
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { YandexDiskAppID } from '~/constants'
 import { _container } from '~/domain/container'
 import { IQueryBus } from '~/domain/interfaces'
-import { IUser, IYandexTokenResponse } from '~/domain/models'
-import { YandexTokenQuery } from '~/domain/queries'
+import { IUser } from '~/domain/models'
+import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
@@ -122,34 +121,13 @@ export default class Preferences extends Vue {
     )
   }
 
-  createYandexDiskPath() {
-    let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
-    href = href + YandexDiskAppID
-    this.$electron.shell.openExternal(href)
-    setTimeout(() => {
-      this.createYandexDiskStepTwo = true
-    }, 1000)
-  }
-
-  async yandexCodeApply() {
-    const query = new YandexTokenQuery(
-      Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
+  async revoke() {
+    const isConfirm = await this.queryBus.exec(
+      new ConfirmQuery('Do you want to revoke the Yandex.Disk connection?')
     )
-    try {
-      const resp: IYandexTokenResponse = await this.queryBus.exec(query)
-      if(resp.access_token && resp.refresh_token) {
-        // await this.$app.setYandexApiToken(resp)
-        // this.$toasted.success('Access token successfully saved')
-      }
-    } catch(e) {
-      let message = 'Access token request failed'
-      message = e.message || e.response?.message || message
-      this.$toasted.error(message)
-      console.log(e)
+    if(!isConfirm) {
+      return
     }
-  }
-
-  revoke() {
     // this.$app.revokeYandexApiToken()
   }
 

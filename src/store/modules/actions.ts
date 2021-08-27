@@ -616,9 +616,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   @Queryable(TYPES.RefreshYandexTokenQuery)
-  async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<string> {
+  async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
-      const resp = await $http.post<RefreshYandexTokenQuery, string>('yandexapi/refreshToken', query)
+      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/refreshToken', query)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }

@@ -5,8 +5,15 @@ import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IRootState, IUser } from '~/domain/models'
-import { StartQuery } from '~/domain/queries'
+import { IEvent, IJson, ILink, IRootState, IUser } from '~/domain/models'
+import {
+  EventsQuery,
+  LibraryFileQuery,
+  LinksQuery,
+  ProjectsQuery,
+  SessionQuery,
+  StartQuery
+} from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import webApi from '../../config/api.config.json'
@@ -39,7 +46,7 @@ export default class Application {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Preferences
+  homeState = FsmStates.Projects
   history: Array<keyof IFsmStates> = []
   currentUser: IUser = null
 
@@ -134,6 +141,29 @@ export default class Application {
   setHistory() {
     this.history.push(this.stateName)
     this._store.commit('setHistory', [...this.history])
+  }
+
+  async reload() {
+    try {
+      this.loading(true)
+      const token = this._store.getters.getToken
+      await this._queryBus.exec(new SessionQuery(token))
+      // await this._queryBus.exec<RefreshYandexTokenQuery, boolean>(
+      //   new RefreshYandexTokenQuery(Number(this.currentUser.id))
+      // )
+      await Promise.all([
+        this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
+        this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
+        this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+      ])
+      setTimeout(() => {
+        this.loading(false)
+      }, 1500)
+    } catch(e) {
+      console.log(e)
+      this.loading(false)
+    }
   }
 
   get fsm() {
