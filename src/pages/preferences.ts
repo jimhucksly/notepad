@@ -1,10 +1,10 @@
 import AutoLaunch from 'auto-launch'
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { YandexDiskAppID, YandexApiTokenFileName } from '~/constants'
+import { YandexDiskAppID } from '~/constants'
 import { _container } from '~/domain/container'
 import { IQueryBus } from '~/domain/interfaces'
-import { IYandexTokenResponse } from '~/domain/models'
+import { IUser, IYandexTokenResponse } from '~/domain/models'
 import { YandexTokenQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
@@ -22,6 +22,7 @@ export default class Preferences extends Vue {
   @Getter('getUserDataPath') userDataPath: string
   @Getter('getDownloadsTargetPath') downloadsTargetPath: string
   @Getter('getYandexApiToken') yandexApiToken: string
+  @Getter('getCurrentUser') currentUser: IUser
 
   preferences = {
     downloadsTargetPath: ''
@@ -54,19 +55,6 @@ export default class Preferences extends Vue {
       }).catch(e => {
         console.log(e)
       })
-  }
-
-  @Watch('yandexApiToken', { immediate: true }) async onYandexApiTokenChanged() {
-    const yandexToken = await storage.get<string>(
-      this.userDataPath, YandexApiTokenFileName, 'access_token'
-    )
-    if(yandexToken) {
-      this.setYandexApiToken(yandexToken)
-    } else {
-      if(this.yandexApiToken) {
-        this.setYandexApiToken(null)
-      }
-    }
   }
 
   validate(): boolean {
@@ -144,12 +132,14 @@ export default class Preferences extends Vue {
   }
 
   async yandexCodeApply() {
-    const query = new YandexTokenQuery(Number(this.yandexDiskResponseCode))
+    const query = new YandexTokenQuery(
+      Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
+    )
     try {
       const resp: IYandexTokenResponse = await this.queryBus.exec(query)
       if(resp.access_token && resp.refresh_token) {
-        await this.$app.setYandexApiToken(resp)
-        this.$toasted.success('Access token successfully saved')
+        // await this.$app.setYandexApiToken(resp)
+        // this.$toasted.success('Access token successfully saved')
       }
     } catch(e) {
       let message = 'Access token request failed'
@@ -160,10 +150,10 @@ export default class Preferences extends Vue {
   }
 
   revoke() {
-    this.$app.revokeYandexApiToken()
+    // this.$app.revokeYandexApiToken()
   }
 
   get isYandexApiTokenExist() {
-    return Boolean(this.yandexApiToken)
+    return Boolean(this.currentUser.yandexDiskAccessToken)
   }
 }

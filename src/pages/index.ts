@@ -12,13 +12,13 @@ import JsonViewer from '~/pages/jsonViewer'
 import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
-import { userDataFileName, userPreferencesFileName, YandexApiTokenFileName } from '~/constants'
+import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
-import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery } from '~/domain/queries'
+import { LibraryFileQuery, ProjectsQuery, SessionQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
-import { IJson, IYandexTokenResponse } from '~/domain/models'
+import { IJson, IResponse, IUser } from '~/domain/models'
 import { Mutation, Getter } from 'vuex-class'
 
 interface IUserPreferences {
@@ -54,6 +54,7 @@ export default class Index extends Vue {
   @Getter('getError') isError: boolean
   @Getter('getFsmState') fsmState: symbol
   @Getter('getComponent') component: string
+  @Getter('getCurrentUser') currentUser: IUser
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -71,7 +72,11 @@ export default class Index extends Vue {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if(token) {
-        await this.$app.login(token)
+        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery())
+        if(data.token) {
+          await this.$app.login(data.token)
+          this.$app.user(data.user)
+        }
         await Promise.all([
           this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
           this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
@@ -129,5 +134,21 @@ export default class Index extends Vue {
     const appPath = process.env.USER_DATA_PATH
     await this.setPath(appPath)
     await this.checkToken(appPath)
+  }
+
+  get yandexDiskAccessToken() {
+    return this.currentUser?.yandexDiskAccessToken
+  }
+
+  get isSidebar() {
+    return this.isAuth && !this.loading && Boolean(this.yandexDiskAccessToken)
+  }
+
+  get isComponent() {
+    return Boolean(this.component) && Boolean(this.yandexDiskAccessToken)
+  }
+
+  get isYandexDisk() {
+    return !this.yandexDiskAccessToken
   }
 }

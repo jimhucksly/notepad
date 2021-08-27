@@ -106,12 +106,22 @@ export interface IJsonHeaders {
 
 type TResponseStatus = 'success' | 'error'
 
+export interface IUser {
+  id: string
+  login: string
+  email: string
+  displayName: string
+  yandexDiskAccessToken: string
+  yandexDiskRefreshToken: string
+}
+
 export interface IResponse<TData> {
   status: TResponseStatus
   token?: string
   data?: TData
   message?: string
   messages?: Array<string>
+  user?: IUser
 }
 
 export interface ICheckResponse {
@@ -168,4 +178,5 @@ export interface IRootState {
   selectedProjectKey: string
   history: Array<keyof typeof FsmStates>
   yandexApiToken: string
+  currentUser: IUser
 }

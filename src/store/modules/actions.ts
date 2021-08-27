@@ -16,7 +16,7 @@ import {
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import { AuthQuery, LibraryFileQuery, RefreshYandexTokenQuery, YandexTokenQuery } from '~/domain/queries'
+import { AuthQuery, LibraryFileQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
 import {
   AuthCommand,
   UploadFileCommand,
@@ -82,20 +82,39 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param {AuthQuery} data
    */
   @Queryable(TYPES.AuthQuery)
-  async actionAuth(store: TStore, query: AuthQuery): Promise<string> {
+  async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
       const resp = await $http.post<{ login: string, password: string }, void>('auth', {
         login: query.login,
         password: query.password
       })
       if(resp.token) {
-        return resp.token
+        return resp
       }
       return Promise.reject(resp)
     } catch(e) {
       return Promise.reject(e)
     }
   }
+
+  /**
+   * Session
+   * @param store Store
+   * @param {SessionQuery} data
+   */
+  @Queryable(TYPES.SessionQuery)
+  async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
+    try {
+      const resp = await $http.post<SessionQuery, void>('session', query)
+      if(resp.token) {
+        return resp
+      }
+      return Promise.reject(resp)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
 
   /**
    * Start

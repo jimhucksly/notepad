@@ -54,7 +54,7 @@
         <div>
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Go!</button>
         </div>
-        <div class="flex-center p-y-5">
+        <div class="flex-center p-y-10">
           <span class="signup" @click="signup">Sign Up</span>
         </div>
       </form>

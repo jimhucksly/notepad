@@ -6,6 +6,7 @@ const TYPES = {
   CommandBus: Symbol.for('CommandBus'),
   /* --------- queries --------- */
   AuthQuery: Symbol.for('AuthQuery'),
+  SessionQuery: Symbol.for('SessionQuery'),
   ProjectsQuery: Symbol.for('ProjectsQuery'),
   LibraryQuery: Symbol.for('LibraryQuery'),
   LibraryFilesQuery: Symbol.for('LibraryFilesQuery'),

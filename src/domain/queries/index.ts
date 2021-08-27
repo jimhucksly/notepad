@@ -2,6 +2,8 @@ export class AuthQuery {
   constructor(public login: string, public password: string) {}
 }
 
+export class SessionQuery {}
+
 export class StartQuery {}
 
 export class ProjectsQuery {}
@@ -21,7 +23,7 @@ export class LinksQuery {}
 export class TodoQuery {}
 
 export class YandexTokenQuery {
-  constructor(public code: number) {}
+  constructor(public code: number, public userId: number) {}
 }
 
 export class RefreshYandexTokenQuery {

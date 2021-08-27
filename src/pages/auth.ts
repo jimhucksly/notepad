@@ -54,8 +54,9 @@ export default class Auth extends Vue {
   async submit() {
     if(this.validate()) {
       try {
-        const token = await this.queryBus.exec<AuthQuery, string>(new AuthQuery(this.login, this.pass))
-        this.$app.login(token)
+        const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
+        this.$app.login(data.token)
+        this.$app.user(data.user)
         this.$app.loading(true)
         await Promise.all([
           this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),

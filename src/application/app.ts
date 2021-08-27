@@ -2,10 +2,10 @@ import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
 import _fsm, { toStr } from '~/application/fsm'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
-import { userDataFileName, YandexApiTokenFileName } from '~/constants'
+import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IRootState, IYandexTokenResponse } from '~/domain/models'
+import { IRootState, IUser } from '~/domain/models'
 import { StartQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
@@ -40,24 +40,14 @@ export default class Application {
   ) {}
 
   homeState = FsmStates.Preferences
-
   history: Array<keyof IFsmStates> = []
+  currentUser: IUser = null
 
-  async init() {
+  init() {
     this._store.commit('setIsDevelopment', this.isDev)
     this._store.commit('setApiPath', webApi.apiPath)
     this._store.commit('setEndpoint', webApi.endpoint)
     this._store.commit('setUserDataPath', this.userDataPath)
-    try {
-      const yandexToken = await storage.get<string>(
-        this.userDataPath, YandexApiTokenFileName, 'access_token'
-      )
-      if(yandexToken) {
-        this._store.commit('setYandexApiToken', yandexToken)
-      }
-    } catch(e) {
-      console.log(e)
-    }
   }
 
   loading(state: boolean) {
@@ -78,6 +68,11 @@ export default class Application {
     } catch(e) {
       throw new Error('Authentication is failed')
     }
+  }
+
+  user(data: IUser) {
+    this.currentUser = data
+    this._store.commit('setCurrentUser', data)
   }
 
   logout() {
@@ -139,24 +134,6 @@ export default class Application {
   setHistory() {
     this.history.push(this.stateName)
     this._store.commit('setHistory', [...this.history])
-  }
-
-  async setYandexApiToken(data: IYandexTokenResponse) {
-    await storage.createFile(this.userDataPath, YandexApiTokenFileName)
-    storage.set(this.userDataPath, YandexApiTokenFileName, {
-      access_token: data.access_token
-    })
-    this._store.commit('setYandexApiToken', data.access_token)
-    storage.append(this.userDataPath, YandexApiTokenFileName, {
-      refresh_token: data.refresh_token
-    })
-  }
-
-  revokeYandexApiToken() {
-    storage.set(this.userDataPath, YandexApiTokenFileName, {
-      access_token: ''
-    })
-    this._store.commit('setYandexApiToken', null)
   }
 
   get fsm() {
