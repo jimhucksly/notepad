@@ -151,6 +151,7 @@ export default class Application {
       // await this._queryBus.exec<RefreshYandexTokenQuery, boolean>(
       //   new RefreshYandexTokenQuery(Number(this.currentUser.id))
       // )
+      // await this._queryBus.exec(new YandexTokenQuery(111, Number(this.currentUser.id)))
       await Promise.all([
         this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),

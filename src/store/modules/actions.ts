@@ -16,7 +16,13 @@ import {
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
-import { AuthQuery, LibraryFileQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
+import {
+  AuthQuery,
+  LibraryFileQuery,
+  RefreshYandexTokenQuery,
+  SessionQuery,
+  YandexTokenQuery
+} from '~/domain/queries'
 import {
   AuthCommand,
   UploadFileCommand,
@@ -588,7 +594,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 
   /**
-   * Remove Links
+   * Remove Link
    * @param store Store
    * @param {DeleteLinkCommand} command
    */
@@ -602,6 +608,17 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * ==============================
+   * ******* Yandex.Disk API *******
+   * ==============================
+   */
+
+  /**
+   * Create Access Token
+   * @param store Store
+   * @param {YandexTokenQuery} query
+   */
   @Queryable(TYPES.YandexTokenQuery)
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
     try {
@@ -615,6 +632,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Refresh Token
+   * @param store Store
+   * @param {RefreshYandexTokenQuery} query
+   */
   @Queryable(TYPES.RefreshYandexTokenQuery)
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {

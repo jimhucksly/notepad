@@ -59,6 +59,7 @@ export default class Index extends Vue {
 
   createYandexDiskStepTwo = false
   yandexDiskResponseCode = ''
+  yandexCodeApplyProcessing = false
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -68,6 +69,8 @@ export default class Index extends Vue {
         console.log(e)
       }
     }
+    this.createYandexDiskStepTwo = false
+    this.yandexDiskResponseCode = ''
   }
 
   async checkToken(appPath: string): Promise<boolean> {
@@ -142,6 +145,7 @@ export default class Index extends Vue {
   }
 
   async yandexCodeApply() {
+    this.yandexCodeApplyProcessing = true
     const query = new YandexTokenQuery(
       Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
     )
@@ -153,6 +157,7 @@ export default class Index extends Vue {
         if(data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
+          this.$app.goHome()
         }
         this.$toasted.success('Access token successfully saved')
       }
@@ -161,6 +166,8 @@ export default class Index extends Vue {
       message = e.message || e.response?.message || message
       this.$toasted.error(message)
       console.log(e)
+    } finally {
+      this.yandexCodeApplyProcessing = false
     }
   }
 

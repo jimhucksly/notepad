@@ -33,7 +33,7 @@ export default class SidebarSwitcher extends Vue {
       return 'Preferences'
     }
     if(this.isProjects) {
-      return 'Prjects'
+      return 'Projects'
     }
     if(this.isLibrary) {
       return 'Library'
