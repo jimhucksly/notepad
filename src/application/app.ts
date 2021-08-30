@@ -5,11 +5,10 @@ import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IEvent, IJson, ILink, IRootState, IUser } from '~/domain/models'
+import { IEvent, IJson, IRootState, IUser } from '~/domain/models'
 import {
   EventsQuery,
   LibraryFileQuery,
-  LinksQuery,
   ProjectsQuery,
   SessionQuery,
   StartQuery
@@ -155,8 +154,8 @@ export default class Application {
       await Promise.all([
         this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery()),
-        this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery()),
-        this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+        this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
+        // this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
       ])
       setTimeout(() => {
         this.loading(false)

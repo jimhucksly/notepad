@@ -8,6 +8,8 @@ import Vue, { VueConstructor } from 'vue'
 import Application from '~/application/app'
 import { _container } from '~/domain/container'
 import BCheckbox from '~/modules/bcheckbox'
+import BBtn from '~/modules/bbtn'
+import Loader from '~/modules/loader'
 import SvgIcon from '~/modules/svgIcon'
 import Anime from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
@@ -36,6 +38,8 @@ const AppPlugin = {
 Vue.use(AppPlugin, app)
 Vue.use(Anime)
 Vue.use(BCheckbox)
+Vue.use(BBtn)
+Vue.use(Loader)
 Vue.use(SvgIcon)
 Vue.use(ToastedPlugin)
 

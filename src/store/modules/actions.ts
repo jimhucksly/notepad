@@ -45,6 +45,7 @@ import {
   EditProjectCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
+import { Hub } from '~/plugins/hub'
 
 type TStore = ActionContext<IRootState, IRootState>
 
@@ -206,6 +207,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.put<IJson, boolean>('project', command.data)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Project create failed')
       return Promise.reject(e)
     }
   }
@@ -221,6 +223,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post<IJson, boolean>('project', command.data)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Project edit failed')
       return Promise.reject(e)
     }
   }
@@ -236,6 +239,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`project/?key=${command.stamp}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Project delete failed')
       return Promise.reject(e)
     }
   }
@@ -253,6 +257,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       })
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Project archive failed')
       return Promise.reject(e)
     }
   }
@@ -272,9 +277,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setArchives', resp.data)
       return resp.data
     } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
       return Promise.reject(e)
     }
   }
@@ -290,6 +292,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post('project/archive/restore', command)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Archive restore failed')
       return Promise.reject(e)
     }
   }
@@ -305,6 +308,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`project/archive/?name=${command.name}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Archive remove failed')
       return Promise.reject(e)
     }
   }
@@ -320,6 +324,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       const resp = await $http.post<FormData, IFile>('upload', command.file)
       return Promise.resolve(resp.data)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)
     }
   }
@@ -348,7 +353,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setLibraryFiles', resp.data)
       return resp.data
     } catch(e) {
-      console.log(e)
+      Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
       return Promise.reject(e)
     }
   }
@@ -372,7 +377,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setLibraryData', resp.data)
       return Promise.resolve(resp.data)
     } catch(e) {
-      console.log(e)
+      Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
       return Promise.reject(e)
     }
   }
@@ -393,7 +398,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setLibraryFileId', command.data.id)
       return resp.data
     } catch(e) {
-      console.log(e)
+      Hub.$emit('on-toasted-error', 'Error: Library file create failed')
       return Promise.reject(e)
     }
   }
@@ -409,6 +414,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post('library', command)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
       return Promise.reject(e)
     }
   }
@@ -426,6 +432,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`library/?id=${command.id}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
       return Promise.reject(e)
     }
   }
@@ -450,7 +457,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setTodo', resp.data)
       return resp.data
     } catch(e) {
-      console.log(e)
+      Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed')
       return Promise.reject(e)
     }
   }
@@ -466,6 +473,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.put('todo', command.item)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Todo list item update failed')
       return Promise.reject(e)
     }
   }
@@ -481,6 +489,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`todo/?id=${command.id}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed')
       return Promise.reject(e)
     }
   }
@@ -496,6 +505,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post('todo/order', command.result)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed')
       return Promise.reject(e)
     }
   }
@@ -520,6 +530,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setEvents', resp.data)
       return resp.data
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
       return Promise.reject(e)
     }
   }
@@ -535,6 +546,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.put('events', command.event)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Event update failed')
       return Promise.reject(e)
     }
   }
@@ -550,6 +562,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`events/?date=${command.date}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Event remove failed')
       return Promise.reject(e)
     }
   }
@@ -574,6 +587,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       store.commit('setLinks', resp.data)
       return resp.data
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list fetch failed')
       return Promise.reject(e)
     }
   }
@@ -589,6 +603,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.put('links', command.link)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list update failed')
       return Promise.reject(e)
     }
   }
@@ -604,13 +619,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.delete(`links/?id=${command.id}`)
       return Promise.resolve(true)
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list item remove failed')
       return Promise.reject(e)
     }
   }
 
   /**
    * ==============================
-   * ******* Yandex.Disk API *******
+   * ******* Yandex.Disk API ******
    * ==============================
    */
 
@@ -628,6 +644,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return resp.data
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Access token not received')
       return Promise.reject(e)
     }
   }
@@ -646,6 +663,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return resp.data
     } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
       return Promise.reject(e)
     }
   }

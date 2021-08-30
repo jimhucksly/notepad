@@ -27,6 +27,7 @@ export default class ProjectsEditor extends Vue {
   name = ''
   isLock = false
   isDialog = false
+  savingProcess = false
 
   @Watch('item') onItemChanged(o: IJsonItem) {
     if(o) {
@@ -101,6 +102,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async save() {
+    this.savingProcess = true
     const o: IJson = {
       [this.selected]: {
         key: this.selected,
@@ -113,6 +115,7 @@ export default class ProjectsEditor extends Vue {
     }
     this.$store.commit('setJson', { ...this.json, ...o })
     await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+    this.savingProcess = false
     this.$app.goBack()
   }
 

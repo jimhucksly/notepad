@@ -47,12 +47,12 @@
       >
         Cancel
       </button>
-      <button
-        class="btn btn-primary"
+      <b-btn
+        primary
+        label="Save"
         @click="save"
-      >
-        Save
-      </button>
+        :processing="savingProcess"
+      />
     </div>
   </div>
 </template>

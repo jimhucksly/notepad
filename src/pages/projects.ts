@@ -12,12 +12,12 @@ import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
 
 @Component({
-  name: 'Notepad',
+  name: 'Projects',
   components: {
     ProjectItem
   }
 })
-export default class Notepad extends Vue {
+export default class Projects extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Getter('getJson') json: IJson

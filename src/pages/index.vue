@@ -21,18 +21,13 @@
               <template v-else>
                 <span class="p-b-5">Paste the Code here:</span>
                 <input type="text" v-model="yandexDiskResponseCode">
-                <button
-                  class="btn btn-primary m-t-10"
-                  :class="{ 'btn-processing': yandexCodeApplyProcessing }"
-                  @click.prevent="yandexCodeApply"
-                >
-                  <template v-if="yandexCodeApplyProcessing">
-                    <span class="processing-indicator-1"></span>
-                    <span class="processing-indicator-2"></span>
-                    <span class="processing-indicator-3"></span>
-                  </template>
-                  <span v-else>Apply</span>
-                </button>
+                <b-btn
+                  primary
+                  label="Apply"
+                  class="m-t-10"
+                  :processing="yandexCodeApplyProcessing"
+                  @click="yandexCodeApply($event)"
+                />
               </template>
             </form>
           </div>

@@ -144,7 +144,8 @@ export default class Index extends Vue {
     }, 1000)
   }
 
-  async yandexCodeApply() {
+  async yandexCodeApply(event: MouseEvent) {
+    event.preventDefault()
     this.yandexCodeApplyProcessing = true
     const query = new YandexTokenQuery(
       Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
