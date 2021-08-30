@@ -1,7 +1,8 @@
 <template>
   <div class="links_cont">
     <div class="links_area">
-      <ul>
+      <loader v-if="!links"/>
+      <ul v-else>
         <li v-for="(item, index) in links" :key="index">
           <a href="/" @click.prevent="open(item.url)">{{ `${index + 1}. ${item.name}` }}</a>
           <button @click="edit(item.id)">

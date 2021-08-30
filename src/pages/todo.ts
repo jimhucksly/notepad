@@ -23,7 +23,7 @@ export default class Todo extends Vue {
 
   @Getter('getTodo') json: ITodo
 
-  items: Array<ITodoItem> = []
+  items: Array<ITodoItem> = null
   isPopupShow = false
   itemSelected: ITodoItem | null = null
   isDrag = false

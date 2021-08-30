@@ -495,9 +495,13 @@ class CalendarComponent extends Vue {
                       : []
                   ),
                   h(
-                    'div',
+                    'svg-icon',
                     {
-                      staticClass: 'b-calendar-spinner'
+                      props: {
+                        icon: 'loader',
+                        width: '30px',
+                        height: '30px'
+                      }
                     }
                   )
                 ]

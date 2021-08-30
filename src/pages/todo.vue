@@ -1,17 +1,20 @@
 <template>
   <div class="todo_cont">
-    <div
-      v-for="item in items"
-      :key="item.id"
-      class="todo_item"
-      :data-id="item.id"
-      @mousedown="onMouseDown($event, item.id)"
-    >
-      <div class="todo_item-header">
-        {{ item.date }}
+    <loader v-if="!items"/>
+    <template v-else>
+      <div
+        v-for="item in items"
+        :key="item.id"
+        class="todo_item"
+        :data-id="item.id"
+        @mousedown="onMouseDown($event, item.id)"
+      >
+        <div class="todo_item-header">
+          {{ item.date }}
+        </div>
+        <div class="todo_item-content" v-html="getText(item.text)"></div>
       </div>
-      <div class="todo_item-content" v-html="getText(item.text)"></div>
-    </div>
+    </template>
     <template v-if="isPopupShow">
       <div class="todo_popup_overlay" ref="overlay"></div>
       <div class="todo_popup" ref="popup">
