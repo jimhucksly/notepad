@@ -42,7 +42,8 @@ import {
   AddLibraryFileCommand,
   DeleteLibraryFileCommand,
   CreateProjectCommand,
-  EditProjectCommand
+  EditProjectCommand,
+  RevokeYandexTokenCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 import { Hub } from '~/plugins/hub'
@@ -664,6 +665,20 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return resp.data
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
+      return Promise.reject(e)
+    }
+  }
+
+  @Commandable(TYPES.RevokeYandexTokenCommand)
+  async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
+    try {
+      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/revokeToken', command)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return resp.data
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
       return Promise.reject(e)
     }
   }

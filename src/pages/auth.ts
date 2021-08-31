@@ -23,6 +23,7 @@ export default class Auth extends Vue {
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getEndpoint') endpoint: string
+  @Getter('getYandexToken') yandexAccessToken: string
 
   login = ''
   pass = ''
@@ -57,14 +58,16 @@ export default class Auth extends Vue {
         const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
         this.$app.login(data.token)
         this.$app.user(data.user)
-        this.$app.loading(true)
-        await Promise.all([
-          this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-          this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        ])
-        setTimeout(() => {
-          this.$app.loading(false)
-        }, 1500)
+        if(this.yandexAccessToken) {
+          this.$app.loading(true)
+          await Promise.all([
+            this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+            this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+          ])
+          setTimeout(() => {
+            this.$app.loading(false)
+          }, 1500)
+        }
       } catch(e) {
         this.$app.loading(false)
         this.handleError(e)

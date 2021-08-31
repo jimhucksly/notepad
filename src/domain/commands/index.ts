@@ -88,3 +88,7 @@ export class UpdateTodoCommand {
 export class DeleteTodoCommand {
   constructor(public id: string) {}
 }
+
+export class RevokeYandexTokenCommand {
+  constructor(public userId: number) {}
+}

@@ -1,8 +1,9 @@
 import AutoLaunch from 'auto-launch'
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import { RevokeYandexTokenCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
-import { IQueryBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IUser } from '~/domain/models'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import { TYPES } from '~/domain/types'
@@ -14,6 +15,7 @@ import pkg from '../../package.json'
 })
 export default class Preferences extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void
@@ -128,7 +130,12 @@ export default class Preferences extends Vue {
     if(!isConfirm) {
       return
     }
-    // this.$app.revokeYandexApiToken()
+    try {
+      await this.commandBus.do(new RevokeYandexTokenCommand(Number(this.currentUser.id)))
+      location.reload()
+    } catch(e) {
+      //
+    }
   }
 
   get isYandexApiTokenExist() {

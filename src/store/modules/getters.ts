@@ -49,6 +49,9 @@ interface IGetters {
 const getters: IGetters = {
   getMenu() {
     return menu
+  },
+  getYandexToken(state: IRootState) {
+    return state.currentUser?.yandexDiskAccessToken
   }
 }
 

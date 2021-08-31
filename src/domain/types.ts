@@ -42,7 +42,8 @@ const TYPES = {
   DeleteLinkCommand: Symbol.for('DeleteLinkCommand'),
   UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
   DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
-  TodoOrderCommand: Symbol.for('TodoOrderCommand')
+  TodoOrderCommand: Symbol.for('TodoOrderCommand'),
+  RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand')
 }
 
 export {

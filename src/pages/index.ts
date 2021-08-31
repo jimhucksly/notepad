@@ -55,6 +55,7 @@ export default class Index extends Vue {
   @Getter('getFsmState') fsmState: symbol
   @Getter('getComponent') component: string
   @Getter('getCurrentUser') currentUser: IUser
+  @Getter('getYandexToken') yandexAccessToken: string
   @Getter('getUserDataPath') userDataPath: string
 
   createYandexDiskStepTwo = false
@@ -84,18 +85,20 @@ export default class Index extends Vue {
           await this.$app.login(data.token)
           this.$app.user(data.user)
         }
-        await Promise.all([
-          this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-          this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        ])
-        if(!this.isDev) {
-          await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
-            new RefreshYandexTokenQuery(Number(this.currentUser.id))
-          )
+        if(this.yandexAccessToken) {
+          await Promise.all([
+            this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+            this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+          ])
+          if(!this.isDev) {
+            await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
+              new RefreshYandexTokenQuery(Number(this.currentUser.id))
+            )
+          }
+          setTimeout(() => {
+            this.$app.loading(false)
+          }, 1500)
         }
-        setTimeout(() => {
-          this.$app.loading(false)
-        }, 1500)
         return true
       } else {
         this.$app.loading(false)
