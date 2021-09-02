@@ -1,6 +1,6 @@
 <template>
   <div class="todo_cont">
-    <loader v-if="!items"/>
+    <loader v-if="!items" />
     <template v-else>
       <div
         v-for="item in items"
