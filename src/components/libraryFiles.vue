@@ -11,10 +11,10 @@
         <li v-for="file in libraryFiles" :class="{ active: file.id === currentId }">
           <span>{{ file.name }}</span>
           <div>
-            <i class="icon icon-read" @click="openFile(file.id)">
+            <i class="icon icon-read" @click="openFile(file)">
               <svg-icon icon="readIcon" />
             </i>
-            <i class="icon icon-remove" @click="removeFile(file.id)">
+            <i class="icon icon-remove" @click="removeFile(file)">
               <svg-icon icon="removeIconSm" />
             </i>
           </div>

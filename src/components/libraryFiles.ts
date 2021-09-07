@@ -26,8 +26,8 @@ export default class LibraryFiles extends Vue {
 
   idForDelete = ''
 
-  openFile(id: string) {
-    this.setFileId(id)
+  openFile(file: ILibraryFile) {
+    this.setFileId(file.id)
     this.$app.goBack()
   }
 
@@ -49,7 +49,7 @@ export default class LibraryFiles extends Vue {
     await this.commandBus.do(new AddLibraryFileCommand(file))
   }
 
-  async removeFile(id: string) {
+  async removeFile(file: ILibraryFile) {
     const isConfirm = await this.queryBus.exec(new ConfirmQuery(
       'Do you want to remove the library file?'
     ))
@@ -57,7 +57,7 @@ export default class LibraryFiles extends Vue {
       return
     }
     try {
-      await this.commandBus.do(new DeleteLibraryFileCommand(id))
+      await this.commandBus.do(new DeleteLibraryFileCommand(file.name))
       await this.queryBus.exec(new LibraryFilesQuery())
       this.setFileId(this.libraryFiles[0]?.id || 0)
     } catch(e) {

@@ -62,7 +62,7 @@ export class AddLibraryFileCommand {
 }
 
 export class DeleteLibraryFileCommand {
-  constructor(public id: string) {}
+  constructor(public name: string) {}
 }
 
 export class UpdateLibraryCommand {

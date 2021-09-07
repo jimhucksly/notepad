@@ -40,49 +40,6 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
   }
 })
 
-const config = {
-  autofocus: true,
-  toolbar: [
-    'bold', 'italic', 'heading', '|',
-    'heading-1', 'heading-2', 'heading-3', '|',
-    'unordered-list', 'ordered-list', '|',
-    'code', 'link', '|',
-    'preview', '|',
-    {
-      action: () => false,
-      className: 'fa fa-save no-disable',
-      default: true,
-      name: 'save',
-      title: 'Save'
-    }
-  ],
-  autosave: {
-    enabled: false,
-    uniqueId: 'MyUniqueID',
-    delay: 1000
-  },
-  parsingConfig: {
-    allowAtxHeaderWithoutSpace: true,
-    strikethrough: false,
-    underscoresBreakWords: true
-  },
-  previewRender(plainText: string) {
-    LibraryPage.nodes = []
-    return LibraryPage.md.render(plainText)
-  },
-  renderingConfig: {
-    singleLineBreaks: false,
-    codeSyntaxHighlighting: false
-  },
-  status: [
-    {
-      className: 'saved-status'
-    },
-    'autosave', 'lines', 'words', 'cursor'
-  ],
-  tabSize: 4
-}
-
 @Component({
   name: 'Library'
 })
@@ -96,7 +53,6 @@ export default class LibraryPage extends Vue {
 
   @Getter('getLibraryData') initialValue: string
   @Getter('getLibraryFileId') currentId: string
-  @Getter('getNewLibraryFile') newLibraryFile: ILibraryFile
 
   editor: SimpleMDEExt = null
   isRendered = false
@@ -128,19 +84,58 @@ export default class LibraryPage extends Vue {
     textarea.id = 'editor'
     parent.appendChild(textarea)
     editorElement = document.getElementById('editor')
-    this.buildEditor(editorElement, value)
+    this.buildEditor(editorElement, value || '')
   }
 
   buildEditor(element: HTMLElement, value: string) {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    const conf: any = {
-      ...config
+    const config: SimpleMDE.Options = {
+      autofocus: true,
+      toolbar: [
+        'bold', 'italic', 'heading', '|',
+        'heading-1', 'heading-2', 'heading-3', '|',
+        'unordered-list', 'ordered-list', '|',
+        'code', 'link', '|',
+        'preview', '|',
+        {
+          action: () => false,
+          className: 'fa fa-save no-disable',
+          name: 'save',
+          title: 'Save'
+        }
+      ],
+      autosave: {
+        enabled: false,
+        uniqueId: 'MyUniqueID',
+        delay: 1000
+      },
+      parsingConfig: {
+        allowAtxHeaderWithoutSpace: true,
+        strikethrough: false,
+        underscoresBreakWords: true
+      },
+      previewRender(plainText: string) {
+        LibraryPage.nodes = []
+        return LibraryPage.md.render(plainText)
+      },
+      renderingConfig: {
+        singleLineBreaks: false,
+        codeSyntaxHighlighting: false
+      },
+      status: [
+        {
+          className: 'saved-status',
+          defaultValue: () => null,
+          onUpdate: () => null
+        },
+        'autosave', 'lines', 'words', 'cursor'
+      ],
+      tabSize: 4
     }
     if(element) {
-      conf.element = element
+      config.element = element
     }
 
-    this.editor = new SimpleMDE(conf)
+    this.editor = new SimpleMDE(config)
     this.editor.value(value)
     this.editor.togglePreviewHandler()
 

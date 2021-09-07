@@ -91,13 +91,13 @@ export default class ProjectsEditor extends Vue {
   }
 
   async removeHandler() {
+    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, this.selected)
     unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.$store.commit('setJson', buffJson)
-    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
     this.$app.goBack()
   }
 

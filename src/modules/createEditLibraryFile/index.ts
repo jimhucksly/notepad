@@ -1,6 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ILibraryFile } from '~/domain/models'
-import { uniqueid } from '~/helpers'
 
 @Component
 export default class CreateEditLibraryFileComponent extends Vue {
@@ -19,11 +18,6 @@ export default class CreateEditLibraryFileComponent extends Vue {
   }
 
   created() {
-    if(!this.id) {
-      this.file.id = uniqueid(6, '0-9') as number
-    } else {
-      this.file.id = this.id
-    }
     this.file.name = this.name
   }
 

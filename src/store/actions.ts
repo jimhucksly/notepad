@@ -348,12 +348,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      if(resp.message === 'Network Error') {
-        store.commit('setError', true)
-        return Promise.reject(resp)
-      }
-      store.commit('setLibraryFiles', resp.data)
-      return resp.data
+      const main = resp.data.find(file => file.name === 'main.md')
+      const files = [main]
+      resp.data.forEach(file => {
+        if(file.name !== 'main.md') {
+          files.push(file)
+        }
+      })
+      store.commit('setLibraryFiles', files)
+      return files
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
       return Promise.reject(e)
@@ -390,15 +393,22 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param {AddLibraryFileCommand} command
    */
   @Commandable(TYPES.AddLibraryFileCommand)
-  async actionAddLibraryFile(store: TStore, command: AddLibraryFileCommand): Promise<Array<ILibraryFile>> {
+  async actionAddLibraryFile(
+    store: TStore, command: AddLibraryFileCommand
+  ): Promise<boolean> {
     try {
-      const resp = await $http.put<ILibraryFile, Array<ILibraryFile>>('library', command.data)
+      const resp = await $http.put<ILibraryFile, { id: string }>('library', command.data)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
-      store.commit('setLibraryFiles', resp.data)
-      store.commit('setLibraryFileId', command.data.id)
-      return resp.data
+      const files = [...store.getters.getLibraryFiles]
+      files.push({
+        id: resp.data.id,
+        name: command.data.name
+      })
+      store.commit('setLibraryFiles', files)
+      store.commit('setLibraryFileId', resp.data.id)
+      return true
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file create failed')
       return Promise.reject(e)
@@ -431,7 +441,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store: TStore, command: DeleteLibraryFileCommand
   ): Promise<boolean> {
     try {
-      await $http.delete(`library/?id=${command.id}`)
+      await $http.delete(`library/?name=${command.name}`)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file delete failed')

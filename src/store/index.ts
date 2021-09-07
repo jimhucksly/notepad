@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import Vuex, { Store, StoreOptions } from 'vuex'
-import modules from './modules'
+import actions from './actions'
+import getters from './getters'
+import mutations from './mutations'
+import state from './state'
 import { IRootState } from '~/domain/models'
 
 Vue.use(Vuex)
 
 const storeOptions: StoreOptions<IRootState> = {
-  ...modules,
+  actions,
+  getters,
+  mutations,
+  state,
   strict: process.env.NODE_ENV !== 'production'
 }
 
