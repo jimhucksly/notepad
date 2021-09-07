@@ -52,7 +52,6 @@ export interface IArchive {
 export interface ILibraryFile {
   id: number
   name: string // имя физического файла на сервере
-  title: string // имя файла в интерфейсе приложения
 }
 
 export interface IEvents {

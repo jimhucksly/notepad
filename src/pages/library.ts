@@ -40,14 +40,6 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
   }
 })
 
-// Object.defineProperty(SimpleMDE.prototype, 'saveContent', {
-//   value() {
-//     this.saveContentHandler()
-//   }
-// })
-
-// let autosaveTimeout = null
-
 const config = {
   autofocus: true,
   toolbar: [

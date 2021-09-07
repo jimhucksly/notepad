@@ -20,6 +20,7 @@ const TYPES = {
   ConfirmQuery: Symbol.for('ConfirmQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
+  YandexDiskInfoQuery: Symbol.for('YandexDiskInfoQuery'),
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
   CheckCommand: Symbol.for('CheckCommand'),

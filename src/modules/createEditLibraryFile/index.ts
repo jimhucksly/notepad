@@ -10,8 +10,7 @@ export default class CreateEditLibraryFileComponent extends Vue {
 
   file: ILibraryFile = {
     id: null,
-    name: '',
-    title: ''
+    name: ''
   }
 
   errors = {
@@ -25,14 +24,10 @@ export default class CreateEditLibraryFileComponent extends Vue {
     } else {
       this.file.id = this.id
     }
-    this.file.title = this.title
     this.file.name = this.name
   }
 
   validate() {
-    if(!this.file.title) {
-      this.errors.title = true
-    }
     if(!this.file.name) {
       this.errors.name = true
     }
@@ -58,7 +53,6 @@ export default class CreateEditLibraryFileComponent extends Vue {
 
   beforeDestroy() {
     this.file.id = null
-    this.file.title = ''
     this.file.name = ''
   }
 }

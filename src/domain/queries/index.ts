@@ -31,3 +31,5 @@ export class YandexTokenQuery {
 export class RefreshYandexTokenQuery {
   constructor(public userId: number) {}
 }
+
+export class YandexDiskInfoQuery {}

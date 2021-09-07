@@ -21,6 +21,7 @@ import {
   LibraryFileQuery,
   RefreshYandexTokenQuery,
   SessionQuery,
+  YandexDiskInfoQuery,
   YandexTokenQuery
 } from '~/domain/queries'
 import {
@@ -679,6 +680,22 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return resp.data
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
+      return Promise.reject(e)
+    }
+  }
+
+  @Queryable(TYPES.YandexDiskInfoQuery)
+  async actionFetchYandexDiskInfo(
+    store: TStore, query: YandexDiskInfoQuery
+  ): Promise<unknown> {
+    try {
+      const resp = await $http.get<unknown>('yandexapi/info')
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return resp.data
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)
     }
   }
