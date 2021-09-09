@@ -40,6 +40,26 @@ Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
   }
 })
 
+const linked = (value: ILinkedDoc): Array<string> => {
+  const result: Array<string> = []
+  function _linked(o: ILinkedDoc) {
+    if(o.children) {
+      o.children.forEach(item => {
+        if(item.lines) {
+          item.lines.forEach(line => {
+            result.push(line.text)
+          })
+        }
+        if(item.children) {
+          _linked(item)
+        }
+      })
+    }
+  }
+  _linked(value)
+  return result
+}
+
 @Component({
   name: 'Library'
 })
@@ -62,7 +82,7 @@ export default class LibraryPage extends Vue {
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
 
-  linkClickHandler: (event: Electron.IpcRendererEvent, name: string) => void
+  linkClickHandler: (name: string) => void
 
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
@@ -115,10 +135,12 @@ export default class LibraryPage extends Vue {
       },
       previewRender(plainText: string) {
         LibraryPage.nodes = []
-        return LibraryPage.md.render(plainText)
+        let html = LibraryPage.md.render(plainText)
+        html = html.replace(/<\/p>/g, '</p><br>')
+        return html
       },
       renderingConfig: {
-        singleLineBreaks: false,
+        singleLineBreaks: true,
         codeSyntaxHighlighting: false
       },
       status: [
@@ -160,27 +182,13 @@ export default class LibraryPage extends Vue {
       from: 0,
       to: count
     })
-    const result: string[] = []
-    const linked = (o: ILinkedDoc) => {
-      if(o.children) {
-        o.children.forEach(item => {
-          if(item.lines) {
-            item.lines.forEach(line => {
-              result.push(line.text)
-            })
-          }
-          if(item.children) {
-            linked(item)
-          }
-        })
-      }
-    }
-    linked(linkedDoc)
-    this.links = result
-    this.linkClickHandler = (event: Electron.IpcRendererEvent, name: string) => {
+    this.links = linked(linkedDoc)
+    this.linkClickHandler = (name: string) => {
       let scrolling = false
       this.links.forEach((link: string, index: number): void | null => {
-        if(scrolling) return null
+        if(scrolling) {
+          return null
+        }
         if(link.indexOf(name) > -1) {
           scrolling = true
           this.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
@@ -247,13 +255,13 @@ export default class LibraryPage extends Vue {
 
   mounted() {
     LibraryPage.md = new MarkdownIt({
-      html: false,
+      html: true,
       xhtmlOut: false,
-      breaks: false,
+      breaks: true,
       langPrefix: 'language-',
       linkify: false,
       typographer: false,
-      quotes: '“”‘’',
+      quotes: '«»',
       highlight(str: string, lang: string) {
         return ''
       }
@@ -261,7 +269,7 @@ export default class LibraryPage extends Vue {
 
     LibraryPage.md.use(MarkdownItAnchor, {
       slugify: (s: string) => {
-        const slug = translit(s)
+        const slug = '_' + translit(s)
         LibraryPage.nodes.push({
           name: s || '',
           slug: slug || '',
