@@ -1,6 +1,6 @@
 'use strict'
 
-import {
+import electron, {
   app,
   BrowserWindow,
   Tray,
@@ -45,9 +45,11 @@ const appIconTray = path.resolve(__static, 'iconTray.ico')
 let iconTray = nativeImage.createFromPath(appIconTray)
 
 function createWindow() {
+  const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize;
+
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 563,
+    width: width * 0.8,
+    height: height * 0.8,
     minWidth: 1100,
     minHeight: 563,
     useContentSize: true,
