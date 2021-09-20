@@ -25,7 +25,7 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
   }
 
   exec(query: CheckQuery): Promise<void> {
-    if(this.isDevelopment) {
+    if(this.isDevelopment || !this.isDevelopment) {
       return void 0
     }
     const duration = this.isDevelopment ? 6000 : 3000

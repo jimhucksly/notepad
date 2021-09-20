@@ -1,9 +1,8 @@
 import { CreateElement } from 'vue'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { VNode } from 'vue/types/vnode'
+import { IDay, IOptions } from './calendar.model'
 import {
-  IDay,
-  IOptions,
   defaults,
   isDate,
   getNativeDate

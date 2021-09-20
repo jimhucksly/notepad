@@ -22,8 +22,24 @@ let mainConfig = {
       },
       {
         test: /\.ts$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workers: 2,
+              poolTimeout: Infinity
+            }
+          },
+          {
+            loader: 'ts-loader',
+            options: {
+              appendTsSuffixTo: [/\.vue$/],
+              transpileOnly: true,
+              happyPackMode: true
+            }
+          }
+        ]
       }
     ]
   },
@@ -40,7 +56,7 @@ let mainConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist/electron')
+    path: path.join(__dirname, '../dist')
   },
   optimization: {
     minimize: true,

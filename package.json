@@ -1,11 +1,11 @@
 {
   "name": "notepad.j-studio.app",
   "version": "1.0.0",
-  "author": "Jimhucksly Studio <admin@jimhucksly-studio.ru>",
-  "url": "https://jimhucksly-studio.ru",
+  "author": "DN-WEB <admin@dn-web.ru>",
+  "url": "https://dn-web.ru",
   "description": "An electron-vue project",
-  "license": "Jimhucksly Studio <admin@jimhucksly-studio.ru>",
-  "main": "./dist/electron/main.js",
+  "license": "Jimhucksly Studio <admin@dn-web.ru>",
+  "main": "./dist/main.js",
   "scripts": {
     "dev": "node config/runner.js",
     "build": "node config/build.js && electron-builder -w",
@@ -14,14 +14,14 @@
   },
   "build": {
     "productName": "Notepad App",
-    "appId": "com.example.notepad-jimhucksly-studioApp",
+    "appId": "com.example.notepad-dn-web",
     "copyright": "Copyright © 2019-2021 ${author}",
     "directories": {
       "output": "build"
     },
     "files": [
-      "**/*",
-      "dist/electron/**/*"
+      "dist/**/*",
+      "!node_modules/**/*"
     ],
     "dmg": {
       "contents": [
@@ -144,6 +144,7 @@
     "spectron": "^3.8.0",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^4.2.3",
+    "thread-loader": "^3.0.4",
     "ts-jest": "^26.5.1",
     "ts-loader": "^8.0.17",
     "typescript": "^3.9.9",

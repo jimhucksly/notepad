@@ -15,6 +15,9 @@ const TerserPlugin = require('terser-webpack-plugin')
 const ProgressPlugin = require('webpack/lib/ProgressPlugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
+const isProduction = process.env.NODE_ENV === 'production'
+const isDevelopment = !isProduction
+
 let rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
@@ -41,12 +44,28 @@ let rendererConfig = {
       },
       {
         test: /\.ts$/,
-        use: 'ts-loader',
         include: [
           path.resolve(__dirname, '../src'),
           path.resolve(__dirname, '../test')
         ],
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workers: require('os').cpus().length - 1,
+              poolTimeout: Infinity
+            }
+          },
+          {
+            loader: 'ts-loader',
+            options: {
+              appendTsSuffixTo: [/\.vue$/],
+              transpileOnly: true,
+              happyPackMode: true
+            }
+          }
+        ]
       },
       {
         test: /\.scss$/,
@@ -105,8 +124,8 @@ let rendererConfig = {
         removeComments: true
       },
       isBrowser: false,
-      isDevelopment: process.env.NODE_ENV !== 'production',
-      nodeModules: process.env.NODE_ENV !== 'production'
+      isDevelopment,
+      nodeModules: isDevelopment
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
@@ -134,7 +153,7 @@ let rendererConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '../dist/electron')
+    path: path.join(__dirname, '../dist')
   },
   resolve: {
     alias: {
@@ -200,7 +219,7 @@ let rendererConfig = {
 /**
  * Adjust rendererConfig for development settings
  */
-if (process.env.NODE_ENV !== 'production') {
+if (isDevelopment) {
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
@@ -214,15 +233,14 @@ if (process.env.NODE_ENV !== 'production') {
 /**
  * Adjust rendererConfig for production settings
  */
-if (process.env.NODE_ENV === 'production') {
+if (isProduction) {
   rendererConfig.devtool = ''
-
   rendererConfig.plugins.push(
     new CopyWebpackPlugin({
       patterns: [
         {
           from: path.join(__dirname, '../static'),
-          to: path.join(__dirname, '../dist/electron/static'),
+          to: path.join(__dirname, '../dist/static'),
           globOptions: {
             ignore: ['.*']
           }
