@@ -21,6 +21,7 @@ const TYPES = {
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   YandexDiskInfoQuery: Symbol.for('YandexDiskInfoQuery'),
+  YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
   /* --------- commands --------- */
   PingCommand: Symbol.for('PingCommand'),
   CheckCommand: Symbol.for('CheckCommand'),

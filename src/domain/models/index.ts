@@ -22,7 +22,6 @@ export interface ITreeItem {
 
 export interface IFile {
   name: string
-  link: string
   type: string
 }
 

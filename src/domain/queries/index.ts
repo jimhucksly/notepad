@@ -33,3 +33,7 @@ export class RefreshYandexTokenQuery {
 }
 
 export class YandexDiskInfoQuery {}
+
+export class YandexDiskResourceLinkQuery {
+  constructor(public filename: string) {}
+}

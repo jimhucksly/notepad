@@ -231,10 +231,12 @@ main {
     }
 
     .file_link {
-      a {
+      .link {
         display: inline-block;
         margin-right: 5px;
         font-size: 11px;
+        color: var(--blue);
+        cursor: pointer;
       }
     }
 

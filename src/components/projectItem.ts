@@ -2,7 +2,6 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
 import { IJsonItem } from '~/domain/models'
-import { downloadFile } from '~/helpers'
 
 @Component({
   name: 'NotepadItem',
@@ -20,17 +19,6 @@ export default class NotepadItem extends Vue {
 
   @Watch('item') onItemChanged(o: IJsonItem) {
     this.message = this.item.message ?? ''
-  }
-
-  openFile(href: string) {
-    this.$electron.shell.openExternal(href)
-  }
-
-  saveFile(o: { fileName: string, href: string }) {
-    const fileCont = this.$refs.file as Vue
-    const loader = fileCont.$refs.loader as HTMLElement
-    const finalPath = this.$store.getters.getDownloadsTargetPath + '\\' + o.fileName
-    downloadFile(o.href, finalPath, loader)
   }
 
   openLink(e: MouseEvent): void | boolean {

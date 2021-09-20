@@ -9,8 +9,6 @@
         ref="file"
         :item-key="item.key"
         :item-file="item.file"
-        @on-open-file="openFile"
-        @on-save-file="saveFile"
       />
       <p v-else-if="!isEdit" v-html="message" @click.prevent="openLink($event)"></p>
     </div>

@@ -22,6 +22,7 @@ import {
   RefreshYandexTokenQuery,
   SessionQuery,
   YandexDiskInfoQuery,
+  YandexDiskResourceLinkQuery,
   YandexTokenQuery
 } from '~/domain/queries'
 import {
@@ -680,6 +681,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Revoke Token
+   * @param store Store
+   * @param {RevokeYandexTokenCommand} command
+   */
   @Commandable(TYPES.RevokeYandexTokenCommand)
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
@@ -694,6 +700,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Yandex disk info
+   * @param store Store
+   * @param {YandexDiskInfoQuery} query
+   */
   @Queryable(TYPES.YandexDiskInfoQuery)
   async actionFetchYandexDiskInfo(
     store: TStore, query: YandexDiskInfoQuery
@@ -704,6 +715,27 @@ class Actions implements ActionTree<IRootState, IRootState> {
         return Promise.reject(resp)
       }
       return resp.data
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Yandex disk resource link
+   * @param store Store
+   * @param {YandexDiskResourceLinkQuery} query
+   */
+  @Queryable(TYPES.YandexDiskResourceLinkQuery)
+  async fetchResourceLink(
+    store: TStore, query: YandexDiskResourceLinkQuery
+  ): Promise<string> {
+    try {
+      const resp = await $http.get<{ link: string }>(`yandexapi/resource?filename=${query.filename}`)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      return resp.data.link
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)

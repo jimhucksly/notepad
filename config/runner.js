@@ -22,47 +22,9 @@ let hotMiddleware
 
 let isRunning = false
 
-function logStats (proc, data) {
-  let log = ''
-  log += '\n'
-
-  log += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
-  log += '\n\n'
-
-  let p = '\n'
-  p += chalk.yellow.bold(`${proc} Process ${new Array((19 - proc.length) + 1).join('-')}`)
-  p += '\n'
-
-  if(data) {
-    if (typeof data === 'object') {
-      data.toString({
-        colors: true,
-        chunks: false
-      }).split(/\r?\n/).forEach(line => {
-        log += '  ' + line + '\n'
-      })
-    } else {
-      log += `  ${data}\n`
-    }
-  }
-
-  log += '\n' + chalk.yellow.bold(`${new Array(28 + 1).join('-')}`) + '\n'
-
-  if(
-    process.env.CHUNKS_LOG === 'true' ||
-    process.env.NODE_ENV === 'production'
-  ) {
-    console.log(log)
-  } else console.log(p)
-}
-
 function startMain () {
   return new Promise((resolve, reject) => {
     mainConfig.mode = 'development'
-
-    // mainConfig.entry.main = [
-    //   path.join(__dirname, '../src/index.dev.js')
-    // ].concat(mainConfig.entry.main)
 
     const compiler = webpack(mainConfig)
 
@@ -171,12 +133,10 @@ function startRenderer () {
 }
 
 function startElectron () {
-  var args = [
-    // '--inspect=5858',
+  const args = [
     path.join(__dirname, '../dist/electron/main.js')
   ]
 
-  // detect yarn or npm and process commandline args accordingly
   if (process.env.npm_execpath.endsWith('yarn.js')) {
     args = args.concat(process.argv.slice(3))
   } else if (process.env.npm_execpath.endsWith('npm-cli.js')) {

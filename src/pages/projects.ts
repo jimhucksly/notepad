@@ -111,13 +111,13 @@ export default class Projects extends Vue {
       this.commandBus.do<CreateEditCommand<void>, void>(command)
       const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
       this.$app.goBack()
-      this.addFile(newFile.name, newFile.link, fileType)
+      this.addFile(newFile.name, fileType)
     } catch(e) {
       console.error(e)
     }
   }
 
-  addFile(name: string, link: string, type: string) {
+  addFile(name: string, type: string) {
     this.newMsgFlag = true
     const { date, stamp } = now()
     const o: IJson = {
@@ -128,7 +128,6 @@ export default class Projects extends Vue {
         lock: false,
         file: {
           name,
-          link,
           type
         }
       }
