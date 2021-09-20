@@ -77,12 +77,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
   read(store: TStore, command: ReadCommand): void {
     const json = cloneDeep(store.getters['getJson'])
     delete json[command.stamp]['unread']
-    const haveUnread = Object.keys(json).find(k => json[k].unread) !== undefined
-    if(haveUnread) {
-      ipcRenderer.send('set-icon-notification')
-    } else {
-      ipcRenderer.send('hide-icon-notification')
-    }
     store.commit('setJson', json)
   }
 
@@ -94,10 +88,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
+      setProcess(store, 'authentication...')
       const resp = await $http.post<{ login: string, password: string }, void>('auth', {
         login: query.login,
         password: query.password
       })
+      setProcess(store, null)
       if(resp.token) {
         return resp
       }
@@ -115,10 +111,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.SessionQuery)
   async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
     try {
+      setProcess(store, 'get session...')
       const resp = await $http.post<SessionQuery, void>('session', query)
       if(resp.token) {
         return resp
       }
+      setProcess(store, null)
       return Promise.reject(resp)
     } catch(e) {
       return Promise.reject(e)
@@ -132,7 +130,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.StartQuery)
   async actionAuthentication(store: TStore): Promise<boolean> {
     try {
+      setProcess(store, 'start...')
       await $http.get<IResponse<boolean>>('start')
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
@@ -181,7 +181,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.ProjectsQuery)
   async actionGetJson(store: TStore): Promise<IJson> {
     try {
+      setProcess(store, 'get projects...')
       const resp = await $http.get<IJson>('projects')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -207,7 +209,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.CreateProjectCommand)
   async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
     try {
+      setProcess(store, 'creating project...')
       await $http.put<IJson, boolean>('project', command.data)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Project create failed')
@@ -223,7 +227,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.EditProjectCommand)
   async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
     try {
+      setProcess(store, 'editing project...')
       await $http.post<IJson, boolean>('project', command.data)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Project edit failed')
@@ -239,7 +245,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.DeleteProjectCommand)
   async actionDeleteProject(store: TStore, command: DeleteProjectCommand): Promise<boolean> {
     try {
+      setProcess(store, 'removing project...')
       await $http.delete(`project/?key=${command.stamp}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Project delete failed')
@@ -255,9 +263,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.ArchivingCommand)
   async actionArchiving(store: TStore, command: ArchivingCommand): Promise<boolean> {
     try {
+      setProcess(store, 'move project to archive...')
       await $http.put<{ key: string | number }, void>('project/archive', {
         key: command.stamp
       })
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Project archive failed')
@@ -273,7 +283,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.ArchivesQuery)
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
     try {
+      setProcess(store, 'get archives...')
       const resp = await $http.get<Array<IArchive>>('projects/archives')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -292,7 +304,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.ArchiveRestoreCommand)
   async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<boolean> {
     try {
+      setProcess(store, 'archive restore...')
       await $http.post('project/archive/restore', command)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Archive restore failed')
@@ -308,7 +322,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.ArchiveRemoveCommand)
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
     try {
+      setProcess(store, 'removing archive...')
       await $http.delete(`project/archive/?name=${command.name}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Archive remove failed')
@@ -324,7 +340,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UploadFileCommand)
   async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
     try {
+      setProcess(store, 'uploading file...')
       const resp = await $http.post<FormData, IFile>('upload', command.file)
+      setProcess(store, null)
       return Promise.resolve(resp.data)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Upload file failed')
@@ -345,7 +363,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.LibraryFilesQuery)
   async actionGetLibraryFiles(store: TStore): Promise<Array<ILibraryFile>> {
     try {
+      setProcess(store, 'get library files...')
       const resp = await $http.get<Array<ILibraryFile>>('library/list')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -376,7 +396,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(query.id) {
         url = url + '?id=' + query.id
       }
+      setProcess(store, 'get library file...')
       const resp = await $http.get<string>(url)
+      setProcess(store, null)
       if(!resp || resp.data === undefined) {
         return Promise.reject(resp)
       }
@@ -398,7 +420,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store: TStore, command: AddLibraryFileCommand
   ): Promise<boolean> {
     try {
+      setProcess(store, 'creating library file...')
       const resp = await $http.put<ILibraryFile, { id: string }>('library', command.data)
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -424,7 +448,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UpdateLibraryCommand)
   async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<boolean> {
     try {
+      setProcess(store, 'editing library file...')
       await $http.post('library', command)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
@@ -442,7 +468,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store: TStore, command: DeleteLibraryFileCommand
   ): Promise<boolean> {
     try {
+      setProcess(store, 'removing library file...')
       await $http.delete(`library/?name=${command.name}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
@@ -463,7 +491,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.TodoQuery)
   async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
     try {
+      setProcess(store, 'get todo list...')
       const resp = await $http.get<Array<ITodo>>('todo')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -483,7 +513,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UpdateTodoCommand)
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
     try {
+      setProcess(store, 'update todo list...')
       await $http.put('todo', command.item)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item update failed')
@@ -499,7 +531,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.DeleteTodoCommand)
   async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<boolean> {
     try {
+      setProcess(store, 'remove todo item...')
       await $http.delete(`todo/?id=${command.id}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed')
@@ -515,7 +549,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.TodoOrderCommand)
   async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
     try {
+      setProcess(store, 'set todo order...')
       await $http.post('todo/order', command.result)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed')
@@ -536,7 +572,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.EventsQuery)
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
     try {
+      setProcess(store, 'get events...')
       const resp = await $http.get<Array<IEvent>>('events')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -556,7 +594,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UpdateEventCommand)
   async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<boolean> {
     try {
+      setProcess(store, 'update events...')
       await $http.put('events', command.event)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Event update failed')
@@ -572,7 +612,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.DeleteEventCommand)
   async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<boolean> {
     try {
+      setProcess(store, 'removing event...')
       await $http.delete(`events/?date=${command.date}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Event remove failed')
@@ -582,7 +624,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
 
   /**
    * ==============================
-   * ************ Links *********
+   * ************ Links ***********
    * ==============================
    */
 
@@ -593,7 +635,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.LinksQuery)
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
     try {
+      setProcess(store, 'get links...')
       const resp = await $http.get<Array<ILink>>('links')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -613,7 +657,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.UpdateLinksCommand)
   async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<boolean> {
     try {
+      setProcess(store, 'updating link...')
       await $http.put('links', command.link)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Links list update failed')
@@ -629,7 +675,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.DeleteLinkCommand)
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<boolean> {
     try {
+      setProcess(store, 'removing link...')
       await $http.delete(`links/?id=${command.id}`)
+      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Links list item remove failed')
@@ -651,7 +699,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.YandexTokenQuery)
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
     try {
+      setProcess(store, 'creating yandex disk token...')
       const resp = await $http.post<YandexTokenQuery, string>('yandexapi/token', query)
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -670,7 +720,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.RefreshYandexTokenQuery)
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
+      setProcess(store, 'updating yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/refreshToken', query)
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -689,7 +741,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.RevokeYandexTokenCommand)
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
+      setProcess(store, 'revoke yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/revokeToken', command)
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -710,7 +764,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store: TStore, query: YandexDiskInfoQuery
   ): Promise<unknown> {
     try {
+      setProcess(store, 'get yandex disk info...')
       const resp = await $http.get<unknown>('yandexapi/info')
+      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -744,5 +800,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
 }
 
 const actions = toActionTree(new Actions())
+
+function setProcess(store: TStore, process: string | null) {
+  store.commit('setProcess', process ? { name: process } : null)
+}
 
 export default actions

@@ -15,6 +15,9 @@
       </span>
       <p>{{ title }}</p>
     </div>
+    <div class="menu-button-container process" v-if="process">
+      <loader small :full="false" /> <span class="p-l-5 ">{{ process.name }}</span>
+    </div>
     <div class="menu-button-container button--logout" v-if="isAuth">
       <button @click="logout">Log Out</button>
     </div>

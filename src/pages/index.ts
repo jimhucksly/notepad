@@ -78,6 +78,7 @@ export default class Index extends Vue {
           },
           fsmState: FsmStates.Downloading
         })
+        this.$store.commit('setProcess', { name: 'dowloading file...' })
         this.commandBus.do<CreateEditCommand<void>, void>(command)
       }
     )
@@ -91,6 +92,7 @@ export default class Index extends Vue {
       'download-end',
       (e: Electron.IpcRendererEvent) => {
         setTimeout(() => {
+          this.$store.commit('setProcess', null)
           this.$app.goBack()
         }, 2000)
       }

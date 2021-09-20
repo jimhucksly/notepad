@@ -1,5 +1,5 @@
 import { Vue, Component } from 'vue-property-decorator'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { Getter } from 'vuex-class'
@@ -10,10 +10,10 @@ import { CreateEditCommand } from '~/domain/commands/createEdit.command'
   name: 'Titlebar'
 })
 export default class Titlebar extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Getter('getIsAuth') isAuth: boolean
+  @Getter('getProcess') process: { name: string }
 
   title = ''
   isMaximized = false

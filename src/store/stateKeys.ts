@@ -25,7 +25,8 @@ const stateKeys: string[] = [
   'component',
   'selectedProjectKey',
   'history',
-  'currentUser'
+  'currentUser',
+  'process'
 ]
 
 export default stateKeys

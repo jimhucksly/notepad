@@ -1,21 +1,12 @@
 /* eslint-disable-next-line */
 /// <reference path="../typings/vue.d.ts" />
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { CreateElement, VNode } from 'vue'
-import { Getter } from 'vuex-class'
 
 @Component({
   name: 'App'
 })
 export default class App extends Vue {
-  @Getter('getNotification') notification: boolean
-
-  @Watch('notification') onNotificationChanged(flag: boolean) {
-    if(flag) {
-      this.$electron.ipcRenderer.send('set-icon-notification')
-    }
-  }
-
   mounted() {
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault()

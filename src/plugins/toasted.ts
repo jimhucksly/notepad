@@ -1,8 +1,7 @@
 import { VueConstructor } from 'vue/types'
 import { Hub } from './hub'
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-const Toasted = function _toasted(options: any) {
+const Toasted = function _toasted(options: unknown) {
   if(!options) options = {}
 }
 

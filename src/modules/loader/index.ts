@@ -1,5 +1,5 @@
 import { CreateElement, VueConstructor, VNode } from 'vue/types'
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import './loader.scss'
 
 const Loader = function loader(options: Record<string, unknown>) {
@@ -10,20 +10,27 @@ const Loader = function loader(options: Record<string, unknown>) {
 
 @Component
 class LoaderComponent extends Vue {
+  @Prop() small: boolean
+  @Prop({ default: true }) full: boolean
+
   render(h: CreateElement): VNode {
     return h(
       'div',
       {
-        staticClass: 'loader'
+        staticClass: 'loader',
+        class: {
+          small: this.small,
+          full: this.full
+        }
       },
       [
         h(
           'svg-icon',
           {
             props: {
-              icon: 'loader',
-              width: '30px',
-              height: '30px'
+              icon: this.small ? 'loader-sm' : 'loader',
+              width: this.small ? '18px' : '30px',
+              height: this.small ? '18px' : '30px'
             }
           }
         )

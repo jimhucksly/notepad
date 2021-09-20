@@ -177,4 +177,5 @@ export interface IRootState {
   history: Array<keyof typeof FsmStates>
   yandexApiToken: string
   currentUser: IUser
+  process: { name: string }
 }

@@ -82,7 +82,6 @@ export default class Projects extends Vue {
     })
   }
 
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   onFileChange(e: InputEvent | DragEvent) {
     const target = e.target as HTMLInputElement
     let files = target.files

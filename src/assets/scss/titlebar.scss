@@ -46,6 +46,16 @@
     left: unset;
     right: 200px;
   }
+  &.process {
+    -webkit-app-region: no-drag;
+    width: 300px;
+    left: unset;
+    right: 300px;
+
+    span {
+      font-size: 11.5px;
+    }
+  }
 }
 
 .app-name-container {
