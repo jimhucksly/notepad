@@ -14,6 +14,7 @@ import electron, {
 import path from 'path'
 import pkg from '../package.json'
 import electronDebug from 'electron-debug'
+import { download } from 'electron-dl'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -259,12 +260,21 @@ ipcMain.on('save-file-dialog', (event, arg) => {
   })
 })
 
-ipcMain.on('json-viewer-src-set', (event, txt) => {
-  event.sender.send('json-viewer-src-set', txt)
-})
-ipcMain.on('json-viewer-save', (event, fileName) => {
-  event.sender.send('json-viewer-save', fileName)
-})
-ipcMain.on('json-viewer-clear', (event) => {
-  event.sender.send('json-viewer-clear')
+ipcMain.on('download-button', async (event, { url, targetPath }) => {
+  await download(
+    mainWindow,
+    url,
+    {
+      directory: targetPath,
+      onStarted: () => {
+        event.sender.send('download-start')
+      },
+      onProgress: progress => {
+        event.sender.send('download-progress', progress)
+      },
+      onCompleted: () => {
+        event.sender.send('download-end')
+      }
+    }
+  )
 })

@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
-import { uploadingFile } from '~/helpers'
+import { uploadDownloadFile } from '~/helpers'
 import store from '~/store'
 
 axios.interceptors.request.use(
@@ -10,7 +10,7 @@ axios.interceptors.request.use(
     if(config.url.indexOf('upload') > -1) {
       config.headers['Content-Type'] = 'multipart/form-data'
       config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
-        uploadingFile(loaded, total)
+        uploadDownloadFile(loaded, total)
       }
     } else {
       config.headers['Content-Type'] = 'application/json'
@@ -67,7 +67,7 @@ class Http {
     try {
       resp = await axios.post(url, data)
     } catch(e) {
-      if(e.response === undefined) {
+      if((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
         if(interval === undefined) {
           interval = setInterval(() => {
@@ -77,7 +77,7 @@ class Http {
         return Promise.reject()
       } else {
         interval && clearInterval(interval)
-        return e.response.data
+        return (e as { response: { data: IResponse<TResponse> } }).response.data
       }
     }
     store.commit('setError', false)
@@ -92,7 +92,7 @@ class Http {
     try {
       resp = await axios.put(url, data)
     } catch(e) {
-      if(e.response === undefined) {
+      if((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
         if(interval === undefined) {
           interval = setInterval(() => {
@@ -102,7 +102,7 @@ class Http {
         return Promise.reject()
       } else {
         interval && clearInterval(interval)
-        return e.response.data
+        return (e as { response: { data: IResponse<TResponse> } }).response.data
       }
     }
     store.commit('setError', false)
@@ -115,7 +115,7 @@ class Http {
     try {
       resp = await axios.delete(url)
     } catch(e) {
-      if(e.response === undefined) {
+      if((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
         if(interval === undefined) {
           interval = setInterval(() => {
@@ -125,7 +125,7 @@ class Http {
         return Promise.reject()
       } else {
         interval && clearInterval(interval)
-        return e.response.data
+        return (e as { response: { data: IResponse<string> } }).response.data
       }
     }
     store.commit('setError', false)

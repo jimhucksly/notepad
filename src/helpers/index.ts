@@ -344,16 +344,16 @@ export async function downloadFile(
 //   }
 // }
 
-export const uploadingFile = (received: number, total: number) => {
+export const uploadDownloadFile = (received: number, total: number) => {
   const percentage = Math.ceil((received * 100) / total)
   const percentageText = `${percentage}%`
-  const cont: HTMLElement | null = document.getElementById('uploading-popup')
+  const cont: HTMLElement | null = document.getElementById('upload-download-popup')
   if(cont) {
-    const textField: HTMLElement | null = cont.querySelector('.uploading-percentage')
+    const textField: HTMLElement | null = cont.querySelector('.percentage')
     if(textField) {
       textField.textContent = percentageText
     }
-    const progress: HTMLElement | null = cont.querySelector('.uploading-progress')
+    const progress: HTMLElement | null = cont.querySelector('.progress')
     if(progress) {
       progress.style.width = percentageText
     }

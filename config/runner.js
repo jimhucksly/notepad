@@ -133,7 +133,7 @@ function startRenderer () {
 }
 
 function startElectron () {
-  const args = [
+  let args = [
     path.join(__dirname, '../dist/electron/main.js')
   ]
 

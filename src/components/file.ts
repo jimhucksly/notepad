@@ -1,18 +1,25 @@
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { _container } from '~/domain/container'
+import { IQueryBus } from '~/domain/interfaces'
 import { IFile } from '~/domain/models'
+import { YandexDiskResourceLinkQuery } from '~/domain/queries'
+import { TYPES } from '~/domain/types'
 
 @Component({
   name: 'File'
 })
 export default class File extends Vue {
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+
+
   @Prop() readonly itemKey: string
   @Prop() readonly itemFile: IFile
 
+  @Getter('getDownloadsTargetPath') targetPath: string
+
   get stamp() {
     return this.itemKey
-  }
-  get href() {
-    return this.itemFile.link
   }
   get fileName() {
     return this.itemFile.name
@@ -21,14 +28,22 @@ export default class File extends Vue {
     return this.itemFile.type
   }
 
-  openFile() {
-    this.$emit('on-open-file', this.href)
+  async openFile() {
+    //
   }
 
-  saveFile() {
-    this.$emit('on-save-file', {
-      fileName: this.fileName,
-      href: this.href
-    })
+  async downloadFile() {
+    try {
+      const link = await this.queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
+      if(link) {
+        // this.$electron.shell.openExternal(link)
+        this.$electron.ipcRenderer.send('download-button', {
+          url: link,
+          targetPath: this.targetPath
+        })
+      }
+    } catch(e) {
+      //
+    }
   }
 }

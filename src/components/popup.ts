@@ -59,6 +59,7 @@ export default class Popup extends Vue {
       FsmStates.AddLinkPopup,
       FsmStates.About,
       FsmStates.Uploading,
+      FsmStates.Downloading,
       FsmStates.AddLibraryFilePopup,
       FsmStates.ConfirmPopup
     ].includes(this.fsmState)

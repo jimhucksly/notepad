@@ -13,13 +13,16 @@ import Links from '~/pages/links'
 import Sidebar from '~/components/sidebar'
 import storage from '~/plugins/storage'
 import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
-import { IQueryBus } from '~/domain/interfaces'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
 import { _container } from '~/domain/container'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { IJson, IResponse, IUser } from '~/domain/models'
 import { Mutation, Getter } from 'vuex-class'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import FsmStates from '~/application/fsm.states'
+import { uploadDownloadFile } from '~/helpers'
 
 interface IUserPreferences {
   downloadsTargetPath: string
@@ -44,6 +47,7 @@ interface IUserPreferences {
 })
 export default class Index extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
@@ -61,6 +65,37 @@ export default class Index extends Vue {
   createYandexDiskStepTwo = false
   yandexDiskResponseCode = ''
   yandexCodeApplyProcessing = false
+
+  mounted() {
+    this.$electron.ipcRenderer.on(
+      'download-start',
+      (e: Electron.IpcRendererEvent) => {
+        const command = new CreateEditCommand({
+          component: 'downloading-popup',
+          componentProps: {},
+          modal: {
+            title: 'Downloading'
+          },
+          fsmState: FsmStates.Downloading
+        })
+        this.commandBus.do<CreateEditCommand<void>, void>(command)
+      }
+    )
+    this.$electron.ipcRenderer.on(
+      'download-progress',
+      (e: Electron.IpcRendererEvent, progress: { transferredBytes: number, totalBytes: number }) => {
+        uploadDownloadFile(progress.transferredBytes, progress.totalBytes)
+      }
+    )
+    this.$electron.ipcRenderer.on(
+      'download-end',
+      (e: Electron.IpcRendererEvent) => {
+        setTimeout(() => {
+          this.$app.goBack()
+        }, 2000)
+      }
+    )
+  }
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if(v) {
@@ -175,7 +210,7 @@ export default class Index extends Vue {
       }
     } catch(e) {
       let message = 'Access token request failed'
-      message = e.message || e.response?.message || message
+      message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
       this.$toasted.error(message)
       console.log(e)
     } finally {

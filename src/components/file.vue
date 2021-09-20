@@ -8,8 +8,9 @@
     <div class="file_link">
       <div>{{ fileName }}</div>
       <div>
-        <a :href="href" @click.prevent="openFile">Открыть</a>
-        <!-- <a :href="href" @click.prevent="saveFile">Скачать</a> -->
+        <span @click.prevent="openFile" class="link">Open</span>
+        <span> | </span>
+        <span @click.prevent="downloadFile" class="link">Download</span>
       </div>
     </div>
     <div>

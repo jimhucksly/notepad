@@ -75,8 +75,8 @@
   }
 }
 
-#uploading-popup {
-  .uploading-label {
+#upload-download-popup {
+  .label {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -85,7 +85,7 @@
     margin-bottom: 5px;
   }
 
-  .uploading-progress {
+  .progress {
     position: relative;
     width: 0;
     height: 15px;
