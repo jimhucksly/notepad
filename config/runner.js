@@ -6,7 +6,7 @@ const path = require('path')
 const { spawn } = require('child_process')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-const webpackHotMiddleware = require('webpack-hot-middleware')
+// const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const { endpoint } = require('./api.config.json')
 
@@ -18,7 +18,7 @@ delete rendererConfig.optimization
 
 let electronProcess = null
 let manualRestart = false
-let hotMiddleware
+// let hotMiddleware
 
 let isRunning = false
 
@@ -29,13 +29,13 @@ function startMain () {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      hotMiddleware.publish({ action: 'compiling' })
+      // hotMiddleware.publish({ action: 'compiling' })
       done()
     })
 
-    compiler.hooks.done.tap('done', stats => {
-      console.log(chalk.red.bold('app is updated: ') + dd + '\n')
-    })
+    // compiler.hooks.done.tap('done', stats => {
+    //   console.log(chalk.red.bold('app is updated: ') + dd + '\n')
+    // })
 
     compiler.watch({}, (err, stats) => {
       if (err) {
@@ -69,43 +69,29 @@ function startRenderer () {
 
     const compiler = webpack(rendererConfig)
 
-    hotMiddleware = webpackHotMiddleware(compiler, {
-      log: false,
-      heartbeat: 2500
-    })
+    // hotMiddleware = webpackHotMiddleware(compiler)
 
     compiler.hooks.done.tap('done', stats => {
       if(!isRunning) {
         // logStats('Renderer')
       } else {
-        const d = new Date(Date.now())
-        const hh = ('0' + d.getHours()).slice(-2)
-        const mm = ('0' + d.getMinutes()).slice(-2)
-        const ss = ('0' + d.getSeconds()).slice(-2)
-        const dd = hh + ':' + mm + ':' + ss
-        console.log(chalk.yellow.bold('app is updated: ') + dd + '\n')
+        // const d = new Date(Date.now())
+        // const hh = ('0' + d.getHours()).slice(-2)
+        // const mm = ('0' + d.getMinutes()).slice(-2)
+        // const ss = ('0' + d.getSeconds()).slice(-2)
+        // const dd = hh + ':' + mm + ':' + ss
+        // console.log(chalk.yellow.bold('app is updated: ') + dd + '\n')
       }
     })
 
     const server = new WebpackDevServer(
-      compiler,
       {
         port: 9080,
         host: 'localhost',
         historyApiFallback: true,
         hot: true,
-        contentBase: path.join(__dirname, '../'),
-        quiet: true,
-        openPage: '',
-        watchOptions: {
-          aggregateTimeout: 300,
-          poll: 1000
-        },
-        before (app, ctx) {
-          app.use(hotMiddleware)
-          ctx.middleware.waitUntilValid(() => {
-            resolve()
-          })
+        devMiddleware: {
+          writeToDisk: true,
         },
         proxy: {
           '/api': {
@@ -125,10 +111,13 @@ function startRenderer () {
             }
           }
         }
-      }
+      },
+      compiler
     )
 
-    server.listen(9080)
+    server.start()
+
+    resolve()
   })
 }
 
@@ -153,7 +142,9 @@ function startElectron () {
   })
 
   electronProcess.on('close', () => {
-    if (!manualRestart) process.exit()
+    if (!manualRestart) {
+      process.exit()
+    }
   })
 }
 
@@ -175,7 +166,6 @@ function electronLog (data, color) {
 }
 
 function init () {
-  process.env.CHUNKS_LOG = 'true'
   console.log(chalk.white('initializing app...') + '\n')
 
   Promise
@@ -183,7 +173,6 @@ function init () {
     .then(() => {
       isRunning = true
       console.log(chalk.green('app is sucessfully running') + '\n')
-      // process.env.CHUNKS_LOG = 'false'
       startElectron()
     })
     .catch(err => {

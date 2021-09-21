@@ -1,10 +1,8 @@
 'use strict'
 
 process.env.BABEL_ENV = 'renderer'
-process.env.CHUNKS_LOG = 'false'
 
 const path = require('path')
-const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -19,7 +17,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 const isDevelopment = !isProduction
 
 let rendererConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'eval-cheap-module-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/main.ts')
   },
@@ -29,7 +27,7 @@ let rendererConfig = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
-          extractCSS: process.env.NODE_ENV === 'production',
+          extractCSS: isProduction,
           loaders: {
             sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
             scss: 'vue-style-loader!css-loader!sass-loader',
@@ -44,28 +42,13 @@ let rendererConfig = {
       },
       {
         test: /\.ts$/,
-        include: [
-          path.resolve(__dirname, '../src'),
-          path.resolve(__dirname, '../test')
-        ],
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'thread-loader',
-            options: {
-              workers: require('os').cpus().length - 1,
-              poolTimeout: Infinity
-            }
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              appendTsSuffixTo: [/\.vue$/],
-              transpileOnly: true,
-              happyPackMode: true
-            }
-          }
-        ]
+        exclude: /node_modules|\.(spec|e2e|d)\.ts$|vue\/src/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+          transpileOnly: true,
+          happyPackMode: true
+        }
       },
       {
         test: /\.scss$/,
@@ -76,45 +59,20 @@ let rendererConfig = {
         test: /\.css$/,
         exclude: /node_modules/,
         use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
-            name: 'imgs/[name]--[folder].[ext]'
-          }
-        }
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          name: 'media/[name]--[folder].[ext]'
-        }
-      },
-      {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
-            name: 'fonts/[name]--[folder].[ext]'
-          }
-        }
       }
     ]
   },
   node: {
-    __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production'
+    __dirname: isDevelopment,
+    __filename: isDevelopment
+  },
+  stats: {
+    preset: 'normal',
+    warningsFilter: [/export .*was not found/],
   },
   plugins: [
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin({filename: 'styles.css'}),
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -148,11 +106,26 @@ let rendererConfig = {
       eslint: {
         files: './src/**/*.{ts,tsx,js}'
       }
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/assets/images',
+          to: './assets/images',
+        },
+        {
+          from: 'src/assets/fonts',
+          to: './assets/fonts',
+        },
+        {
+          from: 'src/assets/images/icon.ico',
+          to: './icon.ico',
+        }
+      ]
     })
   ],
   output: {
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist')
   },
   resolve: {
@@ -216,40 +189,9 @@ let rendererConfig = {
   target: 'electron-renderer'
 }
 
-/**
- * Adjust rendererConfig for development settings
- */
 if (isDevelopment) {
   rendererConfig.plugins.push(
-    new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`,
-    })
-  )
-  rendererConfig.plugins.push(
     new webpack.ProgressPlugin({ modules: true, modulesCount: 3000 })
-  )
-}
-
-/**
- * Adjust rendererConfig for production settings
- */
-if (isProduction) {
-  rendererConfig.devtool = ''
-  rendererConfig.plugins.push(
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: path.join(__dirname, '../static'),
-          to: path.join(__dirname, '../dist/static'),
-          globOptions: {
-            ignore: ['.*']
-          }
-        }
-      ]
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
-    })
   )
 }
 

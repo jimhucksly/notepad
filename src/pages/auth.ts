@@ -70,7 +70,7 @@ export default class Auth extends Vue {
         }
       } catch(e) {
         this.$app.loading(false)
-        this.handleError(e)
+        this.handleError(e as IResponse<void>)
       }
     }
   }

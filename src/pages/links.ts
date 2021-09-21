@@ -18,6 +18,8 @@ export default class Links extends Vue {
 
   @Getter('getLinks') links: Array<ILink>
 
+  isEmpty = false
+
   open(url: string) {
     this.$electron.shell.openExternal(url)
   }
@@ -58,5 +60,8 @@ export default class Links extends Vue {
 
   async mounted() {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+    if(!this.links?.length) {
+      this.isEmpty = true
+    }
   }
 }

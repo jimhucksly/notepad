@@ -27,6 +27,7 @@ export default class Todo extends Vue {
   isPopupShow = false
   itemSelected: ITodoItem | null = null
   isDrag = false
+  isEmpty = false
 
   addTodoHandler: () => void
 
@@ -34,8 +35,7 @@ export default class Todo extends Vue {
     return this.items.map((item: ITodoItem) => item.id)
   }
 
-  @Watch('json')
-  onJsonChanged() {
+  @Watch('json') onJsonChanged() {
     this.setItems()
   }
 
@@ -299,6 +299,9 @@ export default class Todo extends Vue {
 
   async mounted() {
     await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
+    if(!this.items?.length) {
+      this.isEmpty = true
+    }
     this.addTodoHandler = this.addTodo.bind(this)
     Hub.$on('todo-add', this.addTodoHandler)
   }

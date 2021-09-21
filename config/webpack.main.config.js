@@ -2,16 +2,18 @@
 
 process.env.BABEL_ENV = 'main'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
-process.env.CHUNKS_LOG = 'true'
 
 const path = require('path')
 const webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
+const isProduction = process.env.NODE_ENV === 'production'
+const isDevelopment = !isProduction
+
 let mainConfig = {
   entry: {
-    main: path.join(__dirname, '../src/index.js')
+    main: path.join(__dirname, './process.js')
   },
   module: {
     rules: [
@@ -22,30 +24,19 @@ let mainConfig = {
       },
       {
         test: /\.ts$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'thread-loader',
-            options: {
-              workers: 2,
-              poolTimeout: Infinity
-            }
-          },
-          {
-            loader: 'ts-loader',
-            options: {
-              appendTsSuffixTo: [/\.vue$/],
-              transpileOnly: true,
-              happyPackMode: true
-            }
-          }
-        ]
+        exclude: /node_modules|\.(spec|e2e|d)\.ts$|vue\/src/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+          transpileOnly: isDevelopment,
+          happyPackMode: isDevelopment
+        }
       }
     ]
   },
   node: {
-    __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production'
+    __dirname: isDevelopment,
+    __filename: isDevelopment
   },
   resolve: {
     alias: {
@@ -55,9 +46,9 @@ let mainConfig = {
   },
   output: {
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist')
   },
+  plugins: [],
   optimization: {
     minimize: true,
     minimizer: [
@@ -73,36 +64,11 @@ let mainConfig = {
   target: 'electron-main'
 }
 
-/**
- * Adjust mainConfig for development settings
- */
-if (process.env.NODE_ENV !== 'production') {
-  if(!mainConfig.plugins) {
-    mainConfig.plugins = []
-  }
-  mainConfig.plugins.push(
-    new webpack.DefinePlugin({
-      '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
-    })
-  )
+if (isDevelopment) {
   mainConfig.plugins.push(
     new ESLintPlugin({
       extensions: ['vue', 'js', 'ts'],
       formatter: require('eslint-formatter-friendly')
-    })
-  )
-}
-
-/**
- * Adjust mainConfig for production settings
- */
-if (process.env.NODE_ENV === 'production') {
-  if(!mainConfig.plugins) {
-    mainConfig.plugins = []
-  }
-  mainConfig.plugins.push(
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': '"production"'
     })
   )
 }

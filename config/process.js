@@ -13,17 +13,11 @@ import electron, {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
-import electronDebug from 'electron-debug'
 import { download } from 'electron-dl'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
-if($DEV) {
-  global.__static = path.join(__dirname, '../static').replace(/\\/g, '\\\\')
-  electronDebug()
-} else {
-  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
-}
+global.__static = path.join(__dirname, '../dist/assets/images').replace(/\\/g, '\\\\')
 
 process.on('uncaughtException', (err) => {
   console.log(err)
@@ -38,7 +32,7 @@ app.allowRendererProcessReuse = true
 
 let mainWindow
 let appTray
-const winURL = process.env.NODE_ENV === 'development'
+const winURL = $DEV
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
@@ -73,7 +67,7 @@ function createWindow() {
   mainWindow.loadURL(winURL)
 
   appTray = new Tray(iconTray)
-  appTray.setToolTip('Notepad Jimhucksly Studio')
+  appTray.setToolTip('Notepad App')
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -99,33 +93,22 @@ function createWindow() {
     }
   })
 
-  mainWindow.on('closed', () => {
-    // mainWindow = null
-  })
-
-  mainWindow.on('minimize', (e) => {
-    // e.preventDefault()
-    // mainWindow.hide()
-  })
-
   mainWindow.on('show', () => {
-    // appTray.setHighlightMode('always')
+    /**
+     * Uncomment to open Devtools in production mode
+     */
+    mainWindow.webContents.openDevTools()
   })
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
 
-  mainWindow.webContents.on('did-frame-finish-load', () => {
-    if(process.env.NODE_ENV === 'development') {
-      mainWindow.focus()
-    }
-  })
-
-  /**
-   * Uncomment to open Devtools in production mode
-  */
-  // mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.on('did-frame-finish-load', () => {
+  //   if($DEV) {
+  //     mainWindow.focus()
+  //   }
+  // })
 }
 
 const gotTheLock = app.requestSingleInstanceLock()

@@ -3,7 +3,6 @@
 /*--------------- FONTS -------------*/
 
 @mixin mix-font-face ($font_name, $font_file) {
-
   font-family: $font_name;
   src: url('../fonts/#{$font_file}.eot');
   src: url('../fonts/#{$font_file}.eot?#iefix') format('embeded-opentype');

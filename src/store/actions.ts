@@ -377,6 +377,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
         }
       })
       store.commit('setLibraryFiles', files)
+      const currentId = store.getters.getLibraryFileId
+      if(!currentId) {
+        const found = files.find(item => item.name === 'main.md')
+        if(found) {
+          store.commit('setLibraryFileId', found.id)
+        }
+      }
       return files
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
@@ -447,6 +454,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
    */
   @Commandable(TYPES.UpdateLibraryCommand)
   async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<boolean> {
+    if(!command.id) {
+      return void 0
+    }
     try {
       setProcess(store, 'editing library file...')
       await $http.post('library', command)

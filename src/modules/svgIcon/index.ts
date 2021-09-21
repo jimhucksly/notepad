@@ -14,7 +14,7 @@ class SvgIconComponent extends Vue {
   @Prop({ type: String, default: '100%' }) height: string
 
   get href(): string {
-    return `static/${this.icon}.svg#${this.icon}`
+    return `assets/images/${this.icon}.svg#${this.icon}`
   }
 
   render(h: CreateElement): VNode {

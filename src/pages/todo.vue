@@ -1,7 +1,9 @@
 <template>
   <div class="todo_cont">
-    <loader v-if="!items" />
-    <template v-else>
+    <div v-if="isEmpty" class="empty_cont">
+      No elements found
+    </div>
+    <template v-if="items">
       <div
         v-for="item in items"
         :key="item.id"

@@ -1,8 +1,10 @@
 <template>
   <div class="links_cont">
-    <div class="links_area">
-      <loader v-if="!links" />
-      <ul v-else>
+    <div v-if="isEmpty" class="empty_cont">
+      No elements found
+    </div>
+    <div class="links_area" v-if="links">
+      <ul>
         <li v-for="(item, index) in links" :key="index">
           <a href="/" @click.prevent="open(item.url)">{{ `${index + 1}. ${item.name}` }}</a>
           <button @click="edit(item.id)">

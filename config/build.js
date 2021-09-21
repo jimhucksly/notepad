@@ -10,24 +10,20 @@ const Multispinner = require('multispinner')
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 
+rendererConfig.devtool = false
+
 const doneLog = chalk.bgGreen.white(' DONE ') + ' '
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
 const okayLog = chalk.bgBlue.white(' OKAY ') + ' '
 
-if (process.env.BUILD_TARGET === 'clean') {
-  clean()
-} else {
-  build()
-}
-
 function clean () {
-  del.sync(['build/*', '!build/icons', '!build/icons/icon.*'])
+  del.sync(['dist/*', 'build/*', '!build/icons', '!build/icons/icon.*'])
   console.log(`\n${doneLog}\n`)
   process.exit()
 }
 
 function build () {
-  del.sync(['dist/*', '!.gitkeep'])
+  del.sync(['dist/*', 'build/*'])
 
   const tasks = ['main', 'renderer']
   const m = new Multispinner(tasks, {
@@ -96,3 +92,5 @@ function pack (config) {
     })
   })
 }
+
+build()

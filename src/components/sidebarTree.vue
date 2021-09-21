@@ -23,7 +23,7 @@
           {{ item.name }}
         </span>
         <template v-if="item.children && item.children.length">
-          <sidebar-tree :tree="item.children" :level="level + 1" />
+          <!-- <sidebar-tree :tree="item.children" :level="level + 1" /> -->
         </template>
       </li>
     </template>

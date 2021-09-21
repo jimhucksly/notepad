@@ -16,9 +16,14 @@
       <textarea placeholder="New record" v-model="message" @keydown.enter.ctrl="send"></textarea>
       <div class="notepad_btns">
         <label class="notepad_attachments">
+          <svg-icon icon="icon-attach" width="40px" height="40px" />
           <input type="file" @change="onFileChange">
         </label>
-        <button @click.prevent="send"></button>
+        <button @click.prevent="send">
+          <div>
+            <svg-icon icon="icon-send" width="29px" height="23px" />
+          </div>
+        </button>
       </div>
     </div>
   </div>
