@@ -21,16 +21,6 @@ let mainConfig = {
         test: /\.js$/,
         use: 'babel-loader',
         exclude: /node_modules/
-      },
-      {
-        test: /\.ts$/,
-        exclude: /node_modules|\.(spec|e2e|d)\.ts$|vue\/src/,
-        loader: 'ts-loader',
-        options: {
-          appendTsSuffixTo: [/\.vue$/],
-          transpileOnly: isDevelopment,
-          happyPackMode: isDevelopment
-        }
       }
     ]
   },

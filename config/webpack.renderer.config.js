@@ -42,12 +42,12 @@ let rendererConfig = {
       },
       {
         test: /\.ts$/,
-        exclude: /node_modules|\.(spec|e2e|d)\.ts$|vue\/src/,
+        exclude: /node_modules/,
         loader: 'ts-loader',
         options: {
-          appendTsSuffixTo: [/\.vue$/],
-          transpileOnly: true,
-          happyPackMode: true
+          appendTsSuffixTo: ['\\.vue$'],
+          transpileOnly: isDevelopment,
+          happyPackMode: isDevelopment
         }
       },
       {

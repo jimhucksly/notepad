@@ -4,7 +4,7 @@ import File from '~/components/file'
 import { IJsonItem } from '~/domain/models'
 
 @Component({
-  name: 'NotepadItem',
+  name: 'ProjectItem',
   components: {
     Controls,
     File

@@ -97,7 +97,7 @@ function createWindow() {
     /**
      * Uncomment to open Devtools in production mode
      */
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
   })
 
   mainWindow.once('ready-to-show', () => {

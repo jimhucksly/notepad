@@ -2,7 +2,7 @@
   <div class="notepad_item_file" ref="item_file_cont">
     <div class="file_icon">
       <i class="icon">
-        <img :src="`../../static/file_types_icons/${type}.svg`">
+        <img :src="`assets/images/file_types_icons/${type}.svg`">
       </i>
     </div>
     <div class="file_link">

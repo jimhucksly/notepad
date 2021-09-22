@@ -12,9 +12,8 @@ import { TYPES } from '~/domain/types'
 export default class File extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
-
-  @Prop() readonly itemKey: string
-  @Prop() readonly itemFile: IFile
+  @Prop() itemKey: string
+  @Prop() itemFile: IFile
 
   @Getter('getDownloadsTargetPath') targetPath: string
 

@@ -128,6 +128,7 @@ export const getFileType = (name: string): string => {
   if(/\.zip$/.test(name)) return 'zip'
   if(/\.rar$/.test(name)) return 'rar'
   if(/\.md$/.test(name)) return 'md'
+  if(/\.7z$/.test(name)) return '7z'
 
   return 'default'
 }
