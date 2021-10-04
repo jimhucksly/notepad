@@ -9,6 +9,7 @@ import { IRootState } from '~/domain/models'
 import { projects } from './projects'
 import { library } from './library'
 import { todo } from './todo'
+import { events } from './events'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ const storeOptions: StoreOptions<IRootState> = {
   modules: {
     projects,
     library,
-    todo
+    todo,
+    events
   }
 }
 

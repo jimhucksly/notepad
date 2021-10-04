@@ -167,6 +167,10 @@ export interface ITodoState {
   todo: ITodo
 }
 
+export interface IEventsState {
+  events: IEvents
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -177,7 +181,6 @@ export interface IRootState {
   isAuth: boolean
   token: string
   isDevelopment: boolean
-  events: IEvents
   links: ILink
   timeout: NodeJS.Timeout | null
   notification: boolean

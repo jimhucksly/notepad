@@ -5,8 +5,7 @@ import {
   IRootState,
   ICheckResponse,
   IResponse,
-  ILink,
-  IEvent
+  ILink
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
@@ -21,8 +20,6 @@ import {
 } from '~/domain/queries'
 import {
   AuthCommand,
-  UpdateEventCommand,
-  DeleteEventCommand,
   UpdateLinksCommand,
   DeleteLinkCommand,
   ReadCommand,
@@ -162,63 +159,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * ************ Events *********
    * ==============================
    */
-
-  /**
-   * Get Events
-   * @param store Store
-   */
-  @Queryable(TYPES.EventsQuery)
-  async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
-    try {
-      setProcess(store, 'get events...')
-      const resp = await $http.get<Array<IEvent>>('events')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setEvents', resp.data)
-      return resp.data
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Event
-   * @param store Store
-   * @param {UpdateEventCommand} command
-   */
-  @Commandable(TYPES.UpdateEventCommand)
-  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'update events...')
-      await $http.put('events', command.event)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Event update failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Remove Event
-   * @param store Store
-   * @param {DeleteEventCommand} command
-   */
-  @Commandable(TYPES.DeleteEventCommand)
-  async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'removing event...')
-      await $http.delete(`events/?date=${command.date}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Event remove failed')
-      return Promise.reject(e)
-    }
-  }
 
   /**
    * ==============================

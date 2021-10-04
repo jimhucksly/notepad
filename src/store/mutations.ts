@@ -1,6 +1,6 @@
 import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
-import { IRootState, IEvents } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { IFsmStates } from '~/application/fsm.states'
 
 interface IMutations {
@@ -9,10 +9,6 @@ interface IMutations {
 }
 
 const _mutations: IMutations = {
-  setEvents(state: IRootState, events: IEvents) {
-    state.events = {}
-    state.events = { ...events }
-  },
   setHistory(state: IRootState, history: Array<keyof IFsmStates>) {
     state.history = []
     state.history = history

@@ -35,7 +35,7 @@ export default class Events extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Getter('getEvents') items: IEvents
+  @Getter('events/getEvents') items: IEvents
 
   bCalendarOptions: IBCalendarOptions = {
     eventsMode: true,
