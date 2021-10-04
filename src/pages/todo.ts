@@ -21,7 +21,7 @@ export default class Todo extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Getter('getTodo') json: ITodo
+  @Getter('todo/getTodo') json: ITodo
 
   items: Array<ITodoItem> = null
   isPopupShow = false

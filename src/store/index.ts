@@ -8,6 +8,7 @@ import { IRootState } from '~/domain/models'
 
 import { projects } from './projects'
 import { library } from './library'
+import { todo } from './todo'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ const storeOptions: StoreOptions<IRootState> = {
   state,
   modules: {
     projects,
-    library
+    library,
+    todo
   }
 }
 

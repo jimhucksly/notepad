@@ -163,6 +163,10 @@ export interface ILibraryState {
   libraryTree: ITreeItem[]
 }
 
+export interface ITodoState {
+  todo: ITodo
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -173,7 +177,6 @@ export interface IRootState {
   isAuth: boolean
   token: string
   isDevelopment: boolean
-  todo: ITodo
   events: IEvents
   links: ILink
   timeout: NodeJS.Timeout | null

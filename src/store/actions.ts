@@ -5,7 +5,6 @@ import {
   IRootState,
   ICheckResponse,
   IResponse,
-  ITodo,
   ILink,
   IEvent
 } from '~/domain/models'
@@ -26,9 +25,6 @@ import {
   DeleteEventCommand,
   UpdateLinksCommand,
   DeleteLinkCommand,
-  TodoOrderCommand,
-  UpdateTodoCommand,
-  DeleteTodoCommand,
   ReadCommand,
   RevokeYandexTokenCommand
 } from '~/domain/commands'
@@ -160,81 +156,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * ************ Todo *********
    * ==============================
    */
-
-  /**
-   * Get Todo
-   * @param store Store
-   */
-  @Queryable(TYPES.TodoQuery)
-  async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
-    try {
-      setProcess(store, 'get todo list...')
-      const resp = await $http.get<Array<ITodo>>('todo')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setTodo', resp.data)
-      return resp.data
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Todo
-   * @param store Store
-   * @param {UpdateTodoCommand} command
-   */
-  @Commandable(TYPES.UpdateTodoCommand)
-  async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'update todo list...')
-      await $http.put('todo', command.item)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Todo list item update failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Remove Todo
-   * @param store Store
-   * @param {DeleteTodoCommand} command
-   */
-  @Commandable(TYPES.DeleteTodoCommand)
-  async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'remove todo item...')
-      await $http.delete(`todo/?id=${command.id}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Todo Order
-   * @param store Store
-   * @param {TodoOrderCommand} command
-   */
-  @Commandable(TYPES.TodoOrderCommand)
-  async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'set todo order...')
-      await $http.post('todo/order', command.result)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed')
-      return Promise.reject(e)
-    }
-  }
 
   /**
    * ==============================
