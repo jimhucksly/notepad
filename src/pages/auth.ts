@@ -90,6 +90,11 @@ export default class Auth extends Vue {
     this.$electron.shell.openExternal(href)
   }
 
+  resetPass() {
+    const href = this.endpoint + '/reset'
+    this.$electron.shell.openExternal(href)
+  }
+
   mounted() {
     this.commandBus.do<PingCommand, void>(new PingCommand(true))
   }

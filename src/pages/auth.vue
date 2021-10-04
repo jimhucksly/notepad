@@ -57,6 +57,9 @@
         <div class="flex-center p-y-10">
           <span class="signup" @click="signup">Sign Up</span>
         </div>
+        <div class="flex-center">
+          <span class="signup" @click="resetPass">Forgot password?</span>
+        </div>
       </form>
     </div>
   </div>
