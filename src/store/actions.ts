@@ -7,15 +7,13 @@ import {
   IResponse,
   ITodo,
   ILink,
-  IEvent,
-  ILibraryFile
+  IEvent
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
 import {
   AuthQuery,
-  LibraryFileQuery,
   RefreshYandexTokenQuery,
   SessionQuery,
   YandexDiskInfoQuery,
@@ -26,15 +24,12 @@ import {
   AuthCommand,
   UpdateEventCommand,
   DeleteEventCommand,
-  UpdateLibraryCommand,
   UpdateLinksCommand,
   DeleteLinkCommand,
   TodoOrderCommand,
   UpdateTodoCommand,
   DeleteTodoCommand,
   ReadCommand,
-  AddLibraryFileCommand,
-  DeleteLibraryFileCommand,
   RevokeYandexTokenCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
@@ -159,138 +154,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * ************ Library *********
    * ==============================
    */
-
-  /**
-   * Get Library Files
-   * @param {Store} store
-   */
-  @Queryable(TYPES.LibraryFilesQuery)
-  async actionGetLibraryFiles(store: TStore): Promise<Array<ILibraryFile>> {
-    try {
-      setProcess(store, 'get library files...')
-      const resp = await $http.get<Array<ILibraryFile>>('library/list')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      const main = resp.data.find(file => file.name === 'main.md')
-      const files = [main]
-      resp.data.forEach(file => {
-        if(file.name !== 'main.md') {
-          files.push(file)
-        }
-      })
-      store.commit('setLibraryFiles', files)
-      const currentId = store.getters.getLibraryFileId
-      if(!currentId) {
-        const found = files.find(item => item.name === 'main.md')
-        if(found) {
-          store.commit('setLibraryFileId', found.id)
-        }
-      }
-      return files
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Library File
-   * @param store Store
-   * @param {LibraryFileQuery} query
-   */
-  @Queryable(TYPES.LibraryFileQuery)
-  async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
-    try {
-      let url = 'library'
-      if(query.id) {
-        url = url + '?id=' + query.id
-      }
-      setProcess(store, 'get library file...')
-      const resp = await $http.get<string>(url)
-      setProcess(store, null)
-      if(!resp || resp.data === undefined) {
-        return Promise.reject(resp)
-      }
-      store.commit('setLibraryData', resp.data)
-      return Promise.resolve(resp.data)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Add Library File
-   * @param store Store
-   * @param {AddLibraryFileCommand} command
-   */
-  @Commandable(TYPES.AddLibraryFileCommand)
-  async actionAddLibraryFile(
-    store: TStore, command: AddLibraryFileCommand
-  ): Promise<boolean> {
-    try {
-      setProcess(store, 'creating library file...')
-      const resp = await $http.put<ILibraryFile, { id: string }>('library', command.data)
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      const files = [...store.getters.getLibraryFiles]
-      files.push({
-        id: resp.data.id,
-        name: command.data.name
-      })
-      store.commit('setLibraryFiles', files)
-      store.commit('setLibraryFileId', resp.data.id)
-      return true
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file create failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Library
-   * @param store Store
-   * @param {UpdateLibraryCommand} command
-   */
-  @Commandable(TYPES.UpdateLibraryCommand)
-  async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<boolean> {
-    if(!command.id) {
-      return void 0
-    }
-    try {
-      setProcess(store, 'editing library file...')
-      await $http.post('library', command)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Delete Library File
-   * @param store Store
-   * @param {DeleteLibraryFileCommand} command
-   */
-  @Commandable(TYPES.DeleteLibraryFileCommand)
-  async actionDeleteLibraryFile(
-    store: TStore, command: DeleteLibraryFileCommand
-  ): Promise<boolean> {
-    try {
-      setProcess(store, 'removing library file...')
-      await $http.delete(`library/?name=${command.name}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
-      return Promise.reject(e)
-    }
-  }
 
   /**
    * ==============================

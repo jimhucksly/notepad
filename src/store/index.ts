@@ -7,6 +7,7 @@ import state from './state'
 import { IRootState } from '~/domain/models'
 
 import { projects } from './projects'
+import { library } from './library'
 
 Vue.use(Vuex)
 
@@ -17,7 +18,8 @@ const storeOptions: StoreOptions<IRootState> = {
   mutations,
   state,
   modules: {
-    projects
+    projects,
+    library
   }
 }
 

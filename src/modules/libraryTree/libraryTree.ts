@@ -1,15 +1,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-// import SidebarTree from '~/components/sidebarTree'
 import { ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
 @Component({
-  name: 'SidebarTree',
-  components: {
-    // SidebarTree
-  }
+  name: 'SidebarTree'
 })
-export default class SidebarTreeComponent extends Vue {
+export default class LibraryTreeComponent extends Vue {
   @Prop() tree!: ITreeItem[]
   @Prop({ default: 1 }) level!: number
 

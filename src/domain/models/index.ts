@@ -1,4 +1,3 @@
-import { ActionContext } from 'vuex'
 import FsmStates from '~/application/fsm.states'
 
 export interface IMenu {
@@ -157,6 +156,13 @@ export interface IProjectsState {
   selectedProjectKey: string
 }
 
+export interface ILibraryState {
+  libraryData: string
+  libraryFiles: Array<ILibraryFile>
+  libraryFileId: string | number
+  libraryTree: ITreeItem[]
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -164,10 +170,6 @@ export interface IRootState {
   userDataPath: string
   downloadsTargetPath: string
   fsmState: symbol
-  libraryData: string
-  libraryFiles: Array<ILibraryFile>
-  libraryFileId: string | number
-  libraryTree: ITreeItem[]
   isAuth: boolean
   token: string
   isDevelopment: boolean
@@ -183,5 +185,3 @@ export interface IRootState {
   currentUser: IUser
   process: { name: string }
 }
-
-export type TStore = ActionContext<IProjectsState, IRootState>

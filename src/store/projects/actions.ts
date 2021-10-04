@@ -1,4 +1,4 @@
-import { ActionTree } from 'vuex'
+import { ActionContext, ActionTree } from 'vuex'
 import {
   ArchiveRemoveCommand,
   ArchiveRestoreCommand,
@@ -14,14 +14,15 @@ import {
   IFile,
   IJson,
   IProjectsState,
-  IRootState,
-  TStore
+  IRootState
 } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 import $http from '../http'
+
+type TStore = ActionContext<IProjectsState, IRootState>
 
 function setProcess(store: TStore, process: string | null) {
   store.commit('setProcess', process ? { name: process } : null, { root: true })

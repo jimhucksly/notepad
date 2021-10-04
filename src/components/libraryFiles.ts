@@ -19,10 +19,10 @@ export default class LibraryFiles extends Vue {
 
   @Prop() expanded: boolean
 
-  @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
+  @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
 
-  @Getter('getLibraryFiles') libraryFiles: Array<ILibraryFile>
-  @Getter('getLibraryFileId') currentId: string
+  @Getter('library/getLibraryFiles') libraryFiles: Array<ILibraryFile>
+  @Getter('library/getLibraryFileId') currentId: string
 
   idForDelete = ''
 

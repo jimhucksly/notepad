@@ -12,6 +12,7 @@ import BCheckbox from '~/modules/bcheckbox'
 import ConfirmPopupComponent from '~/modules/confirmPopup/index.vue'
 import CreateEditLibraryFile from '~/modules/createEditLibraryFile/index.vue'
 import CreateEditLink from '~/modules/createEditLink/index.vue'
+import LibraryTreeComponent from '~/modules/libraryTree/index.vue'
 import Loader from '~/modules/loader'
 import SvgIcon from '~/modules/svgIcon'
 import UploadingPopup from '~/modules/uploadingPopup/index.vue'
@@ -52,6 +53,7 @@ Vue.component('uploading-popup', UploadingPopup)
 Vue.component('downloading-popup', DownloadingPopup)
 Vue.component('create-edit-library-file', CreateEditLibraryFile)
 Vue.component('confirm-popup', ConfirmPopupComponent)
+Vue.component('library-tree', LibraryTreeComponent)
 
 if(!process.env.IS_WEB) {
   Vue.prototype.$electron = require('electron')

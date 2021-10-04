@@ -67,12 +67,12 @@ export default class LibraryPage extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
-  @Mutation('setLibraryData') setLibraryData: (body: string) => void
-  @Mutation('setLibraryFileId') setFileId: (id: string | number) => void
+  @Mutation('library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
+  @Mutation('library/setLibraryData') setLibraryData: (body: string) => void
+  @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
 
-  @Getter('getLibraryData') initialValue: string
-  @Getter('getLibraryFileId') currentId: string
+  @Getter('library/getLibraryData') initialValue: string
+  @Getter('library/getLibraryFileId') currentId: string
 
   editor: SimpleMDEExt = null
   isRendered = false
