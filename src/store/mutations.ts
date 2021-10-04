@@ -1,4 +1,4 @@
-import stateKeys from './stateKeys'
+import { stateKeys } from './state'
 import { upperFirst } from '~/helpers'
 import { IRootState } from '~/domain/models'
 import { IFsmStates } from '~/application/fsm.states'

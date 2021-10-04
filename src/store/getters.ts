@@ -1,7 +1,7 @@
-import stateKeys from './stateKeys'
-import { upperFirst } from '~/helpers'
-import { IMenu, IRootState } from '~/domain/models'
 import FsmStates from '~/application/fsm.states'
+import { IMenu, IRootState } from '~/domain/models'
+import { upperFirst } from '~/helpers'
+import { stateKeys } from './state'
 
 const menu: Array<IMenu> = [
   {

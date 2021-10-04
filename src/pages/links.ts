@@ -16,7 +16,7 @@ export default class Links extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Getter('getLinks') links: Array<ILink>
+  @Getter('links/getLinks') links: Array<ILink>
 
   isEmpty = false
 

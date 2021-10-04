@@ -4,8 +4,7 @@ import $http from '~/store/http'
 import {
   IRootState,
   ICheckResponse,
-  IResponse,
-  ILink
+  IResponse
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
@@ -20,8 +19,6 @@ import {
 } from '~/domain/queries'
 import {
   AuthCommand,
-  UpdateLinksCommand,
-  DeleteLinkCommand,
   ReadCommand,
   RevokeYandexTokenCommand
 } from '~/domain/commands'
@@ -132,93 +129,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return resp.data
     } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * ==============================
-   * ************ Projects ********
-   * ==============================
-  */
-
-  /**
-   * ==============================
-   * ************ Library *********
-   * ==============================
-   */
-
-  /**
-   * ==============================
-   * ************ Todo *********
-   * ==============================
-   */
-
-  /**
-   * ==============================
-   * ************ Events *********
-   * ==============================
-   */
-
-  /**
-   * ==============================
-   * ************ Links ***********
-   * ==============================
-   */
-
-  /**
-   * Get Links
-   * @param store Store
-   */
-  @Queryable(TYPES.LinksQuery)
-  async actionGetLinks(store: TStore): Promise<Array<ILink>> {
-    try {
-      setProcess(store, 'get links...')
-      const resp = await $http.get<Array<ILink>>('links')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setLinks', resp.data)
-      return resp.data
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Links list fetch failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Update Links
-   * @param store Store
-   * @param {UpdateLinksCommand} command
-   */
-  @Commandable(TYPES.UpdateLinksCommand)
-  async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'updating link...')
-      await $http.put('links', command.link)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Links list update failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Remove Link
-   * @param store Store
-   * @param {DeleteLinkCommand} command
-   */
-  @Commandable(TYPES.DeleteLinkCommand)
-  async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'removing link...')
-      await $http.delete(`links/?id=${command.id}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Links list item remove failed')
       return Promise.reject(e)
     }
   }

@@ -171,6 +171,10 @@ export interface IEventsState {
   events: IEvents
 }
 
+export interface ILinksState {
+  links: ILink
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -181,7 +185,6 @@ export interface IRootState {
   isAuth: boolean
   token: string
   isDevelopment: boolean
-  links: ILink
   timeout: NodeJS.Timeout | null
   notification: boolean
   error: boolean

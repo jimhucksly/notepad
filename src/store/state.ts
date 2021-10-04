@@ -1,13 +1,29 @@
-import stateKeys from './stateKeys'
 import { IRootState } from '~/domain/models'
+
+export const stateKeys: string[] = [
+  'endpoint',
+  'apiPath',
+  'loading',
+  'isAuth',
+  'token',
+  'userDataPath',
+  'isDevelopment',
+  'fsmState',
+  'timeout',
+  'downloadsTargetPath',
+  'notification',
+  'error',
+  'component',
+  'history',
+  'currentUser',
+  'process'
+]
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const _state: any = {
   loading: true,
   userDataPath: '',
   downloadsTargetPath: '',
-  library: '',
-  libraryTree: [],
   history: []
 }
 

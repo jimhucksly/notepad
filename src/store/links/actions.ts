@@ -1,0 +1,83 @@
+import { ActionContext, ActionTree } from 'vuex'
+import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
+import { Commandable } from '~/domain/commands/command.bus'
+import { ILink, ILinksState, IRootState } from '~/domain/models'
+import { Queryable } from '~/domain/queries/query.bus'
+import { TYPES } from '~/domain/types'
+import { toActionTree } from '~/helpers'
+import { Hub } from '~/plugins/hub'
+import $http from '../http'
+
+type TStore = ActionContext<ILinksState, IRootState>
+
+function setProcess(store: TStore, process: string | null) {
+  store.commit('setProcess', process ? { name: process } : null, { root: true })
+}
+
+class Actions implements ActionTree<ILinksState, IRootState> {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  [key: string]: (injectee: TStore, payload: any) => any
+
+  static readonly namespace = 'links'
+
+  /**
+   * Get Links
+   * @param store Store
+   */
+  @Queryable(TYPES.LinksQuery, Actions.namespace)
+  async actionGetLinks(store: TStore): Promise<Array<ILink>> {
+    try {
+      setProcess(store, 'get links...')
+      const resp = await $http.get<Array<ILink>>('links')
+      setProcess(store, null)
+      if(!resp || !resp.data) {
+        return Promise.reject(resp)
+      }
+      store.commit('setLinks', resp.data)
+      return resp.data
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list fetch failed')
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Update Links
+   * @param store Store
+   * @param {UpdateLinksCommand} command
+   */
+  @Commandable(TYPES.UpdateLinksCommand, Actions.namespace)
+  async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<boolean> {
+    try {
+      setProcess(store, 'updating link...')
+      await $http.put('links', command.link)
+      setProcess(store, null)
+      return Promise.resolve(true)
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list update failed')
+      return Promise.reject(e)
+    }
+  }
+
+  /**
+   * Remove Link
+   * @param store Store
+   * @param {DeleteLinkCommand} command
+   */
+  @Commandable(TYPES.DeleteLinkCommand, Actions.namespace)
+  async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<boolean> {
+    try {
+      setProcess(store, 'removing link...')
+      await $http.delete(`links/?id=${command.id}`)
+      setProcess(store, null)
+      return Promise.resolve(true)
+    } catch(e) {
+      Hub.$emit('on-toasted-error', 'Error: Links list item remove failed')
+      return Promise.reject(e)
+    }
+  }
+}
+
+const actions = toActionTree(new Actions())
+
+export default actions
