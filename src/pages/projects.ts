@@ -20,9 +20,8 @@ import FsmStates from '~/application/fsm.states'
 export default class Projects extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Getter('getJson') json: IJson
-  @Getter('getFilter') filter: IFilters
-  @Getter('getError') isError: boolean
+  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getFilter') filter: IFilters
 
   message = ''
   newMsgFlag = false

@@ -8,7 +8,6 @@ const _state: any = {
   downloadsTargetPath: '',
   library: '',
   libraryTree: [],
-  filter: {},
   history: []
 }
 

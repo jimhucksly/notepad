@@ -1,5 +1,5 @@
 <template>
-  <div id="notepad_cont" :class="{ 'is-error' : isError }">
+  <div id="notepad_cont">
     <div class="notepad_cont" ref="notepad_cont">
       <template v-for="(item, stamp) in json">
         <project-item

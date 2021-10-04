@@ -6,14 +6,19 @@ import mutations from './mutations'
 import state from './state'
 import { IRootState } from '~/domain/models'
 
+import { projects } from './projects'
+
 Vue.use(Vuex)
 
 const storeOptions: StoreOptions<IRootState> = {
+  strict: process.env.NODE_ENV !== 'production',
   actions,
   getters,
   mutations,
   state,
-  strict: process.env.NODE_ENV !== 'production'
+  modules: {
+    projects
+  }
 }
 
 const store = new Store<IRootState>(storeOptions)

@@ -148,10 +148,6 @@ main {
 #notepad_cont {
   display: flex;
   flex-direction: column;
-
-  &.is-error {
-    opacity: 0.2;
-  }
 }
 
 .notepad_cont {

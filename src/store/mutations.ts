@@ -1,6 +1,6 @@
 import stateKeys from './stateKeys'
 import { upperFirst } from '~/helpers'
-import { IRootState, IJson, IFilters, IEvents, ILibraryFile } from '~/domain/models'
+import { IRootState, IEvents, ILibraryFile } from '~/domain/models'
 import { IFsmStates } from '~/application/fsm.states'
 
 interface IMutations {
@@ -9,17 +9,9 @@ interface IMutations {
 }
 
 const _mutations: IMutations = {
-  setJson(state: IRootState, json: IJson) {
-    state.json = {}
-    state.json = { ...json }
-  },
   setEvents(state: IRootState, events: IEvents) {
     state.events = {}
     state.events = { ...events }
-  },
-  setFilter(state: IRootState, filter: IFilters) {
-    state.filter = {}
-    state.filter = Object.assign({}, filter)
   },
   setLibraryFiles(state: IRootState, files: Array<ILibraryFile>) {
     state.libraryFiles = []
@@ -33,7 +25,6 @@ const _mutations: IMutations = {
 
 stateKeys.forEach(key => {
   const commitKey = 'set' + upperFirst(key)
-
   if(_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, peyload) => {
       state[key] = peyload

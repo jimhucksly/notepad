@@ -3,14 +3,11 @@ import { cloneDeep } from 'lodash'
 import $http from '~/store/http'
 import {
   IRootState,
-  IJson,
-  IArchive,
   ICheckResponse,
   IResponse,
   ITodo,
   ILink,
   IEvent,
-  IFile,
   ILibraryFile
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
@@ -27,11 +24,6 @@ import {
 } from '~/domain/queries'
 import {
   AuthCommand,
-  UploadFileCommand,
-  DeleteProjectCommand,
-  ArchiveRestoreCommand,
-  ArchiveRemoveCommand,
-  ArchivingCommand,
   UpdateEventCommand,
   DeleteEventCommand,
   UpdateLibraryCommand,
@@ -43,25 +35,13 @@ import {
   ReadCommand,
   AddLibraryFileCommand,
   DeleteLibraryFileCommand,
-  CreateProjectCommand,
-  EditProjectCommand,
   RevokeYandexTokenCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 import { Hub } from '~/plugins/hub'
+import { toActionTree } from '~/helpers'
 
 type TStore = ActionContext<IRootState, IRootState>
-
-function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
-  const arr = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
-  const result: ActionTree<S, R> = {}
-  arr.forEach(key => {
-    if(key !== 'constructor') {
-      result[key] = obj[key]
-    }
-  })
-  return result
-}
 
 class Actions implements ActionTree<IRootState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -173,182 +153,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * ************ Projects ********
    * ==============================
   */
-
-  /**
-   * Get Projects
-   * @param {Store} store
-   */
-  @Queryable(TYPES.ProjectsQuery)
-  async actionGetJson(store: TStore): Promise<IJson> {
-    try {
-      setProcess(store, 'get projects...')
-      const resp = await $http.get<IJson>('projects')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      if(resp instanceof Error && resp.message === 'Network Error') {
-        store.commit('setError', true)
-        return Promise.reject(resp)
-      }
-      store.commit('setJson', resp.data)
-      return resp.data
-    } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Create New Project
-   * @param store Store
-   * @param {CreateProjectCommand} command
-   */
-  @Commandable(TYPES.CreateProjectCommand)
-  async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'creating project...')
-      await $http.put<IJson, boolean>('project', command.data)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Project create failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Edit Project
-   * @param store Store
-   * @param data
-   */
-  @Commandable(TYPES.EditProjectCommand)
-  async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'editing project...')
-      await $http.post<IJson, boolean>('project', command.data)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Project edit failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Delete Project
-   * @param store Store
-   * @param {DeleteProjectCommand} command
-   */
-  @Commandable(TYPES.DeleteProjectCommand)
-  async actionDeleteProject(store: TStore, command: DeleteProjectCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'removing project...')
-      await $http.delete(`project/?key=${command.stamp}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Project delete failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archiving
-   * @param store Store
-   * @param {ArchivingCommand} command
-   */
-  @Commandable(TYPES.ArchivingCommand)
-  async actionArchiving(store: TStore, command: ArchivingCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'move project to archive...')
-      await $http.put<{ key: string | number }, void>('project/archive', {
-        key: command.stamp
-      })
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Project archive failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Get Archives
-   * @param store Store
-   * @param data
-   */
-  @Queryable(TYPES.ArchivesQuery)
-  async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
-    try {
-      setProcess(store, 'get archives...')
-      const resp = await $http.get<Array<IArchive>>('projects/archives')
-      setProcess(store, null)
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setArchives', resp.data)
-      return resp.data
-    } catch(e) {
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archive Restore
-   * @param store Store
-   * @param command { name: string}
-   */
-  @Commandable(TYPES.ArchiveRestoreCommand)
-  async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'archive restore...')
-      await $http.post('project/archive/restore', command)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Archive restore failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Archive Remove
-   * @param store Store
-   * @param {ArchiveRemoveCommand} command
-   */
-  @Commandable(TYPES.ArchiveRemoveCommand)
-  async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
-    try {
-      setProcess(store, 'removing archive...')
-      await $http.delete(`project/archive/?name=${command.name}`)
-      setProcess(store, null)
-      return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Archive remove failed')
-      return Promise.reject(e)
-    }
-  }
-
-  /**
-   * Upload File
-   * @param store Store
-   * @param {UploadFileCommand} command
-   */
-  @Commandable(TYPES.UploadFileCommand)
-  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
-    try {
-      setProcess(store, 'uploading file...')
-      const resp = await $http.post<FormData, IFile>('upload', command.file)
-      setProcess(store, null)
-      return Promise.resolve(resp.data)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Upload file failed')
-      return Promise.reject(e)
-    }
-  }
 
   /**
    * ==============================
@@ -809,10 +613,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
   }
 }
 
-const actions = toActionTree(new Actions())
-
 function setProcess(store: TStore, process: string | null) {
   store.commit('setProcess', process ? { name: process } : null)
 }
+
+const actions = toActionTree(new Actions())
 
 export default actions

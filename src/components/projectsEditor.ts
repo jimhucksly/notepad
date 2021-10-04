@@ -18,11 +18,11 @@ export default class ProjectsEditor extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('getJson') json: IJson
-  @Getter('getFilter') filter: IFilters
-  @Getter('getSelectedProjectKey') selected: string
+  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getFilter') filter: IFilters
+  @Getter('projects/getSelectedProjectKey') selected: string
 
   name = ''
   isLock = false

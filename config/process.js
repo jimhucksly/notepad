@@ -94,10 +94,15 @@ function createWindow() {
   })
 
   mainWindow.on('show', () => {
+    if($DEV) {
+      mainWindow.webContents.openDevTools()
+    }
     /**
      * Uncomment to open Devtools in production mode
      */
-    // mainWindow.webContents.openDevTools()
+    // if(!$DEV) {
+    //   mainWindow.webContents.openDevTools()
+    // }
   })
 
   mainWindow.once('ready-to-show', () => {

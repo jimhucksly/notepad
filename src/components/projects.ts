@@ -3,7 +3,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IQueryBus } from '~/domain/interfaces'
 import { IArchive, IFilters, IJson } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
@@ -13,12 +13,12 @@ import { TYPES } from '~/domain/types'
 })
 export default class Projects extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('getJson') json: IJson
-  @Getter('getFilter') filter: IFilters
+  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
   @Getter('getHistory') history: Array<keyof IFsmStates>
 
@@ -70,7 +70,7 @@ export default class Projects extends Vue {
       this.$app.goBack()
     }
     this.selected = isChecked ? target.dataset?.stamp ?? '' : ''
-    this.$store.commit('setSelectedProjectKey', this.selected)
+    this.setSelectedProject(this.selected)
   }
 
   toggleArchives() {

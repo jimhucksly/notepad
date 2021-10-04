@@ -33,11 +33,13 @@ class QueryBus implements IQueryBus {
  * нужен для связи IQuery и action
  */
 export function Queryable(
-  query: symbol
+  query: symbol,
+  namespace?: string
 ) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    Reflect.defineMetadata(query, propertyKey, QueryBus)
+    const value = namespace ? `${namespace}/${propertyKey}` : propertyKey
+    Reflect.defineMetadata(query, value, QueryBus)
   }
 }
 

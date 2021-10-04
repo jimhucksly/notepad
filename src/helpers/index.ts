@@ -1,7 +1,4 @@
-// import axios from 'axios'
-// import * as fs from 'fs-web'
-
-// const path = require('path')
+import { ActionTree } from 'vuex'
 
 const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 const REGEXP_EMAIL = /.+@.+\..+/i
@@ -198,153 +195,6 @@ export function dragAndDropLoader(
   }
 }
 
-export async function downloadFile(
-  fileUri: string,
-  targetPath: string,
-  loaderDOMElement: HTMLElement
-): Promise<void> {
-  // const response = await fetch(encodeURI(fileUri))
-  // if(response && response.body && response.headers) {
-  //   const reader = response.body.getReader()
-  //   const contentLength = response.headers.get('Content-Length')
-  //   let receivedLength = 0
-  //   const chunks = []
-  //   while(true) {
-  //     const { done, value } = await reader.read()
-  //     if(done) {
-  //       break
-  //     }
-  //     if(value) {
-  //       chunks.push(value)
-  //       receivedLength += value.length
-  //       console.log(`Received ${receivedLength} of ${contentLength}`)
-  //     }
-  //   }
-  // }
-
-  // let receivedBytes = 0
-  // let totalBytes = 0
-  // let index = 0
-
-  // const targetFileName: string = path.parse(targetPath).base
-  // const targetFileDir: string = path.parse(targetPath).dir
-
-  // let isFileExists = true
-  // while(isFileExists) {
-  //   try {
-  //     fs.statSync(targetPath)
-  //     const filename = targetFileName.replace(/\./g, `(${++index}).`)
-  //     targetPath = path.resolve(targetFileDir, filename)
-  //   } catch(e) {
-  //     isFileExists = false
-  //   }
-  // }
-
-  // const req = request({
-  //   method: 'GET',
-  //   uri: encodeURI(fileUri)
-  // })
-
-  // const f = 'app/notepad/settings.json'
-  const fetchRes = await fetch('https://dn-web.ru/app/notepad/files/___2.jpg', {
-    mode: 'no-cors'
-  })
-  const blob = await fetchRes.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  document.body.appendChild(a)
-  a.style.display = 'none'
-  a.href = url
-  a.download = '___2.jpg'
-  a.click()
-  URL.revokeObjectURL(url)
-  // fs.writeFile('C:/Users/jimhucksly/Desktop' + '/settings.json', 'aaaaaa')
-  //   .then(() => {
-  //     return fs.readString('C:\\Users\\jimhucksly\\Desktop' + '\\settings.json')
-  //   })
-  //   .then((a: unknown) => {
-  //     console.log(a)
-  //   })
-  //   .catch((e: unknown) => {
-  //     console.log(e)
-  //   })
-
-  // await axios.get(f, {
-  //   responseType: 'blob'
-  // })
-  //   .then((response) => {
-  //     console.log(response)
-  //     //  const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     //  const link = document.createElement('a');
-  //     //  link.href = url;
-  //     //  link.setAttribute('download', 'file.pdf'); //or any other extension
-  //     //  document.body.appendChild(link);
-  //     //  link.click();
-  //   })
-  //   .catch(e => {
-  //     console.log(e)
-  //   })
-
-  // console.log(targetPath)
-
-  // req.on('response', (data: { statusCode: number, headers: string[] }) => {
-  //   console.log('response!!!')
-  //   if(data.statusCode === 200 || data.statusCode === 201) {
-  //     totalBytes = parseInt(data.headers['content-length'])
-  //     const out = fs.createWriteStream(targetPath)
-  //     req.pipe(out)
-  //   } else {
-  //     showError(loaderDOMElement)
-  //     return
-  //   }
-  // })
-
-  // req.on('data', (chunk: any) => {
-  //   console.log('data!!!')
-  //   if(totalBytes > 0) {
-  //     receivedBytes += chunk.length
-  //     showProgress(receivedBytes, totalBytes, loaderDOMElement)
-  //   }
-  // })
-}
-
-// function showError(loaderDOMElement: HTMLElement): void {
-//   loaderDOMElement.style.display = 'block'
-//   if(loaderDOMElement.firstElementChild) {
-//     loaderDOMElement.firstElementChild.classList.add('error')
-//     loaderDOMElement.firstElementChild.textContent = 'Error: file not found'
-//   }
-//   setTimeout(() => {
-//     loaderDOMElement.style.display = 'none'
-//     if(loaderDOMElement.firstElementChild) {
-//       loaderDOMElement.firstElementChild.classList.remove('error')
-//       loaderDOMElement.firstElementChild.textContent = ''
-//     }
-//   }, 5000)
-// }
-
-// function showProgress(
-//   received: number,
-//   total: number,
-//   loaderDOMElement: HTMLElement
-// ): void {
-//   const percentage = Math.ceil((received * 100) / total)
-//   loaderDOMElement.style.display = 'block'
-//   loaderDOMElement.style.width = `${percentage}px`
-//   if(loaderDOMElement.firstElementChild) {
-//     loaderDOMElement.firstElementChild.textContent = `${percentage}%`
-//   }
-//   if(percentage === 100) {
-//     setTimeout(() => {
-//       loaderDOMElement.style.display = 'none'
-//       if(loaderDOMElement.firstElementChild) {
-//         loaderDOMElement.style.width = '0'
-//         loaderDOMElement.firstElementChild.textContent = ''
-//       }
-//     }, 3000)
-//   }
-// }
-
 export const uploadDownloadFile = (received: number, total: number) => {
   const percentage = Math.ceil((received * 100) / total)
   const percentageText = `${percentage}%`
@@ -489,4 +339,15 @@ export async function delay(timeout: number) {
     resolveFunc(void 0)
   }, timeout)
   await promise
+}
+
+export function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
+  const arr = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
+  const result: ActionTree<S, R> = {}
+  arr.forEach(key => {
+    if(key !== 'constructor') {
+      result[key] = obj[key]
+    }
+  })
+  return result
 }

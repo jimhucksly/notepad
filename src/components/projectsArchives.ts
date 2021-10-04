@@ -15,10 +15,10 @@ export default class ProjectsArchives extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
-  @Mutation('setArchives') setArchives: (value: Array<IArchive>) => void
+  @Mutation('projects/setArchives') setArchives: (value: Array<IArchive>) => void
 
-  @Getter('getArchives') items: IArchive[]
-  @Getter('getJson') json: IJson
+  @Getter('projects/getArchives') items: IArchive[]
+  @Getter('projects/getJson') json: IJson
 
   @Prop() expanded: boolean
 

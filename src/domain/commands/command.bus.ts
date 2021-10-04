@@ -36,11 +36,13 @@ class CommandBus implements ICommandBus {
  * @returns
  */
 export function Commandable(
-  command: symbol
+  command: symbol,
+  namespace?: string
 ) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    Reflect.defineMetadata(command, propertyKey, CommandBus)
+    const value = namespace ? `${namespace}/${propertyKey}` : propertyKey
+    Reflect.defineMetadata(command, value, CommandBus)
   }
 }
 

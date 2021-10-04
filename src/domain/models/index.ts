@@ -1,3 +1,4 @@
+import { ActionContext } from 'vuex'
 import FsmStates from '~/application/fsm.states'
 
 export interface IMenu {
@@ -149,6 +150,13 @@ export interface IYandexTokenResponse {
   token_type: string
 }
 
+export interface IProjectsState {
+  json: IJson
+  archives: IArchive[]
+  filter: IFilters
+  selectedProjectKey: string
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -160,12 +168,9 @@ export interface IRootState {
   libraryFiles: Array<ILibraryFile>
   libraryFileId: string | number
   libraryTree: ITreeItem[]
-  filter: IFilters
   isAuth: boolean
   token: string
   isDevelopment: boolean
-  json: IJson
-  archives: IArchive[]
   todo: ITodo
   events: IEvents
   links: ILink
@@ -173,9 +178,10 @@ export interface IRootState {
   notification: boolean
   error: boolean
   component: string
-  selectedProjectKey: string
   history: Array<keyof typeof FsmStates>
   yandexApiToken: string
   currentUser: IUser
   process: { name: string }
 }
+
+export type TStore = ActionContext<IProjectsState, IRootState>
