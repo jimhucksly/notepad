@@ -42,7 +42,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   read(store: TStore, command: ReadCommand): void {
     const json = cloneDeep(store.getters['getJson'])
     delete json[command.stamp]['unread']
-    store.commit('setJson', json)
+    store.commit('projects/setJson', json)
   }
 
   /**

@@ -7,7 +7,7 @@ import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
 import { ReadCommand, UploadFileCommand, CreateProjectCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
-import { Getter } from 'vuex-class'
+import { Getter, Mutation } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
 
@@ -19,6 +19,8 @@ import FsmStates from '~/application/fsm.states'
 })
 export default class Projects extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+
+  @Mutation('projects/setJson') setJson: (value: IJson) => void
 
   @Getter('projects/getJson') json: IJson
   @Getter('projects/getFilter') filter: IFilters
@@ -73,7 +75,7 @@ export default class Projects extends Vue {
       }
     }
     this.message = ''
-    this.$store.commit('setJson', { ...this.json, ...o })
+    this.setJson({ ...this.json, ...o })
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
@@ -130,7 +132,7 @@ export default class Projects extends Vue {
         }
       }
     }
-    this.$store.commit('setJson', { ...this.json, ...o })
+    this.setJson({ ...this.json, ...o })
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight

@@ -19,6 +19,7 @@ export default class ProjectsEditor extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setJson') setJson: (value: IJson) => void
 
   @Getter('projects/getJson') json: IJson
   @Getter('projects/getFilter') filter: IFilters
@@ -59,7 +60,7 @@ export default class ProjectsEditor extends Vue {
           lock: !isLocked
         }
       }
-      this.$store.commit('setJson', { ...this.json, ...o })
+      this.setJson({ ...this.json, ...o })
       this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if(isLocked) {
@@ -97,7 +98,7 @@ export default class ProjectsEditor extends Vue {
     unset(buffJson, this.selected)
     unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
-    this.$store.commit('setJson', buffJson)
+    this.setJson(buffJson)
     this.$app.goBack()
   }
 
@@ -113,7 +114,7 @@ export default class ProjectsEditor extends Vue {
         file: this.item.file
       }
     }
-    this.$store.commit('setJson', { ...this.json, ...o })
+    this.setJson({ ...this.json, ...o })
     await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.savingProcess = false
     this.$app.goBack()

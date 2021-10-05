@@ -21,10 +21,11 @@ export default class Controls extends Vue {
   @Prop({ type: Boolean, default: false }) isLock: false
   @Prop() readonly collection: string[]
 
-  @Mutation('setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('projects/setJson') setJson: (value: IJson) => void
 
-  @Getter('getJson') json: IJson
-  @Getter('getFilter') filter: IFilters
+  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getFilter') filter: IFilters
 
   editableItems: string[] = []
 
@@ -81,7 +82,7 @@ export default class Controls extends Vue {
             message: checkLinks(value)
           }
         }
-        this.$store.commit('setJson', { ...this.json, ...o })
+        this.setJson({ ...this.json, ...o })
         this.$nextTick(() => {
           this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
         })
@@ -94,7 +95,7 @@ export default class Controls extends Vue {
     unset(buffJson, stamp)
     unset(buffFilter, stamp)
     this.setFilter(buffFilter)
-    this.$store.commit('setJson', buffJson)
+    this.setJson(buffJson)
     this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
   }
 

@@ -20,45 +20,81 @@ const fs = require('fs')
 export default class JsonViewer extends Vue {
   editor: IEditor = null
   content = ''
+  formatted = false
+
+  debounced: () => void = null
 
   onJsonHandler: (value: string) => void
   onJsonSaveHandler: (fileName: string) => void
   onJsonClearHandler: () => void
 
   editorInit(instance: IEditor) {
-    const res: HTMLElement | null = document.querySelector('.json_viewer_res')
+    this.debounced = debounce(() => {
+      this.format(instance)
+    }, 3000)
+    instance.on('change', this.debounced)
+    this.editor = instance
+  }
 
-    const debounced = debounce(() => {
-      const value = instance.getValue()
-      if(!value.length) {
-        if(res) {
-          res.innerHTML = ''
-        }
-        return
-      }
-      let json: Record<string, unknown> = null
-      try {
-        json = JSON.parse(value)
-        if(window.localStorage) {
-          localStorage.setItem('json_viewer', JSON.stringify(json))
-        }
-      } catch(e) {
-        this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
-        if(res) {
-          res.innerHTML = ''
-        }
-      }
-      const formatter = new JSONFormatter(json)
+  format(instance: IEditor) {
+    const res: HTMLElement | null = document.querySelector('.json_viewer_res')
+    if(this.formatted) {
+      this.formatted = false
+      return
+    }
+    const value = instance.getValue()
+    if(!value.length) {
       if(res) {
         res.innerHTML = ''
-        res.appendChild(formatter.render())
       }
-      formatter.openAtDepth(1)
-      this.notice('Json parse successed!')
-    }, 3000)
+      return
+    }
+    let json: Record<string, unknown> = null
+    try {
+      json = JSON.parse(value)
+      setTimeout(() => {
+        this.formatted = true
+        const text = JSON.stringify(json, null, 2)
+        this.editor.setValue(text)
+      }, 100)
+      if(window.localStorage) {
+        localStorage.setItem('json_viewer', JSON.stringify(json))
+      }
+    } catch(e) {
+      this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
+      if(res) {
+        res.innerHTML = ''
+      }
+    }
+    const formatter = new JSONFormatter(json)
+    if(res) {
+      res.innerHTML = ''
+      const html = this.setLevels(formatter.render())
+      res.appendChild(html)
+    }
+    formatter.openAtDepth(1)
+    this.notice('Json parse successed!')
+  }
 
-    instance.on('change', debounced)
-    this.editor = instance
+  setLevels(html: Node) {
+    const _setLevel = (children: Element, level: number) => {
+      const rows = children.querySelectorAll('.json-formatter-row')
+      for(const el of rows) {
+        el.id = ['1', level].join('.')
+      }
+    }
+    const div = document.createElement('div')
+    div.appendChild(html)
+    const row = div.querySelector('.json-formatter-row:first-child')
+    const level = 0
+    row.id = ['1', level].join('.')
+    const children = row.querySelector('.json-formatter-children')
+    console.log(children)
+    if(children) {
+      _setLevel(children, level + 1)
+    }
+    // console.log(div)
+    return div
   }
 
   drag(event?: MouseEvent): void {
