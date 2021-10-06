@@ -27,7 +27,7 @@ export default class Todo extends Vue {
   isPopupShow = false
   itemSelected: ITodoItem | null = null
   isDrag = false
-  isEmpty = false
+  loading = false
 
   addTodoHandler: () => void
 
@@ -297,11 +297,14 @@ export default class Todo extends Vue {
     return split.join('')
   }
 
+  get isEmpty() {
+    return !this.loading && !this.items?.length
+  }
+
   async mounted() {
+    this.loading = true
     await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
-    if(!this.items?.length) {
-      this.isEmpty = true
-    }
+    this.loading = false
     this.addTodoHandler = this.addTodo.bind(this)
     Hub.$on('todo-add', this.addTodoHandler)
   }
