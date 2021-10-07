@@ -3,12 +3,12 @@ import { debounce } from 'lodash'
 import { CreateElement, VNode } from 'vue'
 import { IEditor } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
+import JSONFormatter from '~/lib/json-formatter-js'
 
 const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
 require('brace/theme/twilight')
 
-const JSONFormatter = require('json-formatter-js')
 const fs = require('fs')
 
 @Component({
@@ -69,32 +69,11 @@ export default class JsonViewer extends Vue {
     const formatter = new JSONFormatter(json)
     if(res) {
       res.innerHTML = ''
-      const html = this.setLevels(formatter.render())
+      const html = formatter.render()
       res.appendChild(html)
     }
     formatter.openAtDepth(1)
     this.notice('Json parse successed!')
-  }
-
-  setLevels(html: Node) {
-    const _setLevel = (children: Element, level: number) => {
-      const rows = children.querySelectorAll('.json-formatter-row')
-      for(const el of rows) {
-        el.id = ['1', level].join('.')
-      }
-    }
-    const div = document.createElement('div')
-    div.appendChild(html)
-    const row = div.querySelector('.json-formatter-row:first-child')
-    const level = 0
-    row.id = ['1', level].join('.')
-    const children = row.querySelector('.json-formatter-children')
-    console.log(children)
-    if(children) {
-      _setLevel(children, level + 1)
-    }
-    // console.log(div)
-    return div
   }
 
   drag(event?: MouseEvent): void {
