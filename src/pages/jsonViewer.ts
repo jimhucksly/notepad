@@ -3,12 +3,12 @@ import { debounce } from 'lodash'
 import { CreateElement, VNode } from 'vue'
 import { IEditor } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
-import JSONFormatter from '~/lib/json-formatter-js'
 
 const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
 require('brace/theme/twilight')
 
+const JSONFormatter = require('json-formatter-js')
 const fs = require('fs')
 
 @Component({
