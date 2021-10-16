@@ -1,6 +1,6 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Prop } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 
-@Component
 export default class ConfirmPopupComponent extends Vue {
   @Prop() question: string
 

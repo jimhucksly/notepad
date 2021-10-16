@@ -1,11 +1,6 @@
-/* eslint-disable-next-line */
-/// <reference path="../typings/vue.d.ts" />
-import { Vue, Component } from 'vue-property-decorator'
-import { CreateElement, VNode } from 'vue'
+import { h, VNode } from 'vue'
+import { Vue } from 'vue-class-component'
 
-@Component({
-  name: 'App'
-})
 export default class App extends Vue {
   mounted() {
     window.addEventListener('contextmenu', (event) => {
@@ -23,7 +18,7 @@ export default class App extends Vue {
     })
   }
 
-  render(h: CreateElement): VNode {
+  render(): VNode {
     return h(
       'div',
       {

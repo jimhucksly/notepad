@@ -1,6 +1,6 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
 import { debounce } from 'lodash'
-import { CreateElement, VNode } from 'vue'
+import { VNode, h } from 'vue'
 import { IEditor } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
@@ -11,8 +11,7 @@ require('brace/theme/twilight')
 const JSONFormatter = require('json-formatter-js')
 const fs = require('fs')
 
-@Component({
-  name: 'JsonViewer',
+@Options({
   components: {
     editor
   }
@@ -190,7 +189,7 @@ export default class JsonViewer extends Vue {
     Hub.$off('json-viewer-clear', this.onJsonClearHandler)
   }
 
-  render(h: CreateElement): VNode {
+  render(): VNode {
     return h(
       'div',
       {

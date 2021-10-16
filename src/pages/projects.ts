@@ -1,4 +1,5 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Watch } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
 import { isEmpty } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
@@ -11,8 +12,7 @@ import { Getter, Mutation } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
 
-@Component({
-  name: 'Projects',
+@Options({
   components: {
     ProjectItem
   }

@@ -1,5 +1,5 @@
 import AutoLaunch from 'auto-launch'
-import { Component, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Getter, Mutation } from 'vuex-class'
 import { RevokeYandexTokenCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
@@ -11,9 +11,6 @@ import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
 
-@Component({
-  name: 'Preferences'
-})
 export default class Preferences extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

@@ -1,13 +1,11 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import FsmStates from '~/application/fsm.states'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IModalInfo } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
-@Component({
-  name: 'Popup'
-})
 export default class Popup extends Vue {
   @Getter('getFsmState') fsmState: symbol
 

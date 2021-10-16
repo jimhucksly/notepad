@@ -1,35 +1,35 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
-import Titlebar from '~/components/titlebar'
-import Loading from '~/components/loading'
+import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
+import { Getter, Mutation } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
 import Error from '~/components/error'
+import Loading from '~/components/loading'
+import Sidebar from '~/components/sidebar'
+import Titlebar from '~/components/titlebar'
+import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IJson, IResponse, IUser } from '~/domain/models'
+import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
+import { CheckQuery } from '~/domain/queries/check.query'
+import { TYPES } from '~/domain/types'
+import { uploadDownloadFile } from '~/helpers'
 import Auth from '~/pages/auth'
-import Projects from '~/pages/projects'
-import Todo from '~/pages/todo'
-import Library from '~/pages/library'
-import Preferences from '~/pages/preferences'
 import Events from '~/pages/events'
 import JsonViewer from '~/pages/jsonViewer'
+import Library from '~/pages/library'
 import Links from '~/pages/links'
-import Sidebar from '~/components/sidebar'
+import Preferences from '~/pages/preferences'
+import Projects from '~/pages/projects'
+import Todo from '~/pages/todo'
 import storage from '~/plugins/storage'
-import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
-import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
-import { _container } from '~/domain/container'
-import { CheckQuery } from '~/domain/queries/check.query'
-import { IJson, IResponse, IUser } from '~/domain/models'
-import { Mutation, Getter } from 'vuex-class'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import FsmStates from '~/application/fsm.states'
-import { uploadDownloadFile } from '~/helpers'
 
 interface IUserPreferences {
   downloadsTargetPath: string
 }
 
-@Component({
-  name: 'Index',
+@Options({
   components: {
     Titlebar,
     Loading,

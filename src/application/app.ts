@@ -36,8 +36,30 @@ export const AppComponents = {
   [toStr(FsmStates.Todo)]: 'Todo'
 }
 
+export interface IApplication {
+  init: () => void
+  loading: (state: boolean) => void
+  login: (token: string) => Promise<void>
+  logout: () => void
+  user: (data: IUser) => void
+  goto: (transition: symbol) => Promise<void>
+  goBack: () => void
+  goHome: () => void
+  setHistory: () => void
+  reload: () => Promise<void>
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  fsm: any
+  state: symbol
+  stateName: keyof IFsmStates
+  lastState: keyof IFsmStates
+  isDev: boolean
+  isAuth: boolean
+  component: keyof IAppComponents
+  userDataPath: string
+}
+
 @injectable()
-export default class Application {
+export default class Application implements IApplication {
   constructor(
     @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus,
     @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
@@ -75,13 +97,13 @@ export default class Application {
     }
   }
 
+  logout() {
+    this.goto(FsmStates.None)
+  }
+
   user(data: IUser) {
     this.currentUser = data
     this._store.commit('setCurrentUser', data)
-  }
-
-  logout() {
-    this.goto(FsmStates.None)
   }
 
   async goto(transition: symbol) {

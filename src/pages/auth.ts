@@ -1,4 +1,5 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { AuthQuery, LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
@@ -13,9 +14,6 @@ interface IErrors {
   pass: boolean
 }
 
-@Component({
-  name: 'Auth'
-})
 export default class Auth extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

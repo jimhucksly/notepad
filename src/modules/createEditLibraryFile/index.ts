@@ -1,7 +1,7 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Prop } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { ILibraryFile } from '~/domain/models'
 
-@Component
 export default class CreateEditLibraryFileComponent extends Vue {
   @Prop() id: number
   @Prop() title: string

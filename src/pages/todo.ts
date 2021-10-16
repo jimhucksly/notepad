@@ -1,22 +1,20 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
-import { now, indexOf } from '~/helpers'
 import { cloneDeep } from 'lodash'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
+import { Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ITodo, ITodoItem, ITodoOrder } from '~/domain/models'
 import { TodoQuery } from '~/domain/queries'
-import { TodoOrderCommand, UpdateTodoCommand, DeleteTodoCommand } from '~/domain/commands'
-import { Getter } from 'vuex-class'
+import { TYPES } from '~/domain/types'
+import { indexOf, now } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 
 const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   return a.order < b.order ? -1 : 1
 }
 
-@Component({
-  name: 'Todo'
-})
 export default class Todo extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

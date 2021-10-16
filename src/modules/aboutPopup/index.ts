@@ -1,7 +1,6 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { AUTHOR, VK } from '~/constants'
 
-@Component
 export default class AboutPopupComponent extends Vue {
   appName = ''
 

@@ -1,12 +1,9 @@
-import { CreateElement, VNode } from 'vue'
-import { Component, Vue } from 'vue-property-decorator'
+import { VNode, h } from 'vue'
+import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { ITreeItem } from '~/domain/models'
 
-@Component({
-  name: 'Library'
-})
 export default class Library extends Vue {
   @Getter('getHistory') history: Array<keyof IFsmStates>
   @Getter('library/getLibraryTree') mdTree: Array<ITreeItem>
@@ -19,7 +16,7 @@ export default class Library extends Vue {
     }
   }
 
-  render(h: CreateElement): VNode {
+  render(): VNode {
     return h(
       'div',
       {

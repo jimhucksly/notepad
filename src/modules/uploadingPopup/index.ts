@@ -1,6 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 
-@Component
 export default class UploadingPopupComponent extends Vue {
   //
 }

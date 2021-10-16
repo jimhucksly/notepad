@@ -1,11 +1,12 @@
-import { VueConstructor } from 'vue/types'
-import { Hub } from './hub'
+import { App } from 'vue'
+import { Hub } from '~/plugins/hub'
 
-const Toasted = function _toasted(options: unknown) {
-  if(!options) options = {}
+export interface IToasted {
+  success: (v: string) => void
+  error: (v: string) => void
 }
 
-class ToastedClass {
+class Toasted {
   success(subject: string) {
     Hub.$emit('on-toasted-success', subject)
   }
@@ -15,15 +16,10 @@ class ToastedClass {
   }
 }
 
-function install(Constructor: VueConstructor) {
-  if(!Constructor.prototype.hasOwnProperty('$toasted')) {
-    Object.defineProperty(Constructor.prototype, '$toasted', {
-      get: function get() {
-        return new ToastedClass()
-      }
-    })
+export default {
+  install: (vue: App) => {
+    const toasted = new Toasted()
+    vue.config.globalProperties.$toasted = toasted
+    vue.provide('toasted', toasted)
   }
 }
-
-Toasted.install = install
-export default Toasted

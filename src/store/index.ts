@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Vuex, { Store, StoreOptions } from 'vuex'
+import { createStore } from 'vuex'
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
@@ -12,9 +11,7 @@ import { todo } from './todo'
 import { events } from './events'
 import { links } from './links'
 
-Vue.use(Vuex)
-
-const storeOptions: StoreOptions<IRootState> = {
+export default createStore<IRootState>({
   strict: process.env.NODE_ENV !== 'production',
   actions,
   getters,
@@ -27,8 +24,4 @@ const storeOptions: StoreOptions<IRootState> = {
     events,
     links
   }
-}
-
-const store = new Store<IRootState>(storeOptions)
-
-export default store
+})

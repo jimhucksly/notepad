@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
 import { uniqueid } from '~/helpers'
 
@@ -14,9 +14,6 @@ interface IToast {
   type: ToastType
 }
 
-@Component({
-  name: 'Toasted'
-})
 export default class Toasted extends Vue {
   toasts: Array<IToast> = []
 

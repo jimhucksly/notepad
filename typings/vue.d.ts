@@ -1,9 +1,9 @@
 import * as Vuex from 'vuex'
-import { IRootState } from '../src/domain/models'
-import Application from '../src/application/app'
+import { IRootState } from './src/domain/models'
+import Application from './src/application/app'
 
-declare module 'vue/types/vue' {
-  interface Vue {
+declare module '@vue/runtime-core' {
+  export interface ComponentCustomProperties {
     $app: Application
     $store: Vuex.Store<IRootState>
     $electron: any

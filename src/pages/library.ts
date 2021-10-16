@@ -1,4 +1,5 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
@@ -9,7 +10,7 @@ import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
-import { CreateElement, VNode } from 'vue'
+import { VNode, h } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
@@ -60,9 +61,6 @@ const linked = (value: ILinkedDoc): Array<string> => {
   return result
 }
 
-@Component({
-  name: 'Library'
-})
 export default class LibraryPage extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -316,7 +314,7 @@ export default class LibraryPage extends Vue {
     this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
   }
 
-  render(h: CreateElement): VNode {
+  render(): VNode {
     return h(
       'div',
       {
