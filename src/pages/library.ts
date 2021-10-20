@@ -61,6 +61,14 @@ const linked = (value: ILinkedDoc): Array<string> => {
 }
 
 @Options({
+  beforeUnmount() {
+    this.setLibraryTree([])
+    const id = this.currentId
+    const value = this.editor.value()
+    this.commandBus.do(new UpdateLibraryCommand(id, value))
+    this.setFileId(0)
+    Hub.$off('codemirror-link-click', this.linkClickHandler)
+  },
   template: `
     <div
       class="editor_wrapper"
@@ -310,15 +318,6 @@ export default class LibraryPage extends Vue {
       return
     }
     this.buildEditor(editorElement, this.initialValue)
-  }
-
-  beforeDestroy() {
-    this.setLibraryTree([])
-    const id = this.currentId
-    const value = this.editor.value()
-    this.commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, value))
-    this.setFileId(0)
-    Hub.$off('codemirror-link-click', this.linkClickHandler)
   }
 
   created() {

@@ -30,7 +30,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
       setProcess(store, 'get todo list...')
       const resp = await $http.get<Array<ITodo>>('todo')
       setProcess(store, null)
-      if(!resp || !resp.data) {
+      if(!resp) {
         return Promise.reject(resp)
       }
       store.commit('setTodo', resp.data)

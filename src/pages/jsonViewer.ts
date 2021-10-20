@@ -13,6 +13,11 @@ const fs = require('fs')
 @Options({
   components: {
     Editor
+  },
+  beforeUnmount() {
+    Hub.$off('json-viewer-src-set', this.onJsonHandler)
+    Hub.$off('json-viewer-save', this.onJsonSaveHandler)
+    Hub.$off('json-viewer-clear', this.onJsonClearHandler)
   }
 })
 export default class JsonViewer extends Vue {
@@ -180,11 +185,5 @@ export default class JsonViewer extends Vue {
         }
       }
     }
-  }
-
-  beforeDestroy() {
-    Hub.$off('json-viewer-src-set', this.onJsonHandler)
-    Hub.$off('json-viewer-save', this.onJsonSaveHandler)
-    Hub.$off('json-viewer-clear', this.onJsonClearHandler)
   }
 }

@@ -1,7 +1,13 @@
 import { Prop } from 'vue-property-decorator'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import { ILibraryFile } from '~/domain/models'
 
+@Options({
+  beforeUnmount() {
+    this.file.id = null
+    this.file.name = ''
+  }
+})
 export default class CreateEditLibraryFileComponent extends Vue {
   @Prop() id: number
   @Prop() title: string
@@ -43,10 +49,5 @@ export default class CreateEditLibraryFileComponent extends Vue {
         })
       }
     })
-  }
-
-  beforeDestroy() {
-    this.file.id = null
-    this.file.name = ''
   }
 }

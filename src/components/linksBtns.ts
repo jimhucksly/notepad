@@ -1,4 +1,4 @@
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import FsmStates from '~/application/fsm.states'
 import { UpdateLinksCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
@@ -9,6 +9,15 @@ import { LinksQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { uniqueid } from '~/helpers'
 
+@Options({
+  template: `
+    <div class="links">
+      <button @click="add">
+        <svg-icon icon="btnAdd" width="32" height="23" />
+      </button>
+    </div>
+  `
+})
 export default class LinksBtns extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

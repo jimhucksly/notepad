@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '~/domain/commands'
@@ -15,13 +15,18 @@ const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   return a.order < b.order ? -1 : 1
 }
 
+@Options({
+  beforeUnmount() {
+    Hub.$off('todo-add', this.addTodoHandler)
+  }
+})
 export default class Todo extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Getter('todo/getTodo') json: ITodo
 
-  items: Array<ITodoItem> = null
+  items: Array<ITodoItem> = []
   isPopupShow = false
   itemSelected: ITodoItem | null = null
   isDrag = false
@@ -29,7 +34,7 @@ export default class Todo extends Vue {
 
   addTodoHandler: () => void
 
-  get keys() {
+  get keys(): Array<string> {
     return this.items.map((item: ITodoItem) => item.id)
   }
 
@@ -284,7 +289,7 @@ export default class Todo extends Vue {
       id: sstamp.toString(),
       date,
       text: '',
-      order: this.items.length + 1
+      order: this.keys.length + 1
     }
     this.items.push(o)
     this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
@@ -300,14 +305,14 @@ export default class Todo extends Vue {
   }
 
   async mounted() {
-    this.loading = true
-    await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
-    this.loading = false
-    this.addTodoHandler = this.addTodo.bind(this)
-    Hub.$on('todo-add', this.addTodoHandler)
-  }
-
-  beforeDestroy() {
-    Hub.$off('todo-add', this.addTodoHandler)
+    try {
+      this.loading = true
+      await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
+      this.loading = false
+      this.addTodoHandler = this.addTodo.bind(this)
+      Hub.$on('todo-add', this.addTodoHandler)
+    } catch(e) {
+      console.log(e)
+    }
   }
 }

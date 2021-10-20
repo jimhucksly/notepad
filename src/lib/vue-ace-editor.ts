@@ -4,6 +4,10 @@ import { Prop, Watch } from 'vue-property-decorator'
 const ace = require('brace')
 
 @Options({
+  beforeUnmount() {
+    this.editor.destroy()
+    this.editor.container.remove()
+  },
   template: `
     <div :style="{ height: height ? px(height) : '100%', width: width ? px(width) : '100%' }"></div>
   `
@@ -47,11 +51,6 @@ export default class VueAceEditor extends Vue {
     if(this.options) {
       editor.setOptions(this.options)
     }
-  }
-
-  beforeDestroy() {
-    this.editor.destroy()
-    this.editor.container.remove()
   }
 
   @Watch('value') onValueChanged(val: string) {

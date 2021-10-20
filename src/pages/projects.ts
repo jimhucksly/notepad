@@ -15,6 +15,10 @@ import FsmStates from '~/application/fsm.states'
 @Options({
   components: {
     ProjectItem
+  },
+  beforeUnmount() {
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
+    notepadCont.removeEventListener('scroll', this.onScrollHandler)
   }
 })
 export default class Projects extends Vue {
@@ -174,10 +178,5 @@ export default class Projects extends Vue {
 
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
     window.ondragstart = () => false
-  }
-
-  beforeDestroy() {
-    const notepadCont = this.$refs.notepad_cont as HTMLElement
-    notepadCont.removeEventListener('scroll', this.onScrollHandler)
   }
 }

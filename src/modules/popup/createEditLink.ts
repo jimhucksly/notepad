@@ -1,7 +1,14 @@
 import { Prop } from 'vue-property-decorator'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import { ILink } from '~/domain/models'
 
+@Options({
+  beforeUnmount() {
+    this.link.id = ''
+    this.link.url = ''
+    this.link.name = ''
+  }
+})
 export default class CreateEditLinkComponent extends Vue {
   @Prop() id: string
   @Prop() url: string
@@ -49,11 +56,5 @@ export default class CreateEditLinkComponent extends Vue {
         })
       }
     })
-  }
-
-  beforeDestroy() {
-    this.link.id = ''
-    this.link.url = ''
-    this.link.name = ''
   }
 }

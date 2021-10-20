@@ -13,6 +13,6 @@ import { Options, Vue } from 'vue-class-component'
   `
 })
 export default class LoaderComponent extends Vue {
-  @Prop() small: boolean
-  @Prop({ default: true }) full: boolean
+  @Prop({ type: Boolean, default: false }) small: boolean
+  @Prop({ type: Boolean, default: true }) full: boolean
 }

@@ -16,7 +16,6 @@
             <input
               type="text"
               placeholder="Login"
-              ref="login"
               :class="{ error: !!errors.login }"
               v-model="login"
               @keyup.enter.prevent="submit"
@@ -41,7 +40,6 @@
             <input
               type="password"
               placeholder="Password"
-              ref="password"
               :class="{ error: !!errors.pass }"
               v-model="pass"
               @keyup.enter.prevent="submit"

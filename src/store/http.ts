@@ -41,6 +41,10 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
+    const data = response.data as { status: string, message: string }
+    if(data && data.status && data.status === 'error') {
+      throw new Error(data.message || 'error')
+    }
     return response
   },
   error => {
