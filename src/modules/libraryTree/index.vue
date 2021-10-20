@@ -30,4 +30,4 @@
   </ul>
   <div v-else></div>
 </template>
-<script src="./libraryTree.ts" lang="ts"></script>
+<script src="./index.ts" lang="ts"></script>

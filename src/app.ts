@@ -1,7 +1,13 @@
-import { h, VNode } from 'vue'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 
-export default class App extends Vue {
+@Options({
+  template: `
+    <router-view></router-view>
+    <popup />
+    <toasted />
+  `
+})
+export default class AppComponent extends Vue {
   mounted() {
     window.addEventListener('contextmenu', (event) => {
       event.preventDefault()
@@ -16,32 +22,5 @@ export default class App extends Vue {
         this.$electron.ipcRenderer.send('context-menu-popup')
       }
     })
-  }
-
-  render(): VNode {
-    return h(
-      'div',
-      {
-        attrs: {
-          id: 'app'
-        }
-      },
-      [
-        h(
-          'router-view',
-          {
-            attrs: {
-              id: 'content'
-            }
-          }
-        ),
-        h(
-          'popup'
-        ),
-        h(
-          'toasted'
-        )
-      ]
-    )
   }
 }

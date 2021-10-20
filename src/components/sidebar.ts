@@ -1,20 +1,20 @@
-import { Vue, Component, Watch } from 'vue-property-decorator'
-import SidebarSwitcher from '~/components/sidebarSwitcher'
-import Projects from '~/components/projects'
-import ProjectsEditor from '~/components/projectsEditor'
-import ProjectsArchives from '~/components/projectsArchives'
-import Library from '~/components/library'
-import LibraryFiles from '~/components/libraryFiles'
-import JsonViewerBtns from '~/components/jsonViewerBtns'
-import LinksBtns from '~/components/linksBtns'
-import TodoBtns from '~/components/todoBtns'
+import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { AppComponents } from '~/application/app'
 import { toStr } from '~/application/fsm'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
+import JsonViewerBtns from '~/components/jsonViewerBtns'
+import Library from '~/components/library'
+import LibraryFiles from '~/components/libraryFiles'
+import LinksBtns from '~/components/linksBtns'
+import Projects from '~/components/projects'
+import ProjectsArchives from '~/components/projectsArchives'
+import ProjectsEditor from '~/components/projectsEditor'
+import SidebarSwitcher from '~/components/sidebarSwitcher'
+import TodoBtns from '~/components/todoBtns'
 
-@Component({
-  name: 'Sidebar',
+@Options({
   components: {
     SidebarSwitcher,
     Projects,

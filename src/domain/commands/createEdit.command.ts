@@ -30,10 +30,10 @@ export class CreateEditCommand<R> {
 export class CreateEditCommandHandler<R> implements ICommandHandler<CreateEditCommand<R>, R> {
   async do(command: CreateEditCommand<R>): Promise<R> {
     return new Promise((resolve: IResolveFunc<R>) => {
-      Hub.$nextTick(() => {
+      setTimeout(() => {
         command.modal.resolveFunction = resolve
         Hub.$emit('open-dialog', command)
-      })
+      }, 100)
     })
   }
 }

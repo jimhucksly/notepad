@@ -1,16 +1,14 @@
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { now } from '~/helpers'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
-import { _container } from '~/domain/container'
-import { IArchive, IJson } from '~/domain/models'
-import { ArchiveRestoreCommand, ArchiveRemoveCommand } from '~/domain/commands'
+import { Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '~/domain/commands'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IArchive, IJson } from '~/domain/models'
 import { ArchivesQuery, ProjectsQuery } from '~/domain/queries'
+import { TYPES } from '~/domain/types'
+import { now } from '~/helpers'
 
-@Component({
-  name: 'ProjectsArchives'
-})
 export default class ProjectsArchives extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

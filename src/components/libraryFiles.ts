@@ -1,4 +1,5 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import FsmStates from '~/application/fsm.states'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
@@ -10,9 +11,6 @@ import { LibraryFilesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import { TYPES } from '~/domain/types'
 
-@Component({
-  name: 'LibraryFiles'
-})
 export default class LibraryFiles extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

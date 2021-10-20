@@ -21,6 +21,9 @@ let rendererConfig = {
   entry: {
     renderer: path.join(__dirname, '../src/main.ts')
   },
+  externals: {
+    vue: 'Vue',
+  },
   module: {
     rules: [
       {
@@ -67,8 +70,7 @@ let rendererConfig = {
     __filename: isDevelopment
   },
   stats: {
-    preset: 'normal',
-    warningsFilter: [/export .*was not found/],
+    preset: 'normal'
   },
   plugins: [
     new VueLoaderPlugin(),
@@ -131,7 +133,7 @@ let rendererConfig = {
   resolve: {
     alias: {
       '~': path.join(__dirname, '../src'),
-      'vue$': 'vue/dist/vue.esm.js'
+      'vue$': 'vue/dist/vue.esm-bundler.js'
     },
     extensions: ['.vue', '.ts', '.js', ]
   },

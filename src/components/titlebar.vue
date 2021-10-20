@@ -1,5 +1,5 @@
 <template>
-  <div class="title-bar">
+  <div class="title-bar" id="titlebar">
     <div class="menu-button-container" v-if="isAuth">
       <button @click="toPreferences">Preferences</button>
     </div>

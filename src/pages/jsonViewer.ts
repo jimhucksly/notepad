@@ -1,10 +1,9 @@
 import { Options, Vue } from 'vue-class-component'
 import { debounce } from 'lodash'
-import { VNode, h } from 'vue'
 import { IEditor } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
+import Editor from '~/lib/vue-ace-editor'
 
-const editor = require('vue2-ace-editor')
 require('brace/mode/javascript')
 require('brace/theme/twilight')
 
@@ -13,7 +12,7 @@ const fs = require('fs')
 
 @Options({
   components: {
-    editor
+    Editor
   }
 })
 export default class JsonViewer extends Vue {
@@ -187,69 +186,5 @@ export default class JsonViewer extends Vue {
     Hub.$off('json-viewer-src-set', this.onJsonHandler)
     Hub.$off('json-viewer-save', this.onJsonSaveHandler)
     Hub.$off('json-viewer-clear', this.onJsonClearHandler)
-  }
-
-  render(): VNode {
-    return h(
-      'div',
-      {
-        staticClass: 'json_viewer json_viewer_cont'
-      },
-      [
-        h(
-          'div',
-          {
-            staticClass: 'json_viewer_src'
-          },
-          [
-            h(
-              'editor',
-              {
-                domProps: {
-                  value: this.content
-                },
-                props: {
-                  lang: 'javascript',
-                  theme: 'twilight',
-                  width: '100%',
-                  height: '100%'
-                },
-                on: {
-                  init: (instance: IEditor) => {
-                    this.editorInit(instance)
-                  },
-                  input: (value: string) => {
-                    this.$emit('input', value)
-                  }
-                }
-              }
-            ),
-            h(
-              'div',
-              {
-                staticClass: 'json_viewer_separator',
-                on: {
-                  mousedown: (event: MouseEvent) => {
-                    this.drag(event)
-                  }
-                }
-              }
-            )
-          ]
-        ),
-        h(
-          'div',
-          {
-            staticClass: 'json_viewer_res'
-          }
-        ),
-        h(
-          'div',
-          {
-            staticClass: 'json_viewer_notice'
-          }
-        )
-      ]
-    )
   }
 }

@@ -1,14 +1,11 @@
-import { Vue, Component } from 'vue-property-decorator'
-import { ICommandBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
+import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import FsmStates from '~/application/fsm.states'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import { _container } from '~/domain/container'
+import { ICommandBus } from '~/domain/interfaces'
+import { TYPES } from '~/domain/types'
 
-@Component({
-  name: 'Titlebar'
-})
 export default class Titlebar extends Vue {
   private readonly commandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 

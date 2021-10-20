@@ -1,68 +1,58 @@
+/* eslint-disable import/first */
 /* eslint-disable-next-line */
 /// <reference path="../typings/shims-vue.d.ts" />
+/* eslint-disable-next-line */
+/// <reference path="../typings/vue.d.ts" />
+
 import 'reflect-metadata'
-import Vue, { VueConstructor } from 'vue'
-import Application from '~/application/app'
+import { createApp } from 'vue'
 import '~/assets/css/simplemde.css'
 import '~/assets/scss/main.scss'
-import { _container } from '~/domain/container'
-import AboutPopup from '~/modules/aboutPopup/index.vue'
-import BBtn from '~/modules/bbtn'
-import BCheckbox from '~/modules/bcheckbox'
-import ConfirmPopupComponent from '~/modules/confirmPopup/index.vue'
-import CreateEditLibraryFile from '~/modules/createEditLibraryFile/index.vue'
-import CreateEditLink from '~/modules/createEditLink/index.vue'
-import LibraryTreeComponent from '~/modules/libraryTree/index.vue'
-import Loader from '~/modules/loader'
-import SvgIcon from '~/modules/svgIcon'
-import UploadingPopup from '~/modules/uploadingPopup/index.vue'
-import Anime from '~/plugins/anime'
-import ToastedPlugin from '~/plugins/toasted'
-import App from './app'
-import Popup from './components/popup'
-import Toasted from './components/toasted'
-import { TYPES } from './domain/types'
-import DownloadingPopup from './modules/downloadingPopup'
+
 import router from './router'
 import store from './store'
+import root from './app'
 
+import Popup from '~/modules/popup'
+import Toasted from '~/modules/toasted'
+import LibraryTree from '~/modules/libraryTree'
+import BCheckbox from '~/modules/bcheckbox'
+import BBtn from '~/modules/bbtn'
+import SvgIcon from '~/modules/svgIcon'
+import Loader from '~/modules/loader'
+import CreateEditLink from '~/modules/popup/createEditLink'
+import AboutPopup from '~/modules/popup/about'
+import ConfirmPopup from '~/modules/popup/confirm'
+import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
+import UploadingPopup from '~/modules/popup/uploading'
+import DownloadingPopup from '~/modules/popup/downloading'
 
-Vue.config.productionTip = false
-Vue.config.devtools = true
+import AnimePlugin from '~/plugins/anime'
+import ToastedPlugin from '~/plugins/toasted'
+import AppPlugin from '~/plugins/app'
+import ElectronPlugin from '~/plugins/electron'
 
-const app: Application = _container.get(TYPES.Application)
-app.init()
-const AppPlugin = {
-  install(vue: VueConstructor, applicationInstance: Application) {
-    vue.prototype.$app = applicationInstance
-  }
-}
-Vue.use(AppPlugin, app)
-Vue.use(Anime)
-Vue.use(BCheckbox)
-Vue.use(BBtn)
-Vue.use(Loader)
-Vue.use(SvgIcon)
-Vue.use(ToastedPlugin)
+const app = createApp(root)
 
-Vue.component('popup', Popup)
-Vue.component('toasted', Toasted)
-Vue.component('create-edit-link', CreateEditLink)
-Vue.component('about-popup', AboutPopup)
-Vue.component('uploading-popup', UploadingPopup)
-Vue.component('downloading-popup', DownloadingPopup)
-Vue.component('create-edit-library-file', CreateEditLibraryFile)
-Vue.component('confirm-popup', ConfirmPopupComponent)
-Vue.component('library-tree', LibraryTreeComponent)
+app.component('popup', Popup)
+app.component('toasted', Toasted)
+app.component('create-edit-link', CreateEditLink)
+app.component('library-tree', LibraryTree)
+app.component('svg-icon', SvgIcon)
+app.component('loader', Loader)
+app.component('b-checkbox', BCheckbox)
+app.component('b-btn', BBtn)
+app.component('about-popup', AboutPopup)
+app.component('uploading-popup', UploadingPopup)
+app.component('downloading-popup', DownloadingPopup)
+app.component('create-edit-library-file', CreateEditLibraryFile)
+app.component('confirm-popup', ConfirmPopup)
 
-if(!process.env.IS_WEB) {
-  Vue.prototype.$electron = require('electron')
-}
+app.use(store)
+app.use(router)
+app.use(AppPlugin)
+app.use(ElectronPlugin)
+app.use(AnimePlugin)
+app.use(ToastedPlugin)
 
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+app.mount('#app')

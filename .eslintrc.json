@@ -124,6 +124,7 @@
       }
     ],
     "vue/one-component-per-file": "off",
+    "vue/no-multiple-template-root": "off",
     "@typescript-eslint/no-shadow": ["error"],
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/restrict-plus-operands": "off",

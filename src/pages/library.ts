@@ -1,5 +1,5 @@
 import { Watch } from 'vue-property-decorator'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
@@ -10,7 +10,6 @@ import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
 import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
-import { VNode, h } from 'vue'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
@@ -61,6 +60,19 @@ const linked = (value: ILinkedDoc): Array<string> => {
   return result
 }
 
+@Options({
+  template: `
+    <div
+      class="editor_wrapper"
+      ref="editor_wrapper"
+      :style="{
+        display: isRendered ? 'flex' : 'none'
+      }"
+    >
+      <textarea name="editor" id="editor"></textarea>
+    </div>
+  `
+})
 export default class LibraryPage extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -312,29 +324,5 @@ export default class LibraryPage extends Vue {
   created() {
     this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
     this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
-  }
-
-  render(): VNode {
-    return h(
-      'div',
-      {
-        staticClass: 'editor_wrapper',
-        ref: 'editor_wrapper',
-        style: {
-          display: this.isRendered ? 'flex' : 'none'
-        }
-      },
-      [
-        h(
-          'textarea',
-          {
-            attrs: {
-              name: 'editor',
-              id: 'editor'
-            }
-          }
-        )
-      ]
-    )
   }
 }

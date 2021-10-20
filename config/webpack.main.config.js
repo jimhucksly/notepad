@@ -15,15 +15,6 @@ let mainConfig = {
   entry: {
     main: path.join(__dirname, './process.js')
   },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      }
-    ]
-  },
   node: {
     __dirname: isDevelopment,
     __filename: isDevelopment

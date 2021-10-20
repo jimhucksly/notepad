@@ -1,4 +1,5 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { _container } from '~/domain/container'
 import { IQueryBus } from '~/domain/interfaces'
@@ -6,9 +7,6 @@ import { IFile } from '~/domain/models'
 import { YandexDiskResourceLinkQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 
-@Component({
-  name: 'File'
-})
 export default class File extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 

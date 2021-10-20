@@ -7,6 +7,9 @@
 @import './aside';
 @import './popup';
 @import './toasted';
+@import './loader';
+@import './bcheckbox';
+@import './bbtn';
 
 html {
   font-family: var(--font-regular);
@@ -18,9 +21,6 @@ html {
 
 #app {
   overflow: hidden;
-}
-
-#content {
   position: relative;
   display: flex;
   flex-direction: column;

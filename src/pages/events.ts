@@ -1,5 +1,5 @@
 import { debounce } from 'lodash'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
@@ -8,7 +8,7 @@ import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IEvent, IEvents } from '~/domain/models'
 import { EventsQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
-import { IBCalendar } from '~/modules/calendar'
+import BCalendar, { IBCalendar } from '~/modules/calendar'
 
 interface IBCalendarOptions {
   eventsMode: boolean
@@ -27,6 +27,11 @@ interface IFilteredItem {
   title: string
 }
 
+@Options({
+  components: {
+    'b-calendar': BCalendar
+  }
+})
 export default class Events extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -40,7 +45,7 @@ export default class Events extends Vue {
   }
   bCalendarFormShow = false
 
-  header = ''
+  headerText = ''
   search = ''
   itemsFiltered: Array<IFilteredItem> = []
 
@@ -117,7 +122,7 @@ export default class Events extends Vue {
   }
 
   setHeader(v: string) {
-    this.header = v
+    this.headerText = v
   }
 
   async save(event: IEvent) {

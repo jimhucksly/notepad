@@ -1,17 +1,15 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
-import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
-import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { ArchivesQuery } from '~/domain/queries'
+import { Vue } from 'vue-class-component'
+import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
+import { ArchivesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
+import { TYPES } from '~/domain/types'
 
-@Component({
-  name: 'ProjectsEditor'
-})
 export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
 

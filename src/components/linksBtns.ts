@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import FsmStates from '~/application/fsm.states'
 import { UpdateLinksCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
@@ -9,9 +9,6 @@ import { LinksQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { uniqueid } from '~/helpers'
 
-@Component({
-  name: 'LinksBtns'
-})
 export default class LinksBtns extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)

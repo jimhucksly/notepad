@@ -16,4 +16,4 @@
     </div>
   </div>
 </template>
-<script src="./popup.ts" lang="ts"></script>
+<script src="./index.ts" lang="ts"></script>

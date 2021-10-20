@@ -1,9 +1,6 @@
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
 
-@Component({
-  name: 'JsonViewerBtns'
-})
 export default class JsonViewerBtns extends Vue {
   open() {
     const openFile = () => {

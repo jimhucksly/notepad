@@ -1,22 +1,15 @@
-import { CreateElement, VNode } from 'vue'
-import { Vue, Component } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
 
-@Component({
-  name: 'Loading'
+@Options({
+  template: `
+    <div id="loading_cont">
+      <div class="m-b-5">
+        <small>Connection...</small>
+      </div>
+      <div class="loading"></div>
+    </div>
+  `
 })
-
 export default class Loading extends Vue {
-  render(h: CreateElement): VNode {
-    return h(
-      'div',
-      { attrs: { id: 'loading_cont' } },
-      [
-        h(
-          'div', { staticClass: 'm-b-5' },
-          [h('small', {}, 'Connection...')]
-        ),
-        h('div', { staticClass: 'loading' })
-      ]
-    )
-  }
+  //
 }

@@ -173,8 +173,18 @@ export default class Index extends Vue {
     }
   }
 
-  async created(): Promise<void> {
-    const appPath = process.env.USER_DATA_PATH
+  async created() {
+    const getUserPath = (): Promise<string> => {
+      return new Promise((resolve) => {
+        this.$electron.ipcRenderer.on(
+          'user-path-response',
+          (e: Electron.IpcRendererEvent, value: string) => {
+            resolve(value)
+          })
+        this.$electron.ipcRenderer.send('user-path-request')
+      })
+    }
+    const appPath = await getUserPath()
     await this.setPath(appPath)
     await this.checkToken(appPath)
   }

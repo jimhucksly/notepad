@@ -1,17 +1,14 @@
-import { Vue, Component, Prop } from 'vue-property-decorator'
 import { cloneDeep, unset } from 'lodash'
-import { checkLinks, htmlToText } from '~/helpers'
-import { IFilters, IJson } from '~/domain/models'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
-import { DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
+import { Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
+import { DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { IFilters, IJson } from '~/domain/models'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
-
-@Component({
-  name: 'Controls'
-})
+import { TYPES } from '~/domain/types'
+import { checkLinks, htmlToText } from '~/helpers'
 
 export default class Controls extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)

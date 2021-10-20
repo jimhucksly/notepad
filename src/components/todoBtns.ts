@@ -1,9 +1,6 @@
-import { Vue, Component } from 'vue-property-decorator'
 import { Hub } from '~/plugins/hub'
+import { Vue } from 'vue-class-component'
 
-@Component({
-  name: 'TodoBtns'
-})
 export default class TodoBtns extends Vue {
   add() {
     Hub.$emit('todo-add')

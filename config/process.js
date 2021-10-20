@@ -8,8 +8,7 @@ import electron, {
   Menu,
   MenuItem,
   dialog,
-  nativeImage,
-  globalShortcut
+  nativeImage
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
@@ -32,9 +31,12 @@ app.allowRendererProcessReuse = true
 
 let mainWindow
 let appTray
+
+const url = path.join(__dirname, '../src/index.html')
+
 const winURL = $DEV
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+  ? 'http://localhost:9080'
+  : `file://${url}`
 
 const appIconTray = path.resolve(__static, 'iconTray.ico')
 let iconTray = nativeImage.createFromPath(appIconTray)
@@ -66,6 +68,17 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
+  if($DEV) {
+    mainWindow.webContents.openDevTools()
+  }
+
+  /**
+   * Uncomment to open Devtools in production mode
+   */
+  // if(!$DEV) {
+  //   mainWindow.webContents.openDevTools()
+  // }
+
   appTray = new Tray(iconTray)
   appTray.setToolTip('Notepad App')
 
@@ -93,27 +106,9 @@ function createWindow() {
     }
   })
 
-  mainWindow.on('show', () => {
-    if($DEV) {
-      mainWindow.webContents.openDevTools()
-    }
-    /**
-     * Uncomment to open Devtools in production mode
-     */
-    // if(!$DEV) {
-    //   mainWindow.webContents.openDevTools()
-    // }
-  })
-
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-
-  // mainWindow.webContents.on('did-frame-finish-load', () => {
-  //   if($DEV) {
-  //     mainWindow.focus()
-  //   }
-  // })
 }
 
 const gotTheLock = app.requestSingleInstanceLock()
@@ -121,19 +116,21 @@ const gotTheLock = app.requestSingleInstanceLock()
 if(!gotTheLock) {
   app.quit()
 } else {
-  app.on('second-instance', () => {
-    if(mainWindow) {
-      if(mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
-      mainWindow.show()
-    }
-  })
+  app.whenReady().then(() => {
+    createWindow()
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+      }
+    })
 
-  app.on('ready', createWindow)
+    app.setPath('userData', path.resolve(app.getPath('userData'), '../dnweb/notepad-app'))
+
+  })
 }
 
 app.on('window-all-closed', () => {
-  if(process.platform !== 'darwin') {
+  if (process.platform !== 'darwin') {
     app.quit()
   }
 })
@@ -146,12 +143,6 @@ app.on('browser-window-created', (e, window) => {
   process.env.IS_MAXIMAZED = Number(window.isMaximized())
 })
 
-app.on('activate', () => {
-  if(mainWindow === null) {
-    createWindow()
-  }
-})
-
 app.on('will-quit', (e) => {
   globalShortcut.unregisterAll()
 })
@@ -162,9 +153,6 @@ app.on('before-quit', () => {
   appTray.destroy()
   mainWindow.close()
 })
-
-app.setPath('userData', path.resolve(app.getPath('userData'), '../dnweb/notepad-app'))
-process.env.USER_DATA_PATH = app.getPath('userData')
 
 ipcMain.on('minimize', (event) => {
   mainWindow.minimize()
@@ -196,6 +184,10 @@ ipcMain.on('context-menu-popup', (event) => {
     role: 'copy'
   }))
   contextMenu.popup(mainWindow)
+})
+
+ipcMain.on('user-path-request', (event) => {
+  event.sender.send('user-path-response', app.getPath('userData'))
 })
 
 ipcMain.on('authorized', () => {

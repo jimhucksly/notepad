@@ -5,7 +5,7 @@
         <button class="btn btn-primary events__btn-left" ref="button-prev" @click="prev">
           <span></span>
         </button>
-        <div class="events__header" ref="header">{{ header }}</div>
+        <div class="events__header" ref="header">{{ headerText }}</div>
         <button class="btn btn-primary events__btn-right" ref="button-next" @click="next">
           <span></span>
         </button>
@@ -41,7 +41,7 @@
       <b-calendar
         ref="calendar"
         :options="bCalendarOptions"
-        @set-header="setHeader"
+        @set-header="setHeader($event)"
         @save="save"
         @remove="remove"
         @form-toggle="(v) => { bCalendarFormShow = v }"

@@ -5,8 +5,8 @@
         class="projects_item"
         v-for="item in json"
         :key="item.key"
+        data-role="projects-item"
         :data-stamp="item.key"
-        ref="projects_item"
         :class="{
           lock: item.lock,
           active: filter[item.key],

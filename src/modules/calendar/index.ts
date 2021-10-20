@@ -1,9 +1,9 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { VueConstructor, VNode } from 'vue/types'
+import { Prop, Watch } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
 import CalendarInstance from './instance'
 import { IEvent } from '~/domain/models'
-import './calendar.scss'
 import { IOptions } from './calendar.model'
+import './calendar.scss'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function isDate(date: any): boolean {
@@ -83,24 +83,18 @@ export const defaults: IOptions = {
   labelFormat: '' // '... %DATA% ...'
 }
 
-const Calendar = function calendar(options: Record<string, unknown>) {
-  if(!options) {
-    options = {}
-  }
-}
-
 export interface IBCalendar extends Vue {
   prevMonth: () => void
   nextMonth: () => void
   setToday: () => void
 }
 
-@Component({
+@Options({
   components: {
     CalendarInstance
   }
 })
-class BCalendarComponent extends Vue {
+export default class BCalendarComponent extends Vue {
   @Prop() options: IOptions
 
   op: IOptions = { ...defaults }
@@ -115,6 +109,13 @@ class BCalendarComponent extends Vue {
 
   created() {
     this.op = { ...defaults, ...this.options }
+  }
+
+  getOptions(index: number) {
+    return {
+      ...this.op,
+      setDate: index === 0 ? this.date1 : this.date2
+    }
   }
 
   get baseDate(): Date {
@@ -323,185 +324,5 @@ class BCalendarComponent extends Vue {
     this.$emit('remove', this.event.date)
     this.formClear()
   }
-
-  render(h: typeof Vue.prototype.$createElement): VNode {
-    const instances: VNode[] = (this.op.range ? [1, 2] : [1]).map((el, index) => {
-      return h(
-        'calendar-instance',
-        {
-          key: el,
-          props: {
-            index: el,
-            range: this.range,
-            active: this.active,
-            options: {
-              ...this.op,
-              setDate: index === 0 ? this.date1 : this.date2
-            }
-          },
-          on: {
-            'day-selected': (date: string) => this.daySelected(date),
-            'next-month': () => this.nextRangeMonth(),
-            'prev-month': () => this.prevRangeMonth(),
-            'active-date': (date: string) => this.setActiveDate(date),
-            'set-month': (i: number) => this.setMonth(el, i),
-            'set-year': (year: number) => this.setYear(year),
-            'set-today': () => this.setToday(),
-            'set-header': (val: string) => this.$emit('set-header', val)
-          }
-        },
-        []
-      )
-    })
-
-    const formOverlay: VNode = h(
-      'div',
-      {
-        staticClass: 'b-calendar-form-overlay',
-        on: {
-          click: () => {
-            this.formClear()
-          }
-        }
-      }
-    )
-
-    const form: VNode = h(
-      'div',
-      {
-        staticClass: 'b-calendar-form'
-      },
-      [
-        h(
-          'div',
-          {
-            staticClass: 'b-calendar-form-close',
-            on: {
-              click: (e: MouseEvent) => {
-                e.preventDefault()
-                this.formClear()
-              }
-            }
-          }
-        ),
-        h(
-          'form',
-          {},
-          [
-            h(
-              'input',
-              {
-                domProps: {
-                  value: this.event.title
-                },
-                attrs: {
-                  type: 'text',
-                  placeholder: 'Title'
-                },
-                on: {
-                  input: (e: MouseEvent) => {
-                    this.event.title = (e.target as HTMLInputElement).value
-                  }
-                }
-              }
-            ),
-            h(
-              'input',
-              {
-                domProps: {
-                  value: this.event.date
-                },
-                attrs: {
-                  type: 'text',
-                  readonly: true
-                }
-              }
-            ),
-            h(
-              'textarea',
-              {
-                domProps: {
-                  value: this.event.content
-                },
-                attrs: {
-                  placeholder: 'Text'
-                },
-                on: {
-                  input: (e: MouseEvent) => {
-                    this.event.content = (e.target as HTMLInputElement).value
-                  }
-                }
-              }
-            ),
-            h(
-              'div',
-              {
-                staticClass: 'flex-between shrink-0'
-              },
-              [
-                h(
-                  'button',
-                  {
-                    staticClass: 'btn btn-danger m-r-15',
-                    on: {
-                      click: (e: MouseEvent) => {
-                        e.preventDefault()
-                        this.formRemove()
-                      }
-                    }
-                  },
-                  'Remove'
-                ),
-                h(
-                  'button',
-                  {
-                    staticClass: 'btn btn-primary',
-                    on: {
-                      click: (e: MouseEvent) => {
-                        e.preventDefault()
-                        this.formSave()
-                      }
-                    }
-                  },
-                  'Save'
-                )
-              ]
-            )
-          ]
-        )
-      ]
-    )
-
-    const wrap: VNode = h(
-      'div',
-      {
-        staticClass: 'b-calendar-wrap',
-        class: {
-          'b-calendar-range': this.op.range
-        }
-      },
-      this.op.eventsMode
-        ? this.formShow
-          ? [...instances, formOverlay, form]
-          : instances
-        : instances
-    )
-
-    return h(
-      'div',
-      {
-        staticClass: 'b-calendar-card'
-      },
-      [wrap]
-    )
-  }
 }
 
-function install(constructor: VueConstructor) {
-  constructor.component('BCalendar', BCalendarComponent)
-}
-
-Calendar.install = install
-Calendar.NAME = 'BCalendar'
-
-export default Calendar

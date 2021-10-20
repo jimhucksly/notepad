@@ -1,25 +1,14 @@
-import { CreateElement, VNode } from 'vue'
-import { Vue, Component } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
 
-@Component({
-  name: 'Error'
+@Options({
+  template: `
+    <div class="error_cont">
+      <div class="error_cont_inner">
+        Connection is lost.
+      </div>
+    </div>
+  `
 })
 export default class Error extends Vue {
-  render(h: CreateElement): VNode {
-    return h(
-      'div',
-      {
-        staticClass: 'error_cont'
-      },
-      [
-        h(
-          'div',
-          {
-            staticClass: 'error_cont_inner'
-          },
-          'Connection is lost.'
-        )
-      ]
-    )
-  }
+  //
 }

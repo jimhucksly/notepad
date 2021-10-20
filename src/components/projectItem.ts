@@ -1,10 +1,10 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component'
+import { Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
 import { IJsonItem } from '~/domain/models'
 
-@Component({
-  name: 'ProjectItem',
+@Options({
   components: {
     Controls,
     File

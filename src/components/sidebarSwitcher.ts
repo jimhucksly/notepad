@@ -1,11 +1,9 @@
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { toStr } from '~/application/fsm'
 import { IMenu } from '~/domain/models'
 
-@Component({
-  name: 'SidebarSwitcher'
-})
 export default class SidebarSwitcher extends Vue {
   @Prop() isPreferences: boolean
   @Prop() isProjects: boolean

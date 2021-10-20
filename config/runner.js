@@ -6,7 +6,6 @@ const path = require('path')
 const { spawn } = require('child_process')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
-// const webpackHotMiddleware = require('webpack-hot-middleware')
 
 const { endpoint } = require('./api.config.json')
 
@@ -18,9 +17,6 @@ delete rendererConfig.optimization
 
 let electronProcess = null
 let manualRestart = false
-// let hotMiddleware
-
-let isRunning = false
 
 function startMain () {
   return new Promise((resolve, reject) => {
@@ -29,22 +25,13 @@ function startMain () {
     const compiler = webpack(mainConfig)
 
     compiler.hooks.watchRun.tapAsync('watch-run', (compilation, done) => {
-      // hotMiddleware.publish({ action: 'compiling' })
       done()
     })
-
-    // compiler.hooks.done.tap('done', stats => {
-    //   console.log(chalk.red.bold('app is updated: ') + dd + '\n')
-    // })
 
     compiler.watch({}, (err, stats) => {
       if (err) {
         console.log(err)
         return
-      }
-
-      if(!isRunning) {
-        // logStats('Main')
       }
 
       if (electronProcess && electronProcess.kill) {
@@ -69,19 +56,8 @@ function startRenderer () {
 
     const compiler = webpack(rendererConfig)
 
-    // hotMiddleware = webpackHotMiddleware(compiler)
-
     compiler.hooks.done.tap('done', stats => {
-      if(!isRunning) {
-        // logStats('Renderer')
-      } else {
-        // const d = new Date(Date.now())
-        // const hh = ('0' + d.getHours()).slice(-2)
-        // const mm = ('0' + d.getMinutes()).slice(-2)
-        // const ss = ('0' + d.getSeconds()).slice(-2)
-        // const dd = hh + ':' + mm + ':' + ss
-        // console.log(chalk.yellow.bold('app is updated: ') + dd + '\n')
-      }
+      //
     })
 
     const server = new WebpackDevServer(
@@ -171,8 +147,7 @@ function init () {
   Promise
     .all([startRenderer(), startMain()])
     .then(() => {
-      isRunning = true
-      console.log(chalk.green('app is sucessfully running') + '\n')
+      // console.log(chalk.green('app is sucessfully running') + '\n')
       startElectron()
     })
     .catch(err => {

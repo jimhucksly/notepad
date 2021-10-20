@@ -1,5 +1,6 @@
 import { cloneDeep, unset } from 'lodash'
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { _container } from '~/domain/container'
@@ -8,9 +9,6 @@ import { IArchive, IFilters, IJson } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 
-@Component({
-  name: 'Projects'
-})
 export default class Projects extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
 
@@ -38,8 +36,13 @@ export default class Projects extends Vue {
   }
 
   toggleFilter(e: MouseEvent, stamp: string): void | null {
-    const items = this.$refs.projects_item as Array<HTMLElement>
-    const item = items.find((el: HTMLElement) => el.dataset.stamp === stamp)
+    const items = this.$el.querySelectorAll('[data-role="projects-item"]')
+    let item: HTMLElement = null
+    items.forEach((el: HTMLElement) => {
+      if(el.dataset.stamp === stamp) {
+        item = el
+      }
+    })
     if(!item) {
       return
     }
