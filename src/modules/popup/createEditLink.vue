@@ -25,5 +25,5 @@
     </div>
   </form>
 </template>
-<script src="./index.ts" lang="ts"></script>
+<script src="./createEditLink.ts" lang="ts"></script>
 

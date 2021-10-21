@@ -17,5 +17,5 @@
     </div>
   </div>
 </template>
-<script src="./index.ts" lang="ts"></script>
+<script src="./confirm.ts" lang="ts"></script>
 

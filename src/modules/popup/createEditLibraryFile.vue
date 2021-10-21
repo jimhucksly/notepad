@@ -15,4 +15,4 @@
     </div>
   </form>
 </template>
-<script src="./index.ts" lang="ts"></script>
+<script src="./createEditLibraryFile.ts" lang="ts"></script>
