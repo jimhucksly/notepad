@@ -7,7 +7,6 @@ import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IJson, IRootState, IUser } from '~/domain/models'
 import {
-  LibraryFileQuery,
   ProjectsQuery,
   SessionQuery,
   StartQuery
@@ -66,7 +65,7 @@ export default class Application implements IApplication {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Projects
+  homeState = FsmStates.Library
   history: Array<keyof IFsmStates> = []
   currentUser: IUser = null
 
@@ -173,8 +172,8 @@ export default class Application implements IApplication {
       // )
       // await this._queryBus.exec(new YandexTokenQuery(111, Number(this.currentUser.id)))
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery())
+        // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         // this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
         // this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
       ])

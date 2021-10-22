@@ -13,6 +13,7 @@ import electron, {
 import path from 'path'
 import pkg from '../package.json'
 import { download } from 'electron-dl'
+import fs from 'fs'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -258,3 +259,14 @@ ipcMain.on('download-button', async (event, { url, targetPath }) => {
     }
   )
 })
+
+ipcMain.on('plain-text-request', event => {
+  fs.readFile(path.resolve(__dirname, '../src/lib/main.md'), 'utf8', function (err,data) {
+    if (err) {
+      return console.log(err)
+    }
+    event.sender.send('plain-text-response', data)
+  })
+})
+
+

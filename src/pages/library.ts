@@ -3,16 +3,16 @@ import { Options, Vue } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
-import MarkdownItAnchor from 'markdown-it-anchor'
-import { translit, uniqueid } from '~/helpers'
+// import MarkdownItAnchor from 'markdown-it-anchor'
+// import { translit, uniqueid } from '~/helpers'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { TYPES } from '~/domain/types'
 import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
-import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
+import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
 
 interface ILinkedDoc {
   lines: Array<{ text: string }>
@@ -63,9 +63,9 @@ const linked = (value: ILinkedDoc): Array<string> => {
 @Options({
   beforeUnmount() {
     this.setLibraryTree([])
-    const id = this.currentId
-    const value = this.editor.value()
-    this.commandBus.do(new UpdateLibraryCommand(id, value))
+    // const id = this.currentId
+    // const value = this.editor.value()
+    // this.commandBus.do(new UpdateLibraryCommand(id, value))
     this.setFileId(0)
     Hub.$off('codemirror-link-click', this.linkClickHandler)
   },
@@ -74,7 +74,7 @@ const linked = (value: ILinkedDoc): Array<string> => {
       class="editor_wrapper"
       ref="editor_wrapper"
       :style="{
-        display: isRendered ? 'flex' : 'none'
+        display: isRendered || 1 ? 'flex' : 'none'
       }"
     >
       <textarea name="editor" id="editor"></textarea>
@@ -110,7 +110,7 @@ export default class LibraryPage extends Vue {
     }
   }
 
-  @Watch('initialValue') onInitialValueCahnged(value: string) {
+  @Watch('initialValue') onInitialValueCahnged() {
     let editorElement = document.getElementById('editor')
     if(!editorElement) {
       return
@@ -122,16 +122,19 @@ export default class LibraryPage extends Vue {
     textarea.id = 'editor'
     parent.appendChild(textarea)
     editorElement = document.getElementById('editor')
-    this.buildEditor(editorElement, value || '')
+    setTimeout(() => {
+      this.buildEditor(editorElement)
+    }, 100)
   }
 
-  buildEditor(element: HTMLElement, value: string) {
+  async buildEditor(element: HTMLElement) {
+    const value = this.initialValue
     const config: SimpleMDE.Options = {
       autofocus: true,
       toolbar: [
         'bold',
         'italic',
-        'underline',
+        'strikethrough',
         '|',
         'heading-1',
         'heading-2',
@@ -157,20 +160,11 @@ export default class LibraryPage extends Vue {
         uniqueId: 'MyUniqueID',
         delay: 1000
       },
-      parsingConfig: {
-        allowAtxHeaderWithoutSpace: true,
-        strikethrough: false,
-        underscoresBreakWords: true
-      },
-      previewRender(plainText: string) {
+      previewRender() {
         LibraryPage.nodes = []
-        let html = LibraryPage.md.render(plainText)
+        let html = LibraryPage.md.render(value)
         html = html.replace(/<\/p>/g, '</p><br>')
         return html
-      },
-      renderingConfig: {
-        singleLineBreaks: true,
-        codeSyntaxHighlighting: false
       },
       status: [
         {
@@ -180,14 +174,16 @@ export default class LibraryPage extends Vue {
         },
         'autosave', 'lines', 'words', 'cursor'
       ],
-      tabSize: 4
+      tabSize: 4,
+      initialValue: 'Hello'
     }
     if(element) {
       config.element = element
     }
 
     this.editor = new SimpleMDE(config)
-    this.editor.value(value)
+    await this.$nextTick()
+    this.editor.value(this.initialValue)
     this.editor.togglePreviewHandler()
 
     const toolbarItemPreview = this.editor.toolbar.find(item => item.name === 'preview')
@@ -207,9 +203,10 @@ export default class LibraryPage extends Vue {
     this.isRendered = true
     const doc = this.editor.codemirror.getDoc()
     const count = doc.lineCount()
-    const linkedDoc: ILinkedDoc = doc.linkedDoc({
+    const linkedDoc = doc.linkedDoc({
       from: 0,
-      to: count
+      to: count,
+      mode: 'html'
     })
     this.links = linked(linkedDoc)
     this.linkClickHandler = (name: string) => {
@@ -282,7 +279,7 @@ export default class LibraryPage extends Vue {
       })
   }
 
-  mounted() {
+  async mounted() {
     LibraryPage.md = new MarkdownIt({
       html: true,
       xhtmlOut: false,
@@ -296,32 +293,68 @@ export default class LibraryPage extends Vue {
       }
     })
 
-    LibraryPage.md.use(MarkdownItAnchor, {
-      slugify: (s: string) => {
-        const slug = '_' + translit(s)
-        LibraryPage.nodes.push({
-          name: s || '',
-          slug: slug || '',
-          id: uniqueid(8) as string,
-          children: []
-        })
-        return slug
-      },
-      level: [1, 2, 3],
-      permalink: true,
-      permalinkClass: 'md-anchor',
-      permalinkBefore: false
-    })
+    // LibraryPage.md.use(MarkdownItAnchor, {
+    //   slugify: (s: string) => {
+    //     const slug = '_' + translit(s)
+    //     LibraryPage.nodes.push({
+    //       name: s || '',
+    //       slug: slug || '',
+    //       id: uniqueid(8) as string,
+    //       children: []
+    //     })
+    //     return slug
+    //   },
+    //   level: [1, 2, 3],
+    //   permalink: true,
+    //   permalinkClass: 'md-anchor',
+    //   permalinkBefore: false
+    // })
 
-    const editorElement = document.getElementById('editor')
+    const editorElement = this.$el.querySelector('#editor')
     if(!editorElement) {
       return
     }
-    this.buildEditor(editorElement, this.initialValue)
+    // this.buildEditor(editorElement)
+
+    const getPlainText = (): Promise<string> => {
+      return new Promise((resolve) => {
+        this.$electron.ipcRenderer.on(
+          'plain-text-response',
+          (e: Electron.IpcRendererEvent, value: string) => {
+            resolve(value)
+          })
+        this.$electron.ipcRenderer.send('plain-text-request')
+      })
+    }
+    const text = await getPlainText()
+    this.setLibraryData(text)
+    // const md = new MarkdownIt({
+    //   html: true,
+    //   xhtmlOut: false,
+    //   breaks: true,
+    //   langPrefix: 'language-',
+    //   linkify: false,
+    //   typographer: false,
+    //   quotes: '«»',
+    //   highlight(str: string, lang: string) {
+    //     return ''
+    //   }
+    // })
+    // const html = md.render(text)
+    // codemirror(
+    //   function(el: unknown) {
+    //     editorElement.parentNode.replaceChild(el, editorElement)
+    //   },
+    //   {
+    //     value: html,
+    //     mode: 'html',
+    //     autofocus: true
+    //   }
+    // )
   }
 
   created() {
-    this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+    // this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
     this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
   }
 }
