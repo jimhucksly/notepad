@@ -44,7 +44,7 @@
         @set-header="setHeader($event)"
         @save="save"
         @remove="remove"
-        @form-toggle="(v) => { bCalendarFormShow = v }"
+        @form-toggle="bCalendarFormShow = $event"
       />
     </div>
   </div>

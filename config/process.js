@@ -33,11 +33,9 @@ app.allowRendererProcessReuse = true
 let mainWindow
 let appTray
 
-const url = path.join(__dirname, '../src/index.html')
-
 const winURL = $DEV
   ? 'http://localhost:9080'
-  : `file://${url}`
+  : `file://${__dirname}/index.html`
 
 const appIconTray = path.resolve(__static, 'iconTray.ico')
 let iconTray = nativeImage.createFromPath(appIconTray)

@@ -86,7 +86,7 @@
     "css-loader": "^6.3.0",
     "del": "^3.0.0",
     "electron": "^13.5.1",
-    "electron-builder": "^22.11.7",
+    "electron-builder": "^22.13.1",
     "electron-dl": "^3.2.1",
     "eslint": "^7.13.0",
     "eslint-config-standard": "^11.0.0",

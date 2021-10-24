@@ -21,9 +21,6 @@ let rendererConfig = {
   entry: {
     renderer: path.join(__dirname, '../src/main.ts')
   },
-  externals: {
-    vue: 'Vue',
-  },
   module: {
     rules: [
       {
@@ -124,6 +121,10 @@ let rendererConfig = {
           to: './icon.ico',
         }
       ]
+    }),
+    new webpack.DefinePlugin({
+      '__VUE_OPTIONS_API__': true,
+      '__VUE_PROD_DEVTOOLS__': false
     })
   ],
   output: {

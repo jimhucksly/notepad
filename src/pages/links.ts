@@ -55,6 +55,10 @@ export default class Links extends Vue {
     }
   }
 
+  getName(item: ILink, index: number) {
+    return `${index + 1}. ${item.name}`
+  }
+
   async mounted() {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     if(!this.links?.length) {

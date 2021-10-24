@@ -6,7 +6,7 @@
     <div class="links_area" v-if="links">
       <ul>
         <li v-for="(item, index) in links" :key="index">
-          <a href="/" @click.prevent="open(item.url)">{{ `${index + 1}. ${item.name}` }}</a>
+          <a href="/" @click.prevent="open(item.url)">{{ getName(item, index) }}</a>
           <button @click="edit(item.id)">
             <svg-icon icon="linkIcon" width="16px" height="16px" />
           </button>

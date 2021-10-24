@@ -13,7 +13,7 @@
         @next-month="nextRangeMonth"
         @prev-month="prevRangeMonth"
         @active-date="setActiveDate"
-        @set-month="i => setMonth(el, i)"
+        @set-month="setMonth(el, $event)"
         @set-year="setYear"
         @set-today="setToday"
         @set-header="$emit('set-header', $event)"

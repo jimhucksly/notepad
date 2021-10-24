@@ -7,7 +7,7 @@
         theme="twilight"
         width="100%"
         height="100%"
-        @init="instance => editorInit(instance)"
+        @init="editorInit($event)"
         @input="$emit('input', $event)"
       />
       <div class="json_viewer_separator" @mousedown="drag($event)"></div>
