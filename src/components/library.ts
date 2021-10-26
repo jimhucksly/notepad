@@ -3,6 +3,7 @@ import { Getter } from 'vuex-class'
 import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { ITreeItem } from '~/domain/models'
 import LibraryFiles from '~/components/libraryFiles'
+import { Watch } from 'vue-property-decorator'
 
 @Options({
   components: {
@@ -11,7 +12,7 @@ import LibraryFiles from '~/components/libraryFiles'
   template: `
     <div class="markdown">
       <div class="library_inner">
-        <library-tree />
+        <library-tree v-if="tree" :tree="tree" :level="1" />
       </div>
       <div
         class="library_files_btn"
@@ -27,7 +28,15 @@ import LibraryFiles from '~/components/libraryFiles'
 })
 export default class Library extends Vue {
   @Getter('getHistory') history: Array<keyof IFsmStates>
-  @Getter('library/getLibraryTree') mdTree: Array<ITreeItem>
+  @Getter('library/getLibraryTree') items: Array<ITreeItem>
+
+  tree: Array<ITreeItem> = []
+
+  @Watch('items') onItemsChanged() {
+    if(this.items && this.items.length) {
+      this.tree = this.items
+    }
+  }
 
   toggleFiles() {
     if(this.isFilesInit) {

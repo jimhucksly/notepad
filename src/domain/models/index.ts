@@ -160,7 +160,7 @@ export interface ILibraryState {
   libraryData: string
   libraryFiles: Array<ILibraryFile>
   libraryFileId: string | number
-  libraryTree: ITreeItem[]
+  libraryTree: Array<ITreeItem>
 }
 
 export interface ITodoState {

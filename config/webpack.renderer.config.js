@@ -10,7 +10,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const ProgressPlugin = require('webpack/lib/ProgressPlugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -89,9 +88,6 @@ let rendererConfig = {
     new ESLintPlugin({
       extensions: ['vue', 'js', 'ts'],
       formatter: require('eslint-formatter-friendly')
-    }),
-    new ProgressPlugin({
-      modules: true, modulesCount: 3000
     }),
     new ForkTsCheckerWebpackPlugin({
       typescript: {
