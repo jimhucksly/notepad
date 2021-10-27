@@ -35,6 +35,8 @@ export default class Library extends Vue {
   @Watch('items') onItemsChanged() {
     if(this.items && this.items.length) {
       this.tree = this.items
+    } else {
+      this.tree = []
     }
   }
 

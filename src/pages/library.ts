@@ -245,11 +245,11 @@ export default class LibraryPage extends Vue {
             index++
             break
           case 2:
-            tree[index].children.push(item)
+            tree[index] && tree[index].children && tree[index].children.push(item)
             break
           case 3:
             const lastIndex = tree[index].children.length - 1
-            tree[index].children[lastIndex].children.push(item)
+            tree[index] && tree[index].children && tree[index].children[lastIndex].children.push(item)
         }
       }
     })
