@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="m-b-20 flex-center">
-      <img src="assets/images/icon.svg" alt="app-icon" width="50%">
+      <img src="assets/images/icon.svg" alt="app-icon" style="width: 150px">
     </div>
     <div class="m-b-5 flex-center">
       <p>{{ appName }}</p>

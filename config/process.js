@@ -189,18 +189,6 @@ ipcMain.on('user-path-request', (event) => {
   event.sender.send('user-path-response', app.getPath('userData'))
 })
 
-ipcMain.on('authorized', () => {
-  const appMenu = Menu.getApplicationMenu()
-  const menuItemFile = appMenu.items.find(item => item.label === 'File')
-  menuItemFile.visible = true
-})
-
-ipcMain.on('unauthorized', () => {
-  const appMenu = Menu.getApplicationMenu()
-  const menuItemFile = appMenu.items.find(item => item.label === 'File')
-  menuItemFile.visible = false
-})
-
 ipcMain.on('open-folder-dialog', (event, arg) => {
   dialog.showOpenDialog({
     title: 'Choose folder',
@@ -256,15 +244,6 @@ ipcMain.on('download-button', async (event, { url, targetPath }) => {
       }
     }
   )
-})
-
-ipcMain.on('plain-text-request', event => {
-  fs.readFile(path.resolve(__dirname, '../src/lib/main.md'), 'utf8', function (err,data) {
-    if (err) {
-      return console.log(err)
-    }
-    event.sender.send('plain-text-response', data)
-  })
 })
 
 

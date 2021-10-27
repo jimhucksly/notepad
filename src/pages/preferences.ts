@@ -1,4 +1,5 @@
 import AutoLaunch from 'auto-launch'
+import Electron from 'electron'
 import { Vue } from 'vue-class-component'
 import { Getter, Mutation } from 'vuex-class'
 import { RevokeYandexTokenCommand } from '~/domain/commands'

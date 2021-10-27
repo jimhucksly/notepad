@@ -1,4 +1,3 @@
-import { ipcRenderer } from 'electron'
 import { cloneDeep } from 'lodash'
 import $http from '~/store/http'
 import {
@@ -35,7 +34,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
-    ipcRenderer.send(command.flag ? 'authorized' : 'unauthorized')
   }
 
   @Commandable(TYPES.ReadCommand)
