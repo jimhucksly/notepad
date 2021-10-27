@@ -62,10 +62,9 @@ const linked = (value: ILinkedDoc): Array<string> => {
 
 @Options({
   beforeUnmount() {
-    this.setLibraryTree([])
-    const id = this.currentId
     const value = LibraryPage.editor.value()
-    this.commandBus.do(new UpdateLibraryCommand(id, value))
+    this.commandBus.do(new UpdateLibraryCommand(this.currentId, value))
+    this.setLibraryTree([])
     this.setFileId(0)
     Hub.$off('codemirror-link-click', this.linkClickHandler)
   },
@@ -117,10 +116,11 @@ export default class LibraryPage extends Vue {
     if(!editorElement) {
       return
     }
+    LibraryPage.editor = null
     LibraryPage.editorValue = this.initialValue
+    Hub.$off('codemirror-link-click', this.linkClickHandler)
     const parent = editorElement.parentElement
     parent.innerHTML = ''
-    Hub.$off('codemirror-link-click', this.linkClickHandler)
     const textarea = document.createElement('textarea')
     textarea.name = 'editor'
     textarea.id = 'editor'
@@ -132,7 +132,7 @@ export default class LibraryPage extends Vue {
   }
 
   async buildEditor(element: HTMLElement) {
-    const value = this.initialValue
+    LibraryPage.editorValue = this.initialValue
     const config: SimpleMDE.Options = {
       autofocus: true,
       toolbar: [
@@ -166,7 +166,7 @@ export default class LibraryPage extends Vue {
       },
       previewRender() {
         LibraryPage.nodes = []
-        let html = LibraryPage.md.render(value)
+        let html = LibraryPage.md.render(LibraryPage.editorValue)
         html = html.replace(/<\/p>/g, '</p><br>')
         return html
       },
@@ -178,8 +178,7 @@ export default class LibraryPage extends Vue {
         },
         'autosave', 'lines', 'words', 'cursor'
       ],
-      tabSize: 4,
-      initialValue: 'Hello'
+      tabSize: 4
     }
     if(element) {
       config.element = element
