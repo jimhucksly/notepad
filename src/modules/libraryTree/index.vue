@@ -11,7 +11,7 @@
       >
         <span
           :title="item.name"
-          :ref="item.id"
+          :data-ref="item.id"
           :class="{
             'tree_item_plus': item.children && item.children.length,
             'tree_item_minus tree_item_empty' : (!item.children || !item.children.length) && level === 1,

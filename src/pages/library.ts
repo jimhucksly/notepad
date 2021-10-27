@@ -63,9 +63,9 @@ const linked = (value: ILinkedDoc): Array<string> => {
 @Options({
   beforeUnmount() {
     this.setLibraryTree([])
-    // const id = this.currentId
-    // const value = this.editor.value()
-    // this.commandBus.do(new UpdateLibraryCommand(id, value))
+    const id = this.currentId
+    const value = LibraryPage.editor.value()
+    this.commandBus.do(new UpdateLibraryCommand(id, value))
     this.setFileId(0)
     Hub.$off('codemirror-link-click', this.linkClickHandler)
   },

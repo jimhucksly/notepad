@@ -7,23 +7,28 @@ import { Hub } from '~/plugins/hub'
   name: 'LibraryTree'
 })
 export default class LibraryTreeComponent extends Vue {
-  @Prop() tree!: ITreeItem[]
-  @Prop({ default: 1 }) level!: number
+  @Prop() tree: Array<ITreeItem>
+  @Prop({ default: 1 }) level: number
 
   selectNode(item: ITreeItem) {
     Hub.$emit('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor-preview')
     if(editor) {
-      const link: HTMLAnchorElement | null = editor.querySelector(`a[href*=${item.slug}]`)
-      link && link.click()
+      const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug)
+      const rect = elem.getBoundingClientRect()
+      editor.scrollTo(0, editor.scrollTop + rect.top - 54 - 30)
       if(item.children && item.children.length) {
-        const node = this.$refs[item.id][0]
-        const ul = node.nextElementSibling
-        const isExpanded = node.classList.contains('expanded')
-        node.classList[isExpanded ? 'remove' : 'add']('expanded')
-        node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus')
-        node.classList[isExpanded ? 'add' : 'remove']('tree_item_plus')
-        this[isExpanded ? '$slideUp' : '$slideDown'](ul, 200)
+        const node = this.$el.querySelector(`[data-ref="${item.id}"]`)
+        if(node) {
+          const ul = node.nextElementSibling
+          if(ul) {
+            const isExpanded = node.classList.contains('expanded')
+            node.classList[isExpanded ? 'remove' : 'add']('expanded')
+            node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus')
+            node.classList[isExpanded ? 'add' : 'remove']('tree_item_plus')
+            this[isExpanded ? '$slideUp' : '$slideDown'](ul, 200)
+          }
+        }
       }
     }
   }

@@ -125,8 +125,8 @@ export default class Index extends Vue {
         this.$nextTick(async () => {
           if(this.yandexAccessToken) {
             await Promise.all([
-              this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery())
-              // this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+              this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+              this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
             ])
             if(!this.isDev) {
               await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
