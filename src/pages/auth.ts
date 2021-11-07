@@ -39,7 +39,6 @@ export default class Auth extends Vue {
 
   mounted() {
     this.commandBus.do<PingCommand, void>(new PingCommand(true))
-    console.log(this.login)
   }
 
   @Watch('login') onLoginChanged(val: string) {

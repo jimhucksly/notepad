@@ -56,13 +56,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
         login: query.login,
         password: query.password
       })
-      setProcess(store, null)
       if(resp.token) {
         return resp
       }
       return Promise.reject(resp)
     } catch(e) {
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -79,10 +80,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
       if(resp.token) {
         return resp
       }
-      setProcess(store, null)
       return Promise.reject(resp)
     } catch(e) {
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -95,10 +97,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'start...')
       await $http.get<IResponse<boolean>>('start')
-      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -147,7 +150,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'creating yandex disk token...')
       const resp = await $http.post<YandexTokenQuery, string>('yandexapi/token', query)
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -155,6 +157,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Access token not received')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -168,7 +172,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'updating yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/refreshToken', query)
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -176,6 +179,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -189,7 +194,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'revoke yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/revokeToken', command)
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -197,6 +201,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -212,7 +218,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'get yandex disk info...')
       const resp = await $http.get<unknown>('yandexapi/info')
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -220,6 +225,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 

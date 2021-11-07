@@ -30,7 +30,6 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     try {
       setProcess(store, 'get library files...')
       const resp = await $http.get<Array<ILibraryFile>>('library/list')
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -53,6 +52,8 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -70,7 +71,6 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       }
       setProcess(store, 'get library file...')
       const resp = await $http.get<string>(url)
-      setProcess(store, null)
       if(!resp || resp.data === undefined) {
         return Promise.reject(resp)
       }
@@ -79,6 +79,8 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -94,7 +96,6 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     try {
       setProcess(store, 'creating library file...')
       const resp = await $http.put<ILibraryFile, { id: string }>('library', command.data)
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -109,6 +110,8 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file create failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -125,11 +128,12 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     try {
       setProcess(store, 'editing library file...')
       await $http.post('library', command)
-      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -145,11 +149,12 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
     try {
       setProcess(store, 'removing library file...')
       await $http.delete(`library/?name=${command.name}`)
-      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 }

@@ -29,7 +29,6 @@ class Actions implements ActionTree<ILinksState, IRootState> {
     try {
       setProcess(store, 'get links...')
       const resp = await $http.get<Array<ILink>>('links')
-      setProcess(store, null)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -38,6 +37,8 @@ class Actions implements ActionTree<ILinksState, IRootState> {
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Links list fetch failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -51,11 +52,12 @@ class Actions implements ActionTree<ILinksState, IRootState> {
     try {
       setProcess(store, 'updating link...')
       await $http.put('links', command.link)
-      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Links list update failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 
@@ -69,11 +71,12 @@ class Actions implements ActionTree<ILinksState, IRootState> {
     try {
       setProcess(store, 'removing link...')
       await $http.delete(`links/?id=${command.id}`)
-      setProcess(store, null)
       return Promise.resolve(true)
     } catch(e) {
       Hub.$emit('on-toasted-error', 'Error: Links list item remove failed')
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 }
