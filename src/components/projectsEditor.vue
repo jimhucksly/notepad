@@ -20,7 +20,7 @@
       <div class="form-group">
         <div class="form-group-inner flex-between items-center">
           <label class="m-b-5">Protected</label>
-          <b-checkbox :value="isLock" @input="toggleLock" />
+          <b-checkbox v-model="isLock" @change="toggleLock" />
         </div>
       </div>
       <div class="form-group" v-if="!isFile">

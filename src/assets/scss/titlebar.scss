@@ -45,6 +45,12 @@
   &.button--logout {
     left: unset;
     right: 200px;
+
+    & svg {
+      -webkit-app-region: no-drag;
+      margin-right: 100px;
+      cursor: pointer;
+    }
   }
   &.process {
     -webkit-app-region: no-drag;

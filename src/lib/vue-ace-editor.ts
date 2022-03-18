@@ -13,7 +13,7 @@ const ace = require('brace')
   `
 })
 export default class VueAceEditor extends Vue {
-  @Prop() value: string
+  @Prop() modelValue: string
   @Prop() lang: string
   @Prop() theme: string
   @Prop() height: string
@@ -37,14 +37,14 @@ export default class VueAceEditor extends Vue {
 
     editor.getSession().setMode(typeof lang === 'string' ? ('ace/mode/' + lang) : lang)
     editor.setTheme('ace/theme/' + theme)
-    if(this.value) {
-      editor.setValue(this.value, 1)
+    if(this.modelValue) {
+      editor.setValue(this.modelValue, 1)
     }
-    this.contentBackup = this.value
+    this.contentBackup = this.modelValue
 
     editor.on('change', () => {
       const content = editor.getValue()
-      this.$emit('input', content)
+      this.$emit('update:modelValue', content)
       this.contentBackup = content
     })
 

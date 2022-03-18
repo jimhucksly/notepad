@@ -50,6 +50,9 @@ export default class ProjectsEditor extends Vue {
   }
 
   async toggleLock(): Promise<void> {
+    if(!this.item) {
+      return
+    }
     const isLocked = this.item.lock
     const updateJson = () => {
       const o: IJson = {
@@ -66,10 +69,11 @@ export default class ProjectsEditor extends Vue {
         'Do you want to unlock this project?'
       ))
       if(!isConfirm) {
+        this.isLock = !this.isLock
         return
       }
+      updateJson()
     }
-    updateJson()
   }
 
   async archive() {
