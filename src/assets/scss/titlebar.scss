@@ -50,6 +50,12 @@
       -webkit-app-region: no-drag;
       margin-right: 100px;
       cursor: pointer;
+      opacity: 0.8;
+      transition: 0.2s;
+
+      &:hover {
+        opacity: 1;
+      }
     }
   }
   &.process {

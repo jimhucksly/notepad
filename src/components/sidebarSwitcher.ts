@@ -5,6 +5,7 @@ import { toStr } from '~/application/fsm'
 import { IMenu } from '~/domain/models'
 
 export default class SidebarSwitcher extends Vue {
+  @Prop() isAccount: boolean
   @Prop() isPreferences: boolean
   @Prop() isProjects: boolean
   @Prop() isLibrary: boolean
@@ -27,6 +28,9 @@ export default class SidebarSwitcher extends Vue {
   }
 
   get legend() {
+    if(this.isAccount) {
+      return 'Account'
+    }
     if(this.isPreferences) {
       return 'Preferences'
     }
@@ -52,7 +56,7 @@ export default class SidebarSwitcher extends Vue {
   }
 
   get isNotClickable() {
-    return this.isPreferences
+    return this.isPreferences || this.isAccount
   }
 
   toggle() {

@@ -181,7 +181,8 @@ export default class JsonViewer extends Vue {
           json = JSON.parse(value)
           this.editor.setValue(JSON.stringify(json, null, 2))
         } catch(e) {
-          console.log(e)
+          /* eslint-disable no-console */
+          console.error(e)
         }
       }
     }

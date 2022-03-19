@@ -59,7 +59,8 @@ export default class LibraryFiles extends Vue {
       await this.queryBus.exec(new LibraryFilesQuery())
       this.setFileId(this.libraryFiles[0]?.id || 0)
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 }

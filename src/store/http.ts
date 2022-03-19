@@ -34,7 +34,8 @@ axios.interceptors.request.use(
     return config
   },
   error => {
-    console.log(error.request)
+    /* eslint-disable no-console */
+    console.error(error.request)
     return Promise.reject(error)
   }
 )

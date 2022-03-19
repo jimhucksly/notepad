@@ -20,7 +20,6 @@ export default class BCheckboxComponent extends Vue {
   internalValue = false
 
   mounted() {
-    console.log('modelValue', this.modelValue)
     this.internalValue = this.modelValue
   }
 

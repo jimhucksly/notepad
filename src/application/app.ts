@@ -27,6 +27,7 @@ interface IAppComponents {
 }
 
 export const AppComponents = {
+  [toStr(FsmStates.Account)]: 'Account',
   [toStr(FsmStates.Projects)]: 'Projects',
   [toStr(FsmStates.Preferences)]: 'Preferences',
   [toStr(FsmStates.Library)]: 'Library',
@@ -113,7 +114,6 @@ export default class Application implements IApplication {
     try {
       const func = this.getTransitionFunc(transition)
       const transitionResult: boolean = await func.call(this.fsm)
-      console.log('transition complete:  ->', this.state)
       if(!transitionResult) {
         return
       }
@@ -135,7 +135,8 @@ export default class Application implements IApplication {
         this.history = this.history.filter(item => item in AppComponents)
       }
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 
@@ -182,8 +183,9 @@ export default class Application implements IApplication {
         this.loading(false)
       }, 1500)
     } catch(e) {
-      console.log(e)
       this.loading(false)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 

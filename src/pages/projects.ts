@@ -117,6 +117,7 @@ export default class Projects extends Vue {
       this.$app.goBack()
       this.addFile(newFile.name, fileType)
     } catch(e) {
+      /* eslint-disable no-console */
       console.error(e)
     }
   }

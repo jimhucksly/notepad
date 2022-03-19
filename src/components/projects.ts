@@ -91,7 +91,8 @@ export default class Projects extends Vue {
     try {
       this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 

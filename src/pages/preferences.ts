@@ -53,7 +53,8 @@ export default class Preferences extends Vue {
       .then((isEnabled: boolean) => {
         this.isAutoLaunchEnabled = isEnabled
       }).catch(e => {
-        console.log(e)
+        /* eslint-disable no-console */
+        console.error(e)
       })
   }
 

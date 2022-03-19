@@ -66,6 +66,10 @@ export default class Sidebar extends Vue {
     return this.history.includes('LibraryFiles')
   }
 
+  get isAccount(): boolean {
+    return this.component === AppComponents[toStr(FsmStates.Account)]
+  }
+
   get isPreferences(): boolean {
     return this.component === AppComponents[toStr(FsmStates.Preferences)]
   }
@@ -96,6 +100,7 @@ export default class Sidebar extends Vue {
 
   get switcherProps() {
     return {
+      isAccount: this.isAccount,
       isPreferences: this.isPreferences,
       isProjects: this.isProjects,
       isLibrary: this.isLibrary,

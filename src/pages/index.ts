@@ -24,6 +24,7 @@ import Preferences from '~/pages/preferences'
 import Projects from '~/pages/projects'
 import Todo from '~/pages/todo'
 import storage from '~/plugins/storage'
+import Account from '~/pages/account'
 
 interface IUserPreferences {
   downloadsTargetPath: string
@@ -35,6 +36,7 @@ interface IUserPreferences {
     Loading,
     Auth,
     Error,
+    Account,
     Projects,
     Todo,
     Library,
@@ -104,7 +106,8 @@ export default class Index extends Vue {
       try {
         this.queryBus.exec<CheckQuery, void>(new CheckQuery())
       } catch(e) {
-        console.log(e)
+        /* eslint-disable no-console */
+        console.error(e)
       }
     }
     this.createYandexDiskStepTwo = false
@@ -168,6 +171,7 @@ export default class Index extends Vue {
         this.setDownloadsTargetPath(appPath)
       }
     } catch(e) {
+      /* eslint-disable no-console */
       console.error(e)
       this.setDownloadsTargetPath(appPath)
     }
@@ -224,7 +228,8 @@ export default class Index extends Vue {
       let message = 'Access token request failed'
       message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
       this.$toasted.error(message)
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     } finally {
       this.yandexCodeApplyProcessing = false
     }

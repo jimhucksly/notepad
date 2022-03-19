@@ -37,11 +37,11 @@ export default class Titlebar extends Vue {
     this.commandBus.do<CreateEditCommand<void>, void>(command)
   }
 
-  reload() {
-    this.$app.reload()
+  toAccount() {
+    this.$app.goto(FsmStates.Account)
   }
 
-  logout() {
-    this.$app.logout()
+  reload() {
+    this.$app.reload()
   }
 }

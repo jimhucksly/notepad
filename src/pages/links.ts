@@ -51,7 +51,8 @@ export default class Links extends Vue {
       await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(id))
       await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 

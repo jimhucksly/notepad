@@ -90,7 +90,8 @@ export const isJSON = (value: any): boolean => {
       json = JSON.parse(value)
       return true
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
       return false
     }
   } else {
@@ -100,7 +101,8 @@ export const isJSON = (value: any): boolean => {
         return true
       }
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
   return false

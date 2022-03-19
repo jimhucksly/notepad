@@ -107,7 +107,8 @@ export default class LibraryPage extends Vue {
     try {
       await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
     } catch(e) {
-      console.log(e)
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 
@@ -277,7 +278,8 @@ export default class LibraryPage extends Vue {
         this.setFileId(id)
       })
       .catch(e => {
-        console.log(e)
+        /* eslint-disable no-console */
+        console.error(e)
       })
   }
 

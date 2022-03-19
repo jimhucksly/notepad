@@ -88,6 +88,7 @@ export default class Auth extends Vue {
       this.errors.pass = 'pass' in e.messages
       this.validate()
     } else {
+      /* eslint-disable no-console */
       console.error(e)
     }
   }

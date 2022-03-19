@@ -45,8 +45,9 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
         this._store.commit('links/setLinks', resp.links)
         this._store.commit('todo/setTodo', resp.todo)
       } catch(e) {
-        console.log(e)
         this._store.commit('setError', true)
+        /* eslint-disable no-console */
+        console.error(e)
       } finally {
         this.exec(query)
       }

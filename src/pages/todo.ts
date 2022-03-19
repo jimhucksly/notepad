@@ -312,6 +312,7 @@ export default class Todo extends Vue {
       this.addTodoHandler = this.addTodo.bind(this)
       Hub.$on('todo-add', this.addTodoHandler)
     } catch(e) {
+      /* eslint-disable no-console */
       console.log(e)
     }
   }

@@ -22,7 +22,8 @@ export function getNativeDate(d: string): Date | null {
     const date = new Date(d)
     return date
   } catch(e) {
-    console.log(e)
+    /* eslint-disable no-console */
+    console.error(e)
   }
   return null
 }

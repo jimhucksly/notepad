@@ -362,6 +362,55 @@ main {
   }
 }
 
+.account {
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    display: flex;
+    flex-basis: 54px;
+    flex-shrink: 0;
+    align-items: center;
+    padding-left: 15px;
+  }
+
+  .account-content {
+    max-width: 50%;
+    flex-basis: 100%;
+    padding: 15px;
+  }
+
+  .content-row {
+    display: grid;
+    grid-template-columns: 50% 50%;
+
+    label {
+      display: block;
+      color: var(--blue);
+      font-size: 13px;
+      line-height: 30px;
+    }
+
+    caption {
+      display: flex;
+      justify-content: flex-end;
+      color: var(--black_light);
+      font-size: 13px;
+      line-height: 30px;
+    }
+  }
+
+  .account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 15px;
+    flex-basis: 65px;
+    flex-grow: 0;
+    border-top: 1px solid var(--blue-gray);
+  }
+}
+
 .error_cont {
   position: absolute;
   top: 0;
