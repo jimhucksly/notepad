@@ -1,0 +1,95 @@
+.editor_wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  padding: 5px;
+  background-color: var(--dark);
+
+  .editor-toolbar {
+    flex-basis: 54px;
+    flex-shrink: 0;
+
+    .fa-save {
+      cursor: pointer;
+    }
+  }
+
+  .CodeMirror {
+    height: auto;
+    min-height: auto;
+    flex-basis: 100%;
+    flex-grow: 1;
+  }
+
+  .CodeMirror-scroll {
+    min-height: 100%;
+  }
+
+  .editor_tabs {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    &:after {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 34px;
+      position: absolute;
+      top: 0;
+      left: 79px;
+      background-color: var(--grey);
+      z-index: 1;
+    }
+    &_item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 85px;
+      height: 34px;
+      padding: 0 8px;
+      background-color: var(--grey);
+      color: var(--blue-gray);
+      cursor: pointer;
+      z-index: 2;
+
+      &.--active {
+        background-color: var(--white);
+        color: var(--dark);
+      }
+
+      &.--tab-preview {
+        border-top-left-radius: 8px;
+        &.--active {
+          border-top-right-radius: 8px;
+        }
+      }
+      &.--tab-text {
+        border-top-right-radius: 8px;
+        &.--active {
+          border-top-left-radius: 8px;
+        }
+      }
+    }
+  }
+  .editor_content {
+    flex-basis: 100%;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: var(--white);
+    width: 100%;
+    overflow-x: hidden;
+
+    .md-anchor {
+      visibility: hidden;
+    }
+
+    pre {
+      margin-bottom: 10px;
+      background: var(--blue_light-2);
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid var(--grey);
+      color: var(--black);
+    }
+  }
+}

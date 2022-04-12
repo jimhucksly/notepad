@@ -67,25 +67,13 @@ const linked = (value: ILinkedDoc): Array<string> => {
     this.setLibraryTree([])
     this.setFileId(0)
     Hub.$off('codemirror-link-click', this.linkClickHandler)
-  },
-  template: `
-    <div
-      class="editor_wrapper"
-      ref="editor_wrapper"
-      :style="{
-        display: isRendered || 1 ? 'flex' : 'none'
-      }"
-    >
-      <textarea name="editor" id="editor"></textarea>
-    </div>
-  `
+  }
 })
 export default class LibraryPage extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   static editor: SimpleMDEExt = null
-  static editorValue = ''
 
   @Mutation('library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
   @Mutation('library/setLibraryData') setLibraryData: (body: string) => void
@@ -94,9 +82,10 @@ export default class LibraryPage extends Vue {
   @Getter('library/getLibraryData') initialValue: string
   @Getter('library/getLibraryFileId') currentId: string
 
-  isRendered = false
   links: string[] = []
   isNewFile = false
+  isPreview = true
+  template = ''
 
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
@@ -113,27 +102,62 @@ export default class LibraryPage extends Vue {
   }
 
   @Watch('initialValue') onInitialValueCahnged() {
-    let editorElement = document.getElementById('editor')
-    if(!editorElement) {
-      return
-    }
-    LibraryPage.editor = null
-    LibraryPage.editorValue = this.initialValue
-    Hub.$off('codemirror-link-click', this.linkClickHandler)
-    const parent = editorElement.parentElement
-    parent.innerHTML = ''
-    const textarea = document.createElement('textarea')
-    textarea.name = 'editor'
-    textarea.id = 'editor'
-    parent.appendChild(textarea)
-    editorElement = document.getElementById('editor')
-    setTimeout(() => {
-      this.buildEditor(editorElement)
-    }, 100)
+    this.previewRender(this.initialValue)
+    // let editorElement = document.getElementById('editor')
+    // if(!editorElement) {
+    //   return
+    // }
+    // LibraryPage.editor = null
+    // LibraryPage.editorValue = this.initialValue
+    // Hub.$off('codemirror-link-click', this.linkClickHandler)
+    // const parent = editorElement.parentElement
+    // parent.innerHTML = ''
+    // const textarea = document.createElement('textarea')
+    // textarea.name = 'editor'
+    // textarea.id = 'editor'
+    // parent.appendChild(textarea)
+    // editorElement = document.getElementById('editor')
+    // setTimeout(() => {
+    //   this.buildEditor(editorElement)
+    // }, 100)
+  }
+
+  async created() {
+    await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+    await this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
+  }
+
+  mounted() {
+    LibraryPage.md = new MarkdownIt()
+
+    LibraryPage.md.use(MarkdownItAnchor, {
+      slugify: (s: string) => {
+        const slug = '_' + translit(s)
+        LibraryPage.nodes.push({
+          name: s || '',
+          slug: slug || '',
+          id: uniqueid(8) as string,
+          children: []
+        })
+        return slug
+      },
+      level: [1, 2, 3],
+      permalink: true,
+      permalinkClass: 'md-anchor',
+      permalinkBefore: false
+    })
+
+    this.previewRender(this.initialValue)
+    this.buildTree()
+
+    // const editorElement = this.$el.querySelector('#editor')
+    // if(!editorElement) {
+    //   return
+    // }
+    // this.buildEditor(editorElement)
   }
 
   async buildEditor(element: HTMLElement) {
-    LibraryPage.editorValue = this.initialValue
     const config: SimpleMDE.Options = {
       autofocus: true,
       toolbar: [
@@ -151,8 +175,6 @@ export default class LibraryPage extends Vue {
         'code',
         'link',
         '|',
-        'preview',
-        '|',
         {
           action: () => false,
           className: 'fa fa-save no-disable',
@@ -160,17 +182,6 @@ export default class LibraryPage extends Vue {
           title: 'Save'
         }
       ],
-      autosave: {
-        enabled: false,
-        uniqueId: 'MyUniqueID',
-        delay: 1000
-      },
-      previewRender() {
-        LibraryPage.nodes = []
-        let html = LibraryPage.md.render(LibraryPage.editorValue)
-        html = html.replace(/<\/p>/g, '</p><br>')
-        return html
-      },
       status: [
         {
           className: 'saved-status',
@@ -187,7 +198,7 @@ export default class LibraryPage extends Vue {
 
     LibraryPage.editor = new SimpleMDE(config)
     await this.$nextTick()
-    LibraryPage.editor.value(LibraryPage.editorValue)
+    LibraryPage.editor.value(this.initialValue)
     LibraryPage.editor.togglePreviewHandler()
 
     const toolbarItemPreview = LibraryPage.editor.toolbar.find(item => item.name === 'preview')
@@ -204,7 +215,6 @@ export default class LibraryPage extends Vue {
       toolbarItemSave.action = this.save.bind(this)
     }
     this.buildTree()
-    this.isRendered = true
     const doc = LibraryPage.editor.codemirror.getDoc()
     const count = doc.lineCount()
     const linkedDoc = doc.linkedDoc({
@@ -232,12 +242,13 @@ export default class LibraryPage extends Vue {
     Hub.$on('codemirror-link-click', this.linkClickHandler)
   }
 
-  buildTree(nodes?: ITreeItem[]) {
+  async buildTree(nodes?: ITreeItem[]) {
     const tree: Array<ITreeItem> = []
     let index = -1
     const items = nodes || LibraryPage.nodes
+    await this.$nextTick()
     items.forEach(item => {
-      const node = this.$el.querySelector('#' + item.slug)
+      const node = document.querySelector('#' + item.slug)
       if(node) {
         const level = +node.tagName.slice(-1)
         switch(level) {
@@ -254,6 +265,8 @@ export default class LibraryPage extends Vue {
         }
       }
     })
+    /* eslint-disable no-console */
+    console.log(tree)
     this.setLibraryTree([...cloneDeep(tree)])
   }
 
@@ -283,43 +296,20 @@ export default class LibraryPage extends Vue {
       })
   }
 
-  mounted() {
-    LibraryPage.md = new MarkdownIt({
-      html: true,
-      xhtmlOut: false,
-      breaks: true,
-      langPrefix: 'language-',
-      linkify: false,
-      typographer: false,
-      quotes: '«»'
-    })
-
-    LibraryPage.md.use(MarkdownItAnchor, {
-      slugify: (s: string) => {
-        const slug = '_' + translit(s)
-        LibraryPage.nodes.push({
-          name: s || '',
-          slug: slug || '',
-          id: uniqueid(8) as string,
-          children: []
-        })
-        return slug
-      },
-      level: [1, 2, 3],
-      permalink: true,
-      permalinkClass: 'md-anchor',
-      permalinkBefore: false
-    })
-
-    const editorElement = this.$el.querySelector('#editor')
-    if(!editorElement) {
+  toggle(state: boolean) {
+    if(state === this.isPreview) {
       return
     }
-    this.buildEditor(editorElement)
+    this.isPreview = state
   }
 
-  async created() {
-    await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-    await this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
+  previewRender(plaintext: string) {
+    // plaintext = plaintext.replace(/\n/g, '\n[#br]\n')
+    LibraryPage.nodes = []
+    const html = LibraryPage.md.render(plaintext)
+    // html = html.replace(/<p>\[#br]<\/p>/g, '')
+    // html = html.replace(/\[#br]/g, '<br>')
+    // console.log(html)
+    this.template = html
   }
 }

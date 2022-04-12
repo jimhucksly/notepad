@@ -67,7 +67,7 @@ export default class Application implements IApplication {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Projects
+  homeState = FsmStates.Library
   history: Array<keyof IFsmStates> = []
   currentUser: IUser = null
 

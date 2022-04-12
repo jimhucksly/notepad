@@ -75,32 +75,6 @@ a[href] {
   color: var(--blue);
 }
 
-.editor_wrapper {
-  display: flex;
-  flex-direction: column;
-  flex-basis: 100;
-
-  .editor-toolbar {
-    flex-basis: 54px;
-    flex-shrink: 0;
-
-    .fa-save {
-      cursor: pointer;
-    }
-  }
-
-  .CodeMirror {
-    height: auto;
-    min-height: auto;
-    flex-basis: 100%;
-    flex-grow: 1;
-  }
-
-  .CodeMirror-scroll {
-    min-height: 100%;
-  }
-}
-
 .json_viewer {
   .ace_scrollbar.ace_scrollbar-v {
     display: none !important;
@@ -112,40 +86,44 @@ a[href] {
 
 // scrollbar styling
 
-@each $elem in (
-  '.notepad_cont', '.editor-preview',
-  '.CodeMirror-scroll', '.events__calendar',
-  'textarea', '.links_area', '.todo_cont'
-) {
-  #{$elem}::-webkit-scrollbar-button {
-    background-image: none;
-    background-repeat: no-repeat !important;
-    width: 10px !important;
-    height: 0px !important;
-  }
-  #{$elem}::-webkit-scrollbar-track {
-    background-color:#eee !important;
-  }
-  #{$elem}::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 0px !important;
-    border-radius: 0px !important;
-    background-color: var(--blue_light) !important;
-    cursor: default;
-  }
-  #{$elem}::-webkit-scrollbar-thumb:hover {
-    background-color: var(--blue_light) !important;
-    cursor: default;
-  }
-  #{$elem}::-webkit-resizer {
-    background-image: none;
-    background-repeat: no-repeat !important;
-    width: 10px !important;
-    height: 0px !important;
-  }
-  #{$elem}::-webkit-scrollbar {
-    width: 10px !important;
+body {
+  @each $elem in (
+    '.notepad_cont', '.editor-preview', '.editor_content',
+    '.CodeMirror-scroll', '.events__calendar',
+    'textarea', '.links_area', '.todo_cont'
+  ) {
+    #{$elem}::-webkit-scrollbar-button {
+      background-image: none;
+      background-repeat: no-repeat !important;
+      width: 10px !important;
+      height: 0px !important;
+    }
+    #{$elem}::-webkit-scrollbar-track {
+      background-color:#eee !important;
+    }
+    #{$elem}::-webkit-scrollbar-thumb {
+      -webkit-border-radius: 0px !important;
+      border-radius: 0px !important;
+      background-color: var(--blue_light) !important;
+      cursor: default;
+    }
+    #{$elem}::-webkit-scrollbar-thumb:hover {
+      background-color: var(--blue_light) !important;
+      cursor: default;
+    }
+    #{$elem}::-webkit-resizer {
+      background-image: none;
+      background-repeat: no-repeat !important;
+      width: 10px !important;
+      height: 0px !important;
+    }
+    #{$elem}::-webkit-scrollbar {
+      width: 10px !important;
+    }
   }
 }
+
+
 
 // projects|markdown scrollbar styling
 
