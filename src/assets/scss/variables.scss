@@ -10,6 +10,7 @@ $dark_darken-1: darken($dark, 3%);
 $dark_darken-2: darken($dark, 5%);
 
 // colors
+$white: #fff;
 $black: #0b0b0b;
 $black_light: lighten($black, 20%);
 
@@ -46,6 +47,7 @@ $editor_red_light: lighten($editor_red, 3%);
 :root {
   --font-regular: #{$regular};
   --font-thin: #{$thin};
+  --white: #{$white};
   --black: #{$black};
   --black_light: #{$black_light};
   --dark: #{$dark};

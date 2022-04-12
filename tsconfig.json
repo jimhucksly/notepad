@@ -24,9 +24,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
-    "strict": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
     "allowJs": false,
     "strictPropertyInitialization": false
   },
@@ -35,7 +33,5 @@
     "**/*.js",
     "**/*.spec.ts"
   ],
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*", "typings/**/*"],
 }

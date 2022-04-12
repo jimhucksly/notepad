@@ -1,9 +1,3 @@
-/* eslint-disable import/first */
-/* eslint-disable-next-line */
-/// <reference path="../typings/shims-vue.d.ts" />
-/* eslint-disable-next-line */
-/// <reference path="../typings/vue.d.ts" />
-
 import 'reflect-metadata'
 import { createApp } from 'vue'
 import '~/assets/css/simplemde.css'
