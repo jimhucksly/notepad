@@ -6,8 +6,7 @@
   background-color: var(--dark);
 
   .editor-toolbar {
-    flex-basis: 54px;
-    flex-shrink: 0;
+    height: 34px;
 
     .fa-save {
       cursor: pointer;
@@ -15,20 +14,26 @@
   }
 
   .CodeMirror {
-    height: auto;
-    min-height: auto;
     flex-basis: 100%;
     flex-grow: 1;
   }
 
+  .editor-statusbar {
+    flex-shrink: 0;
+  }
+
   .CodeMirror-scroll {
     min-height: 100%;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .editor_tabs {
     position: relative;
     display: flex;
     flex-shrink: 0;
+    z-index: 1;
     &:after {
       content: '';
       display: block;
@@ -74,10 +79,10 @@
   .editor_content {
     flex-basis: 100%;
     padding: 10px;
-    overflow-y: auto;
-    background-color: var(--white);
     width: 100%;
+    background-color: var(--white);
     overflow-x: hidden;
+    overflow-y: auto;
 
     .md-anchor {
       visibility: hidden;
@@ -87,9 +92,33 @@
       margin-bottom: 10px;
       background: var(--blue_light-2);
       padding: 6px;
+      line-height: 18px;
       border-radius: 6px;
       border: 1px solid var(--grey);
       color: var(--black);
+    }
+  }
+
+  .editor_text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex-basis: 100%;
+    background-color: var(--white);
+    width: 100%;
+    z-index: 2;
+
+    .editor-toolbar {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      top: -34px;
+      right: 0;
+      background-color: var(--white);
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      z-index: 99;
     }
   }
 }

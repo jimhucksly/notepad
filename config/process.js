@@ -13,7 +13,6 @@ import electron, {
 import path from 'path'
 import pkg from '../package.json'
 import { download } from 'electron-dl'
-import fs from 'fs'
 
 const $DEV = process.env.NODE_ENV === 'development'
 

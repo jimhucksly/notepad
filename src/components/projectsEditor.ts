@@ -18,6 +18,7 @@ export default class ProjectsEditor extends Vue {
 
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
   @Getter('projects/getJson') json: IJson
   @Getter('projects/getFilter') filter: IFilters
@@ -27,6 +28,12 @@ export default class ProjectsEditor extends Vue {
   isLock = false
   isDialog = false
   savingProcess = false
+
+  @Watch('expanded') onExpandedChanged() {
+    if(!this.expanded) {
+      this.setSelectedProject('')
+    }
+  }
 
   @Watch('item') onItemChanged(o: IJsonItem) {
     if(o) {
@@ -77,9 +84,10 @@ export default class ProjectsEditor extends Vue {
   }
 
   async archive() {
-    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
+    const selected = this.selected
     this.$app.goBack()
-    await this.removeHandler()
+    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(selected))
+    await this.removeHandler(selected)
     await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
@@ -93,15 +101,14 @@ export default class ProjectsEditor extends Vue {
     this.removeHandler()
   }
 
-  async removeHandler() {
-    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
+  async removeHandler(selected?: string) {
+    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(selected || this.selected))
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, this.selected)
-    unset(buffFilter, this.selected)
+    unset(buffJson, selected || this.selected)
+    unset(buffFilter, selected || this.selected)
     this.setFilter(buffFilter)
     this.setJson(buffJson)
-    this.$app.goBack()
   }
 
   async save() {

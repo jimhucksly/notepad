@@ -12,7 +12,7 @@ export default class LibraryTreeComponent extends Vue {
 
   selectNode(item: ITreeItem) {
     Hub.$emit('codemirror-link-click', item.name)
-    const editor = document.querySelector('.editor-preview')
+    const editor = document.querySelector('.editor_content')
     if(editor) {
       const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug)
       const rect = elem.getBoundingClientRect()

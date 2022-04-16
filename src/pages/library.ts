@@ -25,20 +25,8 @@ interface IToolbarItem {
 }
 
 interface SimpleMDEExt extends SimpleMDE {
-  togglePreviewHandler?: (callback?: (isActive: boolean) => void) => void
   toolbar?: IToolbarItem[]
 }
-
-Object.defineProperty(SimpleMDE.prototype, 'togglePreviewHandler', {
-  value(cb: (arg: boolean) => void) {
-    this.togglePreview()
-    setTimeout(() => {
-      if(cb instanceof Function) {
-        cb(this.isPreviewActive())
-      }
-    }, 2)
-  }
-})
 
 const linked = (value: ILinkedDoc): Array<string> => {
   const result: Array<string> = []
@@ -62,9 +50,6 @@ const linked = (value: ILinkedDoc): Array<string> => {
 
 @Options({
   beforeUnmount() {
-    const value = LibraryPage.editor.value()
-    this.commandBus.do(new UpdateLibraryCommand(this.currentId, value))
-    this.setLibraryTree([])
     this.setFileId(0)
     Hub.$off('codemirror-link-click', this.linkClickHandler)
   }
@@ -86,6 +71,7 @@ export default class LibraryPage extends Vue {
   isNewFile = false
   isPreview = true
   template = ''
+  updating = false
 
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
@@ -101,25 +87,22 @@ export default class LibraryPage extends Vue {
     }
   }
 
-  @Watch('initialValue') onInitialValueCahnged() {
-    this.previewRender(this.initialValue)
-    // let editorElement = document.getElementById('editor')
-    // if(!editorElement) {
-    //   return
-    // }
-    // LibraryPage.editor = null
-    // LibraryPage.editorValue = this.initialValue
-    // Hub.$off('codemirror-link-click', this.linkClickHandler)
-    // const parent = editorElement.parentElement
-    // parent.innerHTML = ''
-    // const textarea = document.createElement('textarea')
-    // textarea.name = 'editor'
-    // textarea.id = 'editor'
-    // parent.appendChild(textarea)
-    // editorElement = document.getElementById('editor')
-    // setTimeout(() => {
-    //   this.buildEditor(editorElement)
-    // }, 100)
+  @Watch('initialValue') onInitialValueChanged() {
+    if(this.isPreview) {
+      this.previewRender(this.initialValue)
+      this.updating = true
+      this.$nextTick(() => {
+        this.updating = false
+        this.buildTree()
+      })
+      const container = this.$refs.editor_text as HTMLElement
+      if(container) {
+        container.innerHTML = ''
+        LibraryPage.editor = null
+      }
+    } else {
+      LibraryPage.editor.value(this.initialValue)
+    }
   }
 
   async created() {
@@ -149,12 +132,6 @@ export default class LibraryPage extends Vue {
 
     this.previewRender(this.initialValue)
     this.buildTree()
-
-    // const editorElement = this.$el.querySelector('#editor')
-    // if(!editorElement) {
-    //   return
-    // }
-    // this.buildEditor(editorElement)
   }
 
   async buildEditor(element: HTMLElement) {
@@ -199,22 +176,11 @@ export default class LibraryPage extends Vue {
     LibraryPage.editor = new SimpleMDE(config)
     await this.$nextTick()
     LibraryPage.editor.value(this.initialValue)
-    LibraryPage.editor.togglePreviewHandler()
-
-    const toolbarItemPreview = LibraryPage.editor.toolbar.find(item => item.name === 'preview')
-    if(toolbarItemPreview) {
-      toolbarItemPreview.action = () => {
-        LibraryPage.editor.togglePreviewHandler((isActive: boolean) => {
-          isActive && this.buildTree()
-        })
-      }
-    }
 
     const toolbarItemSave = LibraryPage.editor.toolbar.find(item => item.name === 'save')
     if(toolbarItemSave) {
       toolbarItemSave.action = this.save.bind(this)
     }
-    this.buildTree()
     const doc = LibraryPage.editor.codemirror.getDoc()
     const count = doc.lineCount()
     const linkedDoc = doc.linkedDoc({
@@ -265,8 +231,6 @@ export default class LibraryPage extends Vue {
         }
       }
     })
-    /* eslint-disable no-console */
-    console.log(tree)
     this.setLibraryTree([...cloneDeep(tree)])
   }
 
@@ -289,6 +253,7 @@ export default class LibraryPage extends Vue {
           }, 3000)
         }
         this.setFileId(id)
+        this.toggle(true)
       })
       .catch(e => {
         /* eslint-disable no-console */
@@ -301,15 +266,27 @@ export default class LibraryPage extends Vue {
       return
     }
     this.isPreview = state
+    if(this.isPreview) {
+      const value = LibraryPage.editor ? LibraryPage.editor.value() : this.initialValue
+      this.previewRender(value)
+      this.buildTree()
+    } else {
+      const container = this.$refs.editor_text as HTMLElement
+      if(container && !container.innerHTML) {
+        const textarea = document.createElement('textarea')
+        textarea.name = 'editor'
+        textarea.id = 'editor'
+        container.appendChild(textarea)
+        const editorElement = document.getElementById('editor')
+        setTimeout(() => {
+          this.buildEditor(editorElement)
+        }, 100)
+      }
+    }
   }
 
   previewRender(plaintext: string) {
-    // plaintext = plaintext.replace(/\n/g, '\n[#br]\n')
     LibraryPage.nodes = []
-    const html = LibraryPage.md.render(plaintext)
-    // html = html.replace(/<p>\[#br]<\/p>/g, '')
-    // html = html.replace(/\[#br]/g, '<br>')
-    // console.log(html)
-    this.template = html
+    this.template = LibraryPage.md.render(plaintext)
   }
 }

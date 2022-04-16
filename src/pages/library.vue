@@ -8,7 +8,8 @@
         Text
       </div>
     </div>
-    <div class="editor_content" v-if="isPreview" v-html="template"></div>
+    <div class="editor_content" v-if="isPreview && !updating" v-html="template"></div>
+    <div class="editor_text" ref="editor_text" v-show="!isPreview"></div>
   </div>
 </template>
 <script src="./library.ts" lang="ts"></script>
