@@ -50,6 +50,7 @@
           </div>
         </div>
         <div>
+          <input type="submit" style="display: none">
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Go!</button>
         </div>
         <div class="flex-center p-y-10">

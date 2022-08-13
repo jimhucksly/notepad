@@ -8,9 +8,8 @@
     <div class="file_link">
       <div>{{ fileName }}</div>
       <div>
-        <span @click.prevent="openFile" class="link">Open</span>
-        <span> | </span>
-        <span @click.prevent="downloadFile" class="link">Download</span>
+        <span v-if="downloading" class="link">getting the link...</span>
+        <span v-else @click.prevent="downloadFile" class="link">Download</span>
       </div>
     </div>
     <div>

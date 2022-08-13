@@ -1,12 +1,12 @@
 import { Watch } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
-import { isEmpty } from 'lodash'
+import { cloneDeep, isEmpty, unset } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
 import { ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
 import { TYPES } from '~/domain/types'
-import { ReadCommand, UploadFileCommand, CreateProjectCommand } from '~/domain/commands'
+import { ReadCommand, UploadFileCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
@@ -25,6 +25,7 @@ export default class Projects extends Vue {
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
   @Getter('projects/getJson') json: IJson
   @Getter('projects/getFilter') filter: IFilters
@@ -32,6 +33,7 @@ export default class Projects extends Vue {
   message = ''
   newMsgFlag = false
   isRendered = false
+  removeStack: Array<string> = []
 
   onScrollHandler: () => void = null
 
@@ -166,6 +168,23 @@ export default class Projects extends Vue {
         el.style.transition = 'all 0.5s'
       }
     })
+  }
+
+  async onDelete(stamp: string) {
+    const buffJson = cloneDeep(this.json)
+    const buffFilter = cloneDeep(this.filter)
+    unset(buffJson, stamp)
+    unset(buffFilter, stamp)
+    this.setFilter(buffFilter)
+    this.setJson(buffJson)
+    this.removeStack.push(stamp)
+    if(this.removeStack[0] === stamp) {
+      await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
+      this.removeStack = this.removeStack.filter(el => el !== stamp)
+      if(this.removeStack.length) {
+        this.onDelete(this.removeStack[0])
+      }
+    }
   }
 
   updated() {

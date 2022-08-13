@@ -12,7 +12,6 @@ import electron, {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
-import { download } from 'electron-dl'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -225,24 +224,3 @@ ipcMain.on('save-file-dialog', (event, arg) => {
     event.sender.send('save-dialog-file-selected', file)
   })
 })
-
-ipcMain.on('download-button', async (event, { url, targetPath }) => {
-  await download(
-    mainWindow,
-    url,
-    {
-      directory: targetPath,
-      onStarted: () => {
-        event.sender.send('download-start')
-      },
-      onProgress: progress => {
-        event.sender.send('download-progress', progress)
-      },
-      onCompleted: () => {
-        event.sender.send('download-end')
-      }
-    }
-  )
-})
-
-

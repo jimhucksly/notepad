@@ -15,32 +15,40 @@ export default class File extends Vue {
 
   @Getter('getDownloadsTargetPath') targetPath: string
 
+  downloading = false
+
   get stamp() {
     return this.itemKey
   }
+
   get fileName() {
     return this.itemFile.name
   }
+
   get type() {
     return this.itemFile.type
   }
 
-  async openFile() {
-    //
-  }
-
   async downloadFile() {
     try {
-      const link = await this.queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
+      this.downloading = true
+      const link: string = await this.queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
+      this.downloading = false
       if(link) {
-        // this.$electron.shell.openExternal(link)
-        this.$electron.ipcRenderer.send('download-button', {
-          url: link,
-          targetPath: this.targetPath
-        })
+        const a = document.createElement('a')
+        a.href = link
+        a.download = 'C:\\' + this.fileName
+        document.body.appendChild(a)
+        a.click()
+        setTimeout(() => {
+          document.body.removeChild(a)
+          window.URL.revokeObjectURL(link)
+        }, 0)
       }
     } catch(e) {
       //
+    } finally {
+      this.downloading = false
     }
   }
 }

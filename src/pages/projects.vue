@@ -8,6 +8,7 @@
           :item="json[stamp]"
           :is-last="stamp === lastStamp"
           ref="notepad_item"
+          @on-will-delete="onDelete"
           @on-last-rendered="isRendered = true"
         />
       </template>

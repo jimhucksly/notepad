@@ -1,8 +1,7 @@
-import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
+import { EditProjectCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IFilters, IJson } from '~/domain/models'
@@ -59,6 +58,7 @@ export default class Controls extends Vue {
       }
     }
   }
+
   save(stamp: string) {
     const item = this.$parent.$el
     if(item) {
@@ -86,15 +86,6 @@ export default class Controls extends Vue {
       }
     }
   }
-  removeHandler(stamp: string) {
-    const buffJson = cloneDeep(this.json)
-    const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, stamp)
-    unset(buffFilter, stamp)
-    this.setFilter(buffFilter)
-    this.setJson(buffJson)
-    this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
-  }
 
   async remove(stamp: string) {
     if(this.isLock) {
@@ -105,6 +96,6 @@ export default class Controls extends Vue {
         return
       }
     }
-    this.removeHandler(stamp)
+    this.$emit('on-will-delete', stamp)
   }
 }

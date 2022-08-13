@@ -18,6 +18,7 @@
       :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']"
       @on-will-edit="isEdit = true"
       @on-will-save="isEdit = false"
+      @on-will-delete="$emit('on-will-delete', $event)"
     />
   </div>
 </template>
