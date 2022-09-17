@@ -2,6 +2,7 @@
 // fonts
 $regular: 'Roboto-Regular';
 $thin: 'Roboto-Thin';
+$gotham: 'gothampro';
 
 $dark: #303d3c;
 $dark_light: lighten($dark, 15%);
@@ -47,6 +48,7 @@ $editor_red_light: lighten($editor_red, 3%);
 :root {
   --font-regular: #{$regular};
   --font-thin: #{$thin};
+  --font-gotham: #{$gotham};
   --white: #{$white};
   --black: #{$black};
   --black_light: #{$black_light};

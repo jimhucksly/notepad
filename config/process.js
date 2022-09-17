@@ -110,6 +110,11 @@ function createWindow() {
 
 const gotTheLock = app.requestSingleInstanceLock()
 
+app.on('second-instance', () => {
+  mainWindow.show()
+  mainWindow.focus()
+})
+
 if(!gotTheLock) {
   app.quit()
 } else {
@@ -120,9 +125,7 @@ if(!gotTheLock) {
         createWindow()
       }
     })
-
     app.setPath('userData', path.resolve(app.getPath('userData'), '../dnweb/notepad-app'))
-
   })
 }
 

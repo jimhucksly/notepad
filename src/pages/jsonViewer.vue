@@ -10,7 +10,15 @@
         @init="editorInit($event)"
         @input="$emit('input', $event)"
       />
-      <div class="json_viewer_separator" @mousedown="drag($event)"></div>
+      <div class="json_viewer_separator items-center" @mousedown="drag($event)">
+        <div>
+          <div style="width: 100%; height: 3px" class="items-center" v-for="i in [1, 2, 3, 4, 5, 6, 7, 8]" :key="i">
+            <i style="width: 1px; height: 2px; background-color: white"></i>
+            <i style="width: 1px; height: 2px;"></i>
+            <i style="width: 1px; height: 2px; background-color: white"></i>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="json_viewer_res"></div>
     <div class="json_viewer_notice"></div>

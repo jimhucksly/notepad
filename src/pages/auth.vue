@@ -1,7 +1,7 @@
 <template>
   <div id="auth_cont">
     <div class="auth_cont">
-      <form class="form-auth">
+      <div class="form-auth">
         <div class="title">Sign In</div>
         <div class="form-group">
           <div class="form-group-inner">
@@ -59,7 +59,7 @@
         <div class="flex-center">
           <span class="signup" @click="resetPass">Forgot password?</span>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>

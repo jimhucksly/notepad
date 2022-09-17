@@ -192,9 +192,11 @@ main {
   }
 
   .notepad_item_content {
+    font-family: var(--font-gotham);
+    font-size: 12px;
+    color: rgb(0,0,0);
     word-wrap: break-word;
     line-height: 19px;
-    letter-spacing: 0.4px;
   }
 
   .notepad_item_btns {
@@ -485,7 +487,6 @@ main {
     position: absolute;
     top: 0;
     right: 0;
-    display: block;
     width: 5px;
     height: 100%;
     background-color: var(--dark_darken-2);
@@ -724,6 +725,8 @@ main {
   overflow: hidden;
 
   .links_area {
+    font-family: var(--font-gotham);
+    color: rgb(0,0,0);
     flex-basis: 100%;
     background-color: #fff;
     border: 1px solid var(--blue-gray_light);
