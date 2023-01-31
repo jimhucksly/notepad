@@ -25,6 +25,7 @@ import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
 import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
+import SocketPlugin from '~/plugins/socket'
 
 const app = createApp(root)
 
@@ -48,5 +49,6 @@ app.use(AppPlugin)
 app.use(ElectronPlugin)
 app.use(AnimePlugin)
 app.use(ToastedPlugin)
+app.use(SocketPlugin)
 
 app.mount('#app')

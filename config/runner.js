@@ -7,8 +7,6 @@ const { spawn } = require('child_process')
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 
-const { endpoint } = require('./api.config.json')
-
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 
@@ -69,24 +67,26 @@ function startRenderer () {
         devMiddleware: {
           writeToDisk: true,
         },
-        proxy: {
-          '/api': {
-            target: endpoint,
-            changeOrigin: true,
-            onProxyReq: (proxyReq) => {
-              let path = proxyReq.path;
-              let query = '';
-              if (proxyReq.path.indexOf('?') > -1) {
-                path = proxyReq.path.split('?')[0];
-                query = proxyReq.path.split('?')[1];
-              }
-              if(path && !path.endsWith('/')) {
-                path = path + '/';
-              }
-              proxyReq.path = path + (query ? '?' + query : '');
-            }
-          }
-        }
+        // proxy: {
+        //   '/api': {
+        //     target: '127.0.0.1:8000',
+        //     changeOrigin: true,
+        //     onProxyReq: (proxyReq) => {
+        //       console.log('onProxyReq')
+        //       console.log(proxyReq)
+        //       let path = proxyReq.path;
+        //       let query = '';
+        //       if (proxyReq.path.indexOf('?') > -1) {
+        //         path = proxyReq.path.split('?')[0];
+        //         query = proxyReq.path.split('?')[1];
+        //       }
+        //       if(path && !path.endsWith('/')) {
+        //         path = path + '/';
+        //       }
+        //       proxyReq.path = path + (query ? '?' + query : '');
+        //     }
+        //   }
+        // }
       },
       compiler
     )

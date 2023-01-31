@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
 import { uploadDownloadFile } from '~/helpers'
 import store from '~/store'
+import { endpoint } from '../../config/endpoint.json'
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -16,21 +17,22 @@ axios.interceptors.request.use(
       config.headers['Content-Type'] = 'application/json'
     }
     config.headers.Authorization = store.getters.getToken
-    config.url = store.getters.getApiPath + config.url
     const isDevelopment = store.getters.getIsDevelopment
-    if(!isDevelopment) {
-      config.url = store.getters.getEndpoint + config.url
-      let path = config.url
-      let query = ''
-      if(config.url.indexOf('?') > -1) {
-        path = config.url.split('?')[0]
-        query = config.url.split('?')[1]
-      }
-      if(path && !path.endsWith('/')) {
-        path = path + '/'
-      }
-      config.url = path + (query ? '?' + query : '')
-    }
+    config.url = (isDevelopment ? 'http://127.0.0.1:8000' : endpoint) + config.url
+    // const isDevelopment = store.getters.getIsDevelopment
+    // if(!isDevelopment) {
+    //   config.url = store.getters.getEndpoint + config.url
+    //   let path = config.url
+    //   let query = ''
+    //   if(config.url.indexOf('?') > -1) {
+    //     path = config.url.split('?')[0]
+    //     query = config.url.split('?')[1]
+    //   }
+    //   if(path && !path.endsWith('/')) {
+    //     path = path + '/'
+    //   }
+    //   config.url = path + (query ? '?' + query : '')
+    // }
     return config
   },
   error => {

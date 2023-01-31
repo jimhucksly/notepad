@@ -52,7 +52,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
       setProcess(store, 'authentication...')
-      const resp = await $http.post<{ login: string, password: string }, void>('auth', {
+      const resp = await $http.post<{ login: string, password: string }, void>('/auth', {
         login: query.login,
         password: query.password
       })
@@ -76,7 +76,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
     try {
       setProcess(store, 'get session...')
-      const resp = await $http.post<SessionQuery, void>('session', query)
+      const resp = await $http.post<SessionQuery, void>('/session', query)
       if(resp.token) {
         return resp
       }
@@ -96,7 +96,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionAuthentication(store: TStore): Promise<boolean> {
     try {
       setProcess(store, 'start...')
-      await $http.get<IResponse<boolean>>('start')
+      await $http.get<IResponse<boolean>>('/start')
       return Promise.resolve(true)
     } catch(e) {
       return Promise.reject(e)
@@ -111,7 +111,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(TYPES.PingCommand)
   async actionPing(_: TStore): Promise<string> {
     try {
-      await $http.get<string>('ping')
+      await $http.get<string>('/ping')
       return 'pong'
     } catch(e) {
       return Promise.reject()
@@ -124,7 +124,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.CheckCommand)
   async actionCheck(store: TStore): Promise<ICheckResponse> {
     try {
-      const resp = await $http.get<ICheckResponse>('check')
+      const resp = await $http.get<ICheckResponse>('/check')
       if(!resp || !resp.data) {
         return void 0
       }
@@ -149,7 +149,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
     try {
       setProcess(store, 'creating yandex disk token...')
-      const resp = await $http.post<YandexTokenQuery, string>('yandexapi/token', query)
+      const resp = await $http.post<YandexTokenQuery, string>('/yandexapi/token', query)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -171,7 +171,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
       setProcess(store, 'updating yandex disk token...')
-      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/refreshToken', query)
+      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/refreshToken', query)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -193,7 +193,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
       setProcess(store, 'revoke yandex disk token...')
-      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('yandexapi/revokeToken', command)
+      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/revokeToken', command)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -217,7 +217,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   ): Promise<unknown> {
     try {
       setProcess(store, 'get yandex disk info...')
-      const resp = await $http.get<unknown>('yandexapi/info')
+      const resp = await $http.get<unknown>('/yandexapi/info')
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -240,7 +240,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
     store: TStore, query: YandexDiskResourceLinkQuery
   ): Promise<string> {
     try {
-      const resp = await $http.get<{ link: string }>(`yandexapi/resource?filename=${query.filename}`)
+      const resp = await $http.get<{ link: string }>(`/yandexapi/resource?filename=${query.filename}`)
       if(!resp || !resp.data) {
         return Promise.reject(resp)
       }

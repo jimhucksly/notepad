@@ -14,7 +14,7 @@ import {
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
-import webApi from '../../config/api.config.json'
+import { endpoint } from '../../config/endpoint.json'
 
 interface IAppComponents {
   Projects: string
@@ -73,8 +73,11 @@ export default class Application implements IApplication {
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
-    this._store.commit('setApiPath', webApi.apiPath)
-    this._store.commit('setEndpoint', webApi.endpoint)
+    if(this.isDev) {
+      this._store.commit('setEndpoint', '127.0.0.1:8000')
+    } else {
+      this._store.commit('setEndpoint', endpoint)
+    }
     this._store.commit('setUserDataPath', this.userDataPath)
   }
 

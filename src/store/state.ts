@@ -2,7 +2,6 @@ import { IRootState } from '~/domain/models'
 
 export const stateKeys: string[] = [
   'endpoint',
-  'apiPath',
   'loading',
   'isAuth',
   'token',
