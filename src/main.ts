@@ -49,6 +49,6 @@ app.use(AppPlugin)
 app.use(ElectronPlugin)
 app.use(AnimePlugin)
 app.use(ToastedPlugin)
-app.use(SocketPlugin)
+app.use(SocketPlugin, { store })
 
 app.mount('#app')

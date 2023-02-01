@@ -14,9 +14,10 @@ const toStr = (s: symbol): keyof IFsmStates => Symbol.keyFor(s) as keyof IFsmSta
 
 const fsm = new StateMachine({
   observeUnchangedState: true,
-  init: toStr(FsmStates.None),
+  init: toStr(FsmStates.Auth),
   transitions: [
-    { name: 'none', from: '*', to: toStr(FsmStates.None) },
+    { name: 'auth', from: '*', to: toStr(FsmStates.Auth) },
+    { name: 'reg', from: '*', to: toStr(FsmStates.Reg) },
     { name: 'account', from: '*', to: toStr(FsmStates.Account) },
     { name: 'preferences', from: '*', to: toStr(FsmStates.Preferences) },
     { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },

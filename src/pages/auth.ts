@@ -1,24 +1,19 @@
 import { Watch } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
+import { Vue } from 'vue-class-component'
 import { AuthQuery, LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
-import { PingCommand } from '~/domain/commands'
 import _ from 'lodash'
 import { IJson, IResponse } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
+import FsmStates from '~/application/fsm.states'
 
 interface IErrors {
   login: boolean
   pass: boolean
 }
 
-@Options({
-  beforeUnmount() {
-    this.commandBus.do(new PingCommand(false))
-  }
-})
 export default class Auth extends Vue {
   private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
   private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
@@ -36,10 +31,6 @@ export default class Auth extends Vue {
   }
 
   timeout: NodeJS.Timeout | null = null
-
-  mounted() {
-    this.commandBus.do<PingCommand, void>(new PingCommand(true))
-  }
 
   @Watch('login') onLoginChanged(val: string) {
     this.errors.login = !(val.length > 0)
@@ -94,12 +85,13 @@ export default class Auth extends Vue {
   }
 
   signup() {
-    const href = this.endpoint + '/registration'
-    this.$electron.shell.openExternal(href)
+    this.$app.goto(FsmStates.Reg)
+    // const href = this.endpoint + '/registration'
+    // this.$electron.shell.openExternal(href)
   }
 
   resetPass() {
-    const href = this.endpoint + '/reset'
-    this.$electron.shell.openExternal(href)
+    // const href = this.endpoint + '/reset'
+    // this.$electron.shell.openExternal(href)
   }
 }

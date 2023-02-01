@@ -5,10 +5,13 @@
     <section>
       <loading v-if="loading" />
       <template v-else>
-        <auth v-if="!isAuth" id="auth" />
+        <template v-if="!isAuth">
+          <auth v-if="isAuthWindow" id="auth" />
+          <reg v-if="isRegWindow" id="reg" />
+        </template>
         <div v-else-if="isYandexDisk" class="yd_cont">
           <div class="yd_cont_title">
-            Connect please your Yandex.Disk
+            Connect please to your Yandex.Disk
           </div>
           <svg-icon icon="yd" width="148" height="100" />
           <form>

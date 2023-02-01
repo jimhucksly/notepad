@@ -11,10 +11,6 @@ export class AuthCommand {
   constructor(public flag: boolean) {}
 }
 
-export class PingCommand {
-  constructor(public param: boolean) {}
-}
-
 export class CheckCommand {}
 
 export class CreateProjectCommand {

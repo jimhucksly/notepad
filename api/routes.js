@@ -1,15 +1,20 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
-router.get('/', (req, res) => res.send('Server API working'));
+function createRouter(db) {
+  router.get('/', (req, res) => res.send('Server API working'))
 
-router.post('/auth', (req, res, next) => {
-  res.send('hello')
-})
+  router.post('/auth', (req, res, next) => {
+    res.send('hello')
+  })
 
-router.get('*', function(req, res){
-  res.status(404).send('not found');
-})
+  router.get('*', function(req, res){
+    res.status(404).send('not found');
+  })
 
+  return router
+}
 
-module.exports = router;
+module.exports = {
+  createRouter
+}

@@ -16,6 +16,7 @@ import { CheckQuery } from '~/domain/queries/check.query'
 import { TYPES } from '~/domain/types'
 import { uploadDownloadFile } from '~/helpers'
 import Auth from '~/pages/auth'
+import Reg from '~/pages/reg'
 import Events from '~/pages/events'
 import JsonViewer from '~/pages/jsonViewer'
 import Library from '~/pages/library'
@@ -35,6 +36,7 @@ interface IUserPreferences {
     Titlebar,
     Loading,
     Auth,
+    Reg,
     Error,
     Account,
     Projects,
@@ -233,6 +235,14 @@ export default class Index extends Vue {
     } finally {
       this.yandexCodeApplyProcessing = false
     }
+  }
+
+  get isAuthWindow(): boolean {
+    return this.fsmState === FsmStates.Auth
+  }
+
+  get isRegWindow(): boolean {
+    return this.fsmState === FsmStates.Reg
   }
 
   get yandexDiskAccessToken() {

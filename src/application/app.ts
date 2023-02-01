@@ -79,6 +79,7 @@ export default class Application implements IApplication {
       this._store.commit('setEndpoint', endpoint)
     }
     this._store.commit('setUserDataPath', this.userDataPath)
+    this._store.commit('setFsmState', FsmStates.Auth)
   }
 
   loading(state: boolean) {
@@ -102,7 +103,7 @@ export default class Application implements IApplication {
   }
 
   logout() {
-    this.goto(FsmStates.None)
+    this.goto(FsmStates.Auth)
   }
 
   user(data: IUser) {
@@ -120,16 +121,18 @@ export default class Application implements IApplication {
       if(!transitionResult) {
         return
       }
-      if(transition === FsmStates.None) {
-        this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
-        this._store.commit('setToken', null)
-        const userDataPath = this._store.getters.getUserDataPath
-        storage.set(userDataPath, userDataFileName, { token: '' })
-        this.history = []
-        this._store.commit('setHistory', [])
+      this._store.commit('setFsmState', this.state)
+      if(transition === FsmStates.Auth) {
+        if(this.isAuth) {
+          this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
+          this._store.commit('setToken', null)
+          const userDataPath = this._store.getters.getUserDataPath
+          storage.set(userDataPath, userDataFileName, { token: '' })
+          this.history = []
+          this._store.commit('setHistory', [])
+        }
         return
       }
-      this._store.commit('setFsmState', this.state)
       if(this.lastState !== this.stateName) {
         this.setHistory()
       }

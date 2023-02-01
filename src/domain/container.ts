@@ -2,7 +2,6 @@ import { Container } from 'inversify'
 import { Store } from 'vuex'
 import Application from '~/application/app'
 import CommandBus from '~/domain/commands/command.bus'
-import { PingCommandHandler } from '~/domain/commands/ping.command'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
 import { CheckQueryHandler } from '~/domain/queries/check.query'
@@ -39,8 +38,6 @@ _container.bind<CheckQueryHandler>(TYPES.CheckQuery)
 _container.bind<ConfirmQueryHandler>(TYPES.ConfirmQuery)
   .to(ConfirmQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */
-_container.bind<PingCommandHandler>(TYPES.PingCommand)
-  .to(PingCommandHandler).inSingletonScope()
 _container.bind<CreateEditCommandHandler<TAnyResult>>(TYPES.CreateEditCommand)
   .to(CreateEditCommandHandler).inSingletonScope()
 

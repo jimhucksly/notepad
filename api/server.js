@@ -1,11 +1,14 @@
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
+const db = require('./database.js')
 
-const routes = require('./routes.js');
 const { createServer } = require('./socket.js')
+const { createRouter } = require('./routes.js');
 
-const app = express();
+const app = express()
+
+const routes = createRouter(db)
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
