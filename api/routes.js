@@ -1,17 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
+const { get } = require('./routes.get.js')
+const { post } = require('./routes.post.js')
+
 function createRouter(db) {
-  router.get('/', (req, res) => res.send('Server API working'))
-
-  router.post('/auth', (req, res, next) => {
-    res.send('hello')
-  })
-
-  router.get('*', function(req, res){
-    res.status(404).send('not found');
-  })
-
+  get(router, db)
+  post(router, db)
   return router
 }
 

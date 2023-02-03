@@ -19,6 +19,7 @@ import {
 import {
   AuthCommand,
   ReadCommand,
+  RegistrationCommand,
   RevokeYandexTokenCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
@@ -30,6 +31,27 @@ type TStore = ActionContext<IRootState, IRootState>
 class Actions implements ActionTree<IRootState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
+
+  /**
+   * Registration
+   * @param store Store
+   * @param {RegistrationCommand} command
+   */
+  @Commandable(TYPES.RegistrationCommand)
+  async actionReg(store: TStore, command: RegistrationCommand): Promise<boolean> {
+    try {
+      setProcess(store, 'registration...')
+      const resp = await $http.post<RegistrationCommand, boolean>('/signup', command)
+      /* eslint-disable no-console */
+      console.log('resp', resp)
+      return true
+    } catch (e) {
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
 
   @Commandable(TYPES.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
@@ -46,7 +68,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Auth
    * @param store Store
-   * @param {AuthQuery} data
+   * @param {AuthQuery} command
    */
   @Queryable(TYPES.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
@@ -70,7 +92,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   /**
    * Session
    * @param store Store
-   * @param {SessionQuery} data
+   * @param {SessionQuery} query
    */
   @Queryable(TYPES.SessionQuery)
   async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {

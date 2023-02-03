@@ -11,6 +11,30 @@ export class AuthCommand {
   constructor(public flag: boolean) {}
 }
 
+export class RegistrationCommand {
+  login = ''
+  pass = ''
+  name = ''
+  email = ''
+
+  constructor({
+    login,
+    pass,
+    name,
+    email
+  }: {
+    login: string
+    pass: string
+    name: string
+    email: string
+  }) {
+    this.login = login
+    this.pass = pass
+    this.name = name
+    this.email = email
+  }
+}
+
 export class CheckCommand {}
 
 export class CreateProjectCommand {

@@ -27,6 +27,7 @@ export default {
     function validation(instance: ComponentPublicInstance & { v: IValidate }) {
       const required = this.$el.querySelectorAll('input[required]')
       if (required?.length) {
+        instance.v = v
         for (const el of required) {
           if (!el.name) {
             continue
@@ -34,32 +35,18 @@ export default {
           const key = el.name
           keys.push(key)
           const target = el.dataset?.ruleTarget
-          v[key] = {
+          instance.v[key] = {
             value: '',
             rule: rulesMap[key] || rulesMap[target],
             isValid: true,
             isInvalid: false
           }
           if (target) {
-            v[key].target = target
-          }
-          instance.v = v
-          instance.v.touch = () => {
-            instance.v.touched++
-          }
-          instance.v.valid = () => {
-            let result = true
-            for (const k of keys) {
-              if (instance.v[k].isInvalid) {
-                result = false
-                break
-              }
-            }
-            return result
+            instance.v[key].target = target
           }
           instance.$watch(`${key}`, (_value: string) => {
             instance.v[key].value = _value
-          })
+          }, { immediate: true })
           instance.$watch(
             () => `${instance.v[key].value}${instance.v.touched}`,
             () => {
@@ -72,6 +59,19 @@ export default {
               instance.v[key].isInvalid = !instance.v[key].isValid
             }
           )
+        }
+        instance.v.touch = () => {
+          instance.v.touched++
+        }
+        instance.v.valid = () => {
+          let result = true
+          for (const k of keys) {
+            if (instance.v[k].isInvalid) {
+              result = false
+              break
+            }
+          }
+          return result
         }
       }
     }

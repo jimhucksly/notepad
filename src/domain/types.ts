@@ -23,6 +23,7 @@ const TYPES = {
   YandexDiskInfoQuery: Symbol.for('YandexDiskInfoQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
   /* --------- commands --------- */
+  RegistrationCommand: Symbol.for('RegistrationCommand'),
   CheckCommand: Symbol.for('CheckCommand'),
   CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
