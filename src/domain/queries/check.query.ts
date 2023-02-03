@@ -25,11 +25,11 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
   }
 
   exec(query: CheckQuery): Promise<void> {
-    if(this.isDevelopment || !this.isDevelopment) {
+    if (this.isDevelopment || !this.isDevelopment) {
       return void 0
     }
     const duration = this.isDevelopment ? 6000 : 3000
-    if(!this.isAuth) {
+    if (!this.isAuth) {
       this.timeout && clearTimeout(this.timeout)
       return Promise.reject()
     }
@@ -37,14 +37,14 @@ export class CheckQueryHandler implements IQueryHandler<CheckQuery, void> {
       try {
         const resp: ICheckResponse = await this._commandBus.do(new CheckCommand())
         this._store.commit('setError', false)
-        if(!resp) {
+        if (!resp) {
           return void 0
         }
         this._store.commit('projects/setJson', resp.json)
         this._store.commit('events/setEvents', resp.events)
         this._store.commit('links/setLinks', resp.links)
         this._store.commit('todo/setTodo', resp.todo)
-      } catch(e) {
+      } catch (e) {
         this._store.commit('setError', true)
         /* eslint-disable no-console */
         console.error(e)

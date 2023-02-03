@@ -29,12 +29,12 @@ class Actions implements ActionTree<ITodoState, IRootState> {
     try {
       setProcess(store, 'get todo list...')
       const resp = await $http.get<Array<ITodo>>('/todo')
-      if(!resp) {
+      if (!resp) {
         return Promise.reject(resp)
       }
       store.commit('setTodo', resp.data)
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed')
       return Promise.reject(e)
     } finally {
@@ -53,7 +53,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
       setProcess(store, 'update todo list...')
       await $http.put('/todo', command.item)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item update failed')
       return Promise.reject(e)
     } finally {
@@ -72,7 +72,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
       setProcess(store, 'remove todo item...')
       await $http.delete(`/todo/?id=${command.id}`)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed')
       return Promise.reject(e)
     } finally {
@@ -91,7 +91,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
       setProcess(store, 'set todo order...')
       await $http.post('/todo/order', command.result)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed')
       return Promise.reject(e)
     } finally {

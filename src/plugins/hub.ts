@@ -4,7 +4,7 @@ class HubPlugin {
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   $on(eventName: string, callback: (args: any) => any) {
-    if(eventName in this.listeners) {
+    if (eventName in this.listeners) {
       this.listeners[eventName].push(callback)
     } else {
       this.listeners[eventName] = []
@@ -15,12 +15,12 @@ class HubPlugin {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   $off(eventName: string, callback: (args: any) => any) {
     const map = new Map()
-    if(eventName in this.listeners) {
+    if (eventName in this.listeners) {
       this.listeners[eventName].forEach((listener, index) => {
         map.set(listener, index)
       })
       const index = map.get(callback)
-      if(index !== undefined) {
+      if (index !== undefined) {
         this.listeners[eventName].splice(index, 1)
       }
     }
@@ -28,7 +28,7 @@ class HubPlugin {
 
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   $emit(eventName: string, ...args: any) {
-    if(eventName in this.listeners) {
+    if (eventName in this.listeners) {
       this.listeners[eventName].forEach(listener => {
         Function.prototype.apply.call(listener, this, args)
       })

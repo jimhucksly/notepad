@@ -15,7 +15,7 @@ export default {
     const tryReconnect = () => {
       setTimeout(() => {
         socket.io.open((err) => {
-          if(err) {
+          if (err) {
             store.commit('setError', true)
             tryReconnect()
           } else {

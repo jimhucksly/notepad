@@ -3,7 +3,7 @@ import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { AppComponents } from '~/application/app'
 import { toStr } from '~/application/fsm'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
+import { IFsmStates } from '~/application/fsm.states'
 import JsonViewerBtns from '~/components/jsonViewerBtns'
 import Library from '~/components/library'
 import LibraryFiles from '~/components/libraryFiles'
@@ -36,10 +36,10 @@ export default class Sidebar extends Vue {
   isLibraryFilesInit = false
 
   toggleLibraryFiles() {
-    if(this.isLibraryFilesVisibility) {
+    if (this.isLibraryFilesVisibility) {
       this.$app.goBack()
     } else {
-      this.$app.goto(FsmStates.LibraryFiles)
+      this.$app.goto(this.$app.states.LibraryFiles)
     }
   }
 
@@ -48,7 +48,7 @@ export default class Sidebar extends Vue {
   }
 
   @Watch('projectEditedItemKey') onProjectEditedItemKeyChanged(v: string) {
-    if(!v) {
+    if (!v) {
       const cont = this.$refs.projects as Projects
       cont.clearCheck()
     }
@@ -67,35 +67,35 @@ export default class Sidebar extends Vue {
   }
 
   get isAccount(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Account)]
+    return this.component === AppComponents[toStr(this.$app.states.Account)]
   }
 
   get isPreferences(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Preferences)]
+    return this.component === AppComponents[toStr(this.$app.states.Preferences)]
   }
 
   get isProjects(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Projects)]
+    return this.component === AppComponents[toStr(this.$app.states.Projects)]
   }
 
   get isLibrary(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Library)]
+    return this.component === AppComponents[toStr(this.$app.states.Library)]
   }
 
   get isJsonViewer(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.JsonViewer)]
+    return this.component === AppComponents[toStr(this.$app.states.JsonViewer)]
   }
 
   get isLinks(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Links)]
+    return this.component === AppComponents[toStr(this.$app.states.Links)]
   }
 
   get isTodo(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Todo)]
+    return this.component === AppComponents[toStr(this.$app.states.Todo)]
   }
 
   get isEvents(): boolean {
-    return this.component === AppComponents[toStr(FsmStates.Events)]
+    return this.component === AppComponents[toStr(this.$app.states.Events)]
   }
 
   get switcherProps() {

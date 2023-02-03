@@ -8,7 +8,7 @@ axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     config = config || {}
     config.headers['X-Honeypot'] = 'App'
-    if(config.url.indexOf('upload') > -1) {
+    if (config.url.indexOf('upload') > -1) {
       config.headers['Content-Type'] = 'multipart/form-data'
       config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
         uploadDownloadFile(loaded, total)
@@ -56,10 +56,10 @@ let interval: NodeJS.Timeout | null = null
 class Http {
   public async get<TResponse>(url: string): Promise<IResponse<TResponse>> {
     const resp: AxiosResponse<IResponse<TResponse>> = await axios.get(url)
-    if(resp.status === 204) {
+    if (resp.status === 204) {
       return Promise.resolve(void 0)
     }
-    if(!resp || !resp.data || resp instanceof Error) {
+    if (!resp || !resp.data || resp instanceof Error) {
       return Promise.reject(resp)
     }
     return resp.data
@@ -69,10 +69,10 @@ class Http {
     let resp: AxiosResponse<IResponse<TResponse>>
     try {
       resp = await axios.post(url, data)
-    } catch(e) {
-      if((e as { response: unknown }).response === undefined) {
+    } catch (e) {
+      if ((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
-        if(interval === undefined) {
+        if (interval === undefined) {
           interval = setInterval(() => {
             this.post(url, data)
           }, 2000)
@@ -94,10 +94,10 @@ class Http {
     let resp: AxiosResponse<IResponse<TResponse>>
     try {
       resp = await axios.put(url, data)
-    } catch(e) {
-      if((e as { response: unknown }).response === undefined) {
+    } catch (e) {
+      if ((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
-        if(interval === undefined) {
+        if (interval === undefined) {
           interval = setInterval(() => {
             this.put(url, data)
           }, 2000)
@@ -117,10 +117,10 @@ class Http {
     let resp: AxiosResponse<IResponse<string>>
     try {
       resp = await axios.delete(url)
-    } catch(e) {
-      if((e as { response: unknown }).response === undefined) {
+    } catch (e) {
+      if ((e as { response: unknown }).response === undefined) {
         store.commit('setError', true)
-        if(interval === undefined) {
+        if (interval === undefined) {
           interval = setInterval(() => {
             this.delete(url)
           }, 2000)

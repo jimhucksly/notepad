@@ -43,7 +43,7 @@ export default class Todo extends Vue {
   }
 
   onMouseDown(event: MouseEvent, id: string) {
-    if(event.button > 0) {
+    if (event.button > 0) {
       /**
        * если клик правой кнопкой мыши
        */
@@ -53,7 +53,7 @@ export default class Todo extends Vue {
     document.onmouseup = () => {
       this.isDrag = false
       const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
-      if(!elem) {
+      if (!elem) {
         return
       }
       elem.style.transition = 'all 0.1s'
@@ -72,12 +72,12 @@ export default class Todo extends Vue {
   }
 
   move(event: MouseEvent, id: string): void {
-    if(!this.isDrag) {
+    if (!this.isDrag) {
       return
     }
     const container: HTMLElement = document.querySelector('.todo_cont')
     const elemsClassName = 'todo_item'
-    if(!container || container.childElementCount === 1) {
+    if (!container || container.childElementCount === 1) {
       return null
     }
     const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
@@ -91,7 +91,7 @@ export default class Todo extends Vue {
     let avatar: HTMLElement = null
 
     const finishDrag = () => {
-      if(!dragItem || !avatar) {
+      if (!dragItem || !avatar) {
         return
       }
       dragItem.classList.remove('dragable')
@@ -113,7 +113,7 @@ export default class Todo extends Vue {
     }
 
     document.onmousemove = (ev: MouseEvent) => {
-      if(Math.abs(ev.clientX - startPos.x) > 10 || Math.abs(ev.clientY - startPos.y) > 10) {
+      if (Math.abs(ev.clientX - startPos.x) > 10 || Math.abs(ev.clientY - startPos.y) > 10) {
         container.classList.add('todo_cont--drag')
 
         avatar = document.createElement('div')
@@ -141,10 +141,10 @@ export default class Todo extends Vue {
 
         const childNodes: NodeListOf<HTMLElement> = container.childNodes as NodeListOf<HTMLElement>
         childNodes.forEach(el => {
-          if(el.classList) {
+          if (el.classList) {
             const isAvatar = el.classList.contains('dragable-avatar')
             const isSelf = el.classList.contains('dragable')
-            if(!isAvatar && !isSelf && el.classList.contains(elemsClassName)) el.classList.add('dropable')
+            if (!isAvatar && !isSelf && el.classList.contains(elemsClassName)) el.classList.add('dropable')
           }
         })
 
@@ -161,11 +161,11 @@ export default class Todo extends Vue {
           dragItem.style.display = 'none'
           const el: Element | null = document.elementFromPoint(clientX, clientY)
           dragItem.style.display = 'block'
-          if(!el) {
+          if (!el) {
             return
           }
           const dropItem: HTMLElement | null = el.closest('.dropable')
-          if(!dropItem) {
+          if (!dropItem) {
             return
           }
           const dropRect: DOMRect = dropItem.getBoundingClientRect()
@@ -173,15 +173,15 @@ export default class Todo extends Vue {
             x: e.clientX - dropRect.left,
             y: e.clientY - dropRect.top
           }
-          if(dropCoords.x < dropRect.width / 2) {
+          if (dropCoords.x < dropRect.width / 2) {
             const next: Element | null = dropItem.nextElementSibling
-            if(next) {
+            if (next) {
               container.insertBefore(avatar, next)
             } else {
               container.appendChild(avatar)
             }
           } else {
-            if(indexOf(dropItem) === container.childElementCount - 1) {
+            if (indexOf(dropItem) === container.childElementCount - 1) {
               container.appendChild(avatar)
             } else {
               container.insertBefore(avatar, dropItem)
@@ -201,12 +201,12 @@ export default class Todo extends Vue {
   setOrder() {
     const result: ITodoOrder = {}
     const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]')
-    if(!elems.length) {
+    if (!elems.length) {
       return
     }
     elems.forEach((el: HTMLElement, index: number) => {
       const id = el.dataset.id
-      if(id) {
+      if (id) {
         result[id] = index + 1
         const item = this.items.find((o: ITodoItem) => o.id === id)
         item && (item.order = index + 1)
@@ -217,20 +217,20 @@ export default class Todo extends Vue {
   }
 
   edit(id: string) {
-    if(this.isDrag) {
+    if (this.isDrag) {
       return
     }
     document.onmousemove = null
     document.onmouseup = null
     const o = this.items.find((item: ITodoItem) => item.id === id)
     this.itemSelected = o ? cloneDeep(o) : null
-    if(this.itemSelected) {
+    if (this.itemSelected) {
       this.isPopupShow = true
       this.$nextTick(() => {
         const textarea = this.$refs.textarea as HTMLElement
         textarea.focus()
         textarea.addEventListener('keydown', (e: KeyboardEvent) => {
-          if((e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
+          if ((e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
             e.preventDefault()
             this.save()
           }
@@ -240,10 +240,10 @@ export default class Todo extends Vue {
   }
 
   save() {
-    if(this.itemSelected) {
+    if (this.itemSelected) {
       const id = this.itemSelected.id
       const o: ITodoItem | null = this.items.find((item: ITodoItem) => item.id === id) ?? null
-      if(o) {
+      if (o) {
         o.text = this.itemSelected.text
         this.items = [...this.items]
         this.cancel()
@@ -258,7 +258,7 @@ export default class Todo extends Vue {
   }
 
   async remove() {
-    if(this.itemSelected) {
+    if (this.itemSelected) {
       const id = this.itemSelected.id
       this.items = this.items.filter((item: ITodoItem) => item.id !== id)
       this.cancel()
@@ -282,7 +282,7 @@ export default class Todo extends Vue {
   addTodo() {
     const { date, stamp } = now()
     let sstamp: number = +stamp
-    while(this.keys.includes(sstamp.toString())) {
+    while (this.keys.includes(sstamp.toString())) {
       sstamp += 1
     }
     const o: ITodoItem = {
@@ -311,7 +311,7 @@ export default class Todo extends Vue {
       this.loading = false
       this.addTodoHandler = this.addTodo.bind(this)
       Hub.$on('todo-add', this.addTodoHandler)
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.log(e)
     }

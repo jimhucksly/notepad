@@ -32,17 +32,17 @@ export default class CreateEditLinkComponent extends Vue {
   }
 
   validate() {
-    if(!this.link.url) {
+    if (!this.link.url) {
       this.errors.url = true
     }
-    if(!this.link.name) {
+    if (!this.link.name) {
       this.errors.name = true
     }
     return !Object.values(this.errors).includes(true)
   }
 
   save() {
-    if(this.validate()) {
+    if (this.validate()) {
       this.$emit('set-result', { ...this.link })
     }
   }
@@ -50,7 +50,7 @@ export default class CreateEditLinkComponent extends Vue {
   mounted() {
     ['url', 'name'].forEach(key => {
       const ref = this.$refs[key]
-      if(ref) {
+      if (ref) {
         (ref as HTMLInputElement).addEventListener('focus', () => {
           this.errors[key] = false
         })

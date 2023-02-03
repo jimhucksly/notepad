@@ -1,6 +1,5 @@
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { _container } from '~/domain/container'
 import { ICommandBus } from '~/domain/interfaces'
@@ -21,7 +20,7 @@ export default class Titlebar extends Vue {
   }
 
   toPreferences() {
-    this.$app.goto(FsmStates.Preferences)
+    this.$app.goto(this.$app.states.Preferences)
   }
 
   toAbout() {
@@ -32,13 +31,13 @@ export default class Titlebar extends Vue {
         title: 'About',
         width: '25%'
       },
-      fsmState: FsmStates.About
+      fsmState: this.$app.states.About
     })
     this.commandBus.do<CreateEditCommand<void>, void>(command)
   }
 
   toAccount() {
-    this.$app.goto(FsmStates.Account)
+    this.$app.goto(this.$app.states.Account)
   }
 
   reload() {

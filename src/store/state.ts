@@ -27,7 +27,7 @@ const _state: any = {
 }
 
 stateKeys.forEach(key => {
-  if(_state[key] === undefined) {
+  if (_state[key] === undefined) {
     _state[key] = null
   }
 })

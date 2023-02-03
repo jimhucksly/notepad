@@ -7,7 +7,7 @@ const getters: GetterTree<ITodoState, IRootState> = {}
 
 stateKeys.forEach(key => {
   const getterKey = 'get' + upperFirst(key)
-  if(getters[getterKey] === undefined) {
+  if (getters[getterKey] === undefined) {
     getters[getterKey] = state => {
       return state[key]
     }

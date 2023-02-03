@@ -23,7 +23,7 @@ export default class Links extends Vue {
 
   async edit(id: string) {
     const found = this.links.find(link => link.id === id)
-    if(found) {
+    if (found) {
       const command = new CreateEditCommand({
         component: 'create-edit-link',
         componentProps: {
@@ -38,7 +38,7 @@ export default class Links extends Vue {
         fsmState: FsmStates.AddLinkPopup
       })
       const result = await this.commandBus.do<CreateEditCommand<ILink>, ILink>(command)
-      if(!result) {
+      if (!result) {
         return
       }
       await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
@@ -50,7 +50,7 @@ export default class Links extends Vue {
     try {
       await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(id))
       await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
@@ -62,7 +62,7 @@ export default class Links extends Vue {
 
   async mounted() {
     await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
-    if(!this.links?.length) {
+    if (!this.links?.length) {
       this.isEmpty = true
     }
   }

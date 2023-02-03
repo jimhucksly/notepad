@@ -104,10 +104,10 @@ export default class Index extends Vue {
   }
 
   @Watch('isAuth') onAuthChanged(v: boolean) {
-    if(v) {
+    if (v) {
       try {
         this.queryBus.exec<CheckQuery, void>(new CheckQuery())
-      } catch(e) {
+      } catch (e) {
         /* eslint-disable no-console */
         console.error(e)
       }
@@ -121,19 +121,19 @@ export default class Index extends Vue {
     try {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
-      if(token) {
+      if (token) {
         const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
-        if(data.token) {
+        if (data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
         }
         this.$nextTick(async () => {
-          if(this.yandexAccessToken) {
+          if (this.yandexAccessToken) {
             await Promise.all([
               this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
               this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
             ])
-            if(!this.isDev) {
+            if (!this.isDev) {
               await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
                 new RefreshYandexTokenQuery(Number(this.currentUser.id))
               )
@@ -151,7 +151,7 @@ export default class Index extends Vue {
         this.$app.logout()
         return false
       }
-    } catch(e) {
+    } catch (e) {
       this.$app.loading(false)
       this.$app.logout()
       const userDataPath = this.$store.getters.getUserDataPath
@@ -166,13 +166,13 @@ export default class Index extends Vue {
       this.setUserDataPath(appPath)
       await storage.createFile(appPath, userPreferencesFileName)
       const json: IUserPreferences = await storage.get(appPath, userPreferencesFileName)
-      if(json.downloadsTargetPath !== undefined) {
+      if (json.downloadsTargetPath !== undefined) {
         this.setDownloadsTargetPath(json.downloadsTargetPath)
       } else {
         json.downloadsTargetPath = appPath
         this.setDownloadsTargetPath(appPath)
       }
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
       this.setDownloadsTargetPath(appPath)
@@ -213,9 +213,9 @@ export default class Index extends Vue {
     try {
       const resp: boolean = await this.queryBus.exec(query)
       const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
-      if(resp && token) {
+      if (resp && token) {
         const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
-        if(data.token) {
+        if (data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
           await Promise.all([
@@ -226,7 +226,7 @@ export default class Index extends Vue {
         }
         this.$toasted.success('Access token successfully saved')
       }
-    } catch(e) {
+    } catch (e) {
       let message = 'Access token request failed'
       message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
       this.$toasted.error(message)

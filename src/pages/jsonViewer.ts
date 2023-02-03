@@ -41,13 +41,13 @@ export default class JsonViewer extends Vue {
 
   format(instance: IEditor) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
-    if(this.formatted) {
+    if (this.formatted) {
       this.formatted = false
       return
     }
     const value = instance.getValue()
-    if(!value.length) {
-      if(res) {
+    if (!value.length) {
+      if (res) {
         res.innerHTML = ''
       }
       return
@@ -60,17 +60,17 @@ export default class JsonViewer extends Vue {
         const text = JSON.stringify(json, null, 2)
         this.editor.setValue(text)
       }, 100)
-      if(window.localStorage) {
+      if (window.localStorage) {
         localStorage.setItem('json_viewer', JSON.stringify(json))
       }
-    } catch(e) {
+    } catch (e) {
       this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
-      if(res) {
+      if (res) {
         res.innerHTML = ''
       }
     }
     const formatter = new JSONFormatter(json)
-    if(res) {
+    if (res) {
       res.innerHTML = ''
       const html = formatter.render()
       res.appendChild(html)
@@ -84,31 +84,31 @@ export default class JsonViewer extends Vue {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
     const container = document.querySelector('.json_viewer_cont')
 
-    if(event.button !== 0) {
+    if (event.button !== 0) {
       return
     }
     const startX = event.screenX
     const minW = 17
 
-    if(container && src && res) {
+    if (container && src && res) {
       const srcW = src.clientWidth
       const resW = res.clientWidth
       const contW = container.clientWidth
       document.onmousemove = (e: MouseEvent) => {
-        if(e.screenX < startX) {
+        if (e.screenX < startX) {
           const w: number = srcW - (startX - e.screenX)
           const p: number = w * 100 / contW
-          if(p > minW) {
+          if (p > minW) {
             src.style.maxWidth = p + '%'
             src.style.minWidth = p + '%'
             res.style.maxWidth = 100 - p + '%'
             res.style.minWidth = 100 - p + '%'
           }
         }
-        if(e.screenX > startX) {
+        if (e.screenX > startX) {
           const w: number = resW - (e.screenX - startX)
           const p = w * 100 / contW
-          if(p > minW) {
+          if (p > minW) {
             res.style.maxWidth = p + '%'
             res.style.minWidth = p + '%'
             src.style.maxWidth = 100 - p + '%'
@@ -131,7 +131,7 @@ export default class JsonViewer extends Vue {
 
   notice(text: string) {
     const notice: HTMLElement = document.querySelector('.json_viewer_notice')
-    if(notice) {
+    if (notice) {
       notice.innerText = text
       notice.style.display = 'flex'
       setTimeout(() => {
@@ -145,7 +145,7 @@ export default class JsonViewer extends Vue {
     try {
       json = JSON.parse(value)
       this.editor.setValue(JSON.stringify(json, null, 2))
-    } catch(e) {
+    } catch (e) {
       this.$electron.ipcRenderer.send('open-error-dialog', 'json parse failed')
     }
   }
@@ -158,10 +158,10 @@ export default class JsonViewer extends Vue {
   onJsonClear() {
     this.editor.setValue('')
     const res: HTMLElement = document.querySelector('.json_viewer_res')
-    if(res) {
+    if (res) {
       res.innerHTML = ''
     }
-    if(window.localStorage) {
+    if (window.localStorage) {
       localStorage.removeItem('json_viewer')
     }
   }
@@ -173,14 +173,14 @@ export default class JsonViewer extends Vue {
     Hub.$on('json-viewer-save', this.onJsonSaveHandler)
     this.onJsonClearHandler = this.onJsonClear.bind(this)
     Hub.$on('json-viewer-clear', this.onJsonClearHandler)
-    if(window.localStorage) {
+    if (window.localStorage) {
       const value = localStorage.getItem('json_viewer')
       let json: Record<string, unknown> = null
-      if(value) {
+      if (value) {
         try {
           json = JSON.parse(value)
           this.editor.setValue(JSON.stringify(json, null, 2))
-        } catch(e) {
+        } catch (e) {
           /* eslint-disable no-console */
           console.error(e)
         }

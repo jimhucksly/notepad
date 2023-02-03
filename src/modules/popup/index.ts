@@ -1,7 +1,6 @@
 import { Watch } from 'vue-property-decorator'
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IModalInfo } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
@@ -15,7 +14,7 @@ export default class Popup extends Vue {
   openDialogHandler: (command: CreateEditCommand<unknown>) => void
 
   @Watch('showPopup') onShowPopupChanged(state: boolean) {
-    if(!state) {
+    if (!state) {
       this.component = null
       this.props = null
       this.modal = null
@@ -54,12 +53,12 @@ export default class Popup extends Vue {
 
   get showPopup() {
     return [
-      FsmStates.AddLinkPopup,
-      FsmStates.About,
-      FsmStates.Uploading,
-      FsmStates.Downloading,
-      FsmStates.AddLibraryFilePopup,
-      FsmStates.ConfirmPopup
+      this.$app.states.AddLinkPopup,
+      this.$app.states.About,
+      this.$app.states.Uploading,
+      this.$app.states.Downloading,
+      this.$app.states.AddLibraryFilePopup,
+      this.$app.states.ConfirmPopup
     ].includes(this.fsmState)
   }
 }

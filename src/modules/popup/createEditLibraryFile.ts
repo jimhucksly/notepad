@@ -28,14 +28,14 @@ export default class CreateEditLibraryFileComponent extends Vue {
   }
 
   validate() {
-    if(!this.file.name) {
+    if (!this.file.name) {
       this.errors.name = true
     }
     return !Object.values(this.errors).includes(true)
   }
 
   save() {
-    if(this.validate()) {
+    if (this.validate()) {
       this.$emit('set-result', { ...this.file })
     }
   }
@@ -43,7 +43,7 @@ export default class CreateEditLibraryFileComponent extends Vue {
   mounted() {
     ['title', 'name'].forEach(key => {
       const ref = this.$refs[key]
-      if(ref) {
+      if (ref) {
         (ref as HTMLInputElement).addEventListener('focus', () => {
           this.errors[key] = false
         })

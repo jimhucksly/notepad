@@ -14,7 +14,7 @@ import { ConfirmQueryHandler } from './queries/confirm.query'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 let _store: Store<any> = null
-if(process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test') {
   _store = mockStore
 }
 

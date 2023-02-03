@@ -31,14 +31,14 @@ interface SimpleMDEExt extends SimpleMDE {
 const linked = (value: ILinkedDoc): Array<string> => {
   const result: Array<string> = []
   function _linked(o: ILinkedDoc) {
-    if(o.children) {
+    if (o.children) {
       o.children.forEach(item => {
-        if(item.lines) {
+        if (item.lines) {
           item.lines.forEach(line => {
             result.push(line.text)
           })
         }
-        if(item.children) {
+        if (item.children) {
           _linked(item)
         }
       })
@@ -81,14 +81,14 @@ export default class LibraryPage extends Vue {
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
       await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
   }
 
   @Watch('initialValue') onInitialValueChanged() {
-    if(this.isPreview) {
+    if (this.isPreview) {
       this.previewRender(this.initialValue)
       this.updating = true
       this.$nextTick(() => {
@@ -96,7 +96,7 @@ export default class LibraryPage extends Vue {
         this.buildTree()
       })
       const container = this.$refs.editor_text as HTMLElement
-      if(container) {
+      if (container) {
         container.innerHTML = ''
         LibraryPage.editor = null
       }
@@ -169,7 +169,7 @@ export default class LibraryPage extends Vue {
       ],
       tabSize: 4
     }
-    if(element) {
+    if (element) {
       config.element = element
     }
 
@@ -178,7 +178,7 @@ export default class LibraryPage extends Vue {
     LibraryPage.editor.value(this.initialValue)
 
     const toolbarItemSave = LibraryPage.editor.toolbar.find(item => item.name === 'save')
-    if(toolbarItemSave) {
+    if (toolbarItemSave) {
       toolbarItemSave.action = this.save.bind(this)
     }
     const doc = LibraryPage.editor.codemirror.getDoc()
@@ -192,13 +192,13 @@ export default class LibraryPage extends Vue {
     this.linkClickHandler = (name: string) => {
       let scrolling = false
       this.links.forEach((link: string, index: number): void | null => {
-        if(scrolling) {
+        if (scrolling) {
           return null
         }
-        if(link.indexOf(name) > -1) {
+        if (link.indexOf(name) > -1) {
           scrolling = true
           LibraryPage.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
-          if(index > 0) {
+          if (index > 0) {
             const scrollInfo = LibraryPage.editor.codemirror.getScrollInfo()
             LibraryPage.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
           }
@@ -215,9 +215,9 @@ export default class LibraryPage extends Vue {
     await this.$nextTick()
     items.forEach(item => {
       const node = document.querySelector('#' + item.slug)
-      if(node) {
+      if (node) {
         const level = +node.tagName.slice(-1)
-        switch(level) {
+        switch (level) {
           case 1:
             tree.push(item)
             index++
@@ -244,7 +244,7 @@ export default class LibraryPage extends Vue {
       .all([promise])
       .then(() => {
         const statusBar = this.$el.querySelector('.editor-statusbar')
-        if(statusBar) {
+        if (statusBar) {
           const savedSatus = statusBar.querySelector('.saved-status')
           const message = 'Markdown is successfully saved!'
           savedSatus && (savedSatus.innerHTML = message)
@@ -262,17 +262,17 @@ export default class LibraryPage extends Vue {
   }
 
   toggle(state: boolean) {
-    if(state === this.isPreview) {
+    if (state === this.isPreview) {
       return
     }
     this.isPreview = state
-    if(this.isPreview) {
+    if (this.isPreview) {
       const value = LibraryPage.editor ? LibraryPage.editor.value() : this.initialValue
       this.previewRender(value)
       this.buildTree()
     } else {
       const container = this.$refs.editor_text as HTMLElement
-      if(container && !container.innerHTML) {
+      if (container && !container.innerHTML) {
         const textarea = document.createElement('textarea')
         textarea.name = 'editor'
         textarea.id = 'editor'

@@ -25,7 +25,7 @@ export default class NotepadItem extends Vue {
     const target = e.target as HTMLAnchorElement
     const isLink = target.tagName === 'A'
     const hasHref = target.href && target.href.length
-    if(isLink && hasHref) {
+    if (isLink && hasHref) {
       this.$electron.shell.openExternal(target.href)
       return false
     }
@@ -33,7 +33,7 @@ export default class NotepadItem extends Vue {
 
   mounted() {
     this.message = this.item.message ?? ''
-    if(this.isLast) {
+    if (this.isLast) {
       this.$emit('on-last-rendered')
     }
   }

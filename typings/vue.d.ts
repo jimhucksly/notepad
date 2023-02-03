@@ -14,5 +14,6 @@ declare module '@vue/runtime-core' {
       success: (subject: string) => void
       error: (subject: string) => void
     }
+    $validate: (instance: ComponentPublicInstance) => void
   }
 }

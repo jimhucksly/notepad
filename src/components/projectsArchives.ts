@@ -33,7 +33,7 @@ export default class ProjectsArchives extends Vue {
       this.queryBus.exec(new ArchivesQuery())
       this.queryBus.exec(new ProjectsQuery())
       this.$app.goBack()
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
@@ -47,7 +47,7 @@ export default class ProjectsArchives extends Vue {
         return e.name !== o.name
       })
       this.setArchives(arr)
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }

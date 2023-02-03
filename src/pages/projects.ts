@@ -49,7 +49,7 @@ export default class Projects extends Vue {
 
   @Watch('hasFilter') onHasFilterChanged(flag: boolean) {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
-    if(flag) {
+    if (flag) {
       notepadCont.scrollTo(0, 0)
     } else {
       this.$nextTick(() => {
@@ -66,7 +66,7 @@ export default class Projects extends Vue {
   }
 
   send() {
-    if(!this.message.length) {
+    if (!this.message.length) {
       return
     }
     this.newMsgFlag = true
@@ -92,10 +92,10 @@ export default class Projects extends Vue {
   onFileChange(e: InputEvent | DragEvent) {
     const target = e.target as HTMLInputElement
     let files = target.files
-    if(!files?.length) {
+    if (!files?.length) {
       files = (e as DragEvent).dataTransfer.files
     }
-    if(files?.length === 0) {
+    if (files?.length === 0) {
       return
     }
     const formData = new FormData()
@@ -118,7 +118,7 @@ export default class Projects extends Vue {
       const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
       this.$app.goBack()
       this.addFile(newFile.name, fileType)
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
@@ -154,8 +154,8 @@ export default class Projects extends Vue {
     const unread: NodeListOf<HTMLElement> = self.querySelectorAll('.unread')
     unread.forEach((el: HTMLElement) => {
       const elRect = el.getBoundingClientRect()
-      if(elRect.top < viewportHeight) {
-        if(!el.classList.contains('.will-be-marked')) {
+      if (elRect.top < viewportHeight) {
+        if (!el.classList.contains('.will-be-marked')) {
           setTimeout(() => {
             this.commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
             el.classList.remove('unread')
@@ -178,10 +178,10 @@ export default class Projects extends Vue {
     this.setFilter(buffFilter)
     this.setJson(buffJson)
     this.removeStack.push(stamp)
-    if(this.removeStack[0] === stamp) {
+    if (this.removeStack[0] === stamp) {
       await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
       this.removeStack = this.removeStack.filter(el => el !== stamp)
-      if(this.removeStack.length) {
+      if (this.removeStack.length) {
         this.onDelete(this.removeStack[0])
       }
     }

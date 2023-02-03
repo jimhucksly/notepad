@@ -34,7 +34,7 @@ export default class File extends Vue {
       this.downloading = true
       const link: string = await this.queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
       this.downloading = false
-      if(link) {
+      if (link) {
         const a = document.createElement('a')
         a.href = link
         a.download = 'C:\\' + this.fileName
@@ -45,7 +45,7 @@ export default class File extends Vue {
           window.URL.revokeObjectURL(link)
         }, 0)
       }
-    } catch(e) {
+    } catch (e) {
       //
     } finally {
       this.downloading = false

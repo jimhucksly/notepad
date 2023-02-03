@@ -30,13 +30,13 @@ export default class ProjectsEditor extends Vue {
   savingProcess = false
 
   @Watch('expanded') onExpandedChanged() {
-    if(!this.expanded) {
+    if (!this.expanded) {
       this.setSelectedProject('')
     }
   }
 
   @Watch('item') onItemChanged(o: IJsonItem) {
-    if(o) {
+    if (o) {
       this.name = o.name
       this.isLock = o.lock
     } else {
@@ -46,7 +46,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   get item(): IJsonItem {
-    if(!this.json) {
+    if (!this.json) {
       return null
     }
     return this.json[this.selected]
@@ -57,7 +57,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async toggleLock(): Promise<void> {
-    if(!this.item) {
+    if (!this.item) {
       return
     }
     const isLocked = this.item.lock
@@ -71,11 +71,11 @@ export default class ProjectsEditor extends Vue {
       this.setJson({ ...this.json, ...o })
       this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
-    if(isLocked) {
+    if (isLocked) {
       const isConfirm = await this.queryBus.exec(new ConfirmQuery(
         'Do you want to unlock this project?'
       ))
-      if(!isConfirm) {
+      if (!isConfirm) {
         this.isLock = !this.isLock
         return
       }
@@ -95,7 +95,7 @@ export default class ProjectsEditor extends Vue {
     const isConfirm = await this.queryBus.exec(new ConfirmQuery(
       'Do you want to remove this project?'
     ))
-    if(!isConfirm) {
+    if (!isConfirm) {
       return
     }
     this.removeHandler()

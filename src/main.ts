@@ -26,6 +26,9 @@ import ToastedPlugin from '~/plugins/toasted'
 import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
 import SocketPlugin from '~/plugins/socket'
+import Validate from './plugins/validate'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 const app = createApp(root)
 
@@ -50,5 +53,10 @@ app.use(ElectronPlugin)
 app.use(AnimePlugin)
 app.use(ToastedPlugin)
 app.use(SocketPlugin, { store })
+app.use(Validate)
+
+if (isDev && window && window.location) {
+  (window as unknown as { reload: () => void }).reload = window.location.reload.bind(window.location)
+}
 
 app.mount('#app')

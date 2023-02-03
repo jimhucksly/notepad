@@ -43,13 +43,13 @@
     }],
     // enforce spacing before and after keywords (keyword-spacing)
     "keyword-spacing": [2, {
-        "overrides": {
-        "if": {"after": false},
-        "for": {"after": false},
-        "while": {"after": false},
-        "switch": {"after": false},
-        "import": {"after": true},
-        "catch": {"after": false}
+          "overrides": {
+          "if": {"after": true},
+          "for": {"after": true},
+          "while": {"after": true},
+          "switch": {"after": true},
+          "import": {"after": true},
+          "catch": {"after": true}
         }
       }
     ],

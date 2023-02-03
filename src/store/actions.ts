@@ -56,11 +56,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
         login: query.login,
         password: query.password
       })
-      if(resp.token) {
+      if (resp.token) {
         return resp
       }
       return Promise.reject(resp)
-    } catch(e) {
+    } catch (e) {
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -77,11 +77,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'get session...')
       const resp = await $http.post<SessionQuery, void>('/session', query)
-      if(resp.token) {
+      if (resp.token) {
         return resp
       }
       return Promise.reject(resp)
-    } catch(e) {
+    } catch (e) {
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -98,7 +98,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       setProcess(store, 'start...')
       await $http.get<IResponse<boolean>>('/start')
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -112,11 +112,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionCheck(store: TStore): Promise<ICheckResponse> {
     try {
       const resp = await $http.get<ICheckResponse>('/check')
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return void 0
       }
       return resp.data
-    } catch(e) {
+    } catch (e) {
       return Promise.reject(e)
     }
   }
@@ -137,11 +137,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'creating yandex disk token...')
       const resp = await $http.post<YandexTokenQuery, string>('/yandexapi/token', query)
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token not received')
       return Promise.reject(e)
     } finally {
@@ -159,11 +159,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'updating yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/refreshToken', query)
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
       return Promise.reject(e)
     } finally {
@@ -181,11 +181,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'revoke yandex disk token...')
       const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/revokeToken', command)
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
       return Promise.reject(e)
     } finally {
@@ -205,11 +205,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     try {
       setProcess(store, 'get yandex disk info...')
       const resp = await $http.get<unknown>('/yandexapi/info')
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)
     } finally {
@@ -228,11 +228,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   ): Promise<string> {
     try {
       const resp = await $http.get<{ link: string }>(`/yandexapi/resource?filename=${query.filename}`)
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       return resp.data.link
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)
     }

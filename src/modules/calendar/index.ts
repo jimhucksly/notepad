@@ -15,13 +15,13 @@ export function isDate(date: any): boolean {
  * @return {Date}
  */
 export function getNativeDate(d: string): Date | null {
-  if(/^(\d+).(\d+).(\d+)$/.test(d)) {
+  if (/^(\d+).(\d+).(\d+)$/.test(d)) {
     return new Date(d.replace(/^(\d+)\.(\d+)\.(\d+)$/, '$2/$1/$3'))
   }
   try {
     const date = new Date(d)
     return date
-  } catch(e) {
+  } catch (e) {
     /* eslint-disable no-console */
     console.error(e)
   }
@@ -124,9 +124,9 @@ export default class BCalendarComponent extends Vue {
   }
 
   get date1(): Date {
-    if(this.op.setDate) {
+    if (this.op.setDate) {
       const date = getNativeDate(this.op.setDate)
-      if(date && isDate(date)) {
+      if (date && isDate(date)) {
         return date
       }
     }
@@ -146,7 +146,7 @@ export default class BCalendarComponent extends Vue {
   private emit() {
     const r1 = getNativeDate(this.range[0])
     const r2 = getNativeDate(this.range[1])
-    if(r1 && r2) {
+    if (r1 && r2) {
       this.$emit('range-selected', [
         r1.toString(),
         r2.toString()
@@ -155,7 +155,7 @@ export default class BCalendarComponent extends Vue {
   }
 
   apply() {
-    if(this.range.length === 2) {
+    if (this.range.length === 2) {
       this.emit()
     }
   }
@@ -165,67 +165,67 @@ export default class BCalendarComponent extends Vue {
   }
 
   daySelected(date: string) {
-    if(this.op.range) {
-      if(!this.range.length) {
+    if (this.op.range) {
+      if (!this.range.length) {
         this.range.push(date)
         return
       }
-      if(this.range.length === 1) {
+      if (this.range.length === 1) {
         const date1 = getNativeDate(this.range[0])
         let r1: number
-        if(date1) {
+        if (date1) {
           r1 = date1.getTime()
         }
         const date2 = getNativeDate(date)
         let d: number
-        if(date2) {
+        if (date2) {
           d = date2.getTime()
         }
-        if(d && r1) {
-          if(d < r1) this.range.unshift(date)
+        if (d && r1) {
+          if (d < r1) this.range.unshift(date)
           else this.range.push(date)
         }
         return
       }
-      if(this.range.length === 2) {
+      if (this.range.length === 2) {
         const date1 = getNativeDate(this.range[0])
         let r1: number
-        if(date1) {
+        if (date1) {
           r1 = date1.getTime()
         }
         const date2 = getNativeDate(this.range[1])
         let r2: number
-        if(date2) {
+        if (date2) {
           r2 = date2.getTime()
         }
         const date3 = getNativeDate(date)
         let d: number
-        if(date3) {
+        if (date3) {
           d = date3.getTime()
         }
-        if(d && r1 && r2) {
-          if(d < r1) {
+        if (d && r1 && r2) {
+          if (d < r1) {
             this.range = this.range.slice(1)
             this.range.unshift(date)
             return
           }
-          if(d > r2) {
+          if (d > r2) {
             this.range = this.range.slice(0, 1)
             this.range.push(date)
             return
           }
-          if(d === r1 || d === r2 || (d > r1 && d < r2)) {
+          if (d === r1 || d === r2 || (d > r1 && d < r2)) {
             this.range = []
             this.range.push(date)
           }
         }
         return
       }
-    } else if(this.op.eventsMode) {
+    } else if (this.op.eventsMode) {
       this.formShow = true
       this.event.date = date
       this.$emit('form-toggle', this.formShow)
-      if(this.op.items && this.op.items[date]) {
+      if (this.op.items && this.op.items[date]) {
         this.event.title = this.op.items[date].title
         this.event.content = this.op.items[date].content
       }
@@ -236,14 +236,14 @@ export default class BCalendarComponent extends Vue {
 
   prevMonth() {
     const date = getNativeDate(this.date1.toString())
-    if(date) {
+    if (date) {
       this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
     }
   }
 
   nextMonth() {
     const date = getNativeDate(this.date1.toString())
-    if(date) {
+    if (date) {
       date.setDate(1)
       this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString()
     }
@@ -251,7 +251,7 @@ export default class BCalendarComponent extends Vue {
 
   nextRangeMonth() {
     const date = getNativeDate(this.date1.toString())
-    if(date) {
+    if (date) {
       date.setDate(1)
       this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString()
     }
@@ -259,15 +259,15 @@ export default class BCalendarComponent extends Vue {
 
   prevRangeMonth() {
     const date = getNativeDate(this.date1.toString())
-    if(date) {
+    if (date) {
       this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
     }
   }
 
   setActiveDate(date: string) {
-    if(this.op.range && this.range.length === 1) {
+    if (this.op.range && this.range.length === 1) {
       const d = getNativeDate(date)
-      if(d) {
+      if (d) {
         this.active = d.toString()
         return
       }
@@ -276,16 +276,16 @@ export default class BCalendarComponent extends Vue {
   }
 
   setMonth(instanceId: number, index: number) {
-    if(instanceId === 1) {
+    if (instanceId === 1) {
       const date: Date = getNativeDate(this.date1.toString())
-      if(date) {
+      if (date) {
         this.op.setDate = new Date(date.setMonth(index)).toString()
       }
     }
-    if(instanceId === 2) {
+    if (instanceId === 2) {
       const date: Date = getNativeDate(this.date1.toString())
-      if(date) {
-        if(index === 0) {
+      if (date) {
+        if (index === 0) {
           date.setFullYear(date.getFullYear() - 1)
           date.setMonth(11)
           this.op.setDate = new Date(date).toString()
@@ -296,14 +296,14 @@ export default class BCalendarComponent extends Vue {
 
   setYear(year: number) {
     const date: Date = getNativeDate(this.date1.toString())
-    if(date) {
+    if (date) {
       this.op.setDate = new Date(date.setFullYear(year)).toString()
     }
   }
 
   setToday() {
     const date = getNativeDate(this.baseDate.toString())
-    if(date) {
+    if (date) {
       this.op.setDate = new Date(date).toString()
     }
   }
@@ -315,7 +315,7 @@ export default class BCalendarComponent extends Vue {
   }
 
   formSave() {
-    if(this.event.title && this.event.content) {
+    if (this.event.title && this.event.content) {
       this.$emit('save', this.event)
       this.formClear()
     }

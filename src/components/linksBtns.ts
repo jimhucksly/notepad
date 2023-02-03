@@ -1,5 +1,4 @@
 import { Options, Vue } from 'vue-class-component'
-import FsmStates from '~/application/fsm.states'
 import { UpdateLinksCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { _container } from '~/domain/container'
@@ -33,13 +32,13 @@ export default class LinksBtns extends Vue {
         title: 'Add link',
         width: '30%'
       },
-      fsmState: FsmStates.AddLinkPopup
+      fsmState: this.$app.states.AddLinkPopup
     })
     const result = await this.commandBus.do<CreateEditCommand<ILink>, ILink>(command)
-    if(!result) {
+    if (!result) {
       return
     }
-    if(!result.id) {
+    if (!result.id) {
       result.id = uniqueid(6) as string
     }
     await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))

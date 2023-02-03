@@ -21,35 +21,35 @@ export default class SidebarSwitcher extends Vue {
 
   get current() {
     const found = this.menu.find(item => toStr(item.fsmState) === toStr(this.fsmState))
-    if(found) {
+    if (found) {
       return found.id
     }
     return 1
   }
 
   get legend() {
-    if(this.isAccount) {
+    if (this.isAccount) {
       return 'Account'
     }
-    if(this.isPreferences) {
+    if (this.isPreferences) {
       return 'Preferences'
     }
-    if(this.isProjects) {
+    if (this.isProjects) {
       return 'Projects'
     }
-    if(this.isLibrary) {
+    if (this.isLibrary) {
       return 'Library'
     }
-    if(this.isEvents) {
+    if (this.isEvents) {
       return 'Events'
     }
-    if(this.isJsonViewer) {
+    if (this.isJsonViewer) {
       return 'Json Viewer'
     }
-    if(this.isLinks) {
+    if (this.isLinks) {
       return 'Links'
     }
-    if(this.isTodo) {
+    if (this.isTodo) {
       return 'Todo'
     }
     return ''
@@ -60,21 +60,21 @@ export default class SidebarSwitcher extends Vue {
   }
 
   toggle() {
-    if(this.isPreferences) {
+    if (this.isPreferences) {
       return
     }
     this.isExpand = !this.isExpand
-    if(this.isExpand) {
+    if (this.isExpand) {
       this.$emit('on-expand')
       document.onclick = (e: MouseEvent) => {
-        if(!(e.target as HTMLElement).closest('.switcher')) {
+        if (!(e.target as HTMLElement).closest('.switcher')) {
           this.isExpand = !this.isExpand
           this.$emit('on-hide')
           document.onclick = null
         }
       }
       document.onkeydown = (e: KeyboardEvent) => {
-        if(e.code === 'Escape') {
+        if (e.code === 'Escape') {
           this.isExpand = !this.isExpand
           this.$emit('on-hide')
           document.onclick = null

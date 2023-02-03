@@ -1,10 +1,13 @@
 import { ActionTree } from 'vuex'
 
 const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-const REGEXP_EMAIL = /.+@.+\..+/i
+export const REGEXP_LOGIN = /^[a-zA-Z\d\_]{1,}$/g
+export const REGEXP_EMAIL = /.+@.+\..+/i
+export const REGEXP_PASS = /^[a-zA-Z\d\_\*\?\!\.\,\(\)\=\+\\)]{1,}$/g
+export const REGEXP_NAME = /^[\w\W]{1,}$/g
 
 export const htmlToText = (html: string): string => {
-  if(!html) {
+  if (!html) {
     return ''
   }
   const div = document.createElement('div')
@@ -33,13 +36,13 @@ export const checkLinks = (message: string): string => {
     const p = str.split(' ')
     p.forEach((item, k) => {
       const isEmail = new RegExp(REGEXP_EMAIL).test(item)
-      if(isEmail) {
+      if (isEmail) {
         p[k] = item
         return
       }
       const isURL = new RegExp(REGEXP_URL).test(item)
-      if(isURL) {
-        if(item.indexOf('###') === 0) {
+      if (isURL) {
+        if (item.indexOf('###') === 0) {
           item = item.replace(/^\#\#\#/, '')
           item = '<mark>' + item + '</mark>'
           p[k] = item
@@ -56,12 +59,12 @@ export const checkLinks = (message: string): string => {
 
 export const now = (stamp?: string): { date: string, stamp: string } => {
   let st = ''
-  if(stamp) {
+  if (stamp) {
     st = stamp.toString().replace(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/g, '$1-$2-$3 $4:$5:$6')
   }
   const d = st ? new Date(st) : new Date()
   const y = d.getFullYear()
-  if(isNaN(y)) {
+  if (isNaN(y)) {
     return null
   }
   let mon: string | number = d.getMonth()
@@ -85,11 +88,11 @@ export const now = (stamp?: string): { date: string, stamp: string } => {
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export const isJSON = (value: any): boolean => {
   let json: Record<string, unknown>
-  if(typeof value === 'string') {
+  if (typeof value === 'string') {
     try {
       json = JSON.parse(value)
       return true
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
       return false
@@ -97,10 +100,10 @@ export const isJSON = (value: any): boolean => {
   } else {
     try {
       json = JSON.parse(JSON.stringify(value))
-      if(json && typeof json === 'object' && json !== null) {
+      if (json && typeof json === 'object' && json !== null) {
         return true
       }
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
@@ -109,25 +112,25 @@ export const isJSON = (value: any): boolean => {
 }
 
 export const getFileType = (name: string): string => {
-  if(/\.jpe?g$/.test(name)) return 'jpg'
-  if(/\.png$/.test(name)) return 'png'
-  if(/\.gif$/.test(name)) return 'image'
-  if(/\.html?$/.test(name)) return 'html'
-  if(/\.js$/.test(name)) return 'js'
-  if(/\.d\.ts$/.test(name)) return 'dts'
-  if(/\.ts$/.test(name)) return 'ts'
-  if(/\.json$/.test(name)) return 'json'
-  if(/\.vue$/.test(name)) return 'vue'
-  if(/\.css$/.test(name)) return 'css'
-  if(/\.(sass|scss)$/.test(name)) return 'sass'
-  if(/\.svg$/.test(name)) return 'svg'
-  if(/\.docx?$/.test(name)) return 'doc'
-  if(/\.pdf$/.test(name)) return 'pdf'
-  if(/\.txt$/.test(name)) return 'txt'
-  if(/\.zip$/.test(name)) return 'zip'
-  if(/\.rar$/.test(name)) return 'rar'
-  if(/\.md$/.test(name)) return 'md'
-  if(/\.7z$/.test(name)) return '7z'
+  if (/\.jpe?g$/.test(name)) return 'jpg'
+  if (/\.png$/.test(name)) return 'png'
+  if (/\.gif$/.test(name)) return 'image'
+  if (/\.html?$/.test(name)) return 'html'
+  if (/\.js$/.test(name)) return 'js'
+  if (/\.d\.ts$/.test(name)) return 'dts'
+  if (/\.ts$/.test(name)) return 'ts'
+  if (/\.json$/.test(name)) return 'json'
+  if (/\.vue$/.test(name)) return 'vue'
+  if (/\.css$/.test(name)) return 'css'
+  if (/\.(sass|scss)$/.test(name)) return 'sass'
+  if (/\.svg$/.test(name)) return 'svg'
+  if (/\.docx?$/.test(name)) return 'doc'
+  if (/\.pdf$/.test(name)) return 'pdf'
+  if (/\.txt$/.test(name)) return 'txt'
+  if (/\.zip$/.test(name)) return 'zip'
+  if (/\.rar$/.test(name)) return 'rar'
+  if (/\.md$/.test(name)) return 'md'
+  if (/\.7z$/.test(name)) return '7z'
 
   return 'default'
 }
@@ -143,8 +146,8 @@ export function dragAndDropLoader(
 
   const dropArea = document.getElementById(id)
 
-  if(dropArea) {
-    if(!dropArea.style.position) {
+  if (dropArea) {
+    if (!dropArea.style.position) {
       dropArea.style.position = 'relative'
     }
     const overlay = document.createElement('div')
@@ -154,7 +157,7 @@ export function dragAndDropLoader(
     dropArea.ondragenter = function(e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
-      if(!dropArea.classList.contains(cls)) {
+      if (!dropArea.classList.contains(cls)) {
         dropArea.classList.add(cls)
         overlay.style.display = 'block'
         overlay.style.position = 'absolute'
@@ -170,14 +173,14 @@ export function dragAndDropLoader(
     dropArea.ondragover = function(e: MouseEvent) {
       e.preventDefault()
       e.stopPropagation()
-      if(!dropArea.classList.contains(cls)) {
+      if (!dropArea.classList.contains(cls)) {
         dropArea.classList.add(cls)
         overlay.style.display = 'block'
       }
       dropArea.ondragleave = function(event: MouseEvent) {
         event.preventDefault()
         event.stopPropagation()
-        if(dropArea.classList.contains(cls)) {
+        if (dropArea.classList.contains(cls)) {
           dropArea.classList.remove(cls)
           overlay.style.display = 'none'
           dropArea.ondragleave = null
@@ -189,7 +192,7 @@ export function dragAndDropLoader(
       e.preventDefault()
       e.stopPropagation()
       cb(e)
-      if(dropArea.classList.contains(cls)) {
+      if (dropArea.classList.contains(cls)) {
         dropArea.classList.remove(cls)
         overlay.style.display = 'none'
       }
@@ -201,13 +204,13 @@ export const uploadDownloadFile = (received: number, total: number) => {
   const percentage = Math.ceil((received * 100) / total)
   const percentageText = `${percentage}%`
   const cont: HTMLElement | null = document.getElementById('upload-download-popup')
-  if(cont) {
+  if (cont) {
     const textField: HTMLElement | null = cont.querySelector('.percentage')
-    if(textField) {
+    if (textField) {
       textField.textContent = percentageText
     }
     const progress: HTMLElement | null = cont.querySelector('.progress')
-    if(progress) {
+    if (progress) {
       progress.style.width = percentageText
     }
   }
@@ -237,8 +240,8 @@ export const translit = (val: string) => {
   const text = val.toLowerCase()
 
   text.split('').forEach((s, i) => {
-    if(transl[text[i]] !== undefined) {
-      if(curentSim !== transl[text[i]] || curentSim !== space) {
+    if (transl[text[i]] !== undefined) {
+      if (curentSim !== transl[text[i]] || curentSim !== space) {
         result += transl[text[i]]
         curentSim = transl[text[i]]
       }
@@ -254,7 +257,7 @@ export const translit = (val: string) => {
 export const uniqueid = (len: number = 16, format?: string): string | number => {
   let result = ''
   let dic = ''
-  switch(format) {
+  switch (format) {
     case 'a-z':
       dic = 'abcdefghijklmnopqrstuvwxyz'
       break
@@ -277,11 +280,11 @@ export const uniqueid = (len: number = 16, format?: string): string | number => 
       dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890'
   }
 
-  for(let i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++) {
     result += dic.charAt(Math.floor(Math.random() * dic.length))
   }
 
-  if(format === '0-9') {
+  if (format === '0-9') {
     return Number(result)
   }
   return result
@@ -289,41 +292,41 @@ export const uniqueid = (len: number = 16, format?: string): string | number => 
 
 export const upperFirst = (s: string) => {
   s = s.toString()
-  if(!s.length) return ''
+  if (!s.length) return ''
   return s.charAt(0).toUpperCase() + s.slice((s.length - 1) * -1)
 }
 
 export const lowerFirst = (s: string) => {
   s = s.toString()
-  if(!s.length) return ''
+  if (!s.length) return ''
   return s.charAt(0).toLowerCase() + s.slice((s.length - 1) * -1)
 }
 
 export const indexOf = (DOMElement: HTMLElement): number => {
   let result = -1
-  if(!DOMElement) {
+  if (!DOMElement) {
     return -1
   }
-  if(DOMElement.classList) {
+  if (DOMElement.classList) {
     DOMElement.classList.add('__target-element__')
   } else {
     return -1
   }
   const parent = DOMElement.parentNode
-  if(!parent || !parent.childNodes) {
+  if (!parent || !parent.childNodes) {
     return -1
   }
-  if(parent.childNodes.length === 1) return 0
+  if (parent.childNodes.length === 1) return 0
   const children: HTMLElement[] = []
   parent.childNodes.forEach(el => {
-    if((el as HTMLElement).tagName) children.push((el as HTMLElement))
+    if ((el as HTMLElement).tagName) children.push((el as HTMLElement))
   })
-  if(!children.length) {
+  if (!children.length) {
     return -1
   }
   children.forEach((elem, i) => {
-    if(elem.classList) {
-      if(elem.classList.contains('__target-element__')) {
+    if (elem.classList) {
+      if (elem.classList.contains('__target-element__')) {
         elem.classList.remove('__target-element__')
         result = i
       }
@@ -347,7 +350,7 @@ export function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
   const arr = Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
   const result: ActionTree<S, R> = {}
   arr.forEach(key => {
-    if(key !== 'constructor') {
+    if (key !== 'constructor') {
       result[key] = obj[key]
     }
   })

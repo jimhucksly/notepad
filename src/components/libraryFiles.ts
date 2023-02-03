@@ -1,7 +1,6 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { _container } from '~/domain/container'
@@ -38,10 +37,10 @@ export default class LibraryFiles extends Vue {
         title: 'Add library file',
         width: '30%'
       },
-      fsmState: FsmStates.AddLibraryFilePopup
+      fsmState: this.$app.states.AddLibraryFilePopup
     })
     const file = await this.commandBus.do<CreateEditCommand<ILibraryFile>, ILibraryFile>(command)
-    if(!file) {
+    if (!file) {
       return
     }
     await this.commandBus.do(new AddLibraryFileCommand(file))
@@ -51,14 +50,14 @@ export default class LibraryFiles extends Vue {
     const isConfirm = await this.queryBus.exec(new ConfirmQuery(
       'Do you want to remove the library file?'
     ))
-    if(!isConfirm) {
+    if (!isConfirm) {
       return
     }
     try {
       await this.commandBus.do(new DeleteLibraryFileCommand(file.name))
       await this.queryBus.exec(new LibraryFilesQuery())
       this.setFileId(this.libraryFiles[0]?.id || 0)
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }

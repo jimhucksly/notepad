@@ -31,10 +31,10 @@ export default class Controls extends Vue {
 
   edit(stamp: string) {
     const item = this.$parent.$el
-    if(item) {
+    if (item) {
       this.editableItems.push(stamp)
       const content = item.querySelector('.notepad_item_content')
-      if(content) {
+      if (content) {
         const area = document.createElement('textarea')
         area.style.visibility = 'hidden'
         this.$emit('on-will-edit')
@@ -43,7 +43,7 @@ export default class Controls extends Vue {
         area.style.height = area.scrollHeight * 1.1 + 'px'
         area.style.visibility = 'visible'
         area.addEventListener('keydown', (e: KeyboardEvent) => {
-          if(
+          if (
             (e.code === 'Enter' ||
             e.key === 'Enter' ||
             e.code === 'KeyS' ||
@@ -61,11 +61,11 @@ export default class Controls extends Vue {
 
   save(stamp: string) {
     const item = this.$parent.$el
-    if(item) {
+    if (item) {
       const i = this.editableItems.findIndex((el: string) => el === stamp)
       this.editableItems.splice(i, 1)
       const content = item.querySelector('.notepad_item_content')
-      if(content) {
+      if (content) {
         const textarea = content.querySelector('textarea')
         const value = textarea ? textarea.value : ''
         this.$emit('on-will-save')
@@ -88,11 +88,11 @@ export default class Controls extends Vue {
   }
 
   async remove(stamp: string) {
-    if(this.isLock) {
+    if (this.isLock) {
       const isConfirm = await this.queryBus.exec(new ConfirmQuery(
         'Do you realy want to remove this project?'
       ))
-      if(!isConfirm) {
+      if (!isConfirm) {
         return
       }
     }

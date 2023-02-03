@@ -4,10 +4,9 @@ import { AuthQuery, LibraryFileQuery, ProjectsQuery } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import { IQueryBus, ICommandBus } from '~/domain/interfaces'
 import { _container } from '~/domain/container'
-import _ from 'lodash'
+import isEmpty from 'lodash-es/isEmpty'
 import { IJson, IResponse } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
 
 interface IErrors {
   login: boolean
@@ -41,22 +40,22 @@ export default class Auth extends Vue {
   }
 
   validate(): boolean {
-    if(this.login.length === 0) {
+    if (this.login.length === 0) {
       this.errors.login = true
     }
-    if(this.pass.length === 0) {
+    if (this.pass.length === 0) {
       this.errors.pass = true
     }
     return Object.keys(this.errors).map((key: string) => this.errors[key]).reduce((a, b) => a + b) === 0
   }
 
   async submit() {
-    if(this.validate()) {
+    if (this.validate()) {
       try {
         const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
         this.$app.login(data.token)
         this.$app.user(data.user)
-        if(this.yandexAccessToken) {
+        if (this.yandexAccessToken) {
           this.$app.loading(true)
           await Promise.all([
             this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
@@ -66,7 +65,7 @@ export default class Auth extends Vue {
             this.$app.loading(false)
           }, 1500)
         }
-      } catch(e) {
+      } catch (e) {
         this.$app.loading(false)
         this.handleError(e as IResponse<void>)
       }
@@ -74,7 +73,7 @@ export default class Auth extends Vue {
   }
 
   handleError(e: IResponse<void>) {
-    if(e.messages && !_.isEmpty(e.messages)) {
+    if (e.messages && !isEmpty(e.messages)) {
       this.errors.login = 'login' in e.messages
       this.errors.pass = 'pass' in e.messages
       this.validate()
@@ -82,12 +81,6 @@ export default class Auth extends Vue {
       /* eslint-disable no-console */
       console.error(e)
     }
-  }
-
-  signup() {
-    this.$app.goto(FsmStates.Reg)
-    // const href = this.endpoint + '/registration'
-    // this.$electron.shell.openExternal(href)
   }
 
   resetPass() {

@@ -29,12 +29,12 @@ class Actions implements ActionTree<IEventsState, IRootState> {
     try {
       setProcess(store, 'get events...')
       const resp = await $http.get<Array<IEvent>>('/events')
-      if(!resp || !resp.data) {
+      if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       store.commit('setEvents', resp.data)
       return resp.data
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
       return Promise.reject(e)
     } finally {
@@ -53,7 +53,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
       setProcess(store, 'update events...')
       await $http.put('/events', command.event)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event update failed')
       return Promise.reject(e)
     } finally {
@@ -72,7 +72,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
       setProcess(store, 'removing event...')
       await $http.delete(`/events/?date=${command.date}`)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event remove failed')
       return Promise.reject(e)
     } finally {

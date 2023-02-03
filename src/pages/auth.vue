@@ -54,7 +54,7 @@
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Go!</button>
         </div>
         <div class="flex-center p-y-10">
-          <span class="signup" @click="signup">Sign Up</span>
+          <span class="signup" @click="$app.goto($app.states.Reg)">Sign Up</span>
         </div>
         <div class="flex-center">
           <span class="signup" @click="resetPass">Forgot password?</span>

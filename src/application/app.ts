@@ -73,7 +73,7 @@ export default class Application implements IApplication {
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
-    if(this.isDev) {
+    if (this.isDev) {
       this._store.commit('setEndpoint', '127.0.0.1:8000')
     } else {
       this._store.commit('setEndpoint', endpoint)
@@ -87,7 +87,7 @@ export default class Application implements IApplication {
   }
 
   async login(token: string) {
-    if(this.isAuth) {
+    if (this.isAuth) {
       return
     }
     try {
@@ -97,7 +97,7 @@ export default class Application implements IApplication {
       await this._queryBus.exec<StartQuery, void>(new StartQuery())
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.goHome()
-    } catch(e) {
+    } catch (e) {
       throw new Error('Authentication is failed')
     }
   }
@@ -112,18 +112,18 @@ export default class Application implements IApplication {
   }
 
   async goto(transition: symbol) {
-    if(this.state === transition) {
+    if (this.state === transition) {
       return
     }
     try {
       const func = this.getTransitionFunc(transition)
       const transitionResult: boolean = await func.call(this.fsm)
-      if(!transitionResult) {
+      if (!transitionResult) {
         return
       }
       this._store.commit('setFsmState', this.state)
-      if(transition === FsmStates.Auth) {
-        if(this.isAuth) {
+      if (transition === FsmStates.Auth) {
+        if (this.isAuth) {
           this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
           this._store.commit('setToken', null)
           const userDataPath = this._store.getters.getUserDataPath
@@ -133,22 +133,22 @@ export default class Application implements IApplication {
         }
         return
       }
-      if(this.lastState !== this.stateName) {
+      if (this.lastState !== this.stateName) {
         this.setHistory()
       }
-      if(AppComponents[this.stateName]) {
+      if (AppComponents[this.stateName]) {
         this._store.commit('setComponent', AppComponents[this.stateName])
         this.history = this.history.filter(item => item in AppComponents)
       }
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
   }
 
   goBack() {
-    if(this.history.length === 1) {
-      if(this.state === FsmStates.Projects) {
+    if (this.history.length === 1) {
+      if (this.state === FsmStates.Projects) {
         return
       }
       this.goto(FsmStates.Projects)
@@ -188,7 +188,7 @@ export default class Application implements IApplication {
       setTimeout(() => {
         this.loading(false)
       }, 1500)
-    } catch(e) {
+    } catch (e) {
       this.loading(false)
       /* eslint-disable no-console */
       console.error(e)
@@ -197,6 +197,10 @@ export default class Application implements IApplication {
 
   get fsm() {
     return _fsm
+  }
+
+  get states() {
+    return FsmStates
   }
 
   get state(): symbol {
@@ -232,7 +236,7 @@ export default class Application implements IApplication {
 
   private getTransitionFunc(transition: symbol): () => Promise<boolean> {
     const func = this.fsm[toStr(transition).toLowerCase()]
-    if(!func) {
+    if (!func) {
       throw new Error(`The transition ${toStr(transition)} is not exist in FSM`)
     }
     return func

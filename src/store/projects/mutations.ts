@@ -16,7 +16,7 @@ const _mutations: MutationTree<IProjectsState> = {
 
 stateKeys.forEach(key => {
   const commitKey = 'set' + upperFirst(key)
-  if(_mutations[commitKey] === undefined) {
+  if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, peyload) => {
       state[key] = peyload
     }

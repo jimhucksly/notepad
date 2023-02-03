@@ -61,10 +61,10 @@ export default class Preferences extends Vue {
   validate(): boolean {
     const form = this.$refs.form as HTMLFormElement
     const requireds: NodeListOf<HTMLInputElement> = form.querySelectorAll('[required]')
-    if(requireds.length > 0) {
+    if (requireds.length > 0) {
       requireds.forEach(el => {
         const name = el.name
-        if(this[name] === '') {
+        if (this[name] === '') {
           this.errors[name] = 1
           el.onclick = () => {
             this.errors[name] = 0
@@ -81,7 +81,7 @@ export default class Preferences extends Vue {
   }
 
   async save() {
-    if(this.validate()) {
+    if (this.validate()) {
       storage.append(this.userDataPath, 'UserPreferences', {
         downloadsTargetPath: this.preferences.downloadsTargetPath
       })
@@ -89,12 +89,12 @@ export default class Preferences extends Vue {
 
       const isAutoLauncherEnabled = await this.appAutoLauncher.isEnabled()
 
-      if(this.isAutoLaunchEnabled) {
-        if(!isAutoLauncherEnabled) {
+      if (this.isAutoLaunchEnabled) {
+        if (!isAutoLauncherEnabled) {
           this.appAutoLauncher.enable()
         }
       } else {
-        if(isAutoLauncherEnabled) {
+        if (isAutoLauncherEnabled) {
           this.appAutoLauncher.disable()
         }
       }
@@ -124,19 +124,19 @@ export default class Preferences extends Vue {
   }
 
   async revoke() {
-    if(!window) {
+    if (!window) {
       await this.queryBus.exec(new YandexDiskInfoQuery())
     } else {
       const isConfirm = await this.queryBus.exec(
         new ConfirmQuery('Do you want to revoke the Yandex.Disk connection?')
       )
-      if(!isConfirm) {
+      if (!isConfirm) {
         return
       }
       try {
         await this.commandBus.do(new RevokeYandexTokenCommand(Number(this.currentUser.id)))
         location.reload()
-      } catch(e) {
+      } catch (e) {
         //
       }
     }
