@@ -17,6 +17,7 @@ import { TYPES } from '~/domain/types'
 import { uploadDownloadFile } from '~/helpers'
 import Auth from '~/pages/auth'
 import Reg from '~/pages/reg'
+import Reset from '~/pages/reset'
 import Events from '~/pages/events'
 import JsonViewer from '~/pages/jsonViewer'
 import Library from '~/pages/library'
@@ -37,6 +38,7 @@ interface IUserPreferences {
     Loading,
     Auth,
     Reg,
+    Reset,
     Error,
     Account,
     Projects,
@@ -243,6 +245,10 @@ export default class Index extends Vue {
 
   get isRegWindow(): boolean {
     return this.fsmState === FsmStates.Reg
+  }
+
+  get isResetWindow(): boolean {
+    return this.fsmState === FsmStates.Reset
   }
 
   get yandexDiskAccessToken() {

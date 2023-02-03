@@ -1,11 +1,7 @@
-import { Vue } from 'vue-class-component'
+import { Vue } from 'vue-property-decorator'
 import { IValidate } from '~/plugins/validate'
 
-export default class Reg extends Vue {
-  login = ''
-  pass = ''
-  passRepeat = ''
-  name = ''
+export default class Reset extends Vue {
   email = ''
 
   v: IValidate = {}
@@ -23,13 +19,8 @@ export default class Reg extends Vue {
 
   submit() {
     this.isSubmitted = true
-    if (!this.validate()) {
-      return
+    if (this.validate()) {
+      //
     }
-    //
-  }
-
-  goBack() {
-    this.$app.goto(this.$app.states.Auth)
   }
 }

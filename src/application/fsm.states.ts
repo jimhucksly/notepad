@@ -1,6 +1,7 @@
 export interface IFsmStates {
   Auth: symbol
   Reg: symbol
+  Reset: symbol
   Account: symbol
   Preferences: symbol
   Projects: symbol
@@ -23,6 +24,7 @@ export interface IFsmStates {
 const FsmStates: IFsmStates = {
   Auth: Symbol.for('Auth'),
   Reg: Symbol.for('Reg'),
+  Reset: Symbol.for('Reset'),
   Account: Symbol.for('Account'),
   Preferences: Symbol.for('Preferences'),
   Projects: Symbol.for('Projects'),
