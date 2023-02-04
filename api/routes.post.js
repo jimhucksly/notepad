@@ -1,13 +1,31 @@
+const axios = require('axios')
+const { endpoint } = require('./config.json')
+
 function post(router, db) {
   router.post('/signup', async (req, res, next) => {
     try {
       const { login, pass, name, email } = req.body
       if (login && pass && name && email) {
-        await db.command().user({ login, pass, name, email }).signup()
+        // await db.command().user({ login, pass, name, email }).signup()
+        const body = { hello: 'world' };
+        const { data } = await axios.post(
+          endpoint + '/sendmail.php',
+          body,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Honeypot': 'notepad_app_api'
+            }
+          }
+        )
         res.send({
           status: 'success',
-          message: 'user created'
+          message: data
         })
+        // res.send({
+        //   status: 'success',
+        //   message: 'user created'
+        // })
       }
       throw new Error('bad request')
     } catch (e) {
