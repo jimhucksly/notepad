@@ -7,7 +7,7 @@
           <div class="form-group-inner">
             <label
               :class="{
-                active: v?.login?.value > 0,
+                active: v?.login?.value.length > 0,
                 error: v?.login?.isInvalid
               }"
             >

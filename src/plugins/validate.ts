@@ -3,7 +3,7 @@ import { REGEXP_LOGIN, REGEXP_EMAIL, REGEXP_PASS, REGEXP_NAME } from '~/helpers'
 
 export interface IValidate {
   touched?: number
-  touch?: () => void
+  touch?: () => Promise<void>
   valid?: () => boolean
 }
 
@@ -60,8 +60,9 @@ export default {
             }
           )
         }
-        instance.v.touch = () => {
+        instance.v.touch = async () => {
           instance.v.touched++
+          await instance.$nextTick()
         }
         instance.v.valid = () => {
           let result = true

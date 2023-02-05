@@ -24,7 +24,7 @@ BEGIN
 		)	
 	)
 	THEN 
-		RAISE EXCEPTION 'Erorr' USING HINT = 'Existed';
+		RAISE EXCEPTION 'Erorr' USING HINT = 'User already exists';
 	END IF;
 	
 	INSERT INTO USERS (id, login, display_name, pswd_md5, email, create_date_time)

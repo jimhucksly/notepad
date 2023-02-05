@@ -9,6 +9,7 @@
           <auth v-if="isAuthWindow" id="auth" />
           <reg v-if="isRegWindow" id="reg" />
           <reset v-if="isResetWindow" id="reset" />
+          <verify v-if="isVerifyWindow" id="verify" />
         </template>
         <div v-else-if="isYandexDisk" class="yd_cont">
           <div class="yd_cont_title">

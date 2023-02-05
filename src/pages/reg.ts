@@ -2,6 +2,7 @@ import { Vue } from 'vue-class-component'
 import { RegistrationCommand } from '~/domain/commands'
 import { _container } from '~/domain/container'
 import { ICommandBus } from '~/domain/interfaces'
+import { IUser } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { IValidate } from '~/plugins/validate'
 
@@ -22,23 +23,25 @@ export default class Reg extends Vue {
     this.$validate(this)
   }
 
-  validate(): boolean {
-    this.v.touch()
+  async validate(): Promise<boolean> {
+    await this.v.touch()
     return this.v.valid()
   }
 
   async submit() {
     this.isSubmitted = true
-    if (!this.validate()) {
+    if (!(await this.validate())) {
       return
     }
     try {
-      await this.commandBus.do(new RegistrationCommand({
+      const user = await this.commandBus.do<RegistrationCommand, IUser>(new RegistrationCommand({
         login: this.login,
-        pass: this.pass,
+        password: this.pass,
         name: this.name,
         email: this.email
       }))
+      this.$app.user(user)
+      this.$app.goto(this.$app.states.Verify)
     } catch (e) {
       /* eslint-disable no-console */
       console.log(e)

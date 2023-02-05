@@ -13,23 +13,23 @@ export class AuthCommand {
 
 export class RegistrationCommand {
   login = ''
-  pass = ''
+  password = ''
   name = ''
   email = ''
 
   constructor({
     login,
-    pass,
+    password,
     name,
     email
   }: {
     login: string
-    pass: string
+    password: string
     name: string
     email: string
   }) {
     this.login = login
-    this.pass = pass
+    this.password = password
     this.name = name
     this.email = email
   }

@@ -109,6 +109,7 @@ export interface IUser {
   login: string
   email: string
   displayName: string
+  waitingVerify?: boolean
   yandexDiskAccessToken: string
   yandexDiskRefreshToken: string
 }

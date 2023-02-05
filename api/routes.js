@@ -4,9 +4,12 @@ const router = express.Router()
 const { get } = require('./routes.get.js')
 const { post } = require('./routes.post.js')
 
-function createRouter(db) {
-  get(router, db)
-  post(router, db)
+/**
+ * @param $app { db, sendmail }
+ */
+function createRouter($app) {
+  get(router, $app)
+  post(router, $app)
   return router
 }
 

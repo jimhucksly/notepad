@@ -4,21 +4,33 @@ const bodyParser = require('body-parser');
 const db = require('./database.js')
 
 const { createServer } = require('./socket.js')
-const { createRouter } = require('./routes.js');
+const { createRouter } = require('./routes.js')
+const { createTransporter } = require('./mail.js')
 
-const app = express()
+async function startApp() {
+  try {
+    const app = express()
+    const $app = {
+      db,
+      sendmail: await createTransporter()
+    }
+    const routes = createRouter($app)
 
-const routes = createRouter(db)
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Honeypot");
+      next();
+    });
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Honeypot");
-  next();
-});
+    app.use('/', routes);
 
-app.use('/', routes);
+    createServer(http.createServer(app))
+  } catch (e) {
+    console.log(e)
+  }
+}
 
-createServer(http.createServer(app))
+startApp()

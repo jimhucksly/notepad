@@ -1,23 +1,24 @@
 import isEmpty from 'lodash-es/isEmpty'
 import { Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-// import { _container } from '~/domain/container'
-// import { ICommandBus, IQueryBus } from '~/domain/interfaces'
+import { _container } from '~/domain/container'
+import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IResponse } from '~/domain/models'
-// import { TYPES } from '~/domain/types'
+import { AuthQuery } from '~/domain/queries'
+import { TYPES } from '~/domain/types'
 import { IValidate } from '~/plugins/validate'
 
 export default class Auth extends Vue {
-  // private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  // private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
+  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getEndpoint') endpoint: string
   @Getter('getYandexToken') yandexAccessToken: string
 
-  login = ''
-  pass = ''
+  login = 'root'
+  pass = 'root'
 
   v: IValidate = {}
 
@@ -29,32 +30,37 @@ export default class Auth extends Vue {
     this.$validate(this)
   }
 
-  validate(): boolean {
-    this.v.touch()
+  async validate(): Promise<boolean> {
+    await this.v.touch()
     return this.v.valid()
   }
 
-  submit() {
+  async submit() {
     this.isSubmitted = true
-    if (this.validate()) {
-      try {
-        // const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
-        // this.$app.login(data.token)
-        // this.$app.user(data.user)
-        // if (this.yandexAccessToken) {
-        //   this.$app.loading(true)
-        //   await Promise.all([
-        //     this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-        //     this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        //   ])
-        //   setTimeout(() => {
-        //     this.$app.loading(false)
-        //   }, 1500)
-        // }
-      } catch (e) {
-        this.$app.loading(false)
-        this.handleError(e as IResponse<void>)
+    if (!(await this.validate())) {
+      return
+    }
+    try {
+      const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
+      if (data.user.waitingVerify) {
+        this.$app.goto(this.$app.states.Verify)
+        return
       }
+      // this.$app.login(data.token)
+      // this.$app.user(data.user)
+      // if (this.yandexAccessToken) {
+      //   this.$app.loading(true)
+      //   await Promise.all([
+      //     this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+      //     this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+      //   ])
+      //   setTimeout(() => {
+      //     this.$app.loading(false)
+      //   }, 1500)
+      // }
+    } catch (e) {
+      this.$app.loading(false)
+      this.handleError(e as IResponse<void>)
     }
   }
 

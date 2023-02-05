@@ -51,7 +51,7 @@ axios.interceptors.response.use(
   }
 )
 
-let interval: NodeJS.Timeout | null = null
+// const interval: NodeJS.Timeout | null = null
 
 class Http {
   public async get<TResponse>(url: string): Promise<IResponse<TResponse>> {
@@ -69,23 +69,26 @@ class Http {
     let resp: AxiosResponse<IResponse<TResponse>>
     try {
       resp = await axios.post(url, data)
+      return resp.data
     } catch (e) {
-      if ((e as { response: unknown }).response === undefined) {
-        store.commit('setError', true)
-        if (interval === undefined) {
-          interval = setInterval(() => {
-            this.post(url, data)
-          }, 2000)
-        }
-        return Promise.reject()
-      } else {
-        interval && clearInterval(interval)
-        return (e as { response: { data: IResponse<TResponse> } }).response.data
-      }
+      throw new Error(e)
+    //   if ((e as { response: unknown }).response === undefined) {
+    //     store.commit('setError', true)
+    //     if (interval === undefined) {
+    //       interval = setInterval(() => {
+    //         this.post(url, data)
+    //       }, 2000)
+    //     }
+    //     return Promise.reject()
+    //   } else {
+    //     interval && clearInterval(interval)
+    //     return (e as { response: { data: IResponse<TResponse> } }).response.data
+    //   }
+    // }
+    // store.commit('setError', false)
+    // interval && clearInterval(interval)
+    // return resp.data
     }
-    store.commit('setError', false)
-    interval && clearInterval(interval)
-    return resp.data
   }
 
   public async put<TPayload, TResponse>(
@@ -94,46 +97,52 @@ class Http {
     let resp: AxiosResponse<IResponse<TResponse>>
     try {
       resp = await axios.put(url, data)
+      return resp.data
     } catch (e) {
-      if ((e as { response: unknown }).response === undefined) {
-        store.commit('setError', true)
-        if (interval === undefined) {
-          interval = setInterval(() => {
-            this.put(url, data)
-          }, 2000)
-        }
-        return Promise.reject()
-      } else {
-        interval && clearInterval(interval)
-        return (e as { response: { data: IResponse<TResponse> } }).response.data
-      }
+      throw new Error(e)
     }
-    store.commit('setError', false)
-    interval && clearInterval(interval)
-    return resp.data
+    //   if ((e as { response: unknown }).response === undefined) {
+    //     store.commit('setError', true)
+    //     if (interval === undefined) {
+    //       interval = setInterval(() => {
+    //         this.put(url, data)
+    //       }, 2000)
+    //     }
+    //     return Promise.reject()
+    //   } else {
+    //     interval && clearInterval(interval)
+    //     return (e as { response: { data: IResponse<TResponse> } }).response.data
+    //   }
+    // }
+    // store.commit('setError', false)
+    // interval && clearInterval(interval)
+    // return resp.data
   }
 
   public async delete(url: string): Promise<IResponse<string>> {
     let resp: AxiosResponse<IResponse<string>>
     try {
       resp = await axios.delete(url)
+      return resp.data
     } catch (e) {
-      if ((e as { response: unknown }).response === undefined) {
-        store.commit('setError', true)
-        if (interval === undefined) {
-          interval = setInterval(() => {
-            this.delete(url)
-          }, 2000)
-        }
-        return Promise.reject()
-      } else {
-        interval && clearInterval(interval)
-        return (e as { response: { data: IResponse<string> } }).response.data
-      }
+      throw new Error(e)
     }
-    store.commit('setError', false)
-    interval && clearInterval(interval)
-    return resp.data
+    //   if ((e as { response: unknown }).response === undefined) {
+    //     store.commit('setError', true)
+    //     if (interval === undefined) {
+    //       interval = setInterval(() => {
+    //         this.delete(url)
+    //       }, 2000)
+    //     }
+    //     return Promise.reject()
+    //   } else {
+    //     interval && clearInterval(interval)
+    //     return (e as { response: { data: IResponse<string> } }).response.data
+    //   }
+    // }
+    // store.commit('setError', false)
+    // interval && clearInterval(interval)
+    // return resp.data
   }
 }
 

@@ -18,6 +18,7 @@ import { uploadDownloadFile } from '~/helpers'
 import Auth from '~/pages/auth'
 import Reg from '~/pages/reg'
 import Reset from '~/pages/reset'
+import Verify from '~/pages/verify'
 import Events from '~/pages/events'
 import JsonViewer from '~/pages/jsonViewer'
 import Library from '~/pages/library'
@@ -39,6 +40,7 @@ interface IUserPreferences {
     Auth,
     Reg,
     Reset,
+    Verify,
     Error,
     Account,
     Projects,
@@ -71,6 +73,22 @@ export default class Index extends Vue {
   createYandexDiskStepTwo = false
   yandexDiskResponseCode = ''
   yandexCodeApplyProcessing = false
+
+  async created() {
+    const getUserPath = (): Promise<string> => {
+      return new Promise((resolve) => {
+        this.$electron.ipcRenderer.on(
+          'user-path-response',
+          (e: Electron.IpcRendererEvent, value: string) => {
+            resolve(value)
+          })
+        this.$electron.ipcRenderer.send('user-path-request')
+      })
+    }
+    const appPath = await getUserPath()
+    await this.setPath(appPath)
+    await this.checkToken(appPath)
+  }
 
   mounted() {
     this.$electron.ipcRenderer.on(
@@ -181,22 +199,6 @@ export default class Index extends Vue {
     }
   }
 
-  async created() {
-    const getUserPath = (): Promise<string> => {
-      return new Promise((resolve) => {
-        this.$electron.ipcRenderer.on(
-          'user-path-response',
-          (e: Electron.IpcRendererEvent, value: string) => {
-            resolve(value)
-          })
-        this.$electron.ipcRenderer.send('user-path-request')
-      })
-    }
-    const appPath = await getUserPath()
-    await this.setPath(appPath)
-    await this.checkToken(appPath)
-  }
-
   createYandexDiskPath() {
     let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
     href = href + YandexDiskAppID
@@ -249,6 +251,10 @@ export default class Index extends Vue {
 
   get isResetWindow(): boolean {
     return this.fsmState === FsmStates.Reset
+  }
+
+  get isVerifyWindow(): boolean {
+    return this.fsmState === FsmStates.Verify
   }
 
   get yandexDiskAccessToken() {

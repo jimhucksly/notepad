@@ -38,13 +38,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param {RegistrationCommand} command
    */
   @Commandable(TYPES.RegistrationCommand)
-  async actionReg(store: TStore, command: RegistrationCommand): Promise<boolean> {
+  async actionReg(store: TStore, command: RegistrationCommand): Promise<IResponse<boolean>> {
     try {
       setProcess(store, 'registration...')
-      const resp = await $http.post<RegistrationCommand, boolean>('/signup', command)
-      /* eslint-disable no-console */
-      console.log('resp', resp)
-      return true
+      return await $http.post<RegistrationCommand, boolean>('/signup', command)
     } catch (e) {
       return Promise.reject(e)
     } finally {
@@ -74,14 +71,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
       setProcess(store, 'authentication...')
-      const resp = await $http.post<{ login: string, password: string }, void>('/auth', {
+      const resp = await $http.post<AuthQuery, void>('/auth', {
         login: query.login,
         password: query.password
       })
-      if (resp.token) {
-        return resp
-      }
-      return Promise.reject(resp)
+      return resp
     } catch (e) {
       return Promise.reject(e)
     } finally {
