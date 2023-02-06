@@ -11,20 +11,15 @@
                 error: v?.email?.isInvalid
               }"
             >
-              Your email:
+              Your login or email:
             </label>
             <input
               type="text"
-              placeholder="Your email"
+              placeholder="Your login or email"
               :class="{ error: v?.email?.isInvalid }"
               v-model="email"
-              name="email"
-              required
               @keyup.enter.prevent="submit"
             >
-          </div>
-          <div>
-            <span class="form-label-error" v-show="isSubmitted && v?.email?.isInvalid">Email is incorrect</span>
           </div>
         </div>
         <div>

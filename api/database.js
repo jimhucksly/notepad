@@ -54,7 +54,6 @@ function query() {
               const query = 'SELECT * FROM users WHERE login = $1'
               return await execQuery(query, [login], ReturnType.Single)
             } catch (e) {
-              console.log(e)
               throw new Error(`user by login "${ login }" is not found`)
             }
           }
@@ -110,8 +109,6 @@ function command() {
             }
             throw new Error('bad request')
           } catch (e) {
-            /* eslint-desable no-console */
-            console.log(e)
             throw new Error(e?.hint || e?.message || 'bad request')
           }
         },
@@ -123,8 +120,6 @@ function command() {
             }
             throw new Error('bad request')
           } catch (e) {
-            /* eslint-desable no-console */
-            console.log(e)
             throw new Error(e?.hint || e?.message || 'bad request')
           }
         },
@@ -135,6 +130,16 @@ function command() {
               return await execQuery(query, [id, email, code])
             }
             throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async resetVerifyCode(code) {
+          try {
+            if (id && code) {
+              const query = 'UPDATE verify_codes SET code = $2 WHERE user_id = $1'
+              return await execQuery(query, [id, code])
+            }
           } catch (e) {
             throw new Error(e?.hint || e?.message || 'bad request')
           }

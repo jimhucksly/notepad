@@ -20,6 +20,7 @@ import {
   AuthCommand,
   ReadCommand,
   RegistrationCommand,
+  ResendCodeCommand,
   RevokeYandexTokenCommand,
   VerifyCommand
 } from '~/domain/commands'
@@ -82,6 +83,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Verify
+   * @param store Store
+   * @param {VerifyCommand} command
+   */
   @Commandable(TYPES.VerifyCommand)
   async actionVerify(store: TStore, command: VerifyCommand): Promise<IResponse<boolean>> {
     try {
@@ -90,6 +96,26 @@ class Actions implements ActionTree<IRootState, IRootState> {
       return await $http.post<VerifyCommand & { userId: number }, boolean>('/verify', {
         userId: user.id,
         code: command.code
+      })
+    } catch (e) {
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
+  /**
+   * Resend code
+   * @param store Store
+   * @param {ResendCodeCommand} command
+   */
+  @Commandable(TYPES.ResendCodeCommand)
+  async actionResend(store: TStore, command: ResendCodeCommand): Promise<IResponse<void>> {
+    try {
+      setProcess(store, 'resend code...')
+      const user = store.getters.getCurrentUser
+      return await $http.post<ResendCodeCommand, void>('/resend', {
+        userId: user.id
       })
     } catch (e) {
       return Promise.reject(e)

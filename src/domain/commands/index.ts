@@ -39,6 +39,8 @@ export class VerifyCommand {
   constructor(public code: string) {}
 }
 
+export class ResendCodeCommand {}
+
 export class CheckCommand {}
 
 export class CreateProjectCommand {

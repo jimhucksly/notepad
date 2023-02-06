@@ -66,7 +66,17 @@ function responseModify(response) {
   return response
 }
 
+async function checkHeaders(headers) {
+  return new Promise((resolve, reject) => {
+    if ('x-honeypot' in headers && headers['x-honeypot'] === 'App') {
+      resolve()
+    }
+    reject()
+  })
+}
+
 module.exports = {
   generateVerifyCode,
-  responseModify
+  responseModify,
+  checkHeaders
 }

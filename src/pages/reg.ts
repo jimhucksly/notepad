@@ -1,20 +1,28 @@
 import { Vue } from 'vue-class-component'
+import { Getter } from 'vuex-class'
 import { RegistrationCommand } from '~/domain/commands'
 import { IUser } from '~/domain/models'
 import { IValidate } from '~/plugins/validate'
 
 export default class Reg extends Vue {
-  login = 'root'
-  pass = 'root'
-  passRepeat = 'root'
-  name = 'root'
-  email = 'jimhucksly@mail.ru'
+  login = ''
+  pass = ''
+  passRepeat = ''
+  name = ''
+  email = ''
 
   v: IValidate = {}
 
   isSubmitted = false
 
+  @Getter('getCurrentUser') currentUser: IUser
+
   mounted() {
+    if (this.currentUser) {
+      this.login = this.currentUser.login
+      this.name = this.currentUser.displayName
+      this.email = this.currentUser.email
+    }
     this.$validate(this)
   }
 
@@ -38,8 +46,7 @@ export default class Reg extends Vue {
       this.$app.user(user)
       this.$app.goto(this.$app.states.Verify)
     } catch (e) {
-      /* eslint-disable no-console */
-      console.log(e)
+      this.$toasted.error(e?.message || 'submit error')
     }
   }
 

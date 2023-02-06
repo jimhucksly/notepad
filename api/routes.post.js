@@ -1,8 +1,9 @@
-const { generateVerifyCode, responseModify } = require('./utils.js')
+const { generateVerifyCode, responseModify, checkHeaders } = require('./utils.js')
 
 function post(router, $app) {
   router.post('/signup', async (req, res, next) => {
     try {
+      await checkHeaders(req.headers)
       const { login, password, name, email } = req.body
       if (login && password && name && email) {
         await $app.db.command().user({ login, password, name, email }).signup()
@@ -33,6 +34,7 @@ function post(router, $app) {
   })
   router.post('/auth', async (req, res, next) => {
     try {
+      await checkHeaders(req.headers)
       const { login, password } = req.body
       if (login && password) {
         const user = await $app.db.command().user({ login, password }).signin()
@@ -59,6 +61,7 @@ function post(router, $app) {
   })
   router.post('/verify', async (req, res, next) => {
     try {
+      await checkHeaders(req.headers)
       const { userId, code } = req.body
       if (userId && code) {
         const isVerifySuccess = await $app.db.query().verify({ userId }).check(code)
@@ -66,7 +69,7 @@ function post(router, $app) {
           // await $app.db.command().verify({ userId }).delete()
           res.send({
             status: 'success',
-            message: 'user sucessfuly verified'
+            message: 'user successfully verified'
           })
         } else {
           res.send({
@@ -74,6 +77,30 @@ function post(router, $app) {
             message: 'verify code is invalid'
           })
         }
+        return
+      }
+      throw new Error()
+    } catch (e) {
+      res.status(400).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/resend', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      const { userId } = req.body
+      if (userId) {
+        const user = await $app.db.query().user({ id: userId }).get()
+        const code = generateVerifyCode()
+        await $app.db.command().user({ id: user.id }).resetVerifyCode(code)
+        await $app.sendmail(user.email, code)
+        res.send({
+          status: 'success',
+          message: 'code was been sent',
+          user: responseModify(user)
+        })
         return
       }
       throw new Error()

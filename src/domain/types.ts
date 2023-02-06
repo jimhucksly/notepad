@@ -25,6 +25,7 @@ const TYPES = {
   /* --------- commands --------- */
   RegistrationCommand: Symbol.for('RegistrationCommand'),
   VerifyCommand: Symbol.for('VerifyCommand'),
+  ResendCodeCommand: Symbol.for('ResendCodeCommand'),
   CheckCommand: Symbol.for('CheckCommand'),
   CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),

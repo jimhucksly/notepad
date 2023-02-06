@@ -1,5 +1,5 @@
 import { Vue } from 'vue-property-decorator'
-import { VerifyCommand } from '~/domain/commands'
+import { ResendCodeCommand, VerifyCommand } from '~/domain/commands'
 
 export default class Verify extends Vue {
   values = {
@@ -80,10 +80,18 @@ export default class Verify extends Vue {
         if (this.isError) {
           return
         }
+        //
       } catch (e) {
-        /* eslint-disable no-console */
-        console.error(e)
+        this.$toasted.error(e?.message || 'submit error')
       }
+    }
+  }
+
+  async resend() {
+    try {
+      await this.$app.$commandBus.do<ResendCodeCommand, void>(new ResendCodeCommand())
+    } catch (e) {
+      this.$toasted.error(e?.message || 'resend error')
     }
   }
 }

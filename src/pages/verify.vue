@@ -26,6 +26,12 @@
           <input type="submit" style="display: none">
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Send</button>
         </div>
+        <div class="flex-center p-y-10">
+          <span class="signup" @click="resend">Resend code</span>
+        </div>
+        <div class="flex-center">
+          <span class="signup" @click="$app.goto($app.states.Reg)">I did not receive a verification code</span>
+        </div>
       </div>
     </div>
   </div>

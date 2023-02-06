@@ -47,7 +47,10 @@ axios.interceptors.response.use(
     return response
   },
   error => {
-    return Promise.reject(error)
+    return Promise.reject({
+      ...error.response,
+      message: error.response?.data?.message || error.message
+    })
   }
 )
 
@@ -71,7 +74,7 @@ class Http {
       resp = await axios.post(url, data)
       return resp.data
     } catch (e) {
-      throw new Error(e)
+      return Promise.reject(e)
     //   if ((e as { response: unknown }).response === undefined) {
     //     store.commit('setError', true)
     //     if (interval === undefined) {
@@ -99,7 +102,7 @@ class Http {
       resp = await axios.put(url, data)
       return resp.data
     } catch (e) {
-      throw new Error(e)
+      return Promise.reject(e)
     }
     //   if ((e as { response: unknown }).response === undefined) {
     //     store.commit('setError', true)
@@ -125,7 +128,7 @@ class Http {
       resp = await axios.delete(url)
       return resp.data
     } catch (e) {
-      throw new Error(e)
+      return Promise.reject(e)
     }
     //   if ((e as { response: unknown }).response === undefined) {
     //     store.commit('setError', true)
