@@ -3,11 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IEvent, IEvents } from '~/domain/models'
 import { EventsQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import BCalendar, { IBCalendar } from '~/modules/calendar'
 
 interface IBCalendarOptions {
@@ -33,9 +30,6 @@ interface IFilteredItem {
   }
 })
 export default class Events extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Getter('events/getEvents') items: IEvents
 
   bCalendarOptions: IBCalendarOptions = {
@@ -130,7 +124,7 @@ export default class Events extends Vue {
     if (elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
+    await this.$app.$commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
   }
 
   async remove(date: string) {
@@ -138,7 +132,7 @@ export default class Events extends Vue {
     if (elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
+    await this.$app.$commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
   }
 
   itemSelected(item: ISelected): void {
@@ -155,6 +149,6 @@ export default class Events extends Vue {
   }
 
   mounted() {
-    this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
+    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
   }
 }

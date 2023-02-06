@@ -1,7 +1,4 @@
 import { Vue } from 'vue-class-component'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
-import { _container } from '~/domain/container'
 import { LinksQuery } from '~/domain/queries'
 import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
@@ -10,9 +7,6 @@ import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
 
 export default class Links extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Getter('links/getLinks') links: Array<ILink>
 
   isEmpty = false
@@ -37,19 +31,19 @@ export default class Links extends Vue {
         },
         fsmState: FsmStates.AddLinkPopup
       })
-      const result = await this.commandBus.do<CreateEditCommand<ILink>, ILink>(command)
+      const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
       if (!result) {
         return
       }
-      await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
-      await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+      await this.$app.$commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
+      await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     }
   }
 
   async remove(id: string) {
     try {
-      await this.commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(id))
-      await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+      await this.$app.$commandBus.do<DeleteLinkCommand, void>(new DeleteLinkCommand(id))
+      await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
@@ -61,7 +55,7 @@ export default class Links extends Vue {
   }
 
   async mounted() {
-    await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
     if (!this.links?.length) {
       this.isEmpty = true
     }

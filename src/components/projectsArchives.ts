@@ -2,17 +2,11 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IArchive, IJson } from '~/domain/models'
 import { ArchivesQuery, ProjectsQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import { now } from '~/helpers'
 
 export default class ProjectsArchives extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('projects/setArchives') setArchives: (value: Array<IArchive>) => void
 
   @Getter('projects/getArchives') items: IArchive[]
@@ -27,11 +21,11 @@ export default class ProjectsArchives extends Vue {
   async restore(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
-      await this.commandBus.do<ArchiveRestoreCommand, string>(
+      await this.$app.$commandBus.do<ArchiveRestoreCommand, string>(
         new ArchiveRestoreCommand(name)
       )
-      this.queryBus.exec(new ArchivesQuery())
-      this.queryBus.exec(new ProjectsQuery())
+      this.$app.$queryBus.exec(new ArchivesQuery())
+      this.$app.$queryBus.exec(new ProjectsQuery())
       this.$app.goBack()
     } catch (e) {
       /* eslint-disable no-console */
@@ -42,7 +36,7 @@ export default class ProjectsArchives extends Vue {
   async remove(o: IArchive) {
     try {
       const name = `${o.name}_(datetime)${o.date}`
-      await this.commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(name))
+      await this.$app.$commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(name))
       const arr = this.items.filter((e: IArchive) => {
         return e.name !== o.name
       })

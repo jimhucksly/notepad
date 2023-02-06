@@ -8,12 +8,9 @@ import Sidebar from '~/components/sidebar'
 import Titlebar from '~/components/titlebar'
 import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IJson, IResponse, IUser } from '~/domain/models'
 import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
 import { CheckQuery } from '~/domain/queries/check.query'
-import { TYPES } from '~/domain/types'
 import { uploadDownloadFile } from '~/helpers'
 import Auth from '~/pages/auth'
 import Reg from '~/pages/reg'
@@ -54,9 +51,6 @@ interface IUserPreferences {
   }
 })
 export default class Index extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setUserDataPath') setUserDataPath: (value: string) => void
 
@@ -103,7 +97,7 @@ export default class Index extends Vue {
           fsmState: FsmStates.Downloading
         })
         this.$store.commit('setProcess', { name: 'dowloading file...' })
-        this.commandBus.do<CreateEditCommand<void>, void>(command)
+        this.$app.$commandBus.do<CreateEditCommand<void>, void>(command)
       }
     )
     this.$electron.ipcRenderer.on(
@@ -126,7 +120,7 @@ export default class Index extends Vue {
   @Watch('isAuth') onAuthChanged(v: boolean) {
     if (v) {
       try {
-        this.queryBus.exec<CheckQuery, void>(new CheckQuery())
+        this.$app.$queryBus.exec<CheckQuery, void>(new CheckQuery())
       } catch (e) {
         /* eslint-disable no-console */
         console.error(e)
@@ -142,7 +136,7 @@ export default class Index extends Vue {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if (token) {
-        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
+        const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
         if (data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
@@ -150,11 +144,11 @@ export default class Index extends Vue {
         this.$nextTick(async () => {
           if (this.yandexAccessToken) {
             await Promise.all([
-              this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-              this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+              this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+              this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
             ])
             if (!this.isDev) {
-              await this.queryBus.exec<RefreshYandexTokenQuery, boolean>(
+              await this.$app.$queryBus.exec<RefreshYandexTokenQuery, boolean>(
                 new RefreshYandexTokenQuery(Number(this.currentUser.id))
               )
             }
@@ -215,16 +209,16 @@ export default class Index extends Vue {
       Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
     )
     try {
-      const resp: boolean = await this.queryBus.exec(query)
+      const resp: boolean = await this.$app.$queryBus.exec(query)
       const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
       if (resp && token) {
-        const data: IResponse<void> = await this.queryBus.exec(new SessionQuery(token))
+        const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
         if (data.token) {
           await this.$app.login(data.token)
           this.$app.user(data.user)
           await Promise.all([
-            this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-            this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+            this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+            this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
           ])
           this.$app.goHome()
         }

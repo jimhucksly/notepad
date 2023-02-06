@@ -20,7 +20,8 @@ import {
   AuthCommand,
   ReadCommand,
   RegistrationCommand,
-  RevokeYandexTokenCommand
+  RevokeYandexTokenCommand,
+  VerifyCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
 import { Hub } from '~/plugins/hub'
@@ -49,7 +50,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
-
   @Commandable(TYPES.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
@@ -71,11 +71,26 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
       setProcess(store, 'authentication...')
-      const resp = await $http.post<AuthQuery, void>('/auth', {
+      return await $http.post<AuthQuery, void>('/auth', {
         login: query.login,
         password: query.password
       })
-      return resp
+    } catch (e) {
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
+  @Commandable(TYPES.VerifyCommand)
+  async actionVerify(store: TStore, command: VerifyCommand): Promise<IResponse<boolean>> {
+    try {
+      setProcess(store, 'verifying...')
+      const user = store.getters.getCurrentUser
+      return await $http.post<VerifyCommand & { userId: number }, boolean>('/verify', {
+        userId: user.id,
+        code: command.code
+      })
     } catch (e) {
       return Promise.reject(e)
     } finally {

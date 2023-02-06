@@ -1,11 +1,8 @@
 import { Options, Vue } from 'vue-class-component'
 import { UpdateLinksCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ILink } from '~/domain/models'
 import { LinksQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import { uniqueid } from '~/helpers'
 
 @Options({
@@ -18,9 +15,6 @@ import { uniqueid } from '~/helpers'
   `
 })
 export default class LinksBtns extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   async add() {
     const command = new CreateEditCommand({
       component: 'create-edit-link',
@@ -34,14 +28,14 @@ export default class LinksBtns extends Vue {
       },
       fsmState: this.$app.states.AddLinkPopup
     })
-    const result = await this.commandBus.do<CreateEditCommand<ILink>, ILink>(command)
+    const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
     if (!result) {
       return
     }
     if (!result.id) {
       result.id = uniqueid(6) as string
     }
-    await this.commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
-    await this.queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+    await this.$app.$commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
+    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
   }
 }

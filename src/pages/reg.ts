@@ -1,14 +1,9 @@
 import { Vue } from 'vue-class-component'
 import { RegistrationCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus } from '~/domain/interfaces'
 import { IUser } from '~/domain/models'
-import { TYPES } from '~/domain/types'
 import { IValidate } from '~/plugins/validate'
 
 export default class Reg extends Vue {
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   login = 'root'
   pass = 'root'
   passRepeat = 'root'
@@ -34,7 +29,7 @@ export default class Reg extends Vue {
       return
     }
     try {
-      const user = await this.commandBus.do<RegistrationCommand, IUser>(new RegistrationCommand({
+      const user = await this.$app.$commandBus.do<RegistrationCommand, IUser>(new RegistrationCommand({
         login: this.login,
         password: this.pass,
         name: this.name,

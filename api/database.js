@@ -73,6 +73,22 @@ function query() {
             return false
           }
           throw new Error('bad request')
+        },
+        async check(code) {
+          if (userId && code) {
+            const query = 'SELECT * FROM verify_codes WHERE user_id = $1 AND code = $2'
+            const { rows } = await client.query(query, [userId, code])
+            if (rows && rows[0]) {
+              return true
+            }
+            return false
+          }
+        },
+        async delete() {
+          if (userId) {
+            const query = 'DELETE FROM verify_codes WHERE user_id = $1'
+            await client.query(query, [userId])
+          }
         }
       }
     }

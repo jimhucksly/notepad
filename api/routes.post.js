@@ -57,6 +57,33 @@ function post(router, $app) {
       })
     }
   })
+  router.post('/verify', async (req, res, next) => {
+    try {
+      const { userId, code } = req.body
+      if (userId && code) {
+        const isVerifySuccess = await $app.db.query().verify({ userId }).check(code)
+        if (isVerifySuccess) {
+          // await $app.db.command().verify({ userId }).delete()
+          res.send({
+            status: 'success',
+            message: 'user sucessfuly verified'
+          })
+        } else {
+          res.send({
+            status: 'error',
+            message: 'verify code is invalid'
+          })
+        }
+        return
+      }
+      throw new Error()
+    } catch (e) {
+      res.status(400).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
 }
 
 module.exports = {

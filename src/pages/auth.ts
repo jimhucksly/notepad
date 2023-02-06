@@ -1,17 +1,11 @@
 import isEmpty from 'lodash-es/isEmpty'
 import { Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IResponse } from '~/domain/models'
 import { AuthQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import { IValidate } from '~/plugins/validate'
 
 export default class Auth extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('setLoading') setLoading: (value: boolean) => void
 
   @Getter('getEndpoint') endpoint: string
@@ -41,8 +35,9 @@ export default class Auth extends Vue {
       return
     }
     try {
-      const data = await this.queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
+      const data = await this.$app.$queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
       if (data.user.waitingVerify) {
+        this.$app.user(data.user)
         this.$app.goto(this.$app.states.Verify)
         return
       }

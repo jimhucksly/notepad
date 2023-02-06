@@ -3,18 +3,12 @@ import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
-import { TYPES } from '~/domain/types'
 
 export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
-
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setJson') setJson: (value: IJson) => void
@@ -69,10 +63,10 @@ export default class ProjectsEditor extends Vue {
         }
       }
       this.setJson({ ...this.json, ...o })
-      this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+      this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if (isLocked) {
-      const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+      const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
         'Do you want to unlock this project?'
       ))
       if (!isConfirm) {
@@ -86,13 +80,13 @@ export default class ProjectsEditor extends Vue {
   async archive() {
     const selected = this.selected
     this.$app.goBack()
-    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(selected))
+    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(selected))
     await this.removeHandler(selected)
-    await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
+    await this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
   async remove() {
-    const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
       'Do you want to remove this project?'
     ))
     if (!isConfirm) {
@@ -102,7 +96,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async removeHandler(selected?: string) {
-    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(selected || this.selected))
+    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(selected || this.selected))
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, selected || this.selected)
@@ -124,7 +118,7 @@ export default class ProjectsEditor extends Vue {
       }
     }
     this.setJson({ ...this.json, ...o })
-    await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+    await this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.savingProcess = false
     this.$app.goBack()
   }

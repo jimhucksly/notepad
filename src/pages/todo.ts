@@ -3,11 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ITodo, ITodoItem, ITodoOrder } from '~/domain/models'
 import { TodoQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import { indexOf, now } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 
@@ -21,9 +18,6 @@ const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   }
 })
 export default class Todo extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Getter('todo/getTodo') json: ITodo
 
   items: Array<ITodoItem> = []
@@ -213,7 +207,7 @@ export default class Todo extends Vue {
       }
     })
     this.items = [...this.items]
-    this.commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
+    this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
   }
 
   edit(id: string) {
@@ -247,7 +241,7 @@ export default class Todo extends Vue {
         o.text = this.itemSelected.text
         this.items = [...this.items]
         this.cancel()
-        this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
+        this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
       }
     }
   }
@@ -262,7 +256,7 @@ export default class Todo extends Vue {
       const id = this.itemSelected.id
       this.items = this.items.filter((item: ITodoItem) => item.id !== id)
       this.cancel()
-      await this.commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
+      await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
       this.setOrder()
     }
   }
@@ -292,7 +286,7 @@ export default class Todo extends Vue {
       order: this.keys.length + 1
     }
     this.items.push(o)
-    this.commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
+    this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
   }
 
   getText(text: string) {
@@ -307,7 +301,7 @@ export default class Todo extends Vue {
   async mounted() {
     try {
       this.loading = true
-      await this.queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
+      await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
       this.loading = false
       this.addTodoHandler = this.addTodo.bind(this)
       Hub.$on('todo-add', this.addTodoHandler)

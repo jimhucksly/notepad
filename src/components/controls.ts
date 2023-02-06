@@ -2,17 +2,11 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { EditProjectCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IFilters, IJson } from '~/domain/models'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
-import { TYPES } from '~/domain/types'
 import { checkLinks, htmlToText } from '~/helpers'
 
 export default class Controls extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Prop({ type: String, default: '' }) readonly itemKey: string
   @Prop({ type: Boolean, default: false }) isLock: false
   @Prop() readonly collection: string[]
@@ -81,7 +75,7 @@ export default class Controls extends Vue {
         }
         this.setJson({ ...this.json, ...o })
         this.$nextTick(() => {
-          this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+          this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
         })
       }
     }
@@ -89,7 +83,7 @@ export default class Controls extends Vue {
 
   async remove(stamp: string) {
     if (this.isLock) {
-      const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+      const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
         'Do you realy want to remove this project?'
       ))
       if (!isConfirm) {

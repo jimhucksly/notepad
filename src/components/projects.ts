@@ -3,15 +3,10 @@ import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { IFsmStates } from '~/application/fsm.states'
-import { _container } from '~/domain/container'
-import { IQueryBus } from '~/domain/interfaces'
 import { IArchive, IFilters, IJson } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 
 export default class Projects extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
@@ -89,7 +84,7 @@ export default class Projects extends Vue {
 
   created() {
     try {
-      this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
+      this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)

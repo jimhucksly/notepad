@@ -3,17 +3,11 @@ import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { ILibraryFile } from '~/domain/models'
 import { LibraryFilesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
-import { TYPES } from '~/domain/types'
 
 export default class LibraryFiles extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Prop() expanded: boolean
 
   @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
@@ -39,23 +33,23 @@ export default class LibraryFiles extends Vue {
       },
       fsmState: this.$app.states.AddLibraryFilePopup
     })
-    const file = await this.commandBus.do<CreateEditCommand<ILibraryFile>, ILibraryFile>(command)
+    const file = await this.$app.$commandBus.do<CreateEditCommand<ILibraryFile>, ILibraryFile>(command)
     if (!file) {
       return
     }
-    await this.commandBus.do(new AddLibraryFileCommand(file))
+    await this.$app.$commandBus.do(new AddLibraryFileCommand(file))
   }
 
   async removeFile(file: ILibraryFile) {
-    const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
       'Do you want to remove the library file?'
     ))
     if (!isConfirm) {
       return
     }
     try {
-      await this.commandBus.do(new DeleteLibraryFileCommand(file.name))
-      await this.queryBus.exec(new LibraryFilesQuery())
+      await this.$app.$commandBus.do(new DeleteLibraryFileCommand(file.name))
+      await this.$app.$queryBus.exec(new LibraryFilesQuery())
       this.setFileId(this.libraryFiles[0]?.id || 0)
     } catch (e) {
       /* eslint-disable no-console */

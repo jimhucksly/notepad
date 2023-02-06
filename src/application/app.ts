@@ -199,6 +199,14 @@ export default class Application implements IApplication {
     return _fsm
   }
 
+  get $queryBus(): IQueryBus {
+    return this._queryBus
+  }
+
+  get $commandBus(): ICommandBus {
+    return this._commandBus
+  }
+
   get states() {
     return FsmStates
   }

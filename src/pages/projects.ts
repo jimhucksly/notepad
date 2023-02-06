@@ -3,9 +3,6 @@ import { Options, Vue } from 'vue-class-component'
 import { cloneDeep, isEmpty, unset } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
-import { ICommandBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
 import { ReadCommand, UploadFileCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
 import { IFile, IFilters, IJson } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
@@ -22,8 +19,6 @@ import FsmStates from '~/application/fsm.states'
   }
 })
 export default class Projects extends Vue {
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('projects/setJson') setJson: (value: IJson) => void
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
@@ -85,7 +80,7 @@ export default class Projects extends Vue {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
+      this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
     })
   }
 
@@ -114,8 +109,8 @@ export default class Projects extends Vue {
         },
         fsmState: FsmStates.Uploading
       })
-      this.commandBus.do<CreateEditCommand<void>, void>(command)
-      const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
+      this.$app.$commandBus.do<CreateEditCommand<void>, void>(command)
+      const newFile = await this.$app.$commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
       this.$app.goBack()
       this.addFile(newFile.name, fileType)
     } catch (e) {
@@ -143,7 +138,7 @@ export default class Projects extends Vue {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
+      this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
     })
   }
 
@@ -157,7 +152,7 @@ export default class Projects extends Vue {
       if (elRect.top < viewportHeight) {
         if (!el.classList.contains('.will-be-marked')) {
           setTimeout(() => {
-            this.commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
+            this.$app.$commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
             el.classList.remove('unread')
             el.classList.remove('will-be-marked')
             const hasStyle = el.attributes.getNamedItem('style')
@@ -179,7 +174,7 @@ export default class Projects extends Vue {
     this.setJson(buffJson)
     this.removeStack.push(stamp)
     if (this.removeStack[0] === stamp) {
-      await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
+      await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
       this.removeStack = this.removeStack.filter(el => el !== stamp)
       if (this.removeStack.length) {
         this.onDelete(this.removeStack[0])

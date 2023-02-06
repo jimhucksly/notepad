@@ -114,4 +114,16 @@ textarea {
   }
 }
 
+.verify-fields {
+  display: flex;
+  justify-content: space-around;
+  input {
+    width: 35px;
+    height: 56px;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 36px;
+  }
+}
+
 

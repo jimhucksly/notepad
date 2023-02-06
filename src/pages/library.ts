@@ -5,9 +5,6 @@ import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import { translit, uniqueid } from '~/helpers'
-import { IQueryBus, ICommandBus } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
-import { _container } from '~/domain/container'
 import { UpdateLibraryCommand } from '~/domain/commands'
 import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
@@ -55,9 +52,6 @@ const linked = (value: ILinkedDoc): Array<string> => {
   }
 })
 export default class LibraryPage extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   static editor: SimpleMDEExt = null
 
   @Mutation('library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
@@ -80,7 +74,7 @@ export default class LibraryPage extends Vue {
 
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
-      await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
+      await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
@@ -106,8 +100,8 @@ export default class LibraryPage extends Vue {
   }
 
   async created() {
-    await this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-    await this.queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
+    await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+    await this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
   }
 
   mounted() {
@@ -237,7 +231,7 @@ export default class LibraryPage extends Vue {
   save() {
     const id = this.currentId
     const body = LibraryPage.editor.value()
-    const promise = this.commandBus.do<UpdateLibraryCommand, void>(
+    const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(
       new UpdateLibraryCommand(id, body)
     )
     Promise

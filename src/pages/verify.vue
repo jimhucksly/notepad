@@ -8,28 +8,18 @@
         </div>
         <div class="form-group">
           <div class="form-group-inner">
-            <label
-              :class="{
-                active: v?.code?.value?.length > 0,
-                error: v?.code?.isInvalid
-              }"
-            >
-              Verify code:
-            </label>
-            <input
-              type="text"
-              placeholder="Verify code"
-              :class="{ error: v?.code?.isInvalid }"
-              v-model="code"
-              required
-              name="code"
-              @keyup.enter.prevent="submit"
-            >
-          </div>
-          <div>
-            <span class="form-label-error" v-show="isSubmitted && v?.code?.isInvalid">
-              Verify code is incorrect
-            </span>
+            <div class="verify-fields">
+              <template v-for="i in [1, 2, 3, 4, 5, 6]">
+                <input
+                  type="text"
+                  :id="'field-' + i"
+                  v-model="values[`${i}`]"
+                  @input="onInput($event, i)"
+                  @keydown="onKeydown($event, i)"
+                  :class="{ error: isError }"
+                >
+              </template>
+            </div>
           </div>
         </div>
         <div>
