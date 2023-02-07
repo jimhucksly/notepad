@@ -6,25 +6,25 @@ import Error from '~/components/error'
 import Loading from '~/components/loading'
 import Sidebar from '~/components/sidebar'
 import Titlebar from '~/components/titlebar'
-import { userDataFileName, userPreferencesFileName, YandexDiskAppID } from '~/constants'
+import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { IJson, IResponse, IUser } from '~/domain/models'
-import { LibraryFileQuery, ProjectsQuery, RefreshYandexTokenQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
+import { IUser } from '~/domain/models'
 import { CheckQuery } from '~/domain/queries/check.query'
 import { uploadDownloadFile } from '~/helpers'
+import Account from '~/pages/account'
 import Auth from '~/pages/auth'
-import Reg from '~/pages/reg'
-import Reset from '~/pages/reset'
-import Verify from '~/pages/verify'
 import Events from '~/pages/events'
 import JsonViewer from '~/pages/jsonViewer'
 import Library from '~/pages/library'
 import Links from '~/pages/links'
 import Preferences from '~/pages/preferences'
 import Projects from '~/pages/projects'
+import Reg from '~/pages/reg'
+import Reset from '~/pages/reset'
 import Todo from '~/pages/todo'
+import Verify from '~/pages/verify'
+import Yandex from '~/pages/yandex'
 import storage from '~/plugins/storage'
-import Account from '~/pages/account'
 
 interface IUserPreferences {
   downloadsTargetPath: string
@@ -38,6 +38,7 @@ interface IUserPreferences {
     Reg,
     Reset,
     Verify,
+    Yandex,
     Error,
     Account,
     Projects,
@@ -63,10 +64,6 @@ export default class Index extends Vue {
   @Getter('getCurrentUser') currentUser: IUser
   @Getter('getYandexToken') yandexAccessToken: string
   @Getter('getUserDataPath') userDataPath: string
-
-  createYandexDiskStepTwo = false
-  yandexDiskResponseCode = ''
-  yandexCodeApplyProcessing = false
 
   async created() {
     const getUserPath = (): Promise<string> => {
@@ -126,8 +123,6 @@ export default class Index extends Vue {
         console.error(e)
       }
     }
-    this.createYandexDiskStepTwo = false
-    this.yandexDiskResponseCode = ''
   }
 
   async checkToken(appPath: string): Promise<boolean> {
@@ -136,29 +131,29 @@ export default class Index extends Vue {
       await storage.createFile(appPath, userDataFileName)
       const token: string = await storage.get(appPath, userDataFileName, 'token')
       if (token) {
-        const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
-        if (data.token) {
-          await this.$app.login(data.token)
-          this.$app.user(data.user)
-        }
-        this.$nextTick(async () => {
-          if (this.yandexAccessToken) {
-            await Promise.all([
-              this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-              this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-            ])
-            if (!this.isDev) {
-              await this.$app.$queryBus.exec<RefreshYandexTokenQuery, boolean>(
-                new RefreshYandexTokenQuery(Number(this.currentUser.id))
-              )
-            }
-            setTimeout(() => {
-              this.$app.loading(false)
-            }, 1500)
-          } else {
-            this.$app.loading(false)
-          }
-        })
+        // const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
+        // if (data.token) {
+        //   await this.$app.login(data.token)
+        //   this.$app.user(data.user)
+        // }
+        // this.$nextTick(async () => {
+        //   if (this.yandexAccessToken) {
+        //     await Promise.all([
+        //       this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+        //       this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        //     ])
+        //     if (!this.isDev) {
+        //       await this.$app.$queryBus.exec<RefreshYandexTokenQuery, boolean>(
+        //         new RefreshYandexTokenQuery(Number(this.currentUser.id))
+        //       )
+        //     }
+        //     setTimeout(() => {
+        //       this.$app.loading(false)
+        //     }, 1500)
+        //   } else {
+        //     this.$app.loading(false)
+        //   }
+        // })
         return true
       } else {
         this.$app.loading(false)
@@ -193,48 +188,6 @@ export default class Index extends Vue {
     }
   }
 
-  createYandexDiskPath() {
-    let href = 'https://oauth.yandex.ru/authorize?response_type=code&client_id='
-    href = href + YandexDiskAppID
-    this.$electron.shell.openExternal(href)
-    setTimeout(() => {
-      this.createYandexDiskStepTwo = true
-    }, 1000)
-  }
-
-  async yandexCodeApply(event: MouseEvent) {
-    event.preventDefault()
-    this.yandexCodeApplyProcessing = true
-    const query = new YandexTokenQuery(
-      Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
-    )
-    try {
-      const resp: boolean = await this.$app.$queryBus.exec(query)
-      const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
-      if (resp && token) {
-        const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
-        if (data.token) {
-          await this.$app.login(data.token)
-          this.$app.user(data.user)
-          await Promise.all([
-            this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-            this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-          ])
-          this.$app.goHome()
-        }
-        this.$toasted.success('Access token successfully saved')
-      }
-    } catch (e) {
-      let message = 'Access token request failed'
-      message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
-      this.$toasted.error(message)
-      /* eslint-disable no-console */
-      console.error(e)
-    } finally {
-      this.yandexCodeApplyProcessing = false
-    }
-  }
-
   get isAuthWindow(): boolean {
     return this.fsmState === FsmStates.Auth
   }
@@ -251,19 +204,19 @@ export default class Index extends Vue {
     return this.fsmState === FsmStates.Verify
   }
 
+  get isYandexWindow(): boolean {
+    return this.fsmState === FsmStates.Yandex
+  }
+
   get yandexDiskAccessToken() {
     return this.currentUser?.yandexDiskAccessToken
   }
 
   get isSidebar() {
-    return this.isAuth && !this.loading && Boolean(this.yandexDiskAccessToken)
+    return this.isAuth
   }
 
   get isComponent() {
     return Boolean(this.component) && Boolean(this.yandexDiskAccessToken)
-  }
-
-  get isYandexDisk() {
-    return !this.yandexDiskAccessToken
   }
 }

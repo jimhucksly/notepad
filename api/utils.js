@@ -8,6 +8,26 @@ function generateVerifyCode() {
   return Number(result)
 }
 
+function generatePassword() {
+  let result = ''
+  const dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890'
+  const len = 16
+  for (let i = 0; i < len; i++) {
+    result += dic.charAt(Math.floor(Math.random() * dic.length))
+  }
+  return result
+}
+
+function generateToken() {
+  let result = ''
+  const dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ'
+  const len = 54
+  for (let i = 0; i < len; i++) {
+    result += dic.charAt(Math.floor(Math.random() * dic.length))
+  }
+  return result
+}
+
 function isObj(item) {
   return Object.prototype.toString.call(item) === '[object Object]'
 }
@@ -71,12 +91,56 @@ async function checkHeaders(headers) {
     if ('x-honeypot' in headers && headers['x-honeypot'] === 'App') {
       resolve()
     }
-    reject()
+    reject(new Error('Forbidden'))
   })
+}
+
+function getErrorCode(text) {
+  switch (text) {
+    case 'Bad Request': return 400
+    case 'Unauthorized': return 401
+    case 'Payment Required': return 402
+    case 'Forbidden': return 403
+    case 'Not Found': return 404
+    case 'Method Not Allowed': return 405
+    case 'Not Acceptable': return 406
+    case 'Proxy Authentication Required': return 407
+    case 'Request Time-out': return 408
+    case 'Conflict': return 409
+    case 'Gone': return 410
+    case 'Length Required': return 411
+    case 'Precondition Failed': return 412
+    case 'Request Entity Too Large': return 413
+    case 'Request-URI Too Large': return 414
+    case 'Unsupported Media Type': return 415
+    case 'Internal Server Error': return 500
+    case 'Not Implemented': return 501
+    case 'Bad Gateway': return 502
+    case 'Service Unavailable': return 503
+    case 'Gateway Time-out': return 504
+    case 'HTTP Version not supported': return 505
+    default: return 400
+  }
+}
+
+function emailSecurity(email) {
+  const a = email.replace(/(.+)@(.+)/, '$1')
+  const b = email.replace(/(.+)@(.+)/, '$2')
+  if (a.length === 1) {
+    return `**@${b}`
+  }
+  if (a.length === 2) {
+    return `${a.slice(0, 1)}**@${b}`
+  }
+  return `${a.slice(0, 1)}**${a.slice(-1)}@${b}`
 }
 
 module.exports = {
   generateVerifyCode,
+  generatePassword,
+  generateToken,
   responseModify,
-  checkHeaders
+  checkHeaders,
+  getErrorCode,
+  emailSecurity
 }

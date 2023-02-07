@@ -3,6 +3,7 @@ export interface IFsmStates {
   Reg: symbol
   Reset: symbol
   Verify: symbol
+  Yandex: symbol
   Account: symbol
   Preferences: symbol
   Projects: symbol
@@ -27,6 +28,7 @@ const FsmStates: IFsmStates = {
   Reg: Symbol.for('Reg'),
   Reset: Symbol.for('Reset'),
   Verify: Symbol.for('Verify'),
+  Yandex: Symbol.for('Yandex'),
   Account: Symbol.for('Account'),
   Preferences: Symbol.for('Preferences'),
   Projects: Symbol.for('Projects'),

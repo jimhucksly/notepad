@@ -57,6 +57,33 @@ function query() {
               throw new Error(`user by login "${ login }" is not found`)
             }
           }
+        },
+        async search() {
+          const payload = []
+          const queryFields = []
+          let query = 'SELECT * FROM users WHERE'
+          let index = 0
+          if (id) {
+            index++
+            queryFields.push(`id = $${index}`)
+            payload.push(id)
+          }
+          if (login) {
+            index++
+            queryFields.push(`login = $${index}`)
+            payload.push(login)
+          }
+          if (email) {
+            index++
+            queryFields.push(`email = $${index}`)
+            payload.push(email)
+          }
+          try {
+            query = query + ' ' + queryFields.join(' OR ')
+            return await execQuery(query, payload, ReturnType.Single)
+          } catch (e) {
+            throw new Error(`user is not found`)
+          }
         }
       }
     },
@@ -82,12 +109,6 @@ function query() {
             }
             return false
           }
-        },
-        async delete() {
-          if (userId) {
-            const query = 'DELETE FROM verify_codes WHERE user_id = $1'
-            await client.query(query, [userId])
-          }
         }
       }
     }
@@ -107,7 +128,6 @@ function command() {
               const query = 'SELECT * FROM reg_user($1, $2, $3, $4)'
               return await execQuery(query, [login, password, name, email])
             }
-            throw new Error('bad request')
           } catch (e) {
             throw new Error(e?.hint || e?.message || 'bad request')
           }
@@ -116,7 +136,11 @@ function command() {
           try {
             if (login && password) {
               const query = 'SELECT * FROM auth_user($1, $2)'
-              return await execQuery(query, [login, password], ReturnType.Single)
+              const { auth_user: isAuth } = await execQuery(query, [login, password], ReturnType.Single)
+              if (!isAuth) {
+                throw new Error('user not found')
+              }
+              return true
             }
             throw new Error('bad request')
           } catch (e) {
@@ -143,6 +167,47 @@ function command() {
           } catch (e) {
             throw new Error(e?.hint || e?.message || 'bad request')
           }
+        },
+        async setTempPassword(password) {
+          try {
+            if (id && password) {
+              const query = 'SELECT * FROM set_temp_pass($1, $2)'
+              return await execQuery(query, [id, password])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async setToken(token) {
+          try {
+            if (id && token) {
+              const query = 'UPDATE users SET token = $2 WHERE id = $1'
+              return await execQuery(query, [id, token])
+            }
+            throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        }
+        // async resetPassword(password) {
+        //   try {
+        //     if (id && password) {
+        //       const query = 'UPDATE users SET pswd_md5 = md5($2) WHERE id = $1'
+        //       return await execQuery(query, [id, password])
+        //     }
+        //   } catch (e) {
+        //     throw new Error(e?.hint || e?.message || 'bad request')
+        //   }
+        // }
+      }
+    },
+    verify({ userId }) {
+      return {
+        async delete() {
+          if (userId) {
+            const query = 'DELETE FROM verify_codes WHERE user_id = $1'
+            await client.query(query, [userId])
+          }
         }
       }
     }
@@ -162,12 +227,12 @@ async function execQuery(query, payload, returnType = ReturnType.None) {
       return
     case ReturnType.Single:
       if(!rows || !Array.isArray(rows) || !rows.length) {
-        throw new Error('not found')
+        return Promise.reject(new Error('not found'))
       }
       return rows[0]
     case ReturnType.Multiple:
       if(!rows || !Array.isArray(rows) || !rows.length) {
-        throw new Error('not found')
+        return Promise.reject(new Error('not found'))
       }
       return rows
   }

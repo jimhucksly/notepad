@@ -3,7 +3,8 @@ import $http from '~/store/http'
 import {
   IRootState,
   ICheckResponse,
-  IResponse
+  IResponse,
+  IUser
 } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
@@ -11,7 +12,6 @@ import { Commandable } from '~/domain/commands/command.bus'
 import {
   AuthQuery,
   RefreshYandexTokenQuery,
-  SessionQuery,
   YandexDiskInfoQuery,
   YandexDiskResourceLinkQuery,
   YandexTokenQuery
@@ -21,6 +21,7 @@ import {
   ReadCommand,
   RegistrationCommand,
   ResendCodeCommand,
+  ResetPasswordCommand,
   RevokeYandexTokenCommand,
   VerifyCommand
 } from '~/domain/commands'
@@ -124,43 +125,55 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  @Commandable(TYPES.ResetPasswordCommand)
+  async actionResetPass(store: TStore, command: ResetPasswordCommand): Promise<IResponse<IUser>> {
+    try {
+      setProcess(store, 'reset password...')
+      return await $http.post<ResendCodeCommand, IUser>('/reset', command)
+    } catch (e) {
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
   /**
    * Session
    * @param store Store
    * @param {SessionQuery} query
    */
-  @Queryable(TYPES.SessionQuery)
-  async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
-    try {
-      setProcess(store, 'get session...')
-      const resp = await $http.post<SessionQuery, void>('/session', query)
-      if (resp.token) {
-        return resp
-      }
-      return Promise.reject(resp)
-    } catch (e) {
-      return Promise.reject(e)
-    } finally {
-      setProcess(store, null)
-    }
-  }
+  // @Queryable(TYPES.SessionQuery)
+  // async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
+  //   try {
+  //     setProcess(store, 'get session...')
+  //     const resp = await $http.post<SessionQuery, void>('/session', query)
+  //     if (resp.token) {
+  //       return resp
+  //     }
+  //     return Promise.reject(resp)
+  //   } catch (e) {
+  //     return Promise.reject(e)
+  //   } finally {
+  //     setProcess(store, null)
+  //   }
+  // }
 
 
   /**
    * Start
    */
-  @Queryable(TYPES.StartQuery)
-  async actionAuthentication(store: TStore): Promise<boolean> {
-    try {
-      setProcess(store, 'start...')
-      await $http.get<IResponse<boolean>>('/start')
-      return Promise.resolve(true)
-    } catch (e) {
-      return Promise.reject(e)
-    } finally {
-      setProcess(store, null)
-    }
-  }
+  // @Queryable(TYPES.StartQuery)
+  // async actionAuthentication(store: TStore): Promise<boolean> {
+  //   try {
+  //     setProcess(store, 'start...')
+  //     await $http.get<IResponse<boolean>>('/start')
+  //     return Promise.resolve(true)
+  //   } catch (e) {
+  //     return Promise.reject(e)
+  //   } finally {
+  //     setProcess(store, null)
+  //   }
+  // }
 
   /**
    * Check

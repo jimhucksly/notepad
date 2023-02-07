@@ -110,13 +110,13 @@ export interface IUser {
   email: string
   displayName: string
   waitingVerify?: boolean
+  token?: string
   yandexDiskAccessToken: string
   yandexDiskRefreshToken: string
 }
 
 export interface IResponse<TData> {
   status: TResponseStatus
-  token?: string
   data?: TData
   message?: string
   messages?: Array<string>

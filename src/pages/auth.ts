@@ -11,8 +11,8 @@ export default class Auth extends Vue {
   @Getter('getEndpoint') endpoint: string
   @Getter('getYandexToken') yandexAccessToken: string
 
-  login = 'root'
-  pass = 'root'
+  login = ''
+  pass = ''
 
   v: IValidate = {}
 
@@ -40,6 +40,13 @@ export default class Auth extends Vue {
         this.$app.user(data.user)
         this.$app.goto(this.$app.states.Verify)
         return
+      }
+      if (!data.user.yandexDiskAccessToken) {
+        this.$app.goto(this.$app.states.Yandex)
+        return
+      }
+      if (data.user.token) {
+        // this.$app.login(data.user.token)
       }
       // this.$app.login(data.token)
       // this.$app.user(data.user)

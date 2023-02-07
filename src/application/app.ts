@@ -8,9 +8,7 @@ import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IJson, IRootState, IUser } from '~/domain/models'
 import {
   LibraryFileQuery,
-  ProjectsQuery,
-  SessionQuery,
-  StartQuery
+  ProjectsQuery
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
@@ -94,7 +92,7 @@ export default class Application implements IApplication {
       this._store.commit('setToken', token)
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
-      await this._queryBus.exec<StartQuery, void>(new StartQuery())
+      // await this._queryBus.exec<StartQuery, void>(new StartQuery())
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.goHome()
     } catch (e) {
@@ -173,8 +171,8 @@ export default class Application implements IApplication {
   async reload() {
     try {
       this.loading(true)
-      const token = this._store.getters.getToken
-      await this._queryBus.exec(new SessionQuery(token))
+      // const token = this._store.getters.getToken
+      // await this._queryBus.exec(new SessionQuery(token))
       // await this._queryBus.exec<RefreshYandexTokenQuery, boolean>(
       //   new RefreshYandexTokenQuery(Number(this.currentUser.id))
       // )

@@ -80,7 +80,7 @@ export default class Verify extends Vue {
         if (this.isError) {
           return
         }
-        //
+        this.$app.goto(this.$app.states.Auth)
       } catch (e) {
         this.$toasted.error(e?.message || 'submit error')
       }

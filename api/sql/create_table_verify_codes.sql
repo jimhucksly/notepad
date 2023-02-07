@@ -1,5 +1,5 @@
-create table verify_codes(
-	user_id int,
-	email varchar(80),
-	code int
+CREATE TABLE VERIFY_CODES(
+	USER_ID int, 
+	EMAIL VARCHAR(80), 
+	CODE int
 );

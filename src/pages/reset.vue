@@ -4,11 +4,14 @@
       <div class="form-auth">
         <div class="title">Reset password</div>
         <div class="form-group">
-          <div class="form-group-inner">
+          <div v-if="isSubmitted">
+            <p class="text-center">Your temporary password was beed sent on email:</p>
+            <p class="text-center font-bold p-y-5">{{ email }}</p>
+          </div>
+          <div class="form-group-inner" v-else>
             <label
               :class="{
-                active: v?.email?.value.length > 0,
-                error: v?.email?.isInvalid
+                active: email.length > 0
               }"
             >
               Your login or email:
@@ -16,13 +19,12 @@
             <input
               type="text"
               placeholder="Your login or email"
-              :class="{ error: v?.email?.isInvalid }"
               v-model="email"
               @keyup.enter.prevent="submit"
             >
           </div>
         </div>
-        <div>
+        <div v-if="!isSubmitted">
           <input type="submit" style="display: none">
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Send</button>
         </div>

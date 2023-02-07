@@ -41,6 +41,10 @@ export class VerifyCommand {
 
 export class ResendCodeCommand {}
 
+export class ResetPasswordCommand {
+  constructor(public email: string) {}
+}
+
 export class CheckCommand {}
 
 export class CreateProjectCommand {

@@ -20,6 +20,7 @@ const fsm = new StateMachine({
     { name: 'reg', from: '*', to: toStr(FsmStates.Reg) },
     { name: 'reset', from: '*', to: toStr(FsmStates.Reset) },
     { name: 'verify', from: '*', to: toStr(FsmStates.Verify) },
+    { name: 'yandex', from: '*', to: toStr(FsmStates.Yandex) },
     { name: 'account', from: '*', to: toStr(FsmStates.Account) },
     { name: 'preferences', from: '*', to: toStr(FsmStates.Preferences) },
     { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },
