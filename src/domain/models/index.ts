@@ -110,7 +110,6 @@ export interface IUser {
   email: string
   displayName: string
   waitingVerify?: boolean
-  token?: string
   yandexDiskAccessToken: string
   yandexDiskRefreshToken: string
 }
@@ -119,8 +118,8 @@ export interface IResponse<TData> {
   status: TResponseStatus
   data?: TData
   message?: string
-  messages?: Array<string>
   user?: IUser
+  token?: string
 }
 
 export interface ICheckResponse {

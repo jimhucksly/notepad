@@ -3,12 +3,14 @@ import { Getter } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { _container } from '~/domain/container'
 import { ICommandBus } from '~/domain/interfaces'
+import { IUser } from '~/domain/models'
 import { TYPES } from '~/domain/types'
 
 export default class Titlebar extends Vue {
   private readonly commandBus = _container.get<ICommandBus>(TYPES.CommandBus)
 
   @Getter('getIsAuth') isAuth: boolean
+  @Getter('getCurrentUser') currentUser: IUser
   @Getter('getProcess') process: { name: string }
 
   title = ''
@@ -42,5 +44,9 @@ export default class Titlebar extends Vue {
 
   reload() {
     this.$app.reload()
+  }
+
+  get yandexDiskAccessToken() {
+    return this.currentUser?.yandexDiskAccessToken
   }
 }

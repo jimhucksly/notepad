@@ -58,12 +58,12 @@ function post(router, $app) {
             })
           }
           const token = generateToken()
-          await $app.db.command().user({ id: user.id }).setToken(token)
-          user.token = token
+          await $app.db.command().token(token).bindToUser({ id: user.id })
           res.send({
             status: 'success',
             message: 'user authenticated',
-            user: responseModify(user)
+            user: responseModify(user),
+            token,
           })
           return
         }

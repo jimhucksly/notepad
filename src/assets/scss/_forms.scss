@@ -1,6 +1,7 @@
 .form-group {
   display: flex;
   margin-bottom: 15px;
+  width: 100%;
 
   .form-group-inner {
     position: relative;
@@ -114,7 +115,7 @@ textarea {
   }
 }
 
-.verify-fields {
+.code-fields {
   display: flex;
   justify-content: space-around;
   input {

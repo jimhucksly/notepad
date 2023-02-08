@@ -1,14 +1,16 @@
 <template>
   <div class="title-bar" id="titlebar">
-    <div class="menu-button-container" v-if="isAuth">
-      <button @click="toPreferences">Preferences</button>
-    </div>
-    <div class="menu-button-container button--reload" v-if="isAuth">
-      <button @click="reload">Reload</button>
-    </div>
-    <div class="menu-button-container button--about" v-if="isAuth">
-      <button @click="toAbout">About</button>
-    </div>
+    <template v-if="isAuth && yandexDiskAccessToken">
+      <div class="menu-button-container">
+        <button @click="toPreferences">Preferences</button>
+      </div>
+      <div class="menu-button-container button--reload" v-if="isAuth">
+        <button @click="reload">Reload</button>
+      </div>
+      <div class="menu-button-container button--about" v-if="isAuth">
+        <button @click="toAbout">About</button>
+      </div>
+    </template>
     <div class="app-name-container">
       <span class="titlebar-logo">
         <img src="assets/images/icons/24x24.png" alt="">
@@ -18,7 +20,7 @@
     <div class="menu-button-container process" v-if="process">
       <loader small :full="false" /> <span class="p-l-5 ">{{ process.name }}</span>
     </div>
-    <div class="menu-button-container button--logout" v-if="isAuth" @click="toAccount">
+    <div class="menu-button-container button--logout" v-if="isAuth && yandexDiskAccessToken" @click="toAccount">
       <svg-icon icon="user" width="29" height="29" />
     </div>
     <div class="window-controls-container">

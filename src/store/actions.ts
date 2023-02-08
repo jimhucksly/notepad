@@ -206,7 +206,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
     try {
       setProcess(store, 'creating yandex disk token...')
-      const resp = await $http.post<YandexTokenQuery, string>('/yandexapi/token', query)
+      const resp = await $http.post<YandexTokenQuery, string>('/ydtoken', query)
       if (!resp || !resp.data) {
         return Promise.reject(resp)
       }

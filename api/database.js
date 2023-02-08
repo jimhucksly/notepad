@@ -178,17 +178,6 @@ function command() {
             throw new Error(e?.hint || e?.message || 'bad request')
           }
         },
-        async setToken(token) {
-          try {
-            if (id && token) {
-              const query = 'UPDATE users SET token = $2 WHERE id = $1'
-              return await execQuery(query, [id, token])
-            }
-            throw new Error('bad request')
-          } catch (e) {
-            throw new Error(e?.hint || e?.message || 'bad request')
-          }
-        }
         // async resetPassword(password) {
         //   try {
         //     if (id && password) {
@@ -207,6 +196,21 @@ function command() {
           if (userId) {
             const query = 'DELETE FROM verify_codes WHERE user_id = $1'
             await client.query(query, [userId])
+          }
+        }
+      }
+    },
+    token(token) {
+      return {
+        async bindToUser({ id }) {
+          try {
+            if (id && token) {
+              const query = 'SELECT * FROM set_token($1, $2)'
+              return await execQuery(query, [id, token])
+            }
+            throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
           }
         }
       }

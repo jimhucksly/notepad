@@ -1,4 +1,3 @@
-import isEmpty from 'lodash-es/isEmpty'
 import { Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { IResponse } from '~/domain/models'
@@ -36,19 +35,15 @@ export default class Auth extends Vue {
     }
     try {
       const data = await this.$app.$queryBus.exec<AuthQuery, IResponse<void>>(new AuthQuery(this.login, this.pass))
+      this.$app.user(data.user)
       if (data.user.waitingVerify) {
-        this.$app.user(data.user)
         this.$app.goto(this.$app.states.Verify)
         return
       }
-      if (!data.user.yandexDiskAccessToken) {
-        this.$app.goto(this.$app.states.Yandex)
-        return
+      if (data.token) {
+        this.$app.login(data.token)
       }
-      if (data.user.token) {
-        // this.$app.login(data.user.token)
-      }
-      // this.$app.login(data.token)
+      //
       // this.$app.user(data.user)
       // if (this.yandexAccessToken) {
       //   this.$app.loading(true)
@@ -67,11 +62,11 @@ export default class Auth extends Vue {
   }
 
   handleError(e: IResponse<void>) {
-    if (e.messages && !isEmpty(e.messages)) {
-      this.validate()
-    } else {
-      /* eslint-disable no-console */
-      console.error(e)
-    }
+    // if (e.messages && !isEmpty(e.messages)) {
+    //   this.validate()
+    // } else {
+    //   /* eslint-disable no-console */
+    //   console.error(e)
+    // }
   }
 }

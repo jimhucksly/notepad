@@ -10,9 +10,9 @@
           <reg v-if="isRegWindow" id="reg" />
           <reset v-if="isResetWindow" id="reset" />
           <verify v-if="isVerifyWindow" id="verify" />
-          <yandex v-if="isYandexWindow" id="yandex" />
         </template>
-        <component v-if="isComponent" :is="component" />
+        <yandex v-if="isYandexWindow" id="yandex" />
+        <component v-else-if="isComponent" :is="component" />
       </template>
       <error v-if="isError" />
     </section>

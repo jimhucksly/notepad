@@ -20,6 +20,7 @@ import ConfirmPopup from '~/modules/popup/confirm'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
 import UploadingPopup from '~/modules/popup/uploading'
 import DownloadingPopup from '~/modules/popup/downloading'
+import CodeInput from './modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
@@ -45,6 +46,7 @@ app.component('uploading-popup', UploadingPopup)
 app.component('downloading-popup', DownloadingPopup)
 app.component('create-edit-library-file', CreateEditLibraryFile)
 app.component('confirm-popup', ConfirmPopup)
+app.component('code-input', CodeInput)
 
 app.use(store)
 app.use(router)

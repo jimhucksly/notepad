@@ -8,18 +8,7 @@
         </div>
         <div class="form-group">
           <div class="form-group-inner">
-            <div class="verify-fields">
-              <template v-for="i in [1, 2, 3, 4, 5, 6]">
-                <input
-                  type="text"
-                  :id="'field-' + i"
-                  v-model="values[`${i}`]"
-                  @input="onInput($event, i)"
-                  @keydown="onKeydown($event, i)"
-                  :class="{ error: isError }"
-                >
-              </template>
-            </div>
+            <code-input v-model="code" :count="6" :error="isError" />
           </div>
         </div>
         <div>

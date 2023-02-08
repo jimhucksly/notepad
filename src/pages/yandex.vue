@@ -3,7 +3,7 @@
     <div class="yd_cont_title">
       Connect please to your Yandex.Disk
     </div>
-    <svg-icon icon="yd" width="148" height="100" />
+    <img src="assets/images/yd.png" width="170" height="110" alt="">
     <form class="form-auth">
       <template v-if="createYandexDiskStepOne">
         <button class="btn btn-default" @click.prevent="createYandexDiskPath">
@@ -12,8 +12,10 @@
       </template>
       <div class="form-group" v-if="createYandexDiskStepTwo">
         <div class="form-group-inner">
-          <span class="p-b-5">Enter the access code here:</span>
-          <input type="text" v-model="yandexDiskResponseCode">
+          <div class="title">
+            <p>Please enter the access code here:</p>
+          </div>
+          <code-input v-model="yandexDiskResponseCode" :count="7" :error="isError" />
           <b-btn
             primary
             label="Apply"

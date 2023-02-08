@@ -129,8 +129,11 @@ export default class Index extends Vue {
     this.$app.loading(true)
     try {
       await storage.createFile(appPath, userDataFileName)
-      const token: string = await storage.get(appPath, userDataFileName, 'token')
+      // const token: string = await storage.get(appPath, userDataFileName, 'token')
+      const token: string = null
       if (token) {
+        await this.$app.login(token)
+        this.$app.loading(false)
         // const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
         // if (data.token) {
         //   await this.$app.login(data.token)
@@ -213,7 +216,7 @@ export default class Index extends Vue {
   }
 
   get isSidebar() {
-    return this.isAuth
+    return this.isAuth && this.isComponent
   }
 
   get isComponent() {

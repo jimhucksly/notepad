@@ -158,7 +158,12 @@ export default class Application implements IApplication {
   }
 
   goHome() {
-    const state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
+    let state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
+    if (!this.currentUser.yandexDiskAccessToken) {
+      state = FsmStates.Yandex
+      this.goto(state)
+      return
+    }
     this.history.push(toStr(state))
     this.goto(state)
   }
@@ -185,7 +190,7 @@ export default class Application implements IApplication {
       ])
       setTimeout(() => {
         this.loading(false)
-      }, 1500)
+      }, 1000)
     } catch (e) {
       this.loading(false)
       /* eslint-disable no-console */
