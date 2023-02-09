@@ -21,7 +21,7 @@
             label="Apply"
             class="btn btn-primary m-t-10"
             :processing="yandexCodeApplyProcessing"
-            @click="yandexCodeApply($event)"
+            @click.prevent="yandexCodeApply"
           />
           <div class="flex-center p-y-10">
             <span class="signup" @click="$app.goto($app.states.Auth)">Go back</span>

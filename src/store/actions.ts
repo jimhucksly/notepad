@@ -203,14 +203,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param {YandexTokenQuery} query
    */
   @Queryable(TYPES.YandexTokenQuery)
-  async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<string> {
+  async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<IResponse<string>> {
     try {
       setProcess(store, 'creating yandex disk token...')
-      const resp = await $http.post<YandexTokenQuery, string>('/ydtoken', query)
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      return resp.data
+      return await $http.post<YandexTokenQuery, string>('/ydtoken', query)
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token not received')
       return Promise.reject(e)

@@ -9,7 +9,6 @@ import { Prop } from 'vue-property-decorator'
         'btn-primary': primary,
         'btn-processing': processing
       }"
-      @click="$emit('click', e)"
     >
       <template v-if="processing">
         <span v-for="i in [1, 2, 3]" :key="i" :class="'processing-indicator-' + i"></span>

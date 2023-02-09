@@ -111,6 +111,18 @@ function query() {
           }
         }
       }
+    },
+    yandexAppPassword() {
+      return {
+        async get() {
+          try {
+            const query = 'SELECT * FROM yandex_app_password'
+            return await execQuery(query, [], ReturnType.Single)
+          } catch (e) {
+            throw new Error('yandex app password is not found')
+          }
+        }
+      }
     }
   }
 }

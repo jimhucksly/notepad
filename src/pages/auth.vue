@@ -8,7 +8,7 @@
             <label
               :class="{
                 active: v?.login?.value.length > 0,
-                error: v?.login?.isInvalid
+                error: v?.login?.isInvalid || errors.login
               }"
             >
               Login:
@@ -16,7 +16,7 @@
             <input
               type="text"
               placeholder="Login"
-              :class="{ error: v?.login?.isInvalid }"
+              :class="{ error: v?.login?.isInvalid || errors.login }"
               v-model="login"
               name="login"
               required
@@ -24,7 +24,7 @@
             >
           </div>
           <div>
-            <span class="form-label-error" v-show="isSubmitted && v?.login?.isInvalid">
+            <span class="form-label-error" v-show="isSubmitted && (v?.login?.isInvalid || errors.login)">
               Login is incorrect
             </span>
           </div>
@@ -34,7 +34,7 @@
             <label
               :class="{
                 active: v?.pass?.value.length > 0,
-                error: v?.pass?.isInvalid
+                error: v?.pass?.isInvalid || errors.pass
               }"
             >
               Password:
@@ -42,7 +42,7 @@
             <input
               type="password"
               placeholder="Password"
-              :class="{ error: v?.pass?.isInvalid }"
+              :class="{ error: v?.pass?.isInvalid || errors.pass }"
               v-model="pass"
               name="pass"
               required
@@ -50,7 +50,9 @@
             >
           </div>
           <div>
-            <span class="form-label-error" v-show="isSubmitted && v?.pass?.isInvalid">Password is incorrect</span>
+            <span class="form-label-error" v-show="isSubmitted && (v?.pass?.isInvalid || errors.pass)">
+              Password is incorrect
+            </span>
           </div>
         </div>
         <div>

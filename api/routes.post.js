@@ -8,6 +8,8 @@ const {
   emailSecurity
 } = require('./utils.js')
 
+const axios = require('axios')
+
 function post(router, $app) {
   router.post('/signup', async (req, res, next) => {
     try {
@@ -145,6 +147,36 @@ function post(router, $app) {
           email: emailSecurity(user.email)
         })
       }
+      throw new Error()
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/ydtoken', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      const { code, userId } = req.body
+      if (code && userId) {
+        const { yandex_app_password: client_secret } = await $app.db.query().yandexAppPassword().get()
+        const url = `https://oauth.yandex.ru/token`
+        const form = new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          client_id: '2151dc1a8f3d49abbbdcc4178356dadb',
+          client_secret: client_secret.trim()
+        })
+        const { data } = await axios.post(url, form, {
+          headers: {
+            'Content-type': 'application/x-www-form-urlencoded',
+          }
+        })
+        // /* eslint-desable no-console */
+        console.log('res', data)
+      }
+      throw new Error()
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',

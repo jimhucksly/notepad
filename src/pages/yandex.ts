@@ -4,7 +4,6 @@ import { YandexDiskAppID } from '~/constants'
 import { IUser } from '~/domain/models'
 import { YandexTokenQuery } from '~/domain/queries'
 
-
 export default class Yandex extends Vue {
   createYandexDiskStepOne = true
   createYandexDiskStepTwo = false
@@ -26,13 +25,12 @@ export default class Yandex extends Vue {
     }, 1000)
   }
 
-  async yandexCodeApply(event: MouseEvent) {
-    event.preventDefault()
-    this.yandexCodeApplyProcessing = true
-    const query = new YandexTokenQuery(
-      Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
-    )
+  async yandexCodeApply() {
     try {
+      this.yandexCodeApplyProcessing = true
+      const query = new YandexTokenQuery(
+        Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
+      )
       const resp: boolean = await this.$app.$queryBus.exec(query)
       if (resp) {
         /* eslint-disable no-console */
@@ -50,11 +48,11 @@ export default class Yandex extends Vue {
         // this.$toasted.success('Access token successfully saved')
       }
     } catch (e) {
-      let message = 'Access token request failed'
-      message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
-      this.$toasted.error(message)
-      /* eslint-disable no-console */
-      console.error(e)
+      // let message = 'Access token request failed'
+      // message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
+      // this.$toasted.error(message)
+      // /* eslint-disable no-console */
+      // console.error(e)
     } finally {
       this.yandexCodeApplyProcessing = false
     }
