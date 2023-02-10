@@ -200,6 +200,26 @@ function command() {
         //     throw new Error(e?.hint || e?.message || 'bad request')
         //   }
         // }
+        async setYandexAccessToken(token) {
+          try {
+            if (id && token) {
+              const query = 'UPDATE users SET yandex_disk_access_token = $2 WHERE id = $1;'
+              return await execQuery(query, [id, token])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async setYandexRefreshToken(token) {
+          try {
+            if (id && token) {
+              const query = 'UPDATE users SET yandex_disk_refresh_token = $2 WHERE id = $1;'
+              return await execQuery(query, [id, token])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        }
       }
     },
     verify({ userId }) {

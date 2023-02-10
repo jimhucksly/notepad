@@ -6,13 +6,15 @@ const db = require('./database.js')
 const { createServer } = require('./socket.js')
 const { createRouter } = require('./routes.js')
 const { createTransporter } = require('./mail.js')
+const { createYandexDiskApi } = require('./yandex.js')
 
 async function startApp() {
   try {
     const app = express()
     const $app = {
       db,
-      sendmail: await createTransporter()
+      sendmail: await createTransporter(),
+      yandex: await createYandexDiskApi(db)
     }
     const routes = createRouter($app)
 

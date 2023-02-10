@@ -1,4 +1,4 @@
-import { Vue, Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { IResponse } from '~/domain/models'
 import { AuthQuery } from '~/domain/queries'
@@ -15,22 +15,9 @@ export default class Auth extends Vue {
 
   v: IValidate = {}
 
-  errors = {
-    login: false,
-    pass: false
-  }
-
   timeout: NodeJS.Timeout | null = null
 
   isSubmitted = false
-
-  @Watch('login') onLoginChanged() {
-    this.errors.login = false
-  }
-
-  @Watch('pass') onPassChanged() {
-    this.errors.pass = false
-  }
 
   mounted() {
     this.$validate(this)
@@ -76,10 +63,10 @@ export default class Auth extends Vue {
 
   handleError(e: IResponse<{ message: string }>) {
     if (e?.data?.message === 'Login is incorrect') {
-      this.errors.login = true
+      (this.v as { login: { isInvalid: boolean } }).login.isInvalid = true
     }
     if (e?.data?.message === 'Password is incorrect') {
-      this.errors.pass = true
+      (this.v as { pass: { isInvalid: boolean } }).pass.isInvalid = true
     }
   }
 }
