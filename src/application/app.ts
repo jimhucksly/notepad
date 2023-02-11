@@ -8,7 +8,8 @@ import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IJson, IRootState, IUser } from '~/domain/models'
 import {
   LibraryFileQuery,
-  ProjectsQuery
+  ProjectsQuery,
+  SessionQuery
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
@@ -92,7 +93,8 @@ export default class Application implements IApplication {
       this._store.commit('setToken', token)
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
-      // await this._queryBus.exec<StartQuery, void>(new StartQuery())
+      await this._queryBus.exec(new SessionQuery())
+      this.user(this._store.getters.getCurrentUser)
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.goHome()
     } catch (e) {

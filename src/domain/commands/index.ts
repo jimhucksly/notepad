@@ -45,8 +45,6 @@ export class ResetPasswordCommand {
   constructor(public email: string) {}
 }
 
-export class CheckCommand {}
-
 export class CreateProjectCommand {
   constructor(public data: IJson) {}
 }

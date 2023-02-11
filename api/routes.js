@@ -10,6 +10,10 @@ const { post } = require('./routes.post.js')
 function createRouter($app) {
   get(router, $app)
   post(router, $app)
+  router.get('/', (req, res) => res.send('Server API working'))
+  router.get('*', function(req, res) {
+    res.status(404).send('not found')
+  })
   return router
 }
 

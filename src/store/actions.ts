@@ -2,7 +2,6 @@ import { cloneDeep } from 'lodash'
 import $http from '~/store/http'
 import {
   IRootState,
-  ICheckResponse,
   IResponse,
   IUser
 } from '~/domain/models'
@@ -12,6 +11,7 @@ import { Commandable } from '~/domain/commands/command.bus'
 import {
   AuthQuery,
   RefreshYandexTokenQuery,
+  SessionQuery,
   YandexDiskInfoQuery,
   YandexDiskResourceLinkQuery,
   YandexTokenQuery
@@ -142,52 +142,17 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {SessionQuery} query
    */
-  // @Queryable(TYPES.SessionQuery)
-  // async actionSession(store: TStore, query: SessionQuery): Promise<IResponse<void>> {
-  //   try {
-  //     setProcess(store, 'get session...')
-  //     const resp = await $http.post<SessionQuery, void>('/session', query)
-  //     if (resp.token) {
-  //       return resp
-  //     }
-  //     return Promise.reject(resp)
-  //   } catch (e) {
-  //     return Promise.reject(e)
-  //   } finally {
-  //     setProcess(store, null)
-  //   }
-  // }
-
-
-  /**
-   * Start
-   */
-  // @Queryable(TYPES.StartQuery)
-  // async actionAuthentication(store: TStore): Promise<boolean> {
-  //   try {
-  //     setProcess(store, 'start...')
-  //     await $http.get<IResponse<boolean>>('/start')
-  //     return Promise.resolve(true)
-  //   } catch (e) {
-  //     return Promise.reject(e)
-  //   } finally {
-  //     setProcess(store, null)
-  //   }
-  // }
-
-  /**
-   * Check
-   */
-  @Commandable(TYPES.CheckCommand)
-  async actionCheck(store: TStore): Promise<ICheckResponse> {
+  @Queryable(TYPES.SessionQuery)
+  async actionSession(store: TStore, query: SessionQuery): Promise<IUser> {
     try {
-      const resp = await $http.get<ICheckResponse>('/check')
-      if (!resp || !resp.data) {
-        return void 0
-      }
-      return resp.data
+      setProcess(store, 'get session...')
+      const { data } = await $http.get<IUser>('/session')
+      store.commit('setCurrentUser', data)
+      return data
     } catch (e) {
       return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
     }
   }
 

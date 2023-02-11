@@ -9,7 +9,6 @@ import Titlebar from '~/components/titlebar'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IUser } from '~/domain/models'
-import { CheckQuery } from '~/domain/queries/check.query'
 import { uploadDownloadFile } from '~/helpers'
 import Account from '~/pages/account'
 import Auth from '~/pages/auth'
@@ -63,6 +62,7 @@ export default class Index extends Vue {
   @Getter('getComponent') component: string
   @Getter('getCurrentUser') currentUser: IUser
   @Getter('getYandexToken') yandexAccessToken: string
+  @Getter('getSession') session: string
   @Getter('getUserDataPath') userDataPath: string
 
   async created() {
@@ -78,7 +78,6 @@ export default class Index extends Vue {
     }
     const appPath = await getUserPath()
     await this.setPath(appPath)
-    await this.checkToken(appPath)
   }
 
   mounted() {
@@ -114,49 +113,17 @@ export default class Index extends Vue {
     )
   }
 
-  @Watch('isAuth') onAuthChanged(v: boolean) {
-    if (v) {
-      try {
-        this.$app.$queryBus.exec<CheckQuery, void>(new CheckQuery())
-      } catch (e) {
-        /* eslint-disable no-console */
-        console.error(e)
-      }
-    }
+  @Watch('appIsReadyToLaunch') onReady() {
+    this.checkToken()
   }
 
-  async checkToken(appPath: string): Promise<boolean> {
+  async checkToken(): Promise<boolean> {
     this.$app.loading(true)
     try {
-      await storage.createFile(appPath, userDataFileName)
-      // const token: string = await storage.get(appPath, userDataFileName, 'token')
-      const token: string = null
+      await storage.createFile(this.userDataPath, userDataFileName)
+      const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
       if (token) {
         await this.$app.login(token)
-        this.$app.loading(false)
-        // const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
-        // if (data.token) {
-        //   await this.$app.login(data.token)
-        //   this.$app.user(data.user)
-        // }
-        // this.$nextTick(async () => {
-        //   if (this.yandexAccessToken) {
-        //     await Promise.all([
-        //       this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-        //       this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        //     ])
-        //     if (!this.isDev) {
-        //       await this.$app.$queryBus.exec<RefreshYandexTokenQuery, boolean>(
-        //         new RefreshYandexTokenQuery(Number(this.currentUser.id))
-        //       )
-        //     }
-        //     setTimeout(() => {
-        //       this.$app.loading(false)
-        //     }, 1500)
-        //   } else {
-        //     this.$app.loading(false)
-        //   }
-        // })
         return true
       } else {
         this.$app.loading(false)
@@ -164,12 +131,13 @@ export default class Index extends Vue {
         return false
       }
     } catch (e) {
-      this.$app.loading(false)
       this.$app.logout()
       const userDataPath = this.$store.getters.getUserDataPath
       await storage.createFile(userDataPath, userDataFileName)
       storage.set(userDataPath, userDataFileName, { token: '' })
       return false
+    } finally {
+      this.$app.loading(false)
     }
   }
 
@@ -220,6 +188,18 @@ export default class Index extends Vue {
   }
 
   get isComponent() {
-    return Boolean(this.component) && Boolean(this.yandexDiskAccessToken)
+    return Boolean(this.component)
+  }
+
+  get isSessionReceived(): boolean {
+    return Boolean(this.session)
+  }
+
+  get isUserDataPathDefined(): boolean {
+    return Boolean(this.userDataPath)
+  }
+
+  get appIsReadyToLaunch(): boolean {
+    return this.isSessionReceived && this.isUserDataPathDefined
   }
 }

@@ -27,6 +27,10 @@ export default {
 
     socket.io.on('close', tryReconnect)
 
+    socket.on('connected', (id) => {
+      store.commit('setSession', id)
+    })
+
     vue.config.globalProperties.$socket = socket
   }
 }

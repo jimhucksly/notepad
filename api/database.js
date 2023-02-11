@@ -57,6 +57,20 @@ function query() {
               throw new Error(`user by login "${ login }" is not found`)
             }
           }
+          if (token) {
+            try {
+              let query = 'SELECT * FROM tokens WHERE token = $1'
+              const row = await execQuery(query, [token], ReturnType.Single)
+              if (new Date().getTime() < new Date(row.token_expired).getTime()) {
+                query = 'SELECT * FROM users WHERE id = $1'
+                return await execQuery(query, [row.user_id], ReturnType.Single)
+              }
+              throw new Error('Forbidden')
+            } catch (e) {
+              console.log(e)
+              throw new Error(e?.message || 'user is not found')
+            }
+          }
         },
         async search() {
           const payload = []
@@ -241,6 +255,31 @@ function command() {
               return await execQuery(query, [id, token])
             }
             throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        }
+      }
+    },
+    session(session) {
+      return {
+        async bindToUser({ id }) {
+          try {
+            if (id && session) {
+              const query = 'INSERT INTO sessions VALUES($1, $2) ON CONFLICT (session) DO UPDATE SET session = $2'
+              return client.query(query, [id, session])
+            }
+            throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async revoke() {
+          try {
+            if (session) {
+              const query = 'DELETE FROM sessions WHERE session = $1'
+              await client.query(query, [session])
+            }
           } catch (e) {
             throw new Error(e?.hint || e?.message || 'bad request')
           }

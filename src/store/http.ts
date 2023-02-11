@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
-import { uploadDownloadFile } from '~/helpers'
+// import { uploadDownloadFile } from '~/helpers'
 import store from '~/store'
 import { endpoint } from '../../config/endpoint.json'
 
@@ -9,30 +9,20 @@ axios.interceptors.request.use(
     config = config || {}
     config.headers['X-Honeypot'] = 'App'
     if (config.url.indexOf('upload') > -1) {
-      config.headers['Content-Type'] = 'multipart/form-data'
-      config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
-        uploadDownloadFile(loaded, total)
-      }
+      // config.headers['Content-Type'] = 'multipart/form-data'
+      // config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+      //   uploadDownloadFile(loaded, total)
+      // }
     } else {
       config.headers['Content-Type'] = 'application/json'
     }
     config.headers.Authorization = store.getters.getToken
+    const session = store.getters.getSession
+    if (session) {
+      config.headers.SSID = session
+    }
     const isDevelopment = store.getters.getIsDevelopment
     config.url = (isDevelopment ? 'http://127.0.0.1:8000' : endpoint) + config.url
-    // const isDevelopment = store.getters.getIsDevelopment
-    // if(!isDevelopment) {
-    //   config.url = store.getters.getEndpoint + config.url
-    //   let path = config.url
-    //   let query = ''
-    //   if(config.url.indexOf('?') > -1) {
-    //     path = config.url.split('?')[0]
-    //     query = config.url.split('?')[1]
-    //   }
-    //   if(path && !path.endsWith('/')) {
-    //     path = path + '/'
-    //   }
-    //   config.url = path + (query ? '?' + query : '')
-    // }
     return config
   },
   error => {
@@ -54,8 +44,6 @@ axios.interceptors.response.use(
   }
 )
 
-// const interval: NodeJS.Timeout | null = null
-
 class Http {
   public async get<TResponse>(url: string): Promise<IResponse<TResponse>> {
     const resp: AxiosResponse<IResponse<TResponse>> = await axios.get(url)
@@ -75,22 +63,6 @@ class Http {
       return resp.data
     } catch (e) {
       return Promise.reject(e)
-    //   if ((e as { response: unknown }).response === undefined) {
-    //     store.commit('setError', true)
-    //     if (interval === undefined) {
-    //       interval = setInterval(() => {
-    //         this.post(url, data)
-    //       }, 2000)
-    //     }
-    //     return Promise.reject()
-    //   } else {
-    //     interval && clearInterval(interval)
-    //     return (e as { response: { data: IResponse<TResponse> } }).response.data
-    //   }
-    // }
-    // store.commit('setError', false)
-    // interval && clearInterval(interval)
-    // return resp.data
     }
   }
 
@@ -104,22 +76,6 @@ class Http {
     } catch (e) {
       return Promise.reject(e)
     }
-    //   if ((e as { response: unknown }).response === undefined) {
-    //     store.commit('setError', true)
-    //     if (interval === undefined) {
-    //       interval = setInterval(() => {
-    //         this.put(url, data)
-    //       }, 2000)
-    //     }
-    //     return Promise.reject()
-    //   } else {
-    //     interval && clearInterval(interval)
-    //     return (e as { response: { data: IResponse<TResponse> } }).response.data
-    //   }
-    // }
-    // store.commit('setError', false)
-    // interval && clearInterval(interval)
-    // return resp.data
   }
 
   public async delete(url: string): Promise<IResponse<string>> {
@@ -130,22 +86,6 @@ class Http {
     } catch (e) {
       return Promise.reject(e)
     }
-    //   if ((e as { response: unknown }).response === undefined) {
-    //     store.commit('setError', true)
-    //     if (interval === undefined) {
-    //       interval = setInterval(() => {
-    //         this.delete(url)
-    //       }, 2000)
-    //     }
-    //     return Promise.reject()
-    //   } else {
-    //     interval && clearInterval(interval)
-    //     return (e as { response: { data: IResponse<string> } }).response.data
-    //   }
-    // }
-    // store.commit('setError', false)
-    // interval && clearInterval(interval)
-    // return resp.data
   }
 }
 

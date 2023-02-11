@@ -94,14 +94,6 @@ export interface ILink {
   name: string
 }
 
-export interface IJsonHeaders {
-  headers: {
-    'X-Honeypot': string
-    'Content-Type': string
-    'Authorization'?: string
-  }
-}
-
 type TResponseStatus = 'success' | 'error'
 
 export interface IUser {
@@ -122,31 +114,12 @@ export interface IResponse<TData> {
   token?: string
 }
 
-export interface ICheckResponse {
-  json: string
-  md: string
-  events: string
-  links: string
-  todo: string
-}
-
 export type IResolveFunc<T> = (value: T) => void
 
 export interface IModalInfo<R> {
   title?: string
   width?: string
   resolveFunction?: IResolveFunc<R>
-}
-
-export interface IYandexTokenResponse {
-  /* eslint-disable-next-line camelcase */
-  access_token: string
-  /* eslint-disable-next-line camelcase */
-  expires_in: number
-  /* eslint-disable-next-line camelcase */
-  refresh_token: string
-  /* eslint-disable-next-line camelcase */
-  token_type: string
 }
 
 export interface IProjectsState {

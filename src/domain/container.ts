@@ -4,7 +4,6 @@ import Application from '~/application/app'
 import CommandBus from '~/domain/commands/command.bus'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
-import { CheckQueryHandler } from '~/domain/queries/check.query'
 import QueryBus from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import store from '~/store'
@@ -33,8 +32,6 @@ _container.bind<CommandBus>(CommandBus).toSelf()
 /* ------------ store ------------ */
 _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(_store || store)
 /* ------------ queries ------------ */
-_container.bind<CheckQueryHandler>(TYPES.CheckQuery)
-  .to(CheckQueryHandler).inSingletonScope()
 _container.bind<ConfirmQueryHandler>(TYPES.ConfirmQuery)
   .to(ConfirmQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */

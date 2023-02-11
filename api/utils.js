@@ -95,6 +95,24 @@ async function checkHeaders(headers) {
   })
 }
 
+async function checkToken(headers) {
+  return new Promise((resolve, reject) => {
+    if ('authorization' in headers && headers['authorization']) {
+      resolve(headers['authorization'])
+    }
+    reject(new Error('Forbidden'))
+  })
+}
+
+async function checkSession(headers) {
+  return new Promise((resolve, reject) => {
+    if ('ssid' in headers && headers['ssid']) {
+      resolve(headers['ssid'])
+    }
+    reject(new Error('Forbidden'))
+  })
+}
+
 function getErrorCode(text) {
   switch (text) {
     case 'Bad Request': return 400
@@ -141,6 +159,8 @@ module.exports = {
   generateToken,
   responseModify,
   checkHeaders,
+  checkToken,
+  checkSession,
   getErrorCode,
   emailSecurity
 }

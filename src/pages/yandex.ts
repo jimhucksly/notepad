@@ -2,7 +2,7 @@ import { Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { YandexDiskAppID } from '~/constants'
 import { IUser } from '~/domain/models'
-import { YandexTokenQuery } from '~/domain/queries'
+import { SessionQuery, YandexTokenQuery } from '~/domain/queries'
 
 export default class Yandex extends Vue {
   createYandexDiskStepOne = true
@@ -31,28 +31,14 @@ export default class Yandex extends Vue {
       const query = new YandexTokenQuery(
         Number(this.yandexDiskResponseCode), Number(this.currentUser.id)
       )
-      const resp: boolean = await this.$app.$queryBus.exec(query)
-      if (resp) {
-        /* eslint-disable no-console */
-        console.log('resp', resp)
-        // const data: IResponse<void> = await this.$app.$queryBus.exec(new SessionQuery(token))
-        // if (data.token) {
-        //   await this.$app.login(data.token)
-        //   this.$app.user(data.user)
-        //   await Promise.all([
-        //     this.$app.$queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-        //     this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        //   ])
-        //   this.$app.goHome()
-        // }
-        // this.$toasted.success('Access token successfully saved')
-      }
+      await this.$app.$queryBus.exec(query)
+      await this.$app.$queryBus.exec(new SessionQuery())
+      this.$app.user(this.currentUser)
+      this.$app.goHome()
     } catch (e) {
-      // let message = 'Access token request failed'
-      // message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
-      // this.$toasted.error(message)
-      // /* eslint-disable no-console */
-      // console.error(e)
+      let message = 'Access token request failed'
+      message = (e as { message: string }).message || (e as { response: { message: string } }).response?.message || message
+      this.$toasted.error(message)
     } finally {
       this.yandexCodeApplyProcessing = false
     }

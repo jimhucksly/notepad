@@ -15,7 +15,8 @@ export const stateKeys: string[] = [
   'component',
   'history',
   'currentUser',
-  'process'
+  'process',
+  'session'
 ]
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
