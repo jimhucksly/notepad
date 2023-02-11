@@ -8,8 +8,6 @@ const {
   emailSecurity
 } = require('./utils.js')
 
-const axios = require('axios')
-
 function post(router, $app) {
   router.post('/signup', async (req, res, next) => {
     try {
@@ -140,12 +138,12 @@ function post(router, $app) {
         const password = generatePassword()
         await $app.db.command().user({ id: user.id }).setTempPassword(password)
         await $app.sendmail(user.email, 'resetPassword', { password })
-        console.log()
         res.send({
           status: 'success',
           message: 'success',
           email: emailSecurity(user.email)
         })
+        return
       }
       throw new Error()
     } catch (e) {
@@ -160,21 +158,56 @@ function post(router, $app) {
       await checkHeaders(req.headers)
       const { code, userId } = req.body
       if (code && userId) {
-        const { yandex_app_password: client_secret } = await $app.db.query().yandexAppPassword().get()
-        const url = `https://oauth.yandex.ru/token`
-        const form = new URLSearchParams({
-          grant_type: 'authorization_code',
-          code,
-          client_id: '2151dc1a8f3d49abbbdcc4178356dadb',
-          client_secret: client_secret.trim()
-        })
-        const { data } = await axios.post(url, form, {
-          headers: {
-            'Content-type': 'application/x-www-form-urlencoded',
+        const response = await $app.yandex.getToken(code)
+        if (response.access_token && response.refresh_token) {
+          await $app.db.command().user({ id: userId }).setYandexAccessToken(response.access_token)
+          await $app.db.command().user({ id: userId }).setYandexRefreshToken(response.refresh_token)
+        }
+        const files = [
+          'notepad.json',
+          'events.json',
+          'links.json',
+          'todo.json'
+        ]
+        const folders = [
+          'archives',
+          'library',
+          'files'
+        ]
+        const diskInfo = await $app.yandex.diskInfo('', response.access_token)
+        if (diskInfo._embedded.items.length === 0) {
+          for (const f of files) {
+            await $app.yandex.uploadFile(f, Buffer.from('{}'), response.access_token)
           }
+          for (const f of folders) {
+            await $app.yandex.createDir(f, response.access_token)
+          }
+          await $app.yandex.uploadFile('library/main.md', Buffer.from(''), response.access_token)
+        } else {
+          const existsFiles = diskInfo._embedded.items.filter(el => el.type === 'file').map(el => el.name)
+          const existsFolders = diskInfo._embedded.items.filter(el => el.type === 'dir').map(el => el.name)
+          for (const f of files) {
+            if (existsFiles.includes(f)) {
+              continue
+            }
+            await $app.yandex.uploadFile(f, Buffer.from('{}'), response.access_token)
+          }
+          for (const f of folders) {
+            if (existsFolders.includes(f)) {
+              continue
+            }
+            await $app.yandex.createDir(f, response.access_token)
+          }
+          const pathInfo = await $app.yandex.diskInfo('library', response.access_token)
+          if (pathInfo._embedded.items.length === 0) {
+            await $app.yandex.uploadFile('library/main.md', Buffer.from(''), response.access_token)
+          }
+        }
+        res.send({
+          status: 'success',
+          message: 'connection to Yandex.Disk REST API successfully granted',
         })
-        // /* eslint-desable no-console */
-        console.log('res', data)
+        return
       }
       throw new Error()
     } catch (e) {
