@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const { get } = require('./routes.get.js')
-const { post } = require('./routes.post.js')
+const { get } = require('./router/get.js')
+const { post } = require('./router/post.js')
 
 /**
  * @param $app { db, sendmail }

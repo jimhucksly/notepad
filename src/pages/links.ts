@@ -11,6 +11,13 @@ export default class Links extends Vue {
 
   isEmpty = false
 
+  async mounted() {
+    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+    if (!this.links?.length) {
+      this.isEmpty = true
+    }
+  }
+
   open(url: string) {
     this.$electron.shell.openExternal(url)
   }
@@ -52,12 +59,5 @@ export default class Links extends Vue {
 
   getName(item: ILink, index: number) {
     return `${index + 1}. ${item.name}`
-  }
-
-  async mounted() {
-    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
-    if (!this.links?.length) {
-      this.isEmpty = true
-    }
   }
 }

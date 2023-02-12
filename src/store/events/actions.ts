@@ -28,12 +28,9 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
     try {
       setProcess(store, 'get events...')
-      const resp = await $http.get<Array<IEvent>>('/events')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setEvents', resp.data)
-      return resp.data
+      const { data } = await $http.get<Array<IEvent>>('/events')
+      store.commit('setEvents', data)
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
       return Promise.reject(e)

@@ -22,7 +22,7 @@ export default class Projects extends Vue {
   @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('projects/getJson') json: IProjects
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
 
   message = ''

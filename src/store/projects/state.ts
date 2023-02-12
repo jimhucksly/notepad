@@ -1,14 +1,14 @@
 import { IProjectsState } from '~/domain/models'
 
 export const stateKeys: string[] = [
-  'json',
+  'projects',
   'archives',
   'filter',
   'selectedProjectKey'
 ]
 
 const state: IProjectsState = {
-  json: null,
+  projects: null,
   archives: [],
   filter: {},
   selectedProjectKey: ''

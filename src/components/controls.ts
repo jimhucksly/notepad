@@ -14,7 +14,7 @@ export default class Controls extends Vue {
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setJson') setJson: (value: IProjects) => void
 
-  @Getter('projects/getJson') json: IProjects
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
 
   editableItems: string[] = []

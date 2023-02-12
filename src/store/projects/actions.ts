@@ -39,19 +39,12 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param {Store} store
    */
   @Queryable(TYPES.ProjectsQuery, Actions.namespace)
-  async actionGetJson(store: TStore): Promise<IProjects> {
+  async actionFetchProjects(store: TStore): Promise<IProjects> {
     try {
       setProcess(store, 'get projects...')
-      const resp = await $http.get<IProjects>('/projects')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      if (resp instanceof Error && resp.message === 'Network Error') {
-        store.commit('setError', true)
-        return Promise.reject(resp)
-      }
-      store.commit('setJson', resp.data)
-      return resp.data
+      const { data } = await $http.get<IProjects>('/projects')
+      store.commit('setProjects', data)
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Projects fetch failed')
       return Promise.reject(e)

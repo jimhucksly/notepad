@@ -10,7 +10,7 @@ export default class ProjectsArchives extends Vue {
   @Mutation('projects/setArchives') setArchives: (value: Array<IArchive>) => void
 
   @Getter('projects/getArchives') items: IArchive[]
-  @Getter('projects/getJson') json: IProjects
+  @Getter('projects/getProjects') json: IProjects
 
   @Prop() expanded: boolean
 

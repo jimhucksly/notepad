@@ -6,7 +6,7 @@ const {
   checkHeaders,
   getErrorCode,
   emailSecurity
-} = require('./utils.js')
+} = require('../utils.js')
 
 function post(router, $app) {
   router.post('/signup', async (req, res, next) => {

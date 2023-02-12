@@ -123,7 +123,7 @@ export interface IModalInfo<R> {
 }
 
 export interface IProjectsState {
-  json: IProjects
+  projects: IProjects
   archives: IArchive[]
   filter: IFilters
   selectedProjectKey: string

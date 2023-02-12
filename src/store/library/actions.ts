@@ -29,26 +29,16 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
   async actionGetLibraryFiles(store: TStore): Promise<Array<ILibraryFile>> {
     try {
       setProcess(store, 'get library files...')
-      const resp = await $http.get<Array<ILibraryFile>>('/library/list')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      const main = resp.data.find(file => file.name === 'main.md')
-      const files = [main]
-      resp.data.forEach(file => {
-        if (file.name !== 'main.md') {
-          files.push(file)
-        }
-      })
-      store.commit('setLibraryFiles', files)
+      const { data } = await $http.get<Array<ILibraryFile>>('/library/list')
+      store.commit('setLibraryFiles', data)
       const currentId = store.getters.getLibraryFileId
       if (!currentId) {
-        const found = files.find(item => item.name === 'main.md')
+        const found = data.find(item => item.name === 'main.md')
         if (found) {
           store.commit('setLibraryFileId', found.id)
         }
       }
-      return files
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
       return Promise.reject(e)
@@ -70,12 +60,9 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
         url = url + '?id=' + query.id
       }
       setProcess(store, 'get library file...')
-      const resp = await $http.get<string>(url)
-      if (!resp || resp.data === undefined) {
-        return Promise.reject(resp)
-      }
-      store.commit('setLibraryData', resp.data)
-      return Promise.resolve(resp.data)
+      const { data } = await $http.get<string>(url)
+      store.commit('setLibraryData', data)
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
       return Promise.reject(e)

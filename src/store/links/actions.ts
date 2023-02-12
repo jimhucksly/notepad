@@ -28,12 +28,9 @@ class Actions implements ActionTree<ILinksState, IRootState> {
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
     try {
       setProcess(store, 'get links...')
-      const resp = await $http.get<Array<ILink>>('/links')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setLinks', resp.data)
-      return resp.data
+      const { data } = await $http.get<Array<ILink>>('/links')
+      store.commit('setLinks', data)
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Links list fetch failed')
       return Promise.reject(e)

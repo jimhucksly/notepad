@@ -96,11 +96,25 @@ async function createYandexDiskApi(db) {
     }
   }
 
+  async function downloadFile(filename, token) {
+    try {
+      const url = 'https://cloud-api.yandex.net/v1/disk/resources/download?path=app:/' + filename
+      const response = await get(url, token)
+      if (response.href) {
+        return await get(response.href)
+      }
+      throw new Error('resource not found')
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
   return {
     getToken,
     diskInfo,
     uploadFile,
-    createDir
+    createDir,
+    downloadFile
   }
 }
 

@@ -10,7 +10,7 @@ export default class Projects extends Vue {
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IProjects
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
   @Getter('getHistory') history: Array<keyof IFsmStates>

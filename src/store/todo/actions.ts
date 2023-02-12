@@ -28,12 +28,9 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
     try {
       setProcess(store, 'get todo list...')
-      const resp = await $http.get<Array<ITodo>>('/todo')
-      if (!resp) {
-        return Promise.reject(resp)
-      }
-      store.commit('setTodo', resp.data)
-      return resp.data
+      const { data } = await $http.get<Array<ITodo>>('/todo')
+      store.commit('setTodo', data)
+      return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed')
       return Promise.reject(e)

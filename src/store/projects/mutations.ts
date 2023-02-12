@@ -4,12 +4,10 @@ import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
 
 const _mutations: MutationTree<IProjectsState> = {
-  setJson(state: IProjectsState, json: IProjects) {
-    state.json = {}
-    state.json = { ...json }
+  setJson(state: IProjectsState, payload: IProjects) {
+    state.projects = { ...payload }
   },
   setFilter(state: IProjectsState, filter: IFilters) {
-    state.filter = {}
     state.filter = Object.assign({}, filter)
   }
 }

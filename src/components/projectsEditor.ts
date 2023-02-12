@@ -14,7 +14,7 @@ export default class ProjectsEditor extends Vue {
   @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IProjects
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('projects/getSelectedProjectKey') selected: string
 
