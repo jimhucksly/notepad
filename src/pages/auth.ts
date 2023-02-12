@@ -1,12 +1,10 @@
 import { Vue } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { IResponse } from '~/domain/models'
 import { AuthQuery } from '~/domain/queries'
 import { IValidate } from '~/plugins/validate'
 
 export default class Auth extends Vue {
-  @Mutation('setLoading') setLoading: (value: boolean) => void
-
   @Getter('getEndpoint') endpoint: string
   @Getter('getYandexToken') yandexAccessToken: string
 
@@ -43,18 +41,6 @@ export default class Auth extends Vue {
       if (data.token) {
         this.$app.login(data.token)
       }
-      //
-      // this.$app.user(data.user)
-      // if (this.yandexAccessToken) {
-      //   this.$app.loading(true)
-      //   await Promise.all([
-      //     this.queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
-      //     this.queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-      //   ])
-      //   setTimeout(() => {
-      //     this.$app.loading(false)
-      //   }, 1500)
-      // }
     } catch (e) {
       this.$app.loading(false)
       this.handleError(e)

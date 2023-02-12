@@ -2,7 +2,7 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { EditProjectCommand } from '~/domain/commands'
-import { IFilters, IJson } from '~/domain/models'
+import { IFilters, IProjects } from '~/domain/models'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import { checkLinks, htmlToText } from '~/helpers'
 
@@ -12,9 +12,9 @@ export default class Controls extends Vue {
   @Prop() readonly collection: string[]
 
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setJson') setJson: (value: IProjects) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getJson') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
 
   editableItems: string[] = []
@@ -64,7 +64,7 @@ export default class Controls extends Vue {
         const value = textarea ? textarea.value : ''
         this.$emit('on-will-save')
         textarea && content.removeChild(textarea)
-        const o: IJson = {
+        const o: IProjects = {
           [stamp]: {
             key: stamp,
             date: this.json[stamp].date,

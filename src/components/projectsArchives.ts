@@ -2,7 +2,7 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '~/domain/commands'
-import { IArchive, IJson } from '~/domain/models'
+import { IArchive, IProjects } from '~/domain/models'
 import { ArchivesQuery, ProjectsQuery } from '~/domain/queries'
 import { now } from '~/helpers'
 
@@ -10,7 +10,7 @@ export default class ProjectsArchives extends Vue {
   @Mutation('projects/setArchives') setArchives: (value: Array<IArchive>) => void
 
   @Getter('projects/getArchives') items: IArchive[]
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getJson') json: IProjects
 
   @Prop() expanded: boolean
 

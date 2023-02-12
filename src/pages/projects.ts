@@ -4,7 +4,7 @@ import { cloneDeep, isEmpty, unset } from 'lodash'
 import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
 import { ReadCommand, UploadFileCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
-import { IFile, IFilters, IJson } from '~/domain/models'
+import { IFile, IFilters, IProjects } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
@@ -19,10 +19,10 @@ import FsmStates from '~/application/fsm.states'
   }
 })
 export default class Projects extends Vue {
-  @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getJson') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
 
   message = ''
@@ -35,9 +35,11 @@ export default class Projects extends Vue {
   get count(): number {
     return this.json ? Object.keys(this.json).length : 0
   }
+
   get lastStamp(): string {
     return this.count ? Object.keys(this.json)[this.count - 1] : ''
   }
+
   get hasFilter(): boolean {
     return !isEmpty(this.filter)
   }
@@ -60,13 +62,26 @@ export default class Projects extends Vue {
     })
   }
 
+  updated() {
+    this.read()
+  }
+
+  mounted() {
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
+    this.onScrollHandler = this.read.bind(this)
+    notepadCont.addEventListener('scroll', this.onScrollHandler)
+
+    dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
+    window.ondragstart = () => false
+  }
+
   send() {
     if (!this.message.length) {
       return
     }
     this.newMsgFlag = true
     const { date, stamp } = now()
-    const o: IJson = {
+    const o: IProjects = {
       [stamp]: {
         key: stamp,
         date,
@@ -122,7 +137,7 @@ export default class Projects extends Vue {
   addFile(name: string, type: string) {
     this.newMsgFlag = true
     const { date, stamp } = now()
-    const o: IJson = {
+    const o: IProjects = {
       [stamp]: {
         key: stamp,
         date,
@@ -180,18 +195,5 @@ export default class Projects extends Vue {
         this.onDelete(this.removeStack[0])
       }
     }
-  }
-
-  updated() {
-    this.read()
-  }
-
-  mounted() {
-    const notepadCont = this.$refs.notepad_cont as HTMLElement
-    this.onScrollHandler = this.read.bind(this)
-    notepadCont.addEventListener('scroll', this.onScrollHandler)
-
-    dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
-    window.ondragstart = () => false
   }
 }

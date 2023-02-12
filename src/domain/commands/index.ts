@@ -1,5 +1,5 @@
 import {
-  IJson,
+  IProjects,
   IEvent,
   ILink,
   ITodoOrder,
@@ -46,11 +46,11 @@ export class ResetPasswordCommand {
 }
 
 export class CreateProjectCommand {
-  constructor(public data: IJson) {}
+  constructor(public data: IProjects) {}
 }
 
 export class EditProjectCommand {
-  constructor(public data: IJson) {}
+  constructor(public data: IProjects) {}
 }
 
 export class DeleteProjectCommand {

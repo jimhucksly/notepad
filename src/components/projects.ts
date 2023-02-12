@@ -3,14 +3,14 @@ import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { IFsmStates } from '~/application/fsm.states'
-import { IArchive, IFilters, IJson } from '~/domain/models'
+import { IArchive, IFilters, IProjects } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 
 export default class Projects extends Vue {
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getJson') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
   @Getter('getHistory') history: Array<keyof IFsmStates>
@@ -20,6 +20,15 @@ export default class Projects extends Vue {
   @Watch('fsmState') onFsmStateChanged() {
     if (this.fsmState !== this.$app.states.ProjectsEditor) {
       this.selected = ''
+    }
+  }
+
+  @Watch('isJsonLoaded') async onReady() {
+    try {
+      await this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 
@@ -82,13 +91,8 @@ export default class Projects extends Vue {
     }
   }
 
-  created() {
-    try {
-      this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
-    } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e)
-    }
+  get isJsonLoaded(): boolean {
+    return Boolean(this.json)
   }
 
   get isArchivesInit(): boolean {

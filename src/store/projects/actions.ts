@@ -12,7 +12,7 @@ import { Commandable } from '~/domain/commands/command.bus'
 import {
   IArchive,
   IFile,
-  IJson,
+  IProjects,
   IProjectsState,
   IRootState
 } from '~/domain/models'
@@ -39,10 +39,10 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param {Store} store
    */
   @Queryable(TYPES.ProjectsQuery, Actions.namespace)
-  async actionGetJson(store: TStore): Promise<IJson> {
+  async actionGetJson(store: TStore): Promise<IProjects> {
     try {
       setProcess(store, 'get projects...')
-      const resp = await $http.get<IJson>('/projects')
+      const resp = await $http.get<IProjects>('/projects')
       if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
@@ -53,9 +53,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
       store.commit('setJson', resp.data)
       return resp.data
     } catch (e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
+      Hub.$emit('on-toasted-error', 'Error: Projects fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -71,7 +69,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'creating project...')
-      await $http.put<IJson, boolean>('/project', command.data)
+      await $http.put<IProjects, boolean>('/project', command.data)
       return Promise.resolve(true)
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Project create failed')
@@ -90,7 +88,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'editing project...')
-      await $http.post<IJson, boolean>('/project', command.data)
+      await $http.post<IProjects, boolean>('/project', command.data)
       return Promise.resolve(true)
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Project edit failed')

@@ -117,26 +117,21 @@ export default class Index extends Vue {
     this.checkToken()
   }
 
-  async checkToken(): Promise<boolean> {
-    this.$app.loading(true)
+  async checkToken() {
     try {
+      this.$app.loading(true)
       await storage.createFile(this.userDataPath, userDataFileName)
       const token: string = await storage.get(this.userDataPath, userDataFileName, 'token')
       if (token) {
         await this.$app.login(token)
-        return true
       } else {
         this.$app.loading(false)
         this.$app.logout()
-        return false
       }
     } catch (e) {
-      this.$app.logout()
-      const userDataPath = this.$store.getters.getUserDataPath
-      await storage.createFile(userDataPath, userDataFileName)
-      storage.set(userDataPath, userDataFileName, { token: '' })
-      return false
-    } finally {
+      if (e?.message === 'Forbidden') {
+        this.$app.logout()
+      }
       this.$app.loading(false)
     }
   }

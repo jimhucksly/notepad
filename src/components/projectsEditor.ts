@@ -3,7 +3,7 @@ import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
+import { IArchive, IFilters, IProjects, IProjectsItem } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
@@ -11,10 +11,10 @@ export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
 
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getJson') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('projects/getSelectedProjectKey') selected: string
 
@@ -29,7 +29,7 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  @Watch('item') onItemChanged(o: IJsonItem) {
+  @Watch('item') onItemChanged(o: IProjectsItem) {
     if (o) {
       this.name = o.name
       this.isLock = o.lock
@@ -39,7 +39,7 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  get item(): IJsonItem {
+  get item(): IProjectsItem {
     if (!this.json) {
       return null
     }
@@ -56,7 +56,7 @@ export default class ProjectsEditor extends Vue {
     }
     const isLocked = this.item.lock
     const updateJson = () => {
-      const o: IJson = {
+      const o: IProjects = {
         [this.item.key]: {
           ...this.item,
           lock: !isLocked
@@ -107,7 +107,7 @@ export default class ProjectsEditor extends Vue {
 
   async save() {
     this.savingProcess = true
-    const o: IJson = {
+    const o: IProjects = {
       [this.selected]: {
         key: this.selected,
         date: this.item.date,

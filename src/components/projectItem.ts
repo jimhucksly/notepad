@@ -2,7 +2,7 @@ import { Options, Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
 import File from '~/components/file'
-import { IJsonItem } from '~/domain/models'
+import { IProjectsItem } from '~/domain/models'
 
 @Options({
   components: {
@@ -11,14 +11,21 @@ import { IJsonItem } from '~/domain/models'
   }
 })
 export default class NotepadItem extends Vue {
-  @Prop() item: IJsonItem
+  @Prop() item: IProjectsItem
   @Prop() isLast: boolean
 
   message = ''
   isEdit = false
 
-  @Watch('item') onItemChanged(o: IJsonItem) {
+  @Watch('item') onItemChanged() {
     this.message = this.item.message ?? ''
+  }
+
+  mounted() {
+    this.message = this.item.message ?? ''
+    if (this.isLast) {
+      this.$emit('on-last-rendered')
+    }
   }
 
   openLink(e: MouseEvent): void | boolean {
@@ -28,13 +35,6 @@ export default class NotepadItem extends Vue {
     if (isLink && hasHref) {
       this.$electron.shell.openExternal(target.href)
       return false
-    }
-  }
-
-  mounted() {
-    this.message = this.item.message ?? ''
-    if (this.isLast) {
-      this.$emit('on-last-rendered')
     }
   }
 }

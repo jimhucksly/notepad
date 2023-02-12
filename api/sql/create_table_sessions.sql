@@ -1,0 +1,4 @@
+CREATE TABLE SESSIONS(
+	USER_ID int, 
+	SESSION CHAR(64) unique
+);

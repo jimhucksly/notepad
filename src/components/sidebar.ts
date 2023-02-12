@@ -35,14 +35,6 @@ export default class Sidebar extends Vue {
   projectEditedItemKey = ''
   isLibraryFilesInit = false
 
-  toggleLibraryFiles() {
-    if (this.isLibraryFilesVisibility) {
-      this.$app.goBack()
-    } else {
-      this.$app.goto(this.$app.states.LibraryFiles)
-    }
-  }
-
   @Watch('isProjects') onIsProjectsChanged() {
     this.projectEditedItemKey = ''
   }
@@ -51,6 +43,14 @@ export default class Sidebar extends Vue {
     if (!v) {
       const cont = this.$refs.projects as Projects
       cont.clearCheck()
+    }
+  }
+
+  toggleLibraryFiles() {
+    if (this.isLibraryFilesVisibility) {
+      this.$app.goBack()
+    } else {
+      this.$app.goto(this.$app.states.LibraryFiles)
     }
   }
 

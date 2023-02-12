@@ -5,7 +5,7 @@ import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IJson, IRootState, IUser } from '~/domain/models'
+import { IProjects, IRootState, IUser } from '~/domain/models'
 import {
   LibraryFileQuery,
   ProjectsQuery,
@@ -90,6 +90,7 @@ export default class Application implements IApplication {
       return
     }
     try {
+      this.loading(true)
       this._store.commit('setToken', token)
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
@@ -97,13 +98,25 @@ export default class Application implements IApplication {
       this.user(this._store.getters.getCurrentUser)
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.goHome()
+      await Promise.all([
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
+        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+      ])
     } catch (e) {
-      throw new Error('Authentication is failed')
+      if (e?.message) {
+        throw new Error('Authentication is failed')
+      }
+      throw new Error(e)
+    } finally {
+      this.loading(false)
     }
   }
 
-  logout() {
+  async logout() {
+    const userDataPath = this._store.getters.getUserDataPath
+    await storage.set(userDataPath, userDataFileName, { token: '' })
     this.goto(FsmStates.Auth)
+    this.loading(false)
   }
 
   user(data: IUser) {
@@ -185,7 +198,7 @@ export default class Application implements IApplication {
       // )
       // await this._queryBus.exec(new YandexTokenQuery(111, Number(this.currentUser.id)))
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
         // this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
         // this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())

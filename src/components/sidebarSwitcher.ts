@@ -19,46 +19,6 @@ export default class SidebarSwitcher extends Vue {
 
   private isExpand = false
 
-  get current() {
-    const found = this.menu.find(item => toStr(item.fsmState) === toStr(this.fsmState))
-    if (found) {
-      return found.id
-    }
-    return 1
-  }
-
-  get legend() {
-    if (this.isAccount) {
-      return 'Account'
-    }
-    if (this.isPreferences) {
-      return 'Preferences'
-    }
-    if (this.isProjects) {
-      return 'Projects'
-    }
-    if (this.isLibrary) {
-      return 'Library'
-    }
-    if (this.isEvents) {
-      return 'Events'
-    }
-    if (this.isJsonViewer) {
-      return 'Json Viewer'
-    }
-    if (this.isLinks) {
-      return 'Links'
-    }
-    if (this.isTodo) {
-      return 'Todo'
-    }
-    return ''
-  }
-
-  get isNotClickable() {
-    return this.isPreferences || this.isAccount
-  }
-
   toggle() {
     if (this.isPreferences) {
       return
@@ -91,5 +51,45 @@ export default class SidebarSwitcher extends Vue {
   select(transition: symbol) {
     this.$app.goto(transition)
     this.toggle()
+  }
+
+  get current() {
+    const found = this.menu.find(item => toStr(item.fsmState) === toStr(this.fsmState))
+    if (found) {
+      return found.id
+    }
+    return 1
+  }
+
+  get isNotClickable() {
+    return this.isPreferences || this.isAccount
+  }
+
+  get legend() {
+    if (this.isAccount) {
+      return 'Account'
+    }
+    if (this.isPreferences) {
+      return 'Preferences'
+    }
+    if (this.isProjects) {
+      return 'Projects'
+    }
+    if (this.isLibrary) {
+      return 'Library'
+    }
+    if (this.isEvents) {
+      return 'Events'
+    }
+    if (this.isJsonViewer) {
+      return 'Json Viewer'
+    }
+    if (this.isLinks) {
+      return 'Links'
+    }
+    if (this.isTodo) {
+      return 'Todo'
+    }
+    return ''
   }
 }

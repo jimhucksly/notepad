@@ -25,7 +25,7 @@ export interface IFile {
   type: string
 }
 
-export interface IJsonItem {
+export interface IProjectsItem {
   key: string
   date: string
   name: string
@@ -35,8 +35,8 @@ export interface IJsonItem {
   file?: IFile
 }
 
-export interface IJson {
-  [stamp: string]: IJsonItem
+export interface IProjects {
+  [stamp: string]: IProjectsItem
 }
 
 export interface IFilters {
@@ -123,7 +123,7 @@ export interface IModalInfo<R> {
 }
 
 export interface IProjectsState {
-  json: IJson
+  json: IProjects
   archives: IArchive[]
   filter: IFilters
   selectedProjectKey: string

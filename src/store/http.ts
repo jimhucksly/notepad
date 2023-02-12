@@ -5,25 +5,30 @@ import store from '~/store'
 import { endpoint } from '../../config/endpoint.json'
 
 axios.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
-    config = config || {}
-    config.headers['X-Honeypot'] = 'App'
-    if (config.url.indexOf('upload') > -1) {
-      // config.headers['Content-Type'] = 'multipart/form-data'
-      // config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
-      //   uploadDownloadFile(loaded, total)
-      // }
-    } else {
-      config.headers['Content-Type'] = 'application/json'
+  async (config: AxiosRequestConfig) => {
+    try {
+      config = config || {}
+      config.headers['X-Honeypot'] = 'App'
+      if (config.url.indexOf('upload') > -1) {
+        // config.headers['Content-Type'] = 'multipart/form-data'
+        // config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+        //   uploadDownloadFile(loaded, total)
+        // }
+      } else {
+        config.headers['Content-Type'] = 'application/json'
+      }
+      config.headers.Authorization = store.getters.getToken
+      await checkAuth(config)
+      const session = store.getters.getSession
+      if (session) {
+        config.headers.SSID = session
+      }
+      const isDevelopment = store.getters.getIsDevelopment
+      config.url = (isDevelopment ? 'http://127.0.0.1:8000' : endpoint) + config.url
+      return config
+    } catch (e) {
+      throw new Error(e)
     }
-    config.headers.Authorization = store.getters.getToken
-    const session = store.getters.getSession
-    if (session) {
-      config.headers.SSID = session
-    }
-    const isDevelopment = store.getters.getIsDevelopment
-    config.url = (isDevelopment ? 'http://127.0.0.1:8000' : endpoint) + config.url
-    return config
   },
   error => {
     /* eslint-disable no-console */
@@ -87,6 +92,18 @@ class Http {
       return Promise.reject(e)
     }
   }
+}
+
+function checkAuth(config: AxiosRequestConfig): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    if (/signup|auth|verify|resend|reset/.test(config.url)) {
+      return resolve(true)
+    }
+    if (config.headers.Authorization?.length > 0) {
+      return resolve(true)
+    }
+    return reject(new Error('Forbidden'))
+  })
 }
 
 const $http = new Http()

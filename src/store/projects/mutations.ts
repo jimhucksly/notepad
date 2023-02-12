@@ -1,10 +1,10 @@
 import { MutationTree } from 'vuex'
-import { IFilters, IJson, IProjectsState } from '~/domain/models'
+import { IFilters, IProjects, IProjectsState } from '~/domain/models'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
 
 const _mutations: MutationTree<IProjectsState> = {
-  setJson(state: IProjectsState, json: IJson) {
+  setJson(state: IProjectsState, json: IProjects) {
     state.json = {}
     state.json = { ...json }
   },
