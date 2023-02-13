@@ -65,7 +65,7 @@ function query() {
                 query = 'SELECT * FROM users WHERE id = $1'
                 return await execQuery(query, [row.user_id], ReturnType.Single)
               }
-              throw new Error('Forbidden')
+              throw new Error('Token expired')
             } catch (e) {
               console.log(e)
               throw new Error(e?.message || 'user is not found')
@@ -122,6 +122,18 @@ function query() {
               return true
             }
             return false
+          }
+        }
+      }
+    },
+    tokens() {
+      return {
+        async get() {
+          try {
+            const query = 'SELECT * FROM tokens'
+            return await execQuery(query, [], ReturnType.Multiple)
+          } catch (e) {
+            throw new Error('tokens is not found')
           }
         }
       }
@@ -253,6 +265,17 @@ function command() {
             if (id && token) {
               const query = 'SELECT * FROM set_token($1, $2)'
               return await execQuery(query, [id, token])
+            }
+            throw new Error('bad request')
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async delete() {
+          try {
+            if (token) {
+              const query = 'DELETE from tokens WHERE token = $1'
+              await client.query(query, [token])
             }
             throw new Error('bad request')
           } catch (e) {

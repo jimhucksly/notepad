@@ -48,7 +48,7 @@ export default class LibraryFiles extends Vue {
       return
     }
     try {
-      await this.$app.$commandBus.do(new DeleteLibraryFileCommand(file.name))
+      await this.$app.$commandBus.do(new DeleteLibraryFileCommand(file.id))
       await this.$app.$queryBus.exec(new LibraryFilesQuery())
       this.setFileId(this.libraryFiles[0]?.id || 0)
     } catch (e) {

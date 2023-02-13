@@ -55,6 +55,18 @@ async function createYandexDiskApi(db) {
     }
   }
 
+  async function _delete(url, token) {
+    const headers = {}
+    if (token) {
+      headers['Authorization'] = 'OAuth ' + token
+    }
+    try {
+      const { data } = await axios.delete(url, { headers })
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
   async function getToken(code) {
     try {
       const form = new URLSearchParams({
@@ -87,6 +99,15 @@ async function createYandexDiskApi(db) {
     }
   }
 
+  async function deleteFile(filename, token) {
+    try {
+      const url = 'https://cloud-api.yandex.net/v1/disk/resources?path=app:/' + filename + '&permanently=true'
+      return await _delete(url, token)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
   async function createDir(dirname, token) {
     try {
       const url = 'https://cloud-api.yandex.net/v1/disk/resources/?path=app:/' + dirname
@@ -113,6 +134,7 @@ async function createYandexDiskApi(db) {
     getToken,
     diskInfo,
     uploadFile,
+    deleteFile,
     createDir,
     downloadFile
   }

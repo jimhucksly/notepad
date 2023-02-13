@@ -49,7 +49,7 @@ export interface IArchive {
 }
 
 export interface ILibraryFile {
-  id: number
+  id: string
   name: string // имя физического файла на сервере
 }
 

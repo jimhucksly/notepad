@@ -12,8 +12,8 @@ services:
       - ./database/logs:/var/log/postgresql/
   # server:
   #   container_name: server
-  #   build: ./server
+  #   build: ./api
   #   ports:
-  #     - 4000:4000
+  #     - 8000:4000
 
 

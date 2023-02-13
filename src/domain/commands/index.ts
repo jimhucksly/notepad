@@ -90,7 +90,7 @@ export class AddLibraryFileCommand {
 }
 
 export class DeleteLibraryFileCommand {
-  constructor(public name: string) {}
+  constructor(public id: string) {}
 }
 
 export class UpdateLibraryCommand {

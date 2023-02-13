@@ -65,7 +65,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
       await $http.put<IProjects, boolean>('/project', command.data)
       return Promise.resolve(true)
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Project create failed')
+      Hub.$emit('on-toasted-error', 'Error: Project creating failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

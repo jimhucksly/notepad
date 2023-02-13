@@ -4,6 +4,8 @@ const {
   generateToken,
   responseModify,
   checkHeaders,
+  checkSession,
+  checkToken,
   getErrorCode,
   emailSecurity
 } = require('../utils.js')
@@ -210,6 +212,60 @@ function post(router, $app) {
         return
       }
       throw new Error()
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/project', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'notepad.json'
+      const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      let key = ''
+      Object.keys(req.body).forEach(k => { key = k })
+      content[key] = req.body[key]
+      const payload = Buffer.from(JSON.stringify(content))
+      await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+      res.send({
+        status: 'success',
+        message: 'changes is successfully saved',
+        data: responseModify(req.body[key])
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/library', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'library'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items) {
+        const found = info._embedded.items.find(item => item.resource_id === req.body.id)
+        if (found) {
+          await $app.yandex.uploadFile(path + '/' + found.name, Buffer.from(req.body.value), user.yandex_disk_access_token)
+          res.send({
+            status: 'success',
+            message: 'a library file is successfully updated',
+          })
+        } else {
+          throw new Error('resource not found')
+        }
+      } else {
+        throw new Error('resource not found')
+      }
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',

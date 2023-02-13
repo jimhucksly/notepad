@@ -1,0 +1,13 @@
+{
+    "description": "a nodejs project",
+    "repository": "https://gitlab.com/jimhucksly/__electron__.git",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^0.23.0",
+        "body-parser": "^1.20.1",
+        "express": "^4.18.2",
+        "nodemailer": "^6.9.1",
+        "pg": "^8.9.0",
+        "socket.io": "^4.5.4"
+    }
+}

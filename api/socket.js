@@ -4,8 +4,8 @@ function createServer(server, $app) {
   const io = new Server(server, {
     cors: {
       origin: '*',
-      methods: ['GET', 'POST'],
-      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'X-Authorization-Token']
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization', 'SSID']
     }
   });
 
