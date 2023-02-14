@@ -44,6 +44,41 @@ function get(router, $app) {
       })
     }
   })
+  router.get('/projects/archives', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'archives'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items.length) {
+        const result = info._embedded.items.map(item => {
+          const name = item.name.replace(/(.+)(\_\(datetime\))(.+)(\.html)/g, '$1')
+          const date = item.name.replace(/(.+)(\_\(datetime\))(.+)(\.html)/g, '$3')
+          return {
+            name,
+            date,
+            id: item.resource_id
+          }
+        })
+        res.send({
+          status: 'success',
+          data: result
+        })
+        return
+      }
+      res.send({
+        status: 'success',
+        data: []
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
   router.get('/library', async (req, res, next) => {
     try {
       await checkHeaders(req.headers)
@@ -84,7 +119,8 @@ function get(router, $app) {
       await checkSession(req.headers)
       const token = await checkToken(req.headers)
       const user = await $app.db.query().user({ token }).get()
-      const info = await $app.yandex.diskInfo('library', user.yandex_disk_access_token)
+      const path = 'library'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
       if (info._embedded.items) {
         res.send({
           status: 'success',

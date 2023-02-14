@@ -97,11 +97,11 @@ export default class Application implements IApplication {
       await this._queryBus.exec(new SessionQuery())
       this.user(this._store.getters.getCurrentUser)
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
-      this.goHome()
       await Promise.all([
         this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
+      this.goHome()
     } catch (e) {
       if (e?.message) {
         throw new Error('Authentication is failed')

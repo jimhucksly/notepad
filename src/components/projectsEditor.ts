@@ -39,17 +39,6 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  get item(): IProjectsItem {
-    if (!this.json) {
-      return null
-    }
-    return this.json[this.selected]
-  }
-
-  get isFile(): boolean {
-    return this.item && !!this.item.file
-  }
-
   async toggleLock(): Promise<void> {
     if (!this.item) {
       return
@@ -78,11 +67,10 @@ export default class ProjectsEditor extends Vue {
   }
 
   async archive() {
-    const selected = this.selected
+    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
+    this.removeHandler()
+    this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
     this.$app.goBack()
-    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(selected))
-    await this.removeHandler(selected)
-    await this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
   async remove() {
@@ -92,15 +80,15 @@ export default class ProjectsEditor extends Vue {
     if (!isConfirm) {
       return
     }
+    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
     this.removeHandler()
   }
 
-  async removeHandler(selected?: string) {
-    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(selected || this.selected))
+  removeHandler() {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, selected || this.selected)
-    unset(buffFilter, selected || this.selected)
+    unset(buffJson, this.selected)
+    unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.setJson(buffJson)
   }
@@ -125,5 +113,16 @@ export default class ProjectsEditor extends Vue {
 
   hide() {
     this.$app.goBack()
+  }
+
+  get item(): IProjectsItem {
+    if (!this.json) {
+      return null
+    }
+    return this.json[this.selected]
+  }
+
+  get isFile(): boolean {
+    return this.item && !!this.item.file
   }
 }

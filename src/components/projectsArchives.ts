@@ -20,10 +20,7 @@ export default class ProjectsArchives extends Vue {
 
   async restore(o: IArchive) {
     try {
-      const name = `${o.name}_(datetime)${o.date}`
-      await this.$app.$commandBus.do<ArchiveRestoreCommand, string>(
-        new ArchiveRestoreCommand(name)
-      )
+      await this.$app.$commandBus.do(new ArchiveRestoreCommand(o.id))
       this.$app.$queryBus.exec(new ArchivesQuery())
       this.$app.$queryBus.exec(new ProjectsQuery())
       this.$app.goBack()
@@ -35,8 +32,7 @@ export default class ProjectsArchives extends Vue {
 
   async remove(o: IArchive) {
     try {
-      const name = `${o.name}_(datetime)${o.date}`
-      await this.$app.$commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(name))
+      await this.$app.$commandBus.do<ArchiveRemoveCommand, void>(new ArchiveRemoveCommand(o.id))
       const arr = this.items.filter((e: IArchive) => {
         return e.name !== o.name
       })

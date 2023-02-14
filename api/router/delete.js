@@ -32,6 +32,35 @@ function _delete(router, $app) {
       })
     }
   })
+  router.delete('/project/archive', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'archives'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items) {
+        const found = info._embedded.items.find(item => item.resource_id === req.query.id)
+        if (found) {
+          await $app.yandex.deleteFile(path + '/' + found.name, user.yandex_disk_access_token)
+          res.send({
+            status: 'success',
+            message: 'archive is successfully removed'
+          })
+        } else {
+          throw new Error('resource not found')
+        }
+      } else {
+        throw new Error('resource not found')
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
   router.delete('/library', async (req, res, next) => {
     try {
       await checkHeaders(req.headers)

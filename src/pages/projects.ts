@@ -8,6 +8,7 @@ import { IFile, IFilters, IProjects } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import FsmStates from '~/application/fsm.states'
+import { ArchivesQuery } from '~/domain/queries'
 
 @Options({
   components: {
@@ -31,18 +32,6 @@ export default class Projects extends Vue {
   removeStack: Array<string> = []
 
   onScrollHandler: () => void = null
-
-  get count(): number {
-    return this.json ? Object.keys(this.json).length : 0
-  }
-
-  get lastStamp(): string {
-    return this.count ? Object.keys(this.json)[this.count - 1] : ''
-  }
-
-  get hasFilter(): boolean {
-    return !isEmpty(this.filter)
-  }
 
   @Watch('hasFilter') onHasFilterChanged(flag: boolean) {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
@@ -73,6 +62,8 @@ export default class Projects extends Vue {
 
     dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
     window.ondragstart = () => false
+
+    this.$app.$queryBus.exec(new ArchivesQuery())
   }
 
   send() {
@@ -195,5 +186,17 @@ export default class Projects extends Vue {
         this.onDelete(this.removeStack[0])
       }
     }
+  }
+
+  get count(): number {
+    return this.json ? Object.keys(this.json).length : 0
+  }
+
+  get lastStamp(): string {
+    return this.count ? Object.keys(this.json)[this.count - 1] : ''
+  }
+
+  get hasFilter(): boolean {
+    return !isEmpty(this.filter)
   }
 }

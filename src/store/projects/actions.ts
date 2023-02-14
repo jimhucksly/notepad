@@ -140,12 +140,9 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
     try {
       setProcess(store, 'get archives...')
-      const resp = await $http.get<Array<IArchive>>('/projects/archives')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setArchives', resp.data)
-      return resp.data
+      const { data } = await $http.get<Array<IArchive>>('/projects/archives')
+      store.commit('setArchives', data)
+      return data
     } catch (e) {
       return Promise.reject(e)
     } finally {
@@ -181,7 +178,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing archive...')
-      await $http.delete(`/project/archive/?name=${command.name}`)
+      await $http.delete(`/project/archive/?id=${command.id}`)
       return Promise.resolve(true)
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Archive remove failed')

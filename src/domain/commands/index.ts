@@ -70,11 +70,11 @@ export class ArchivingCommand {
 }
 
 export class ArchiveRestoreCommand {
-  constructor(public name: string) {}
+  constructor(public id: string) {}
 }
 
 export class ArchiveRemoveCommand {
-  constructor(public name: string) {}
+  constructor(public id: string) {}
 }
 
 export class UpdateEventCommand {

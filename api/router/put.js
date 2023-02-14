@@ -3,7 +3,8 @@ const {
   checkHeaders,
   checkSession,
   checkToken,
-  getErrorCode
+  getErrorCode,
+  dateFormat
 } = require('../utils.js')
 
 function put(router, $app) {
@@ -24,6 +25,33 @@ function put(router, $app) {
         status: 'success',
         message: 'new project is successfully created',
         data: responseModify(req.body[key])
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/project/archive', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'archives'
+      const filename = 'notepad.json'
+      const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const item = content[req.body.key]
+      const name = item.name + '_(datetime)' + dateFormat(new Date(), 'YYYYMMDDHms') + '.html'
+      let payload = Buffer.from(item.message)
+      await $app.yandex.uploadFile(path + '/' + name, payload, user.yandex_disk_access_token)
+      delete content[req.body.key]
+      payload = Buffer.from(JSON.stringify(content))
+      await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+      res.send({
+        status: 'success',
+        message: 'project is moved to archives successfully'
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({

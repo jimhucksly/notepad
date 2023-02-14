@@ -153,6 +153,24 @@ function emailSecurity(email) {
   return `${a.slice(0, 1)}**${a.slice(-1)}@${b}`
 }
 
+function dateFormat(date, format) {
+  date = new Date(date)
+  if (isNaN(date.getTime())) {
+    return null
+  }
+  const y = date.getFullYear()
+  const m = ('0' + date.getMonth()).slice(-2)
+  const d = ('0' + date.getDate()).slice(-2)
+  const hh = ('0' + date.getHours()).slice(-2)
+  const mm = ('0' + date.getMinutes()).slice(-2)
+  const ss = ('0' + date.getSeconds()).slice(-2)
+
+  switch (format) {
+    case 'YYYYMMDDHms':
+      return `${y}${m}${d}${hh}${mm}${ss}`
+  }
+}
+
 module.exports = {
   generateVerifyCode,
   generatePassword,
@@ -162,5 +180,6 @@ module.exports = {
   checkToken,
   checkSession,
   getErrorCode,
-  emailSecurity
+  emailSecurity,
+  dateFormat
 }

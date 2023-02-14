@@ -44,6 +44,7 @@ export interface IFilters {
 }
 
 export interface IArchive {
+  id: string
   name: string
   date: string
 }

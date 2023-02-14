@@ -244,6 +244,52 @@ function post(router, $app) {
       })
     }
   })
+  router.post('/project/archive/restore', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'archives'
+      const filename = 'notepad.json'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items) {
+        const found = info._embedded.items.find(item => item.resource_id === req.body.id)
+        if (found) {
+          let content = await $app.yandex.downloadFile(path + '/' + found.name, user.yandex_disk_access_token)
+          const name = found.name.replace(/(.+)(\_\(datetime\))(.+)(\.html)/g, '$1')
+          const key = found.name.replace(/(.+)(\_\(datetime\))(.+)(\.html)/g, '$3')
+          const date = key.replace(/([\d]{4})(\d\d)(\d\d)(.+)/g, '$3.$2.$1')
+          const o = {
+            key,
+            date,
+            name,
+            lock: false,
+            message: content
+          }
+          content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+          content[key] = o
+          const payload = Buffer.from(JSON.stringify(content))
+          await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+          await $app.yandex.deleteFile(path + '/' + found.name, user.yandex_disk_access_token)
+          res.send({
+            status: 'success',
+            message: 'archive is successfully restored',
+          })
+        } else {
+          throw new Error('resource not found')
+        }
+      } else {
+        throw new Error('resource not found')
+      }
+
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
   router.post('/library', async (req, res, next) => {
     try {
       await checkHeaders(req.headers)
