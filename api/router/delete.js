@@ -83,10 +83,32 @@ function _delete(router, $app) {
       } else {
         throw new Error('resource not found')
       }
-      res.send({
-        status: 'success',
-        message: ''
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
       })
+    }
+  })
+  router.delete('/events', async (req, res, next)  => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'events.json'
+      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      if (`${req.query.date}` in json) {
+        delete json[req.query.date]
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          message: 'event is successfully removed',
+        })
+      } else {
+        throw new Error()
+      }
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',

@@ -13,6 +13,11 @@
   &:hover {
     background-color: var(--blue_light-1);
   }
+  &[disabled] {
+    background-color: var(--dark);
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 
 .btn-default {
@@ -22,12 +27,22 @@
   &:hover {
     background-color: var(--blue-gray_light);
   }
+  &[disabled] {
+    background-color: var(--dark);
+    opacity: 0.4;
+    cursor: default;
+  }
 }
 
 .btn-danger {
   background-color: var(--editor_red);
   &:hover {
     background-color: var(--editor_red_light);
+  }
+  &[disabled] {
+    background-color: var(--dark);
+    opacity: 0.4;
+    cursor: default;
   }
 }
 

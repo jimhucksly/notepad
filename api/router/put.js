@@ -98,6 +98,41 @@ function put(router, $app) {
       })
     }
   })
+  router.put('/events', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'events.json'
+      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const { title, date, content } = req.body
+      if (title && date && content) {
+        json[date] = {
+          title,
+          content,
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: {
+            [date]: {
+              title,
+              content,
+            }
+          }
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
 }
 
 module.exports = {

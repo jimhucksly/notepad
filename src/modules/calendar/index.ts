@@ -308,6 +308,10 @@ export default class BCalendarComponent extends Vue {
     }
   }
 
+  hasEvent(date: string) {
+    return `${date}` in this.op.items
+  }
+
   formClear() {
     this.event = { date: '', title: '', content: '' }
     this.formShow = false

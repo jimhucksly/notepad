@@ -42,14 +42,20 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   /**
    * Update Event
    * @param store Store
-  * @param {UpdateEventCommand} command
+   * @param {UpdateEventCommand} command
    */
   @Commandable(TYPES.UpdateEventCommand, Actions.namespace)
-  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<boolean> {
+  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<IEvent> {
     try {
       setProcess(store, 'update events...')
-      await $http.put('/events', command.event)
-      return Promise.resolve(true)
+      const { data } = await $http.put('/events', command.event)
+      if (data[command.event.date]) {
+        const buff = { ...store.getters.getEvents }
+        buff[command.event.date] = data[command.event.date]
+        store.commit('setEvents', buff)
+        return data[command.event.date]
+      }
+      return null
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event update failed')
       return Promise.reject(e)
@@ -68,7 +74,10 @@ class Actions implements ActionTree<IEventsState, IRootState> {
     try {
       setProcess(store, 'removing event...')
       await $http.delete(`/events/?date=${command.date}`)
-      return Promise.resolve(true)
+      const buff = { ...store.getters.getEvents }
+      delete buff[command.date]
+      store.commit('setEvents', buff)
+      return true
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event remove failed')
       return Promise.reject(e)
