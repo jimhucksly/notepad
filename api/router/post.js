@@ -219,6 +219,28 @@ function post(router, $app) {
       })
     }
   })
+  router.post('/ydtoken/refresh', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const response = await $app.yandex.refreshToken(user.yandex_disk_refresh_token)
+      if (response.access_token && response.refresh_token) {
+        await $app.db.command().user({ id: user.id }).setYandexAccessToken(response.access_token)
+        await $app.db.command().user({ id: user.id }).setYandexRefreshToken(response.refresh_token)
+      }
+      res.send({
+        status: 'success',
+        message: 'access token for connection to Yandex.Disk REST API successfully updated',
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
   router.post('/project', async (req, res, next) => {
     try {
       await checkHeaders(req.headers)
@@ -312,6 +334,34 @@ function post(router, $app) {
       } else {
         throw new Error('resource not found')
       }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/todo/order', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'todo.json'
+      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      for (const key in req.body) {
+        if (`${key}` in json) {
+          json[key].order = req.body[key]
+        } else {
+          throw new Error('resource not found')
+        }
+      }
+      const payload = Buffer.from(JSON.stringify(json))
+      await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+      res.send({
+        status: 'success',
+        message: 'todo items is successfully ordered',
+      })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',

@@ -9,6 +9,7 @@ import { IProjects, IRootState, IUser } from '~/domain/models'
 import {
   LibraryFileQuery,
   ProjectsQuery,
+  RefreshYandexTokenQuery,
   SessionQuery
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
@@ -101,6 +102,11 @@ export default class Application implements IApplication {
         this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
+      if (!this.currentUser.yandexDiskAccessToken) {
+        this.goto(FsmStates.Yandex)
+        return
+      }
+      this._queryBus.exec(new RefreshYandexTokenQuery())
       this.goHome()
     } catch (e) {
       if (e?.message) {
@@ -173,12 +179,7 @@ export default class Application implements IApplication {
   }
 
   goHome() {
-    let state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
-    if (!this.currentUser.yandexDiskAccessToken) {
-      state = FsmStates.Yandex
-      this.goto(state)
-      return
-    }
+    const state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
     this.history.push(toStr(state))
     this.goto(state)
   }
@@ -191,17 +192,9 @@ export default class Application implements IApplication {
   async reload() {
     try {
       this.loading(true)
-      // const token = this._store.getters.getToken
-      // await this._queryBus.exec(new SessionQuery(token))
-      // await this._queryBus.exec<RefreshYandexTokenQuery, boolean>(
-      //   new RefreshYandexTokenQuery(Number(this.currentUser.id))
-      // )
-      // await this._queryBus.exec(new YandexTokenQuery(111, Number(this.currentUser.id)))
       await Promise.all([
         this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        // this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
-        // this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
       ])
       setTimeout(() => {
         this.loading(false)

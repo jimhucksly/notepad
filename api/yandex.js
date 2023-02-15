@@ -81,6 +81,20 @@ async function createYandexDiskApi(db) {
     }
   }
 
+  async function refreshToken(token) {
+    try {
+      const form = new URLSearchParams({
+        grant_type: 'refresh_token',
+        refresh_token: token,
+        client_id,
+        client_secret,
+      })
+      return await post('https://oauth.yandex.ru/token', form)
+    } catch(e) {
+      return Promise.reject(e)
+    }
+  }
+
   async function diskInfo(path, token) {
     try {
       const url = 'https://cloud-api.yandex.net/v1/disk/resources?path=app:/' + path
@@ -132,6 +146,7 @@ async function createYandexDiskApi(db) {
 
   return {
     getToken,
+    refreshToken,
     diskInfo,
     uploadFile,
     deleteFile,

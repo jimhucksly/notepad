@@ -116,6 +116,60 @@ function _delete(router, $app) {
       })
     }
   })
+  router.delete('/links', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'links.json'
+      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const id = req.query.id
+      if (`${id}` in json) {
+        delete json[id]
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          message: 'link is successfully removed',
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.delete('/todo', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'todo.json'
+      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const id = req.query.id
+      if (`${id}` in json) {
+        delete json[id]
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          message: 'todo item is successfully removed',
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
 }
 
 module.exports = {

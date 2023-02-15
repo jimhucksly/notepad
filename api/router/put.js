@@ -105,9 +105,9 @@ function put(router, $app) {
       const token = await checkToken(req.headers)
       const user = await $app.db.query().user({ token }).get()
       const filename = 'events.json'
-      const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       const { title, date, content } = req.body
       if (title && date && content) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
         json[date] = {
           title,
           content,
@@ -122,6 +122,80 @@ function put(router, $app) {
               content,
             }
           }
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/links', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'links.json'
+      const { id, name, url } = req.body
+      if (id && name && url) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+        json[id] = {
+          name,
+          url
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: [
+            {
+              id,
+              name,
+              url
+            }
+          ]
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/todo', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'todo.json'
+      const { date, id, order } = req.body
+      if (date && id && order) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+        json[id] = {
+          date,
+          order,
+          text: req.body.text ?? ''
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: [
+            {
+              id,
+              date,
+              order,
+              text: req.body.text ?? ''
+            }
+          ]
         })
       } else {
         throw new Error()

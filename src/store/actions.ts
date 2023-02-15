@@ -189,11 +189,8 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
       setProcess(store, 'updating yandex disk token...')
-      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/refreshToken', query)
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      return resp.data
+      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/refresh', query)
+      return true
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
       return Promise.reject(e)

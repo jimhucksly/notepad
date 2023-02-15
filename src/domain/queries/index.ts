@@ -24,9 +24,7 @@ export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }
 
-export class RefreshYandexTokenQuery {
-  constructor(public userId: number) {}
-}
+export class RefreshYandexTokenQuery {}
 
 export class YandexDiskInfoQuery {}
 
