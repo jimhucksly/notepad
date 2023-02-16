@@ -1,8 +1,9 @@
 import { Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { YandexDiskAppID } from '~/constants'
-import { IUser } from '~/domain/models'
-import { SessionQuery, YandexTokenQuery } from '~/domain/queries'
+import { AuthCommand } from '~/domain/commands'
+import { IProjects, IUser } from '~/domain/models'
+import { LibraryFileQuery, ProjectsQuery, SessionQuery, YandexTokenQuery } from '~/domain/queries'
 
 export default class Yandex extends Vue {
   createYandexDiskStepOne = true
@@ -33,7 +34,12 @@ export default class Yandex extends Vue {
       )
       await this.$app.$queryBus.exec(query)
       await this.$app.$queryBus.exec(new SessionQuery())
+      this.$app.$commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.$app.user(this.currentUser)
+      await Promise.all([
+        this.$app.$queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
+        this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+      ])
       this.$app.goHome()
     } catch (e) {
       let message = 'Access token request failed'

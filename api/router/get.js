@@ -91,7 +91,6 @@ function get(router, $app) {
         const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
         if (info._embedded.items) {
           const found = info._embedded.items.find(el => el.resource_id === req.query.id)
-          console.log('found', found)
           if (found) {
             filename = found.name
           } else {

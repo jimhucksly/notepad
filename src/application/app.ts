@@ -96,16 +96,16 @@ export default class Application implements IApplication {
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
       await this._queryBus.exec(new SessionQuery())
-      this.user(this._store.getters.getCurrentUser)
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
-      await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-      ])
+      this.user(this._store.getters.getCurrentUser)
       if (!this.currentUser.yandexDiskAccessToken) {
         this.goto(FsmStates.Yandex)
         return
       }
+      await Promise.all([
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
+        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+      ])
       this._queryBus.exec(new RefreshYandexTokenQuery())
       this.goHome()
     } catch (e) {

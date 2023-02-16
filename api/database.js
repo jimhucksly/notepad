@@ -245,6 +245,26 @@ function command() {
           } catch (e) {
             throw new Error(e?.hint || e?.message || 'bad request')
           }
+        },
+        async revokeYandexAccessToken() {
+          try {
+            if (id) {
+              const query = 'UPDATE users SET yandex_disk_access_token = NULL WHERE id = $1;'
+              return await execQuery(query, [id])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
+        async revokeYandexRefreshToken() {
+          try {
+            if (id) {
+              const query = 'UPDATE users SET yandex_disk_refresh_token = NULL WHERE id = $1;'
+              return await execQuery(query, [id])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
         }
       }
     },

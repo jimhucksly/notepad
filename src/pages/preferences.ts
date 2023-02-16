@@ -4,7 +4,6 @@ import { Vue } from 'vue-class-component'
 import { Getter, Mutation } from 'vuex-class'
 import { RevokeYandexTokenCommand } from '~/domain/commands'
 import { IUser } from '~/domain/models'
-import { YandexDiskInfoQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import storage from '~/plugins/storage'
 import pkg from '../../package.json'
@@ -118,21 +117,17 @@ export default class Preferences extends Vue {
   }
 
   async revoke() {
-    if (!window) {
-      await this.$app.$queryBus.exec(new YandexDiskInfoQuery())
-    } else {
-      const isConfirm = await this.$app.$queryBus.exec(
-        new ConfirmQuery('Do you want to revoke the Yandex.Disk connection?')
-      )
-      if (!isConfirm) {
-        return
-      }
-      try {
-        await this.$app.$commandBus.do(new RevokeYandexTokenCommand(Number(this.currentUser.id)))
-        location.reload()
-      } catch (e) {
-        //
-      }
+    const isConfirm = await this.$app.$queryBus.exec(
+      new ConfirmQuery('Do you want to revoke the Yandex.Disk connection?')
+    )
+    if (!isConfirm) {
+      return
+    }
+    try {
+      await this.$app.$commandBus.do(new RevokeYandexTokenCommand())
+      location.reload()
+    } catch (e) {
+      //
     }
   }
 

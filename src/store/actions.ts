@@ -12,7 +12,6 @@ import {
   AuthQuery,
   RefreshYandexTokenQuery,
   SessionQuery,
-  YandexDiskInfoQuery,
   YandexDiskResourceLinkQuery,
   YandexTokenQuery
 } from '~/domain/queries'
@@ -125,6 +124,11 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
+  /**
+   * Reset pass
+   * @param store Store
+   * @param {ResetPasswordCommand} command
+   */
   @Commandable(TYPES.ResetPasswordCommand)
   async actionResetPass(store: TStore, command: ResetPasswordCommand): Promise<IResponse<IUser>> {
     try {
@@ -208,37 +212,10 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
       setProcess(store, 'revoke yandex disk token...')
-      const resp = await $http.post<RefreshYandexTokenQuery, boolean>('/yandexapi/revokeToken', command)
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      return resp.data
+      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/revoke', command)
+      return true
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
-      return Promise.reject(e)
-    } finally {
-      setProcess(store, null)
-    }
-  }
-
-  /**
-   * Yandex disk info
-   * @param store Store
-   * @param {YandexDiskInfoQuery} query
-   */
-  @Queryable(TYPES.YandexDiskInfoQuery)
-  async actionFetchYandexDiskInfo(
-    store: TStore, query: YandexDiskInfoQuery
-  ): Promise<unknown> {
-    try {
-      setProcess(store, 'get yandex disk info...')
-      const resp = await $http.get<unknown>('/yandexapi/info')
-      if (!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      return resp.data
-    } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

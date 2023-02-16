@@ -19,7 +19,6 @@ const TYPES = {
   ConfirmQuery: Symbol.for('ConfirmQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
-  YandexDiskInfoQuery: Symbol.for('YandexDiskInfoQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
   /* --------- commands --------- */
   RegistrationCommand: Symbol.for('RegistrationCommand'),

@@ -241,6 +241,25 @@ function post(router, $app) {
       })
     }
   })
+  router.post('/ydtoken/revoke', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      await $app.db.command().user({ id: user.id }).revokeYandexAccessToken()
+      await $app.db.command().user({ id: user.id }).revokeYandexRefreshToken()
+      res.send({
+        status: 'success',
+        message: 'Yandex.Disk REST API disconnected',
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
   router.post('/project', async (req, res, next) => {
     try {
       await checkHeaders(req.headers)
