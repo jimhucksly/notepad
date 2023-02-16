@@ -4,13 +4,13 @@
       <div class="notepad_item_date">{{ item.date }}</div>
     </div>
     <div class="notepad_item_content" ref="content">
-      <file
+      <!-- <file
         v-if="item.file !== undefined"
         ref="file"
         :item-key="item.key"
         :item-file="item.file"
-      />
-      <p v-else-if="!isEdit" v-html="message" @click.prevent="openLink($event)"></p>
+      /> -->
+      <p v-if="!isEdit" v-html="message" @click.prevent="openLink($event)"></p>
     </div>
     <controls
       :item-key="item.key"

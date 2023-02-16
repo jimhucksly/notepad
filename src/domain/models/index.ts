@@ -25,18 +25,17 @@ export interface IFile {
   type: string
 }
 
-export interface IProjectsItem {
+export interface IProject {
   key: string
   date: string
   name: string
   lock: boolean
   message?: string
   unread?: boolean
-  file?: IFile
 }
 
 export interface IProjects {
-  [stamp: string]: IProjectsItem
+  [stamp: string]: IProject
 }
 
 export interface IFilters {
@@ -147,6 +146,10 @@ export interface IEventsState {
 
 export interface ILinksState {
   links: ILink
+}
+
+export interface IFilesState {
+  files: IFile
 }
 
 export interface IRootState {

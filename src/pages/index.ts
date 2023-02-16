@@ -23,6 +23,7 @@ import Reset from '~/pages/reset'
 import Todo from '~/pages/todo'
 import Verify from '~/pages/verify'
 import Yandex from '~/pages/yandex'
+import Files from '~/pages/files'
 import storage from '~/plugins/storage'
 
 interface IUserPreferences {
@@ -47,6 +48,7 @@ interface IUserPreferences {
     Events,
     JsonViewer,
     Links,
+    Files,
     Sidebar
   }
 })

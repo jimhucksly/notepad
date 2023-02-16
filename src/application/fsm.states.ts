@@ -14,6 +14,7 @@ export interface IFsmStates {
   Todo: symbol
   Events: symbol
   Links: symbol
+  Files: symbol
   JsonViewer: symbol
   AddLinkPopup: symbol
   About: symbol
@@ -39,6 +40,7 @@ const FsmStates: IFsmStates = {
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),
   Links: Symbol.for('Links'),
+  Files: Symbol.for('Files'),
   JsonViewer: Symbol.for('JsonViewer'),
   AddLinkPopup: Symbol.for('AddLinkPopup'),
   About: Symbol.for('About'),

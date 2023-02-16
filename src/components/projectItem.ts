@@ -1,17 +1,15 @@
 import { Options, Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import Controls from '~/components/controls'
-import File from '~/components/file'
-import { IProjectsItem } from '~/domain/models'
+import { IProject } from '~/domain/models'
 
 @Options({
   components: {
-    Controls,
-    File
+    Controls
   }
 })
 export default class NotepadItem extends Vue {
-  @Prop() item: IProjectsItem
+  @Prop() item: IProject
   @Prop() isLast: boolean
 
   message = ''

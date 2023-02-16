@@ -98,16 +98,7 @@ export default class Sidebar extends Vue {
     return this.component === AppComponents[toStr(this.$app.states.Events)]
   }
 
-  get switcherProps() {
-    return {
-      isAccount: this.isAccount,
-      isPreferences: this.isPreferences,
-      isProjects: this.isProjects,
-      isLibrary: this.isLibrary,
-      isEvents: this.isEvents,
-      isJsonViewer: this.isJsonViewer,
-      isLinks: this.isLinks,
-      isTodo: this.isTodo
-    }
+  get isFiles(): boolean {
+    return this.component === AppComponents[toStr(this.$app.states.Files)]
   }
 }

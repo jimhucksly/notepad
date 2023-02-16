@@ -23,6 +23,7 @@ interface IAppComponents {
   Events: string
   JsonViewer: string
   Links: string
+  Files: string
   Todo: string
 }
 
@@ -34,6 +35,7 @@ export const AppComponents = {
   [toStr(FsmStates.Events)]: 'Events',
   [toStr(FsmStates.JsonViewer)]: 'JsonViewer',
   [toStr(FsmStates.Links)]: 'Links',
+  [toStr(FsmStates.Files)]: 'Files',
   [toStr(FsmStates.Todo)]: 'Todo'
 }
 
@@ -67,7 +69,7 @@ export default class Application implements IApplication {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) {}
 
-  homeState = FsmStates.Projects
+  homeState = FsmStates.Files
   history: Array<keyof IFsmStates> = []
   currentUser: IUser = null
 

@@ -162,10 +162,10 @@ export function dragAndDropLoader(
         overlay.style.display = 'block'
         overlay.style.position = 'absolute'
         overlay.style.left = '0'
-        overlay.style.right = '0'
+        overlay.style.top = '0'
         overlay.style.width = '100%'
         overlay.style.height = '100%'
-        overlay.style.background = 'rgba(0,0,0,0.2)'
+        overlay.style.background = 'rgba(48,64,60,0.7)'
         overlay.style.border = '2px dashed #fff'
       }
     }

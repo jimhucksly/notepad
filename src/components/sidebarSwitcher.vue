@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="current"
     class="switcher"
     :class="{
       'switcher--expanded': isExpand,
@@ -7,7 +8,7 @@
     }"
   >
     <span class="switcher__legend" @click="toggle">
-      {{ legend }}
+      {{ current.nameAlt }}
       <i class="switcher__legend_caret"></i>
     </span>
     <div class="switcher__menu">
@@ -15,7 +16,7 @@
         <li
           v-for="(item, index) in menu"
           :key="index"
-          :class="{ active: item.id === current }"
+          :class="{ active: item.id === current.id }"
           @click="select(item.fsmState)"
         >
           {{ item.nameAlt }}

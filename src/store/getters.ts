@@ -35,10 +35,16 @@ const menu: Array<IMenu> = [
     id: 5
   },
   {
+    name: 'files',
+    nameAlt: 'Files',
+    fsmState: FsmStates.Files,
+    id: 6
+  },
+  {
     name: 'jsonViewer',
     nameAlt: 'Json Viewer',
     fsmState: FsmStates.JsonViewer,
-    id: 6
+    id: 7
   }
 ]
 

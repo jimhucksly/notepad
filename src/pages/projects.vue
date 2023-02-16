@@ -1,5 +1,5 @@
 <template>
-  <div id="notepad_cont">
+  <div class="g-column">
     <div class="notepad_cont" ref="notepad_cont">
       <template v-for="(item, stamp) in json">
         <project-item
@@ -16,10 +16,10 @@
     <div class="notepad_textarea" ref="notepad_textarea">
       <textarea placeholder="New record" v-model="message" @keydown.enter.ctrl="send"></textarea>
       <div class="notepad_btns">
-        <label class="notepad_attachments">
+        <!-- <label class="notepad_attachments">
           <svg-icon icon="icon-attach" width="40px" height="40px" />
           <input type="file" @change="onFileChange">
-        </label>
+        </label> -->
         <button @click.prevent="send">
           <div>
             <svg-icon icon="icon-send" width="29px" height="23px" />

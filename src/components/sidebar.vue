@@ -1,7 +1,6 @@
 <template>
   <aside>
     <sidebar-switcher
-      v-bind="switcherProps"
       @on-expand="isSwitcherMenuExpanded = true"
       @on-hide="isSwitcherMenuExpanded = false"
     />

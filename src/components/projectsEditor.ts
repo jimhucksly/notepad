@@ -3,7 +3,7 @@ import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { IArchive, IFilters, IProjects, IProjectsItem } from '~/domain/models'
+import { IArchive, IFilters, IProjects, IProject } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
 
@@ -29,7 +29,7 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  @Watch('item') onItemChanged(o: IProjectsItem) {
+  @Watch('item') onItemChanged(o: IProject) {
     if (o) {
       this.name = o.name
       this.isLock = o.lock
@@ -101,8 +101,7 @@ export default class ProjectsEditor extends Vue {
         date: this.item.date,
         name: this.name,
         lock: this.isLock,
-        message: this.item.message,
-        file: this.item.file
+        message: this.item.message
       }
     }
     this.setJson({ ...this.json, ...o })
@@ -115,14 +114,10 @@ export default class ProjectsEditor extends Vue {
     this.$app.goBack()
   }
 
-  get item(): IProjectsItem {
+  get item(): IProject {
     if (!this.json) {
       return null
     }
     return this.json[this.selected]
-  }
-
-  get isFile(): boolean {
-    return this.item && !!this.item.file
   }
 }

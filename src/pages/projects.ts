@@ -1,13 +1,11 @@
 import { Watch } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
 import { cloneDeep, isEmpty, unset } from 'lodash'
-import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
+import { checkLinks, now } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
-import { ReadCommand, UploadFileCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
-import { IFile, IFilters, IProjects } from '~/domain/models'
+import { ReadCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
+import { IFilters, IProjects } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import FsmStates from '~/application/fsm.states'
 import { ArchivesQuery } from '~/domain/queries'
 
 @Options({
@@ -59,10 +57,6 @@ export default class Projects extends Vue {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
     this.onScrollHandler = this.read.bind(this)
     notepadCont.addEventListener('scroll', this.onScrollHandler)
-
-    dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
-    window.ondragstart = () => false
-
     this.$app.$queryBus.exec(new ArchivesQuery())
   }
 
@@ -90,63 +84,28 @@ export default class Projects extends Vue {
     })
   }
 
-  onFileChange(e: InputEvent | DragEvent) {
-    const target = e.target as HTMLInputElement
-    let files = target.files
-    if (!files?.length) {
-      files = (e as DragEvent).dataTransfer.files
-    }
-    if (files?.length === 0) {
-      return
-    }
-    const formData = new FormData()
-    formData.append('file', files[0])
-    formData.set('file', files[0])
-    this.upload(formData, getFileType(files[0].name))
-  }
-
-  async upload(file: FormData, fileType: string) {
-    try {
-      const command = new CreateEditCommand({
-        component: 'uploading-popup',
-        componentProps: {},
-        modal: {
-          title: 'Uploading'
-        },
-        fsmState: FsmStates.Uploading
-      })
-      this.$app.$commandBus.do<CreateEditCommand<void>, void>(command)
-      const newFile = await this.$app.$commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
-      this.$app.goBack()
-      this.addFile(newFile.name, fileType)
-    } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e)
-    }
-  }
-
-  addFile(name: string, type: string) {
-    this.newMsgFlag = true
-    const { date, stamp } = now()
-    const o: IProjects = {
-      [stamp]: {
-        key: stamp,
-        date,
-        name,
-        lock: false,
-        file: {
-          name,
-          type
-        }
-      }
-    }
-    this.setJson({ ...this.json, ...o })
-    this.$nextTick(() => {
-      const notepadCont = this.$refs.notepad_cont as HTMLElement
-      notepadCont.scrollTop = notepadCont.scrollHeight
-      this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
-    })
-  }
+  // addFile(name: string, type: string) {
+  //   this.newMsgFlag = true
+  //   const { date, stamp } = now()
+  //   const o: IProjects = {
+  //     [stamp]: {
+  //       key: stamp,
+  //       date,
+  //       name,
+  //       lock: false,
+  //       file: {
+  //         name,
+  //         type
+  //       }
+  //     }
+  //   }
+  //   this.setJson({ ...this.json, ...o })
+  //   this.$nextTick(() => {
+  //     const notepadCont = this.$refs.notepad_cont as HTMLElement
+  //     notepadCont.scrollTop = notepadCont.scrollHeight
+  //     this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
+  //   })
+  // }
 
   read() {
     const self = this.$refs.notepad_cont as HTMLElement
