@@ -3,7 +3,9 @@ const {
   checkToken,
   checkSession,
   getErrorCode,
-  responseModify
+  responseModify,
+  getFileExtension,
+  getFileSize
 } = require('../utils.js')
 
 function get(router, $app) {
@@ -186,6 +188,38 @@ function get(router, $app) {
       res.send({
         status: 'success',
         data: content
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.get('/files', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'files'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      const data = []
+      if (info._embedded.items?.length) {
+        for (const item of info._embedded.items) {
+          data.push({
+            id: item.resource_id,
+            name: item.name,
+            extension: getFileExtension(item.name),
+            createDateTime: item.created,
+            size: getFileSize(item.size),
+            href: item.file
+          })
+        }
+      }
+      res.send({
+        status: 'success',
+        data,
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({

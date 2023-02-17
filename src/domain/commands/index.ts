@@ -62,7 +62,7 @@ export class ReadCommand {
 }
 
 export class UploadFileCommand {
-  constructor(public file: FormData) {}
+  constructor(public form: FormData) {}
 }
 
 export class ArchivingCommand {

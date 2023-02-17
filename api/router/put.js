@@ -207,6 +207,34 @@ function put(router, $app) {
       })
     }
   })
+  router.put('/upload', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const path = 'files'
+      const keys = Object.keys(req.files)
+      if (keys.length) {
+        const user = await $app.db.query().user({ token }).get()
+        for (const key of keys) {
+          const payload = req.files[key].data
+          const filename = req.files[key].name
+          await $app.yandex.uploadFile(path + '/' + filename, payload, user.yandex_disk_access_token)
+        }
+        res.send({
+          status: 'success',
+          message: 'files successfully uploaded'
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
 }
 
 module.exports = {

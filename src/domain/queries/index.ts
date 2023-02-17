@@ -20,6 +20,8 @@ export class LinksQuery {}
 
 export class TodoQuery {}
 
+export class FilesQuery {}
+
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }

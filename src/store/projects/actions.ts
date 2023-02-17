@@ -11,7 +11,6 @@ import {
 import { Commandable } from '~/domain/commands/command.bus'
 import {
   IArchive,
-  IFile,
   IProjects,
   IProjectsState,
   IRootState
@@ -194,11 +193,11 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param {UploadFileCommand} command
    */
   @Commandable(TYPES.UploadFileCommand, Actions.namespace)
-  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
+  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<true> {
     try {
       setProcess(store, 'uploading file...')
-      const resp = await $http.post<FormData, IFile>('/upload', command.file)
-      return Promise.resolve(resp.data)
+      await $http.put('/upload', command.form)
+      return true
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)

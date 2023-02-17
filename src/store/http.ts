@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
-// import { uploadDownloadFile } from '~/helpers'
+import { uploadDownloadFile } from '~/helpers'
 import store from '~/store'
 import { endpoint } from '../../config/endpoint.json'
 
@@ -9,11 +9,11 @@ axios.interceptors.request.use(
     try {
       config = config || {}
       config.headers['X-Honeypot'] = 'App'
-      if (config.url.indexOf('upload') > -1) {
-        // config.headers['Content-Type'] = 'multipart/form-data'
-        // config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
-        //   uploadDownloadFile(loaded, total)
-        // }
+      if (/upload/.test(config.url)) {
+        config.headers['Content-Type'] = 'multipart/form-data'
+        config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+          uploadDownloadFile(loaded, total)
+        }
       } else {
         config.headers['Content-Type'] = 'application/json'
       }

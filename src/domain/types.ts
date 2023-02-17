@@ -15,7 +15,7 @@ const TYPES = {
   EventsQuery: Symbol.for('EventsQuery'),
   LinksQuery: Symbol.for('LinksQuery'),
   TodoQuery: Symbol.for('TodoQuery'),
-  CheckQuery: Symbol.for('CheckQuery'),
+  FilesQuery: Symbol.for('FilesQuery'),
   ConfirmQuery: Symbol.for('ConfirmQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),

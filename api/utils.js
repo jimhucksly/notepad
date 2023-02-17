@@ -171,6 +171,27 @@ function dateFormat(date, format) {
   }
 }
 
+function getFileExtension(filename) {
+  return (filename.trim() || '').slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase()
+}
+
+function getFileSize(bytes, decimals = 2) {
+  if (!bytes) {
+    return '0 Bytes';
+  }
+  if (typeof bytes === 'string') {
+    bytes = Number(bytes);
+  }
+  if (Number.isNaN(bytes) || bytes === 0) {
+    return '0 Bytes';
+  }
+  const k = 1024;
+  const dm = decimals <= 0 ? 0 : decimals || 2;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 module.exports = {
   generateVerifyCode,
   generatePassword,
@@ -181,5 +202,7 @@ module.exports = {
   checkSession,
   getErrorCode,
   emailSecurity,
-  dateFormat
+  dateFormat,
+  getFileExtension,
+  getFileSize
 }

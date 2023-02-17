@@ -21,8 +21,12 @@ export interface ITreeItem {
 }
 
 export interface IFile {
+  id: string
   name: string
-  type: string
+  extension: string
+  createDateTime: string
+  size: number
+  href: string
 }
 
 export interface IProject {
