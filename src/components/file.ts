@@ -1,5 +1,5 @@
 import { Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Emit, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { IFile } from '~/domain/models'
 import { getFileType } from '~/helpers'
@@ -7,10 +7,23 @@ import { getFileType } from '~/helpers'
 export default class File extends Vue {
   @Prop() item: IFile
   @Prop() index: number
+  @Prop() selected: boolean
 
   @Getter('getDownloadsTargetPath') targetPath: string
 
+  @Emit('on-select') onSelect() {
+    return this.item.id
+  }
+
+  @Watch('index') onIndexChanged() {
+    this.setPosition()
+  }
+
   mounted() {
+    this.setPosition()
+  }
+
+  setPosition() {
     const w = this.parent.clientWidth
     const k = Math.floor(w / (65 + 16))
     const x = 8 + 8 * this.index + 65 * this.index

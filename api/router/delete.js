@@ -43,7 +43,7 @@ function _delete(router, $app) {
       if (info._embedded.items) {
         const found = info._embedded.items.find(item => item.resource_id === req.query.id)
         if (found) {
-          await $app.yandex.deleteFile(path + '/' + found.name, user.yandex_disk_access_token)
+          await $app.yandex.deleteFile(path + '/' + encodeURI(found.name), user.yandex_disk_access_token)
           res.send({
             status: 'success',
             message: 'archive is successfully removed'
@@ -72,7 +72,7 @@ function _delete(router, $app) {
       if (info._embedded.items) {
         const found = info._embedded.items.find(item => item.resource_id === req.query.id)
         if (found) {
-          await $app.yandex.deleteFile(path + '/' + found.name, user.yandex_disk_access_token)
+          await $app.yandex.deleteFile(path + '/' + encodeURI(found.name), user.yandex_disk_access_token)
           res.send({
             status: 'success',
             message: 'a library file is successfully removed',
@@ -163,6 +163,36 @@ function _delete(router, $app) {
       } else {
         throw new Error()
       }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.delete('/files', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'files'
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items) {
+        const found = info._embedded.items.find(item => item.resource_id === req.query.id)
+        if (found) {
+          await $app.yandex.deleteFile(path + '/' + encodeURI(found.name), user.yandex_disk_access_token)
+          res.send({
+            status: 'success',
+            message: 'a file is successfully removed',
+          })
+        } else {
+          throw new Error('resource not found')
+        }
+      } else {
+        throw new Error('resource not found')
+      }
+
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',

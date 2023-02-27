@@ -217,6 +217,7 @@ function get(router, $app) {
           })
         }
       }
+      data.sort((a, b) => new Date(a.createDateTime).getTime() < new Date(b.createDateTime).getTime() ? -1 : 1)
       res.send({
         status: 'success',
         data,

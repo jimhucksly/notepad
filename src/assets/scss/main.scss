@@ -874,9 +874,17 @@ main {
   display: flex;
   flex-direction: column;
   width: 65px;
+  padding: 3px;
   min-height: 65px;
-  max-height: 104px;
+  max-height: 110px;
+  border: 1px solid transparent;
   cursor: pointer;
+  user-select: none;
+
+  &.selected {
+    border: 1px solid $blue_light;
+    background-color: $blue_light-op-02;
+  }
 
   .file_icon {
     display: flex;
@@ -904,8 +912,10 @@ main {
     text-align: center;
     padding: 3px 0;
     width: 100%;
+    line-height: 13px;
     overflow: hidden;
     white-space: pre-line;
+    word-wrap: break-word;
   }
 
   .file_loader {
@@ -930,5 +940,14 @@ main {
         color: var(--red);
       }
     }
+  }
+}
+
+.button {
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.8;
+    transform: translate(0px, 1px);
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="file">
+  <div class="file" :class="{ selected }" @click="onSelect">
     <div class="file_icon">
       <i class="icon">
         <img :src="`assets/images/file_types_icons/${type}.svg`">

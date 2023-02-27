@@ -170,6 +170,7 @@ export interface IRootState {
   notification: boolean
   error: boolean
   component: string
+  section: Record<string, boolean>
   history: Array<keyof typeof FsmStates>
   yandexApiToken: string
   currentUser: IUser

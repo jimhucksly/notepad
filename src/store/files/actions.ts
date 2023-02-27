@@ -1,4 +1,6 @@
 import { ActionContext, ActionTree } from 'vuex'
+import { DeleteFileCommand } from '~/domain/commands'
+import { Commandable } from '~/domain/commands/command.bus'
 import { IFile, IFilesState, IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
@@ -31,6 +33,20 @@ class Actions implements ActionTree<IFilesState, IRootState> {
       return data
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Files list fetch failed')
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
+  @Commandable(TYPES.DeleteFileCommand, Actions.namespace)
+  async actionRemoveFile(store: TStore, command: DeleteFileCommand): Promise<boolean> {
+    try {
+      setProcess(store, 'delete file...')
+      await $http.delete(`/files?id=${command.id}`)
+      return true
+    } catch (e) {
+      Hub.$emit('on-toasted-error', 'Error: File removing is failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

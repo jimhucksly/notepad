@@ -3,37 +3,42 @@ import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { AppComponents } from '~/application/app'
 import { toStr } from '~/application/fsm'
-import { IFsmStates } from '~/application/fsm.states'
+import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import JsonViewerBtns from '~/components/jsonViewerBtns'
 import Library from '~/components/library'
 import LibraryFiles from '~/components/libraryFiles'
-import LinksBtns from '~/components/linksBtns'
 import Projects from '~/components/projects'
 import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
-import SidebarSwitcher from '~/components/sidebarSwitcher'
-import TodoBtns from '~/components/todoBtns'
+import { UpdateLinksCommand } from '~/domain/commands'
+import { CreateEditCommand } from '~/domain/commands/createEdit.command'
+import { ILink, IMenu } from '~/domain/models'
+import { LinksQuery } from '~/domain/queries'
+import { uniqueid } from '~/helpers'
+import { Hub } from '~/plugins/hub'
 
 @Options({
   components: {
-    SidebarSwitcher,
     Projects,
     ProjectsEditor,
     ProjectsArchives,
     Library,
     LibraryFiles,
-    JsonViewerBtns,
-    LinksBtns,
-    TodoBtns
+    JsonViewerBtns
   }
 })
 export default class Sidebar extends Vue {
   @Getter('getHistory') history: Array<keyof IFsmStates>
   @Getter('getComponent') component: string
+  @Getter('getMenu') menu: Array<IMenu>
+  @Getter('getFsmState') fsmState: symbol
+  @Getter('getSection') section: Record<string, boolean>
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
   isLibraryFilesInit = false
+
+  private isExpand = false
 
   @Watch('isProjects') onIsProjectsChanged() {
     this.projectEditedItemKey = ''
@@ -46,12 +51,95 @@ export default class Sidebar extends Vue {
     }
   }
 
+  toggle() {
+    if (this.$app.state === FsmStates.Preferences) {
+      return
+    }
+    this.isExpand = !this.isExpand
+    if (this.isExpand) {
+      this.isSwitcherMenuExpanded = true
+      document.onclick = (e: MouseEvent) => {
+        if (!(e.target as HTMLElement).closest('.switcher')) {
+          this.isExpand = !this.isExpand
+          this.isSwitcherMenuExpanded = false
+          document.onclick = null
+        }
+      }
+      document.onkeydown = (e: KeyboardEvent) => {
+        if (e.code === 'Escape') {
+          this.isExpand = !this.isExpand
+          this.isSwitcherMenuExpanded = false
+          document.onclick = null
+          document.onkeydown = null
+        }
+      }
+    } else {
+      document.onclick = null
+      document.onkeydown = null
+      this.isSwitcherMenuExpanded = false
+    }
+  }
+
+  select(transition: symbol) {
+    this.$app.goto(transition)
+    this.toggle()
+  }
+
   toggleLibraryFiles() {
     if (this.isLibraryFilesVisibility) {
       this.$app.goBack()
     } else {
       this.$app.goto(this.$app.states.LibraryFiles)
     }
+  }
+
+  async addLink() {
+    const command = new CreateEditCommand({
+      component: 'create-edit-link',
+      componentProps: {
+        url: '',
+        name: ''
+      },
+      modal: {
+        title: 'Add link',
+        width: '30%'
+      },
+      fsmState: this.$app.states.AddLinkPopup
+    })
+    const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
+    if (!result) {
+      return
+    }
+    if (!result.id) {
+      result.id = uniqueid(6) as string
+    }
+    await this.$app.$commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
+    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+  }
+
+  addTodo() {
+    Hub.$emit('todo-add')
+  }
+
+  onFileChange(e: InputEvent) {
+    Hub.$emit('on-file-change', e)
+  }
+
+  onFileRemove() {
+    Hub.$emit('on-file-remove')
+  }
+
+  get mainSection() {
+    const found = Object.entries(this.section).find(item => item[1])
+    return found[0]
+  }
+
+  get current() {
+    return this.menu.find(item => toStr(item.fsmState) === AppComponents[this.mainSection])
+  }
+
+  get isNotClickable() {
+    return [FsmStates.Preferences, FsmStates.Account].includes(this.$app.state)
   }
 
   get isProjectEditorVisibility() {
@@ -64,41 +152,5 @@ export default class Sidebar extends Vue {
 
   get isLibraryFilesVisibility() {
     return this.history.includes('LibraryFiles')
-  }
-
-  get isAccount(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Account)]
-  }
-
-  get isPreferences(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Preferences)]
-  }
-
-  get isProjects(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Projects)]
-  }
-
-  get isLibrary(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Library)]
-  }
-
-  get isJsonViewer(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.JsonViewer)]
-  }
-
-  get isLinks(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Links)]
-  }
-
-  get isTodo(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Todo)]
-  }
-
-  get isEvents(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Events)]
-  }
-
-  get isFiles(): boolean {
-    return this.component === AppComponents[toStr(this.$app.states.Files)]
   }
 }

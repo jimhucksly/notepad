@@ -84,29 +84,6 @@ export default class Projects extends Vue {
     })
   }
 
-  // addFile(name: string, type: string) {
-  //   this.newMsgFlag = true
-  //   const { date, stamp } = now()
-  //   const o: IProjects = {
-  //     [stamp]: {
-  //       key: stamp,
-  //       date,
-  //       name,
-  //       lock: false,
-  //       file: {
-  //         name,
-  //         type
-  //       }
-  //     }
-  //   }
-  //   this.setJson({ ...this.json, ...o })
-  //   this.$nextTick(() => {
-  //     const notepadCont = this.$refs.notepad_cont as HTMLElement
-  //     notepadCont.scrollTop = notepadCont.scrollHeight
-  //     this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
-  //   })
-  // }
-
   read() {
     const self = this.$refs.notepad_cont as HTMLElement
     const rect = self.getBoundingClientRect()

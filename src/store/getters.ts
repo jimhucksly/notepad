@@ -58,6 +58,12 @@ const getters: IGetters = {
   },
   getYandexToken(state: IRootState) {
     return state.currentUser?.yandexDiskAccessToken
+  },
+  getSection(state: IRootState) {
+    return {
+      ...state.section,
+      [state.component]: true
+    }
   }
 }
 

@@ -25,7 +25,6 @@ const TYPES = {
   VerifyCommand: Symbol.for('VerifyCommand'),
   ResendCodeCommand: Symbol.for('ResendCodeCommand'),
   ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
-  // CheckCommand: Symbol.for('CheckCommand'),
   CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
   CreateProjectCommand: Symbol.for('CreateProjectCommand'),
@@ -46,6 +45,7 @@ const TYPES = {
   UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
   DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
   TodoOrderCommand: Symbol.for('TodoOrderCommand'),
+  DeleteFileCommand: Symbol.for('DeleteFileCommand'),
   RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand')
 }
 
