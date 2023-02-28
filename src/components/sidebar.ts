@@ -12,7 +12,7 @@ import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
 import { UpdateLinksCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { ILink, IMenu } from '~/domain/models'
+import { IFile, ILink, IMenu } from '~/domain/models'
 import { LinksQuery } from '~/domain/queries'
 import { uniqueid } from '~/helpers'
 import { Hub } from '~/plugins/hub'
@@ -40,6 +40,9 @@ export default class Sidebar extends Vue {
 
   private isExpand = false
 
+  fileSelected: IFile = null
+  onFileSelectHandler: (file: IFile) => void
+
   @Watch('isProjects') onIsProjectsChanged() {
     this.projectEditedItemKey = ''
   }
@@ -49,6 +52,15 @@ export default class Sidebar extends Vue {
       const cont = this.$refs.projects as Projects
       cont.clearCheck()
     }
+  }
+
+  created() {
+    this.onFileSelectHandler = this.onFileSelect.bind(this)
+    Hub.$on('on-file-select', this.onFileSelectHandler)
+  }
+
+  beforeUnmount() {
+    Hub.$off('on-file-select', this.onFileSelectHandler)
   }
 
   toggle() {
@@ -127,6 +139,10 @@ export default class Sidebar extends Vue {
 
   onFileRemove() {
     Hub.$emit('on-file-remove')
+  }
+
+  onFileSelect(file: IFile) {
+    this.fileSelected = file
   }
 
   get mainSection() {

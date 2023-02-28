@@ -6,7 +6,7 @@
       :item="item"
       :index="i"
       :selected="item.id === selected"
-      @on-select="selected = $event"
+      @on-select="onSelect"
     />
   </div>
 </template>

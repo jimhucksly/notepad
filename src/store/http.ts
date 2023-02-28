@@ -11,6 +11,8 @@ axios.interceptors.request.use(
       config.headers['X-Honeypot'] = 'App'
       if (/upload/.test(config.url)) {
         config.headers['Content-Type'] = 'multipart/form-data'
+        config.maxBodyLength = Infinity
+        config.maxContentLength = Infinity
         config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
           uploadDownloadFile(loaded, total)
         }

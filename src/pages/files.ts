@@ -35,6 +35,11 @@ export default class Files extends Vue {
     window.ondragstart = () => false
   }
 
+  beforeUnmount() {
+    Hub.$off('on-file-change', this.onFileChangeHandler)
+    Hub.$off('on-file-remove', this.onFileRemoveHandler)
+  }
+
   fetchFiles() {
     this.$app.$queryBus.exec(new FilesQuery())
   }
@@ -83,5 +88,10 @@ export default class Files extends Vue {
       /* eslint-disable no-console */
       console.error(e)
     }
+  }
+
+  onSelect(id: string) {
+    this.selected = id
+    Hub.$emit('on-file-select', this.files.find(f => f.id === id))
   }
 }

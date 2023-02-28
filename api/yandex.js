@@ -45,7 +45,13 @@ async function createYandexDiskApi(db) {
         const response = await get(url, token)
         if (response.href) {
           url = response.href
-          return await axios.put(url, payload)
+          return await axios({
+            method: 'put',
+            url,
+            data: payload,
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity,
+          })
         }
       }
       const { data } = await axios.put(url, null, { headers })
@@ -61,7 +67,7 @@ async function createYandexDiskApi(db) {
       headers['Authorization'] = 'OAuth ' + token
     }
     try {
-      const { data } = await axios.delete(url, { headers })
+      await axios.delete(url, { headers })
     } catch(e) {
       return Promise.reject(e)
     }
@@ -97,7 +103,7 @@ async function createYandexDiskApi(db) {
 
   async function diskInfo(path, token) {
     try {
-      const url = 'https://cloud-api.yandex.net/v1/disk/resources?path=app:/' + path
+      const url = 'https://cloud-api.yandex.net/v1/disk/resources?path=app:/' + path + '&limit=1000'
       return await get(url, token)
     } catch(e) {
       return Promise.reject(e)

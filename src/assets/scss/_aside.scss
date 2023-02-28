@@ -808,7 +808,8 @@ aside {
   }
 
   .links,
-  .todo {
+  .todo,
+  .files {
     display: flex;
     padding-top: 15px;
     padding-left: 15px;
@@ -830,6 +831,26 @@ aside {
       &:active {
         opacity: 1;
         transform: scale(0.85);
+      }
+    }
+  }
+
+  .files {
+    .file-info {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding-right: 15px;
+      margin-bottom: 15px;
+      &_label {
+        color: $blue-gray;
+        margin-bottom: 5px;
+      }
+      &_name {
+        font-size: 12px;
+        color: $editor_yellow;
+        white-space: pre-line;
+        word-wrap: break-word;
       }
     }
   }

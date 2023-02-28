@@ -11,6 +11,8 @@ export default class File extends Vue {
 
   @Getter('getDownloadsTargetPath') targetPath: string
 
+  onResizeHandler: () => void
+
   @Emit('on-select') onSelect() {
     return this.item.id
   }
@@ -21,13 +23,25 @@ export default class File extends Vue {
 
   mounted() {
     this.setPosition()
+    this.onResizeHandler = this.setPosition.bind(this)
+    window.addEventListener('resize', this.onResizeHandler)
   }
 
   setPosition() {
     const w = this.parent.clientWidth
-    const k = Math.floor(w / (65 + 16))
-    const x = 8 + 8 * this.index + 65 * this.index
-    const y = Math.floor(this.index / k) + 8
+    const count = Math.floor(w / (65 + 16)) + 1
+    const row = Math.floor(this.index / count)
+    const index = this.index - row * count
+    const x = 8 + 8 * index + 65 * index
+    let h = 65
+    if (row > 0) {
+      let topLevelElems: Array<Element> = []
+      this.parent.querySelectorAll('.file').forEach(el => topLevelElems.push(el))
+      topLevelElems = topLevelElems.slice((row - 1) * count, count)
+      const hh = topLevelElems.map(el => el.clientHeight)
+      h = Math.max(...hh)
+    }
+    const y = 8 + row * h
     this.$el.style.transform = `translate(${x}px, ${y}px)`
   }
 

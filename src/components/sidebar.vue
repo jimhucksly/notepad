@@ -64,14 +64,30 @@
         <svg-icon icon="btnAdd" width="32" height="23" />
       </button>
     </div>
-    <div class="links" v-show="section.Files" :style="{ opacity: isSwitcherMenuExpanded ? 0.4 : 1 }">
-      <label class="button">
-        <svg-icon icon="btnAdd" width="32" height="23" />
-        <input type="file" @change="onFileChange">
-      </label>
-      <button @click="onFileRemove" class="m-l-35">
-        <svg-icon icon="btnClear" width="32" height="23" />
-      </button>
+    <div class="files g-column" v-show="section.Files" :style="{ opacity: isSwitcherMenuExpanded ? 0.4 : 1 }">
+      <div class="g-row m-b-35">
+        <label class="button">
+          <svg-icon icon="btnAdd" width="32" height="23" />
+          <input type="file" @change="onFileChange">
+        </label>
+        <button @click="onFileRemove" class="m-l-35">
+          <svg-icon icon="btnClear" width="32" height="23" />
+        </button>
+      </div>
+      <template v-if="fileSelected">
+        <div class="file-info">
+          <small class="file-info_label">File name:</small>
+          <span class="file-info_name">{{ fileSelected.name }}</span>
+        </div>
+        <div class="file-info">
+          <small class="file-info_label">File created:</small>
+          <span class="file-info_name">{{ $dateFormat(fileSelected.createDateTime) }}</span>
+        </div>
+        <div class="file-info">
+          <small class="file-info_label">File size:</small>
+          <span class="file-info_name">{{ fileSelected.size }}</span>
+        </div>
+      </template>
     </div>
   </aside>
 </template>

@@ -57,6 +57,16 @@ app.use(ToastedPlugin)
 app.use(SocketPlugin, { store })
 app.use(Validate)
 
+app.config.globalProperties.$dateFormat = (date: string | Date) => {
+  if (typeof date === 'string') {
+    date = new Date(date)
+  }
+  if (isNaN(date.getTime())) {
+    return 'Invalid date'
+  }
+  return date.toLocaleString('ru')
+}
+
 if (isDev && window && window.location) {
   (window as unknown as { reload: () => void }).reload = window.location.reload.bind(window.location)
 }

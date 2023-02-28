@@ -7,10 +7,6 @@
     </div>
     <div class="file_name">
       {{ item.name }}
-      <!-- <div>
-        <span v-if="downloading" class="link">getting the link...</span>
-        <span v-else @click.prevent="downloadFile" class="link">Download</span>
-      </div> -->
     </div>
   </div>
 </template>
