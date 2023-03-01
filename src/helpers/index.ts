@@ -131,6 +131,7 @@ export const getFileType = (name: string): string => {
   if (/rar$/.test(name)) return 'rar'
   if (/md$/.test(name)) return 'md'
   if (/7z$/.test(name)) return '7z'
+  if (/xlsx?$/.test(name)) return 'xls'
 
   return 'default'
 }
