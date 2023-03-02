@@ -145,6 +145,10 @@ export default class Sidebar extends Vue {
     this.fileSelected = file
   }
 
+  onFileDownload() {
+    Hub.$emit('on-file-download')
+  }
+
   get mainSection() {
     const found = Object.entries(this.section).find(item => item[1])
     return found[0]

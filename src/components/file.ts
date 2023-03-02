@@ -37,7 +37,7 @@ export default class File extends Vue {
     if (row > 0) {
       let topLevelElems: Array<Element> = []
       this.parent.querySelectorAll('.file').forEach(el => topLevelElems.push(el))
-      topLevelElems = topLevelElems.slice((row - 1) * count, count)
+      topLevelElems = topLevelElems.slice((row - 1) * count, row * count)
       const hh = topLevelElems.map(el => el.clientHeight)
       h = Math.max(...hh)
     }
@@ -52,27 +52,4 @@ export default class File extends Vue {
   get parent(): HTMLElement {
     return this.$parent.$el
   }
-
-  // async downloadFile() {
-  //   try {
-  //     this.downloading = true
-  //     const link: string = await this.$app.$queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
-  //     this.downloading = false
-  //     if (link) {
-  //       const a = document.createElement('a')
-  //       a.href = link
-  //       a.download = 'C:\\' + this.fileName
-  //       document.body.appendChild(a)
-  //       a.click()
-  //       setTimeout(() => {
-  //         document.body.removeChild(a)
-  //         window.URL.revokeObjectURL(link)
-  //       }, 0)
-  //     }
-  //   } catch (e) {
-  //     //
-  //   } finally {
-  //     this.downloading = false
-  //   }
-  // }
 }

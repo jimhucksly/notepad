@@ -172,7 +172,10 @@ function dateFormat(date, format) {
 }
 
 function getFileExtension(filename) {
-  return (filename.trim() || '').slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2).toLowerCase()
+  if (/d\.ts$/.test(filename)) {
+    return filename.replace(/(.+)\.d\.([\w]{2,})$/, 'd.$2')
+  }
+  return filename.replace(/(.+)\.([\w]{2,})$/, '$2')
 }
 
 function getFileSize(bytes, decimals = 2) {

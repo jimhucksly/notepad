@@ -117,7 +117,7 @@ export const getFileType = (name: string): string => {
   if (/gif$/.test(name)) return 'image'
   if (/html?$/.test(name)) return 'html'
   if (/js$/.test(name)) return 'js'
-  if (/d\.ts$/.test(name)) return 'dts'
+  if (/d.ts$/.test(name)) return 'dts'
   if (/ts$/.test(name)) return 'ts'
   if (/json$/.test(name)) return 'json'
   if (/vue$/.test(name)) return 'vue'
@@ -132,6 +132,7 @@ export const getFileType = (name: string): string => {
   if (/md$/.test(name)) return 'md'
   if (/7z$/.test(name)) return '7z'
   if (/xlsx?$/.test(name)) return 'xls'
+  if (/exe?$/.test(name)) return 'exe'
 
   return 'default'
 }

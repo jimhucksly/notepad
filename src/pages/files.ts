@@ -6,6 +6,7 @@ import { DeleteFileCommand, UploadFileCommand } from '~/domain/commands'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IFile } from '~/domain/models'
 import { FilesQuery } from '~/domain/queries'
+import { ConfirmQuery } from '~/domain/queries/confirm.query'
 import { dragAndDropLoader } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 
@@ -16,11 +17,13 @@ import { Hub } from '~/plugins/hub'
 })
 export default class Files extends Vue {
   @Getter('files/getFiles') files: Array<IFile>
+  @Getter('getDownloadsTargetPath') downloadTargetPath: string
 
   selected: string = null
 
   onFileChangeHandler: (e: InputEvent) => void
   onFileRemoveHandler: () => void
+  onFileDownloadHandler: () => void
 
   created() {
     this.fetchFiles()
@@ -28,6 +31,8 @@ export default class Files extends Vue {
     Hub.$on('on-file-change', this.onFileChangeHandler)
     this.onFileRemoveHandler = this.onFileRemove.bind(this)
     Hub.$on('on-file-remove', this.onFileRemoveHandler)
+    this.onFileDownloadHandler = this.onFileDownload.bind(this)
+    Hub.$on('on-file-download', this.onFileDownloadHandler)
   }
 
   mounted() {
@@ -38,6 +43,7 @@ export default class Files extends Vue {
   beforeUnmount() {
     Hub.$off('on-file-change', this.onFileChangeHandler)
     Hub.$off('on-file-remove', this.onFileRemoveHandler)
+    Hub.$off('on-file-download', this.onFileDownloadHandler)
   }
 
   fetchFiles() {
@@ -65,6 +71,12 @@ export default class Files extends Vue {
     if (!this.selected) {
       return
     }
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
+      'Do you realy want to remove this file?'
+    ))
+    if (!isConfirm) {
+      return
+    }
     await this.$app.$commandBus.do(new DeleteFileCommand(this.selected))
     this.fetchFiles()
   }
@@ -87,6 +99,24 @@ export default class Files extends Vue {
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
+    }
+  }
+
+  onFileDownload() {
+    if (!this.selected) {
+      return
+    }
+    const found = this.files.find(f => f.id === this.selected)
+    if (found) {
+      const a = document.createElement('a')
+      a.href = found.href
+      a.download = this.downloadTargetPath + '\\' + found.name
+      document.body.appendChild(a)
+      a.click()
+      setTimeout(() => {
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(found.href)
+      }, 0)
     }
   }
 
