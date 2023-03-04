@@ -18,8 +18,6 @@ import CreateEditLink from '~/modules/popup/createEditLink'
 import AboutPopup from '~/modules/popup/about'
 import ConfirmPopup from '~/modules/popup/confirm'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
-import UploadingPopup from '~/modules/popup/uploading'
-import DownloadingPopup from '~/modules/popup/downloading'
 import CodeInput from './modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
@@ -42,8 +40,6 @@ app.component('loader', Loader)
 app.component('b-checkbox', BCheckbox)
 app.component('b-btn', BBtn)
 app.component('about-popup', AboutPopup)
-app.component('uploading-popup', UploadingPopup)
-app.component('downloading-popup', DownloadingPopup)
 app.component('create-edit-library-file', CreateEditLibraryFile)
 app.component('confirm-popup', ConfirmPopup)
 app.component('code-input', CodeInput)

@@ -65,6 +65,14 @@ function createWindow() {
 
   mainWindow.loadURL(winURL)
 
+  const session = mainWindow.webContents.session
+  session.on('will-download', async (event, item, webContents) => {
+    webContents.send('download-start')
+    item.once('done', (event, state) => {
+      webContents.send('download-end')
+    })
+  })
+
   if($DEV) {
     mainWindow.webContents.openDevTools()
   }

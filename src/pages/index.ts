@@ -7,9 +7,7 @@ import Loading from '~/components/loading'
 import Sidebar from '~/components/sidebar'
 import Titlebar from '~/components/titlebar'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IUser } from '~/domain/models'
-import { uploadDownloadFile } from '~/helpers'
 import Account from '~/pages/account'
 import Auth from '~/pages/auth'
 import Events from '~/pages/events'
@@ -86,22 +84,7 @@ export default class Index extends Vue {
     this.$electron.ipcRenderer.on(
       'download-start',
       (e: Electron.IpcRendererEvent) => {
-        const command = new CreateEditCommand({
-          component: 'downloading-popup',
-          componentProps: {},
-          modal: {
-            title: 'Downloading'
-          },
-          fsmState: FsmStates.Downloading
-        })
         this.$store.commit('setProcess', { name: 'dowloading file...' })
-        this.$app.$commandBus.do<CreateEditCommand<void>, void>(command)
-      }
-    )
-    this.$electron.ipcRenderer.on(
-      'download-progress',
-      (e: Electron.IpcRendererEvent, progress: { transferredBytes: number, totalBytes: number }) => {
-        uploadDownloadFile(progress.transferredBytes, progress.totalBytes)
       }
     )
     this.$electron.ipcRenderer.on(
@@ -109,7 +92,6 @@ export default class Index extends Vue {
       (e: Electron.IpcRendererEvent) => {
         setTimeout(() => {
           this.$store.commit('setProcess', null)
-          this.$app.goBack()
         }, 2000)
       }
     )
@@ -142,13 +124,13 @@ export default class Index extends Vue {
     try {
       this.setUserDataPath(appPath)
       await storage.createFile(appPath, userPreferencesFileName)
+      let downloadsTargetPath = appPath
       const json: IUserPreferences = await storage.get(appPath, userPreferencesFileName)
       if (json.downloadsTargetPath !== undefined) {
-        this.setDownloadsTargetPath(json.downloadsTargetPath)
-      } else {
-        json.downloadsTargetPath = appPath
-        this.setDownloadsTargetPath(appPath)
+        downloadsTargetPath = json.downloadsTargetPath
+        this.setDownloadsTargetPath(downloadsTargetPath)
       }
+      this.$electron.ipcRenderer.send('set-download-path', downloadsTargetPath)
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)

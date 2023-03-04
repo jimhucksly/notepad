@@ -62,7 +62,7 @@
 .popup-window {
   background-color: #fff;
   border: 1px solid var(--blue-gray);
-  box-shadow: 0px 0px 18px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
 }
 
 .popup-inner {
@@ -72,24 +72,6 @@
 .popup-about {
   img {
     max-width: 80px;
-  }
-}
-
-#upload-download-popup {
-  .label {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--blue_light);
-    font-size: 12px;
-    margin-bottom: 5px;
-  }
-
-  .progress {
-    position: relative;
-    width: 0;
-    height: 15px;
-    background-color: var(--blue);
   }
 }
 

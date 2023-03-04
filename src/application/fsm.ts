@@ -51,8 +51,6 @@ const fsm = new StateMachine({
       to: toStr(FsmStates.AddLinkPopup)
     },
     { name: 'about', from: '*', to: toStr(FsmStates.About) },
-    { name: 'uploading', from: '*', to: toStr(FsmStates.Uploading) },
-    { name: 'downloading', from: '*', to: toStr(FsmStates.Downloading) },
     {
       name: 'addlibraryfilepopup',
       from: '*',

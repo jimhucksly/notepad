@@ -1,9 +1,7 @@
 import { Options, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
 import File from '~/components/file'
 import { DeleteFileCommand, UploadFileCommand } from '~/domain/commands'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IFile } from '~/domain/models'
 import { FilesQuery } from '~/domain/queries'
 import { ConfirmQuery } from '~/domain/queries/confirm.query'
@@ -20,6 +18,7 @@ export default class Files extends Vue {
   @Getter('getDownloadsTargetPath') downloadTargetPath: string
 
   selected: string = null
+  uploading = false
 
   onFileChangeHandler: (e: InputEvent) => void
   onFileRemoveHandler: () => void
@@ -83,22 +82,14 @@ export default class Files extends Vue {
 
   async upload(formData: FormData) {
     try {
-      this.$app.$commandBus.do(
-        new CreateEditCommand({
-          component: 'uploading-popup',
-          componentProps: {},
-          modal: {
-            title: 'Uploading'
-          },
-          fsmState: FsmStates.Uploading
-        })
-      )
+      this.uploading = true
       await this.$app.$commandBus.do(new UploadFileCommand(formData))
-      this.$app.goBack()
       this.fetchFiles()
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
+    } finally {
+      this.uploading = false
     }
   }
 

@@ -28,12 +28,13 @@ export default class File extends Vue {
   }
 
   setPosition() {
-    const w = this.parent.clientWidth
-    const count = Math.floor(w / (65 + 16)) + 1
+    const elemW = 65
+    const gap = 8
+    const count = Math.floor(this.parent.clientWidth / (elemW + gap * 2)) + 1
     const row = Math.floor(this.index / count)
     const index = this.index - row * count
-    const x = 8 + 8 * index + 65 * index
-    let h = 65
+    const x = gap + index * (gap + elemW)
+    let h = elemW
     if (row > 0) {
       let topLevelElems: Array<Element> = []
       this.parent.querySelectorAll('.file').forEach(el => topLevelElems.push(el))
@@ -41,7 +42,7 @@ export default class File extends Vue {
       const hh = topLevelElems.map(el => el.clientHeight)
       h = Math.max(...hh)
     }
-    const y = 8 + row * h
+    const y = gap + row * (h + gap)
     this.$el.style.transform = `translate(${x}px, ${y}px)`
   }
 

@@ -133,6 +133,7 @@ export const getFileType = (name: string): string => {
   if (/7z$/.test(name)) return '7z'
   if (/xlsx?$/.test(name)) return 'xls'
   if (/exe?$/.test(name)) return 'exe'
+  if (/msi?$/.test(name)) return 'msi'
 
   return 'default'
 }
