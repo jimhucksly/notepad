@@ -45,18 +45,10 @@ const fsm = new StateMachine({
     { name: 'links', from: '*', to: toStr(FsmStates.Links) },
     { name: 'files', from: '*', to: toStr(FsmStates.Files) },
     { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) },
-    {
-      name: 'addlinkpopup',
-      from: toStr(FsmStates.Links),
-      to: toStr(FsmStates.AddLinkPopup)
-    },
-    { name: 'about', from: '*', to: toStr(FsmStates.About) },
-    {
-      name: 'addlibraryfilepopup',
-      from: '*',
-      to: toStr(FsmStates.AddLibraryFilePopup)
-    },
-    { name: 'confirmpopup', from: '*', to: toStr(FsmStates.ConfirmPopup) }
+    { name: 'infowindow', from: '*', to: toStr(FsmStates.InfoWindow) },
+    { name: 'confirmwindow', from: '*', to: toStr(FsmStates.ConfirmWindow) }
+    // { name: 'about', from: '*', to: toStr(FsmStates.About) },
+    // { name: 'createeditpopup', from: '*', to: toStr(FsmStates.CreateEdit) }
   ],
   methods: {
     onBeforeTransition: onBeforeTransition.bind(this)

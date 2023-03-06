@@ -2,7 +2,7 @@ import { Watch } from 'vue-property-decorator'
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { IModalInfo } from '~/domain/models'
+import { IModalInfo, IPopupWindowQuery } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
 export default class Popup extends Vue {
@@ -11,6 +11,8 @@ export default class Popup extends Vue {
   component = ''
   props: Record<string, unknown> = null
   modal: IModalInfo<unknown> = null
+  dialogType: symbol = null
+
   openDialogHandler: (command: CreateEditCommand<unknown>) => void
 
   @Watch('showPopup') onShowPopupChanged(state: boolean) {
@@ -26,20 +28,23 @@ export default class Popup extends Vue {
     Hub.$on('open-dialog', this.openDialogHandler)
   }
 
-  openDialog(command: CreateEditCommand<unknown>) {
-    this.component = command.component
-    this.props = command.componentProps
-    this.modal = command.modal
-    this.$app.goto(command.fsmState)
+  openDialog<T>(query: IPopupWindowQuery<T>) {
+    this.component = query.component
+    this.props = query.componentProps || {}
+    this.modal = query.modal
+    this.dialogType = query.fsmState
+    this.$app.goto(this.dialogType)
   }
 
   close() {
     this.modal.resolveFunction(null)
+    this.modal = null
     this.$app.goBack()
   }
 
-  onSetResult(data: Record<string, unknown>) {
+  onSetResult(data: unknown) {
     this.modal.resolveFunction(data)
+    this.modal = null
     this.$app.goBack()
   }
 
@@ -51,12 +56,17 @@ export default class Popup extends Vue {
     return this.modal?.title
   }
 
+  get isInfoWindowDialog(): boolean {
+    return this.modal && this.dialogType === this.$app.states.InfoWindow
+  }
+
+  get isConfirmWindowDialog(): boolean {
+    return this.modal && this.dialogType === this.$app.states.ConfirmWindow
+  }
+
   get showPopup() {
-    return [
-      this.$app.states.AddLinkPopup,
-      this.$app.states.About,
-      this.$app.states.AddLibraryFilePopup,
-      this.$app.states.ConfirmPopup
-    ].includes(this.fsmState)
+    return (
+      this.isInfoWindowDialog || this.isConfirmWindowDialog
+    )
   }
 }

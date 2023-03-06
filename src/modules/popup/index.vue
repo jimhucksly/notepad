@@ -12,6 +12,13 @@
           v-bind="props"
           @set-result="onSetResult"
         />
+        <div v-if="isConfirmWindowDialog">
+          {{ props.question }}
+        </div>
+      </div>
+      <div class="popup-actions flex-center">
+        <button class="btn btn-primary" @click.prevent="onSetResult(true)">Yes</button>
+        <button class="btn btn-default" @click.prevent="onSetResult(false)">No</button>
       </div>
     </div>
   </div>

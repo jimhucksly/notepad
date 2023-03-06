@@ -16,10 +16,9 @@ export interface IFsmStates {
   Links: symbol
   Files: symbol
   JsonViewer: symbol
-  AddLinkPopup: symbol
-  About: symbol
-  AddLibraryFilePopup: symbol
-  ConfirmPopup: symbol
+  // CreateEdit: symbol
+  InfoWindow: symbol
+  ConfirmWindow: symbol
 }
 
 const FsmStates: IFsmStates = {
@@ -40,10 +39,9 @@ const FsmStates: IFsmStates = {
   Links: Symbol.for('Links'),
   Files: Symbol.for('Files'),
   JsonViewer: Symbol.for('JsonViewer'),
-  AddLinkPopup: Symbol.for('AddLinkPopup'),
-  About: Symbol.for('About'),
-  AddLibraryFilePopup: Symbol.for('AddLibraryFilePopup'),
-  ConfirmPopup: Symbol.for('ConfirmPopup')
+  // CreateEdit: Symbol.for('CreateEdit')
+  InfoWindow: Symbol.for('InfoWindow'),
+  ConfirmWindow: Symbol.for('ConfirmWindow')
 }
 
 export default FsmStates

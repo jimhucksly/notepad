@@ -5,7 +5,7 @@ import { Getter, Mutation } from 'vuex-class'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
 import { IArchive, IFilters, IProjects, IProject } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
-import { ConfirmQuery } from '~/domain/queries/confirm.query'
+import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 
 export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
@@ -55,7 +55,7 @@ export default class ProjectsEditor extends Vue {
       this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if (isLocked) {
-      const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
+      const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
         'Do you want to unlock this project?'
       ))
       if (!isConfirm) {
@@ -74,7 +74,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async remove() {
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
       'Do you want to remove this project?'
     ))
     if (!isConfirm) {

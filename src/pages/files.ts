@@ -4,7 +4,7 @@ import File from '~/components/file'
 import { DeleteFileCommand, UploadFileCommand } from '~/domain/commands'
 import { IFile } from '~/domain/models'
 import { FilesQuery } from '~/domain/queries'
-import { ConfirmQuery } from '~/domain/queries/confirm.query'
+import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { dragAndDropLoader } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 
@@ -70,7 +70,7 @@ export default class Files extends Vue {
     if (!this.selected) {
       return
     }
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
       'Do you realy want to remove this file?'
     ))
     if (!isConfirm) {

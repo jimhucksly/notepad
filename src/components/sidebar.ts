@@ -115,8 +115,7 @@ export default class Sidebar extends Vue {
       modal: {
         title: 'Add link',
         width: '30%'
-      },
-      fsmState: this.$app.states.AddLinkPopup
+      }
     })
     const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
     if (!result) {
@@ -125,8 +124,8 @@ export default class Sidebar extends Vue {
     if (!result.id) {
       result.id = uniqueid(6) as string
     }
-    await this.$app.$commandBus.do<UpdateLinksCommand, void>(new UpdateLinksCommand(result))
-    await this.$app.$queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
+    await this.$app.$commandBus.do(new UpdateLinksCommand(result))
+    await this.$app.$queryBus.exec(new LinksQuery())
   }
 
   addTodo() {

@@ -176,3 +176,14 @@ export interface IRootState {
   currentUser: IUser
   process: { name: string }
 }
+
+export interface IPopupWindowQuery<T> {
+  component: string
+  modal: {
+    title: string
+    width: string
+    resolveFunction?: (value: unknown) => Promise<T>
+  }
+  componentProps?: Record<string, unknown>
+  fsmState?: symbol
+}

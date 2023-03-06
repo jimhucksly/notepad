@@ -8,8 +8,8 @@ import QueryBus from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import store from '~/store'
 import mockStore from '../../test/mock/store'
-import { CreateEditCommandHandler } from './commands/createEdit.command'
-import { ConfirmQueryHandler } from './queries/confirm.query'
+import { ConfirmWindowQueryHandler } from './queries/confirmWindow.query'
+import { InfoWindowQueryHandler } from './queries/infoWindow.query'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 let _store: Store<any> = null
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type TAnyResult = any
+// type TAnyResult = any
 
 const _container = new Container()
 _container.bind<Container>(TYPES.Container).toConstantValue(_container)
@@ -32,11 +32,10 @@ _container.bind<CommandBus>(CommandBus).toSelf()
 /* ------------ store ------------ */
 _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(_store || store)
 /* ------------ queries ------------ */
-_container.bind<ConfirmQueryHandler>(TYPES.ConfirmQuery)
-  .to(ConfirmQueryHandler).inSingletonScope()
+_container.bind<InfoWindowQueryHandler>(TYPES.InfoWindowQuery).to(InfoWindowQueryHandler).inSingletonScope()
+_container.bind<ConfirmWindowQueryHandler>(TYPES.ConfirmWindowQuery).to(ConfirmWindowQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */
-_container.bind<CreateEditCommandHandler<TAnyResult>>(TYPES.CreateEditCommand)
-  .to(CreateEditCommandHandler).inSingletonScope()
+/* ---------------------------------- */
 
 export {
   _container

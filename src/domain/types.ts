@@ -16,7 +16,6 @@ const TYPES = {
   LinksQuery: Symbol.for('LinksQuery'),
   TodoQuery: Symbol.for('TodoQuery'),
   FilesQuery: Symbol.for('FilesQuery'),
-  ConfirmQuery: Symbol.for('ConfirmQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
@@ -46,7 +45,10 @@ const TYPES = {
   DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
   TodoOrderCommand: Symbol.for('TodoOrderCommand'),
   DeleteFileCommand: Symbol.for('DeleteFileCommand'),
-  RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand')
+  RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
+  /* --------- interactive --------- */
+  InfoWindowQuery: Symbol.for('InfoWindowQuery'),
+  ConfirmWindowQuery: Symbol.for('ConfirmWindowQuery')
 }
 
 export {

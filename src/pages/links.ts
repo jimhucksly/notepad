@@ -4,7 +4,6 @@ import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
 import { Getter } from 'vuex-class'
 import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import FsmStates from '~/application/fsm.states'
 
 export default class Links extends Vue {
   @Getter('links/getLinks') links: Array<ILink>
@@ -35,8 +34,7 @@ export default class Links extends Vue {
         modal: {
           title: 'Edit link',
           width: '30%'
-        },
-        fsmState: FsmStates.AddLinkPopup
+        }
       })
       const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
       if (!result) {

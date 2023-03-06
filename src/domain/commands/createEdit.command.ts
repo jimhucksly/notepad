@@ -11,18 +11,15 @@ export class CreateEditCommand<R> {
   constructor({
     component,
     componentProps,
-    modal,
-    fsmState
+    modal
   }: {
     component: string
     componentProps: Record<string, unknown>
     modal: IModalInfo<R>
-    fsmState: symbol
   }) {
     this.component = component
     this.componentProps = componentProps
     this.modal = modal
-    this.fsmState = fsmState
   }
 }
 
