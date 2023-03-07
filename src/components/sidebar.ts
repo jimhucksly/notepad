@@ -11,9 +11,9 @@ import Projects from '~/components/projects'
 import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
 import { UpdateLinksCommand } from '~/domain/commands'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { IFile, ILink, IMenu } from '~/domain/models'
 import { LinksQuery } from '~/domain/queries'
+import { CreateEditQuery } from '~/domain/queries/createEdit.query'
 import { uniqueid } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 
@@ -106,18 +106,14 @@ export default class Sidebar extends Vue {
   }
 
   async addLink() {
-    const command = new CreateEditCommand({
+    const query = new CreateEditQuery<ILink>({
       component: 'create-edit-link',
-      componentProps: {
-        url: '',
-        name: ''
-      },
       modal: {
         title: 'Add link',
         width: '30%'
       }
     })
-    const result = await this.$app.$commandBus.do<CreateEditCommand<ILink>, ILink>(command)
+    const result = await this.$app.$queryBus.exec<CreateEditQuery<ILink>, ILink>(query)
     if (!result) {
       return
     }

@@ -9,6 +9,7 @@ import { TYPES } from '~/domain/types'
 import store from '~/store'
 import mockStore from '../../test/mock/store'
 import { ConfirmWindowQueryHandler } from './queries/confirmWindow.query'
+import { CreateEditQueryHandler } from './queries/createEdit.query'
 import { InfoWindowQueryHandler } from './queries/infoWindow.query'
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -34,6 +35,7 @@ _container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(_store || store)
 /* ------------ queries ------------ */
 _container.bind<InfoWindowQueryHandler>(TYPES.InfoWindowQuery).to(InfoWindowQueryHandler).inSingletonScope()
 _container.bind<ConfirmWindowQueryHandler>(TYPES.ConfirmWindowQuery).to(ConfirmWindowQueryHandler).inSingletonScope()
+_container.bind<CreateEditQueryHandler<unknown>>(TYPES.CreateEditQuery).to(CreateEditQueryHandler).inSingletonScope()
 /* ------------ commands ------------ */
 /* ---------------------------------- */
 

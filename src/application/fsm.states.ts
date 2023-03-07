@@ -16,7 +16,7 @@ export interface IFsmStates {
   Links: symbol
   Files: symbol
   JsonViewer: symbol
-  // CreateEdit: symbol
+  CreateEdit: symbol
   InfoWindow: symbol
   ConfirmWindow: symbol
 }
@@ -39,7 +39,7 @@ const FsmStates: IFsmStates = {
   Links: Symbol.for('Links'),
   Files: Symbol.for('Files'),
   JsonViewer: Symbol.for('JsonViewer'),
-  // CreateEdit: Symbol.for('CreateEdit')
+  CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
   ConfirmWindow: Symbol.for('ConfirmWindow')
 }

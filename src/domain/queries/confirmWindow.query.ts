@@ -11,7 +11,7 @@ export class ConfirmWindowQuery implements IPopupWindowQuery<boolean> {
     title: 'Confirmation!',
     width: '45%'
   }
-  fsmState: symbol
+  fsmState = FsmStates.ConfirmWindow
   constructor(question: string) {
     this.componentProps.question = question
   }
@@ -22,7 +22,6 @@ export class ConfirmWindowQueryHandler implements IQueryHandler<ConfirmWindowQue
   async exec(query: ConfirmWindowQuery): Promise<boolean> {
     return new Promise(resolve => {
       setTimeout(() => {
-        query.fsmState = FsmStates.ConfirmWindow
         query.modal.resolveFunction = resolve as (value: unknown) => Promise<boolean>
         Hub.$emit('open-dialog', query)
       }, 100)

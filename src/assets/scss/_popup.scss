@@ -81,12 +81,3 @@
     max-width: 80px;
   }
 }
-
-.error-hint {
-  color: var(--editor_red);
-  font-size: 11px;
-}
-
-input[type=text].input--error {
-  border: 1px solid var(--editor_red);
-}

@@ -1,60 +1,47 @@
 import { Prop } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
+import { Vue } from 'vue-class-component'
 import { ILink } from '~/domain/models'
+import { IValidate } from '~/plugins/validate'
 
-@Options({
-  beforeUnmount() {
-    this.link.id = ''
-    this.link.url = ''
-    this.link.name = ''
-  }
-})
 export default class CreateEditLinkComponent extends Vue {
-  @Prop() id: string
-  @Prop() url: string
-  @Prop() name: string
+  @Prop() item: ILink
 
-  link: ILink = {
-    id: '',
-    url: '',
-    name: ''
-  }
+  url = ''
+  name = ''
 
-  errors = {
-    url: false,
-    name: false
-  }
+  v: IValidate = {}
+
+  isSubmitted = false
 
   created() {
-    this.link.id = this.id
-    this.link.url = this.url
-    this.link.name = this.name
-  }
-
-  validate() {
-    if (!this.link.url) {
-      this.errors.url = true
+    if (this.item) {
+      this.url = this.item.url
+      this.name = this.item.name
     }
-    if (!this.link.name) {
-      this.errors.name = true
-    }
-    return !Object.values(this.errors).includes(true)
-  }
-
-  save() {
-    if (this.validate()) {
-      this.$emit('set-result', { ...this.link })
-    }
+    this.$emit('popup-component-created', this)
   }
 
   mounted() {
-    ['url', 'name'].forEach(key => {
-      const ref = this.$refs[key]
-      if (ref) {
-        (ref as HTMLInputElement).addEventListener('focus', () => {
-          this.errors[key] = false
-        })
-      }
-    })
+    this.$validate(this)
+  }
+
+  async validate(): Promise<boolean> {
+    await this.v.touch()
+    return this.v.valid()
+  }
+
+  async save() {
+    this.isSubmitted = true
+    if (!(await this.validate())) {
+      return
+    }
+    const o: ILink = {
+      url: this.url,
+      name: this.name
+    }
+    if (this.item?.id) {
+      o.id = this.item.id
+    }
+    this.$emit('set-result', o)
   }
 }

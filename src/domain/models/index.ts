@@ -93,7 +93,7 @@ export interface ITodoOrder {
 }
 
 export interface ILink {
-  id: string
+  id?: string
   url: string
   name: string
 }
@@ -116,14 +116,6 @@ export interface IResponse<TData> {
   message?: string
   user?: IUser
   token?: string
-}
-
-export type IResolveFunc<T> = (value: T) => void
-
-export interface IModalInfo<R> {
-  title?: string
-  width?: string
-  resolveFunction?: IResolveFunc<R>
 }
 
 export interface IProjectsState {
@@ -186,4 +178,8 @@ export interface IPopupWindowQuery<T> {
   }
   componentProps?: Record<string, unknown>
   fsmState?: symbol
+}
+
+export interface IPopupComponent<T> {
+  save: () => T
 }

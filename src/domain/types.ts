@@ -24,7 +24,6 @@ const TYPES = {
   VerifyCommand: Symbol.for('VerifyCommand'),
   ResendCodeCommand: Symbol.for('ResendCodeCommand'),
   ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
-  CreateEditCommand: Symbol.for('CreateEditCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
   CreateProjectCommand: Symbol.for('CreateProjectCommand'),
   EditProjectCommand: Symbol.for('EditProjectCommand'),
@@ -48,7 +47,8 @@ const TYPES = {
   RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
   /* --------- interactive --------- */
   InfoWindowQuery: Symbol.for('InfoWindowQuery'),
-  ConfirmWindowQuery: Symbol.for('ConfirmWindowQuery')
+  ConfirmWindowQuery: Symbol.for('ConfirmWindowQuery'),
+  CreateEditQuery: Symbol.for('CreateEditQuery')
 }
 
 export {
