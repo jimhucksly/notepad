@@ -137,7 +137,7 @@ body {
 
 @each $elem in ('projects_inner', 'library_inner',
   'projects_editor_inner', 'projects_archives_inner',
-  'preferences_form'
+  'preferences_form', 'ace_scrollbar-v'
 ) {
   .#{$elem}::-webkit-scrollbar-button {
     background-image: none;

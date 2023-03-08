@@ -1,25 +1,19 @@
 <template>
-  <div class="notepad_item" :data-stamp="item.key" :class="{ unread: item.unread }">
+  <div class="notepad_item" ref="item" :data-stamp="item.key" :class="{ unread: item.unread }">
     <div>
       <div class="notepad_item_date">{{ item.date }}</div>
     </div>
     <div class="notepad_item_content" ref="content">
-      <!-- <file
-        v-if="item.file !== undefined"
-        ref="file"
-        :item-key="item.key"
-        :item-file="item.file"
-      /> -->
-      <p v-if="!isEdit" v-html="message" @click.prevent="openLink($event)"></p>
+      <p v-html="message" @click.prevent="openLink($event)"></p>
     </div>
-    <controls
-      :item-key="item.key"
-      :is-lock="item.lock"
-      :collection="item.file ? ['remove'] : ['save', 'edit', 'remove']"
-      @on-will-edit="isEdit = true"
-      @on-will-save="isEdit = false"
-      @on-will-delete="$emit('on-will-delete', $event)"
-    />
+    <div class="notepad_item_btns">
+      <button @click.prevent="edit">
+        <svg-icon icon="editIcon" />
+      </button>
+      <button @click.prevent="remove">
+        <svg-icon icon="removeIcon" />
+      </button>
+    </div>
   </div>
 </template>
 <script src="./projectItem.ts" lang="ts"></script>

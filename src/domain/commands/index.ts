@@ -3,8 +3,7 @@ import {
   IEvent,
   ILink,
   ITodoOrder,
-  ITodoItem,
-  ILibraryFile
+  ITodoItem
 } from '~/domain/models'
 
 export class AuthCommand {
@@ -86,7 +85,7 @@ export class DeleteEventCommand {
 }
 
 export class AddLibraryFileCommand {
-  constructor(public data: ILibraryFile) {}
+  constructor(public name: string) {}
 }
 
 export class DeleteLibraryFileCommand {

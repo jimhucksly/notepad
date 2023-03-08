@@ -25,6 +25,7 @@ import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
 import SocketPlugin from '~/plugins/socket'
 import Validate from './plugins/validate'
+import CreateEditProject from './modules/popup/createEditProject'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -39,6 +40,7 @@ app.component('loader', Loader)
 app.component('b-checkbox', BCheckbox)
 app.component('b-btn', BBtn)
 app.component('about-popup', AboutPopup)
+app.component('create-edit-project', CreateEditProject)
 app.component('create-edit-library-file', CreateEditLibraryFile)
 app.component('code-input', CodeInput)
 

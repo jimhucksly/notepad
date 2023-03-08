@@ -8,9 +8,20 @@ export interface IMenu {
 }
 
 export interface IEditor {
+  container: {
+    remove: () => void
+  }
   getValue: () => string
   on: (event: string, callback: () => void) => void
   setValue: (value: string) => void
+  destroy: () => void
+  setShowPrintMargin: (value: boolean) => void
+  setHighlightActiveLine: (value: boolean) => void
+  getSession: () => {
+    selection: {
+      clearSelection: () => void
+    }
+  }
 }
 
 export interface ITreeItem {
@@ -173,7 +184,8 @@ export interface IPopupWindowQuery<T> {
   component: string
   modal: {
     title: string
-    width: string
+    width?: string
+    height?: string
     resolveFunction?: (value: unknown) => Promise<T>
   }
   componentProps?: Record<string, unknown>

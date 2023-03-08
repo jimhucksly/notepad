@@ -58,6 +58,10 @@ export default class Popup extends Vue {
     return this.modal?.width || '30%'
   }
 
+  get height() {
+    return this.modal?.height || 'auto'
+  }
+
   get title() {
     return this.modal?.title
   }

@@ -1,6 +1,6 @@
 <template>
   <div class="popup" v-show="showPopup">
-    <div class="popup-window" :style="`width: ${width}`">
+    <div class="popup-window" :style="`width: ${width}; height: ${height}`">
       <div class="popup-title-bar">
         <span>{{ title }}</span>
         <div class="popup-close-btn" @click="close"></div>
@@ -13,7 +13,7 @@
           @set-result="onSetResult"
           @popup-component-created="instance = $event"
         />
-        <div v-if="isConfirmWindowDialog">
+        <div v-else-if="isConfirmWindowDialog">
           {{ props.question }}
         </div>
       </div>
