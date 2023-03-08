@@ -191,9 +191,9 @@ main {
   }
 
   .notepad_item_content {
-    font-family: var(--font-gotham);
-    font-size: 12px;
-    color: rgb(0,0,0);
+    font-family: $menlo;
+    font-size: 11px;
+    color: $dark;
     word-wrap: break-word;
     line-height: 19px;
   }
