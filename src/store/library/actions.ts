@@ -82,14 +82,14 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
   ): Promise<boolean> {
     try {
       setProcess(store, 'creating library file...')
-      const resp = await $http.put<ILibraryFile, { id: string }>('/library', command.data)
+      const resp = await $http.put<AddLibraryFileCommand, { id: string }>('/library', command)
       if (!resp || !resp.data) {
         return Promise.reject(resp)
       }
       const files = [...store.getters.getLibraryFiles]
       files.push({
         id: resp.data.id,
-        name: command.data.name
+        name: command.name
       })
       store.commit('setLibraryFiles', files)
       store.commit('setLibraryFileId', resp.data.id)

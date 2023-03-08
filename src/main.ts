@@ -16,7 +16,6 @@ import SvgIcon from '~/modules/svgIcon'
 import Loader from '~/modules/loader'
 import CreateEditLink from '~/modules/popup/createEditLink'
 import AboutPopup from '~/modules/popup/about'
-import ConfirmPopup from '~/modules/popup/confirm'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
 import CodeInput from './modules/codeInput'
 
@@ -41,7 +40,6 @@ app.component('b-checkbox', BCheckbox)
 app.component('b-btn', BBtn)
 app.component('about-popup', AboutPopup)
 app.component('create-edit-library-file', CreateEditLibraryFile)
-app.component('confirm-popup', ConfirmPopup)
 app.component('code-input', CodeInput)
 
 app.use(store)

@@ -2,10 +2,10 @@ import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
 import { ILibraryFile } from '~/domain/models'
 import { LibraryFilesQuery } from '~/domain/queries'
-import { ConfirmQuery } from '~/domain/queries/confirm.query'
+import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { CreateEditQuery } from '~/domain/queries/createEdit.query'
 
 export default class LibraryFiles extends Vue {
   @Prop() expanded: boolean
@@ -24,24 +24,22 @@ export default class LibraryFiles extends Vue {
 
   async add() {
     this.$app.goBack()
-    const command = new CreateEditCommand({
+    const query = new CreateEditQuery<ILibraryFile>({
       component: 'create-edit-library-file',
-      componentProps: {},
       modal: {
         title: 'Add library file',
         width: '30%'
-      },
-      fsmState: this.$app.states.AddLibraryFilePopup
+      }
     })
-    const file = await this.$app.$commandBus.do<CreateEditCommand<ILibraryFile>, ILibraryFile>(command)
-    if (!file) {
+    const result = await this.$app.$queryBus.exec<CreateEditQuery<ILibraryFile>, ILibraryFile>(query)
+    if (!result) {
       return
     }
-    await this.$app.$commandBus.do(new AddLibraryFileCommand(file))
+    await this.$app.$commandBus.do(new AddLibraryFileCommand(result.name))
   }
 
   async removeFile(file: ILibraryFile) {
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
       'Do you want to remove the library file?'
     ))
     if (!isConfirm) {
