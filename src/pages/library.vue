@@ -8,6 +8,9 @@
         Text
       </div>
     </div>
+    <button class="editor_save" v-if="isPreview" @click="save">
+      <span class="fa fa-save"></span>
+    </button>
     <div class="editor_content" v-if="isPreview && !updating" v-html="template"></div>
     <div class="editor_text" ref="editor_text" v-show="!isPreview"></div>
   </div>

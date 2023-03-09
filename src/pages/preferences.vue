@@ -2,7 +2,7 @@
   <div class="preferences">
     <div class="title">Preferences</div>
     <form ref="form" class="preferences_form">
-      <div>
+      <!-- <div>
         <div class="form-group">
           <div class="form-group-inner">
             <label
@@ -27,7 +27,7 @@
             <button class="btn btn-default" @click.prevent="openFolderDialog">Change</button>
           </div>
         </div>
-      </div>
+      </div> -->
       <div>
         <div class="form-group">
           <div class="form-group-inner flex-between items-center">

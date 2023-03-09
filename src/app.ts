@@ -22,5 +22,9 @@ export default class AppComponent extends Vue {
         this.$electron.ipcRenderer.send('context-menu-popup')
       }
     })
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css'
+    document.getElementsByTagName('head')[0].appendChild(link)
   }
 }

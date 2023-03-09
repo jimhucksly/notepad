@@ -1,5 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
+import Electron from 'electron'
 
 @Options({
   template: `

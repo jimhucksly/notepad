@@ -1,5 +1,5 @@
 import { Watch } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
+import { Vue } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
 import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
@@ -45,12 +45,6 @@ const linked = (value: ILinkedDoc): Array<string> => {
   return result
 }
 
-@Options({
-  beforeUnmount() {
-    this.setFileId(0)
-    Hub.$off('codemirror-link-click', this.linkClickHandler)
-  }
-})
 export default class LibraryPage extends Vue {
   static editor: SimpleMDEExt = null
 
@@ -128,6 +122,11 @@ export default class LibraryPage extends Vue {
     this.buildTree()
   }
 
+  beforeUnmount() {
+    this.setFileId(0)
+    Hub.$off('codemirror-link-click', this.linkClickHandler)
+  }
+
   async buildEditor(element: HTMLElement) {
     const config: SimpleMDE.Options = {
       autofocus: true,
@@ -161,7 +160,8 @@ export default class LibraryPage extends Vue {
         },
         'autosave', 'lines', 'words', 'cursor'
       ],
-      tabSize: 4
+      tabSize: 4,
+      autoDownloadFontAwesome: false
     }
     if (element) {
       config.element = element
