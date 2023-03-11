@@ -24,6 +24,7 @@ const TYPES = {
   VerifyCommand: Symbol.for('VerifyCommand'),
   ResendCodeCommand: Symbol.for('ResendCodeCommand'),
   ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
+  UpdatePasswordCommand: Symbol.for('UpdatePasswordCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
   CreateProjectCommand: Symbol.for('CreateProjectCommand'),
   EditProjectCommand: Symbol.for('EditProjectCommand'),

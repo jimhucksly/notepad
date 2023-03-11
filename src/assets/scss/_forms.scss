@@ -8,6 +8,10 @@
     flex-basis: 100%;
     flex-grow: 1;
 
+    .col {
+      width: 50%;
+    }
+
     label {
       display: block;
       color: var(--blue);
@@ -20,15 +24,6 @@
         color: var(--red);
       }
     }
-  }
-
-  .form-group-btn {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    flex-basis: 110px;
-    flex-grow: 0;
-    flex-shrink: 0;
   }
 }
 

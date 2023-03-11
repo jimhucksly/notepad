@@ -62,14 +62,21 @@ export default class NotepadItem extends Vue {
   }
 
   async remove() {
-    if (this.item.lock) {
-      const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
-        'Do you realy want to remove this project?'
-      ))
-      if (!isConfirm) {
-        return
-      }
+    let isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+      'Do you realy want to remove this project?'
+    ))
+    if (!isConfirm) {
+      return
     }
+    if (this.item.lock) {
+      isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+        'Project is locked. Do you realy want to remove this project?'
+      ))
+    }
+    if (!isConfirm) {
+      return
+    }
+    this.$emit('on-remove', this.item.key)
   }
 
   openLink(e: MouseEvent): void | boolean {

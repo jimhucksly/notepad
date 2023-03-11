@@ -1,9 +1,11 @@
 import AutoLaunch from 'auto-launch'
 import { Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { RevokeYandexTokenCommand } from '~/domain/commands'
-import { IUser } from '~/domain/models'
+import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands'
+import { IResponse, IUser } from '~/domain/models'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { IValidate } from '~/plugins/validate'
 import pkg from '../../package.json'
 
 export default class Preferences extends Vue {
@@ -30,6 +32,27 @@ export default class Preferences extends Vue {
   yandexDiskResponseCode = ''
   createYandexDiskStepTwo = false
 
+  isResetPasswordMode = false
+  oldPass = ''
+  errorMessage = ''
+  newPass = ''
+  repeatNewPass = ''
+
+  v: IValidate = {}
+  isSubmitted = false
+
+  @Watch('isResetPasswordMode') onIsResetPasswordModeChanged() {
+    if (this.isResetPasswordMode) {
+      this.$nextTick(() => {
+        this.$validate(this)
+      })
+    }
+  }
+
+  @Watch('oldPass') onOldPassChanged() {
+    this.errorMessage = ''
+  }
+
   mounted() {
     // this.preferences.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
     // this.defaults.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
@@ -49,27 +72,10 @@ export default class Preferences extends Vue {
       })
   }
 
-  // validate(): boolean {
-  //   const form = this.$refs.form as HTMLFormElement
-  //   const requireds: NodeListOf<HTMLInputElement> = form.querySelectorAll('[required]')
-  //   if (requireds.length > 0) {
-  //     requireds.forEach(el => {
-  //       const name = el.name
-  //       if (this[name] === '') {
-  //         this.errors[name] = 1
-  //         el.onclick = () => {
-  //           this.errors[name] = 0
-  //           el.onclick = null
-  //         }
-  //       }
-  //     })
-  //   }
-
-  //   return Object
-  //     .keys(this.errors)
-  //     .map((key: string) => this.errors[key])
-  //     .reduce((a, b) => a + b) === 0
-  // }
+  async validate(): Promise<boolean> {
+    await this.v.touch()
+    return this.v.valid()
+  }
 
   async save() {
     // storage.append(this.userDataPath, 'UserPreferences', {
@@ -88,7 +94,30 @@ export default class Preferences extends Vue {
         this.appAutoLauncher.disable()
       }
     }
+
+    if (this.isResetPasswordMode) {
+      this.isSubmitted = true
+      if (!(await this.validate())) {
+        return
+      }
+      try {
+        await this.$app.$commandBus.do(new UpdatePasswordCommand(this.oldPass, this.newPass))
+        this.$toasted.success('Your password is updated')
+        this.$app.logout()
+      } catch (e) {
+        this.$app.loading(false)
+        this.handleError(e)
+      }
+      return
+    }
     this.$app.goBack()
+  }
+
+  handleError(e: IResponse<{ message: string }>) {
+    if (e?.data?.message === 'Password is incorrect') {
+      (this.v as { oldPass: { isInvalid: boolean } }).oldPass.isInvalid = true
+      this.errorMessage = 'Password is incorrect'
+    }
   }
 
   cancel() {

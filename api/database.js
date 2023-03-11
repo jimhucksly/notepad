@@ -216,16 +216,16 @@ function command() {
             throw new Error(e?.hint || e?.message || 'bad request')
           }
         },
-        // async resetPassword(password) {
-        //   try {
-        //     if (id && password) {
-        //       const query = 'UPDATE users SET pswd_md5 = md5($2) WHERE id = $1'
-        //       return await execQuery(query, [id, password])
-        //     }
-        //   } catch (e) {
-        //     throw new Error(e?.hint || e?.message || 'bad request')
-        //   }
-        // }
+        async updatePassword(old, password) {
+          try {
+            if (id && old && password) {
+              const query = 'SELECT * FROM reset_pass($1, $2, $3)'
+              return await execQuery(query, [id, old, password])
+            }
+          } catch (e) {
+            throw new Error(e?.hint || e?.message || 'bad request')
+          }
+        },
         async setYandexAccessToken(token) {
           try {
             if (id && token) {

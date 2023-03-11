@@ -151,6 +151,7 @@ export default class Application implements IApplication {
           storage.set(userDataPath, userDataFileName, { token: '' })
           this.history = []
           this._store.commit('setHistory', [])
+          this._store.commit('setComponent', null)
         }
         return
       }

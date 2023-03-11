@@ -107,7 +107,7 @@ export default class Projects extends Vue {
     })
   }
 
-  async onDelete(stamp: string) {
+  async onRemove(stamp: string) {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
@@ -119,7 +119,7 @@ export default class Projects extends Vue {
       await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
       this.removeStack = this.removeStack.filter(el => el !== stamp)
       if (this.removeStack.length) {
-        this.onDelete(this.removeStack[0])
+        this.onRemove(this.removeStack[0])
       }
     }
   }

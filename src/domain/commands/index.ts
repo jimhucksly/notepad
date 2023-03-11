@@ -44,6 +44,10 @@ export class ResetPasswordCommand {
   constructor(public email: string) {}
 }
 
+export class UpdatePasswordCommand {
+  constructor(public old: string, public pass: string) {}
+}
+
 export class CreateProjectCommand {
   constructor(public data: IProjects) {}
 }

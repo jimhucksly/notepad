@@ -22,6 +22,7 @@ import {
   ResendCodeCommand,
   ResetPasswordCommand,
   RevokeYandexTokenCommand,
+  UpdatePasswordCommand,
   VerifyCommand
 } from '~/domain/commands'
 import { ActionTree, ActionContext } from 'vuex'
@@ -133,7 +134,24 @@ class Actions implements ActionTree<IRootState, IRootState> {
   async actionResetPass(store: TStore, command: ResetPasswordCommand): Promise<IResponse<IUser>> {
     try {
       setProcess(store, 'reset password...')
-      return await $http.post<ResendCodeCommand, IUser>('/reset', command)
+      return await $http.post<ResetPasswordCommand, IUser>('/reset', command)
+    } catch (e) {
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
+  /**
+   * Update pass
+   * @param store Store
+   * @param {UpdatePasswordCommand} command
+   */
+  @Commandable(TYPES.UpdatePasswordCommand)
+  async actionUpdatePass(store: TStore, command: UpdatePasswordCommand): Promise<IResponse<boolean>> {
+    try {
+      setProcess(store, 'update password...')
+      return await $http.post<UpdatePasswordCommand, boolean>('/update', command)
     } catch (e) {
       return Promise.reject(e)
     } finally {

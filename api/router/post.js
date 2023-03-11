@@ -142,10 +142,32 @@ function post(router, $app) {
         await $app.sendmail(user.email, 'resetPassword', { password })
         res.send({
           status: 'success',
-          message: 'success',
+          message: 'temporary password is sent to email',
           email: emailSecurity(user.email)
         })
         return
+      }
+      throw new Error()
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.post('/update', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const { old, pass } = req.body
+      if (old && pass) {
+        const user = await $app.db.query().user({ token }).get()
+        await $app.db.command().user({ id: user.id }).updatePassword(old, pass)
+        res.send({
+          status: 'success',
+          message: 'password is updated',
+        })
       }
       throw new Error()
     } catch (e) {

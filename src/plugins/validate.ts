@@ -25,7 +25,7 @@ export default {
     const keys: Array<string> = []
 
     function validation(instance: ComponentPublicInstance & { v: IValidate }) {
-      const required = this.$el.querySelectorAll('input[required]')
+      const required = instance.$el.querySelectorAll('input[required]')
       if (required?.length) {
         instance.v = v
         for (const el of required) {

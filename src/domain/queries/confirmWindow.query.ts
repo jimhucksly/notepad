@@ -9,7 +9,7 @@ export class ConfirmWindowQuery implements IPopupWindowQuery<boolean> {
   componentProps: IPopupWindowQuery<boolean>['componentProps'] = {}
   modal: IPopupWindowQuery<boolean>['modal'] = {
     title: 'Confirmation!',
-    width: '45%'
+    width: '35%'
   }
   fsmState = FsmStates.ConfirmWindow
   constructor(question: string) {

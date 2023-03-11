@@ -60,9 +60,11 @@ function capitalize(str) {
 
 function responseModify(response) {
   if (isObj(response)) {
-    if ('pswd_md5' in response) {
-      delete response.pswd_md5
-    }
+    ['pswd_md5', 'temp_pswd_md5'].forEach(key => {
+      if (key in response) {
+        delete response[key]
+      }
+    })
     Object.keys(response).forEach(key => {
       if (key.indexOf('_') > -1) {
         const newKey = underscoreToCamelCase(key)
