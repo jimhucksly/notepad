@@ -119,11 +119,13 @@ let rendererConfig = {
         }
       ]
     }),
-    new webpack.DefinePlugin({
-      '__VUE_OPTIONS_API__': true,
-      '__VUE_PROD_DEVTOOLS__': false,
-      $ENDPOINT: isDevelopment ? `"http://127.0.01:8000"` : endpoint,
-    })
+    new webpack.DefinePlugin(
+      {
+        '__VUE_OPTIONS_API__': true,
+        '__VUE_PROD_DEVTOOLS__': false,
+        '$ENDPOINT': isDevelopment ? `"http://127.0.01:8000"` : `"${endpoint}"`,
+      }
+    )
   ],
   output: {
     filename: '[name].js',
