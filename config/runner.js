@@ -67,26 +67,6 @@ function startRenderer () {
         devMiddleware: {
           writeToDisk: true,
         },
-        // proxy: {
-        //   '/api': {
-        //     target: '127.0.0.1:8000',
-        //     changeOrigin: true,
-        //     onProxyReq: (proxyReq) => {
-        //       console.log('onProxyReq')
-        //       console.log(proxyReq)
-        //       let path = proxyReq.path;
-        //       let query = '';
-        //       if (proxyReq.path.indexOf('?') > -1) {
-        //         path = proxyReq.path.split('?')[0];
-        //         query = proxyReq.path.split('?')[1];
-        //       }
-        //       if(path && !path.endsWith('/')) {
-        //         path = path + '/';
-        //       }
-        //       proxyReq.path = path + (query ? '?' + query : '');
-        //     }
-        //   }
-        // }
       },
       compiler
     )

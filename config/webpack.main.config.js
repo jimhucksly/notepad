@@ -4,7 +4,6 @@ process.env.BABEL_ENV = 'main'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 const path = require('path')
-const webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
