@@ -1,4 +1,4 @@
-import { IEvent } from '~/domain/models'
+import { IEvents } from '~/domain/models'
 
 export type TMode = 'd' | 'm' | 'y'
 
@@ -21,7 +21,7 @@ export interface IOptions {
   weekDays: string[]
   range: boolean
   eventsMode: boolean
-  items: IEvent | null
+  items: IEvents | null
   mode: TMode
   setDate: string // 01.01.2020
   disableDaysBefore: Date | null

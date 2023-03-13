@@ -1,21 +1,22 @@
 import { Watch } from 'vue-property-decorator'
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import { IModalInfo } from '~/domain/models'
+import { IPopupComponent, IPopupWindowQuery } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
 export default class Popup extends Vue {
   @Getter('getFsmState') fsmState: symbol
 
   component = ''
-  props: Record<string, unknown> = null
-  modal: IModalInfo<unknown> = null
-  openDialogHandler: (command: CreateEditCommand<unknown>) => void
+  props: IPopupWindowQuery<unknown>['componentProps'] = {}
+  modal: IPopupWindowQuery<unknown>['modal'] = null
+  dialogType: symbol = null
+  instance: IPopupComponent<unknown> = null
+
+  openDialogHandler: (query: IPopupWindowQuery<unknown>) => Promise<unknown>
 
   @Watch('showPopup') onShowPopupChanged(state: boolean) {
-    if(!state) {
+    if (!state) {
       this.component = null
       this.props = null
       this.modal = null
@@ -27,39 +28,59 @@ export default class Popup extends Vue {
     Hub.$on('open-dialog', this.openDialogHandler)
   }
 
-  openDialog(command: CreateEditCommand<unknown>) {
-    this.component = command.component
-    this.props = command.componentProps
-    this.modal = command.modal
-    this.$app.goto(command.fsmState)
+  openDialog<T>(query: IPopupWindowQuery<T>) {
+    this.component = query.component
+    this.props = query.componentProps || {}
+    this.modal = query.modal
+    this.dialogType = query.fsmState
+    this.$app.goto(this.dialogType)
   }
 
   close() {
     this.modal.resolveFunction(null)
+    this.modal = null
     this.$app.goBack()
   }
 
-  onSetResult(data: Record<string, unknown>) {
+  onSetResult(data: unknown) {
     this.modal.resolveFunction(data)
+    this.modal = null
     this.$app.goBack()
+  }
+
+  save() {
+    if (this.instance.save instanceof Function) {
+      this.instance.save()
+    }
   }
 
   get width() {
     return this.modal?.width || '30%'
   }
 
+  get height() {
+    return this.modal?.height || 'auto'
+  }
+
   get title() {
     return this.modal?.title
   }
 
+  get isInfoWindowDialog(): boolean {
+    return this.modal && this.dialogType === this.$app.states.InfoWindow
+  }
+
+  get isConfirmWindowDialog(): boolean {
+    return this.modal && this.dialogType === this.$app.states.ConfirmWindow
+  }
+
+  get isCreateEditDialog(): boolean {
+    return this.modal && this.dialogType === this.$app.states.CreateEdit
+  }
+
   get showPopup() {
-    return [
-      FsmStates.AddLinkPopup,
-      FsmStates.About,
-      FsmStates.Uploading,
-      FsmStates.Downloading,
-      FsmStates.AddLibraryFilePopup,
-      FsmStates.ConfirmPopup
-    ].includes(this.fsmState)
+    return (
+      this.isInfoWindowDialog || this.isConfirmWindowDialog || this.isCreateEditDialog
+    )
   }
 }

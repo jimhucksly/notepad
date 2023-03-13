@@ -8,7 +8,7 @@ export default class Storage {
       try {
         fs.statSync(_path)
         return resolve(true)
-      } catch(e) {
+      } catch (e) {
         return reject(false)
       }
     })
@@ -17,13 +17,13 @@ export default class Storage {
   static isFileExists(_path: string, _file?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let filePath = _path
-      if(_file !== undefined) {
+      if (_file !== undefined) {
         filePath = path.resolve(_path, _file)
       }
       try {
         fs.statSync(filePath)
         return resolve(true)
-      } catch(e) {
+      } catch (e) {
         return reject(false)
       }
     })
@@ -38,7 +38,7 @@ export default class Storage {
           let oldJson: T | Record<string, unknown>
           try {
             oldJson = JSON.parse(oldVal)
-          } catch(e) {
+          } catch (e) {
             oldJson = {}
           }
           const data = { ...oldJson, ...json }
@@ -55,18 +55,18 @@ export default class Storage {
       let data
       try {
         data = isJSON(json) ? JSON.stringify(json) : ''
-      } catch(e) {
+      } catch (e) {
         data = ''
       }
       const fullPath = path.resolve(_path, fileName)
       const sResponse = await this.isFileExists(fullPath)
-      if(!sResponse) {
+      if (!sResponse) {
         reject(null)
       }
       try {
         fs.writeFileSync(fullPath, data)
         resolve(void 0)
-      } catch(err) {
+      } catch (err) {
         reject(err)
       }
     })
@@ -75,23 +75,23 @@ export default class Storage {
   static get<T>(_path: string, _file: string, key?: string): Promise<T> {
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
-      if(_file !== undefined) fullPath = path.resolve(_path, _file)
+      if (_file !== undefined) fullPath = path.resolve(_path, _file)
       try {
         const sResponse = await this.isFileExists(fullPath)
-        if(!sResponse) {
+        if (!sResponse) {
           return reject(null)
         }
         const data = fs.readFileSync(fullPath, 'utf8')
         let json
         try {
           json = JSON.parse(data)
-        } catch(e) {
+        } catch (e) {
           json = {}
         }
-        if(key && json[key] !== undefined) {
+        if (key && json[key] !== undefined) {
           resolve(json[key])
         } else resolve(json)
-      } catch(err) {
+      } catch (err) {
         return reject(null)
       }
     })
@@ -100,13 +100,13 @@ export default class Storage {
   static createFile(_path: string, _file: string) {
     return new Promise(async (resolve, reject) => {
       let fullPath = _path
-      if(_file !== undefined) fullPath = path.resolve(_path, _file)
+      if (_file !== undefined) fullPath = path.resolve(_path, _file)
       try {
         await this.isFileExists(fullPath)
         resolve(void 0)
-      } catch(e) {
+      } catch (e) {
         fs.writeFile(fullPath, '{}', (err) => {
-          if(err) {
+          if (err) {
             reject(new Error(`file ${fullPath} not found`))
           }
           resolve(void 0)

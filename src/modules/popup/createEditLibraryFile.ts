@@ -1,53 +1,33 @@
-import { Prop } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
-import { ILibraryFile } from '~/domain/models'
+import { Vue } from 'vue-class-component'
+import { IValidate } from '~/plugins/validate'
 
-@Options({
-  beforeUnmount() {
-    this.file.id = null
-    this.file.name = ''
-  }
-})
 export default class CreateEditLibraryFileComponent extends Vue {
-  @Prop() id: number
-  @Prop() title: string
-  @Prop() name: string
+  name = ''
 
-  file: ILibraryFile = {
-    id: null,
-    name: ''
-  }
+  v: IValidate = {}
 
-  errors = {
-    name: false,
-    title: false
-  }
+  isSubmitted = false
 
   created() {
-    this.file.name = this.name
-  }
-
-  validate() {
-    if(!this.file.name) {
-      this.errors.name = true
-    }
-    return !Object.values(this.errors).includes(true)
-  }
-
-  save() {
-    if(this.validate()) {
-      this.$emit('set-result', { ...this.file })
-    }
+    this.$emit('popup-component-created', this)
   }
 
   mounted() {
-    ['title', 'name'].forEach(key => {
-      const ref = this.$refs[key]
-      if(ref) {
-        (ref as HTMLInputElement).addEventListener('focus', () => {
-          this.errors[key] = false
-        })
-      }
+    this.$validate(this)
+  }
+
+  async validate(): Promise<boolean> {
+    await this.v.touch()
+    return this.v.valid()
+  }
+
+  async save() {
+    this.isSubmitted = true
+    if (!(await this.validate())) {
+      return
+    }
+    this.$emit('set-result', {
+      name: this.name
     })
   }
 }

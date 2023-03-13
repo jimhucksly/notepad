@@ -16,15 +16,18 @@ import SvgIcon from '~/modules/svgIcon'
 import Loader from '~/modules/loader'
 import CreateEditLink from '~/modules/popup/createEditLink'
 import AboutPopup from '~/modules/popup/about'
-import ConfirmPopup from '~/modules/popup/confirm'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
-import UploadingPopup from '~/modules/popup/uploading'
-import DownloadingPopup from '~/modules/popup/downloading'
+import CodeInput from './modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
 import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
+import SocketPlugin from '~/plugins/socket'
+import Validate from './plugins/validate'
+import CreateEditProject from './modules/popup/createEditProject'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 const app = createApp(root)
 
@@ -37,10 +40,9 @@ app.component('loader', Loader)
 app.component('b-checkbox', BCheckbox)
 app.component('b-btn', BBtn)
 app.component('about-popup', AboutPopup)
-app.component('uploading-popup', UploadingPopup)
-app.component('downloading-popup', DownloadingPopup)
+app.component('create-edit-project', CreateEditProject)
 app.component('create-edit-library-file', CreateEditLibraryFile)
-app.component('confirm-popup', ConfirmPopup)
+app.component('code-input', CodeInput)
 
 app.use(store)
 app.use(router)
@@ -48,5 +50,21 @@ app.use(AppPlugin)
 app.use(ElectronPlugin)
 app.use(AnimePlugin)
 app.use(ToastedPlugin)
+app.use(SocketPlugin, { store })
+app.use(Validate)
+
+app.config.globalProperties.$dateFormat = (date: string | Date) => {
+  if (typeof date === 'string') {
+    date = new Date(date)
+  }
+  if (isNaN(date.getTime())) {
+    return 'Invalid date'
+  }
+  return date.toLocaleString('ru')
+}
+
+if (isDev && window && window.location) {
+  (window as unknown as { reload: () => void }).reload = window.location.reload.bind(window.location)
+}
 
 app.mount('#app')

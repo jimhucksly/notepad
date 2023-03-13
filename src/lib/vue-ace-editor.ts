@@ -37,7 +37,7 @@ export default class VueAceEditor extends Vue {
 
     editor.getSession().setMode(typeof lang === 'string' ? ('ace/mode/' + lang) : lang)
     editor.setTheme('ace/theme/' + theme)
-    if(this.modelValue) {
+    if (this.modelValue) {
       editor.setValue(this.modelValue, 1)
     }
     this.contentBackup = this.modelValue
@@ -48,13 +48,13 @@ export default class VueAceEditor extends Vue {
       this.contentBackup = content
     })
 
-    if(this.options) {
+    if (this.options) {
       editor.setOptions(this.options)
     }
   }
 
   @Watch('value') onValueChanged(val: string) {
-    if(this.contentBackup !== val) {
+    if (this.contentBackup !== val) {
       this.editor.session.setValue(val, 1)
       this.contentBackup = val
     }
@@ -86,7 +86,7 @@ export default class VueAceEditor extends Vue {
 
 
   px(n: string) {
-    if(/^\d*$/.test(n)) {
+    if (/^\d*$/.test(n)) {
       return n + 'px'
     }
     return n

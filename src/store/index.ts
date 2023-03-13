@@ -10,6 +10,7 @@ import { library } from './library'
 import { todo } from './todo'
 import { events } from './events'
 import { links } from './links'
+import { files } from './files'
 
 export default createStore<IRootState>({
   strict: process.env.NODE_ENV !== 'production',
@@ -22,6 +23,7 @@ export default createStore<IRootState>({
     library,
     todo,
     events,
-    links
+    links,
+    files
   }
 })

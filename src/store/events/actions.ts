@@ -28,13 +28,10 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
     try {
       setProcess(store, 'get events...')
-      const resp = await $http.get<Array<IEvent>>('events')
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setEvents', resp.data)
-      return resp.data
-    } catch(e) {
+      const { data } = await $http.get<Array<IEvent>>('/events')
+      store.commit('setEvents', data)
+      return data
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
       return Promise.reject(e)
     } finally {
@@ -45,15 +42,21 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   /**
    * Update Event
    * @param store Store
-  * @param {UpdateEventCommand} command
+   * @param {UpdateEventCommand} command
    */
   @Commandable(TYPES.UpdateEventCommand, Actions.namespace)
-  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<boolean> {
+  async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<IEvent> {
     try {
       setProcess(store, 'update events...')
-      await $http.put('events', command.event)
-      return Promise.resolve(true)
-    } catch(e) {
+      const { data } = await $http.put('/events', command.event)
+      if (data[command.event.date]) {
+        const buff = { ...store.getters.getEvents }
+        buff[command.event.date] = data[command.event.date]
+        store.commit('setEvents', buff)
+        return data[command.event.date]
+      }
+      return null
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event update failed')
       return Promise.reject(e)
     } finally {
@@ -70,9 +73,12 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing event...')
-      await $http.delete(`events/?date=${command.date}`)
-      return Promise.resolve(true)
-    } catch(e) {
+      await $http.delete(`/events/?date=${command.date}`)
+      const buff = { ...store.getters.getEvents }
+      delete buff[command.date]
+      store.commit('setEvents', buff)
+      return true
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Event remove failed')
       return Promise.reject(e)
     } finally {

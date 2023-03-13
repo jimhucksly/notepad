@@ -11,21 +11,20 @@ const TYPES = {
   LibraryQuery: Symbol.for('LibraryQuery'),
   LibraryFilesQuery: Symbol.for('LibraryFilesQuery'),
   LibraryFileQuery: Symbol.for('LibraryFileQuery'),
-  StartQuery: Symbol.for('StartQuery'),
   ArchivesQuery: Symbol.for('ArchivesQuery'),
   EventsQuery: Symbol.for('EventsQuery'),
   LinksQuery: Symbol.for('LinksQuery'),
   TodoQuery: Symbol.for('TodoQuery'),
-  CheckQuery: Symbol.for('CheckQuery'),
-  ConfirmQuery: Symbol.for('ConfirmQuery'),
+  FilesQuery: Symbol.for('FilesQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
-  YandexDiskInfoQuery: Symbol.for('YandexDiskInfoQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
   /* --------- commands --------- */
-  PingCommand: Symbol.for('PingCommand'),
-  CheckCommand: Symbol.for('CheckCommand'),
-  CreateEditCommand: Symbol.for('CreateEditCommand'),
+  RegistrationCommand: Symbol.for('RegistrationCommand'),
+  VerifyCommand: Symbol.for('VerifyCommand'),
+  ResendCodeCommand: Symbol.for('ResendCodeCommand'),
+  ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
+  UpdatePasswordCommand: Symbol.for('UpdatePasswordCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
   CreateProjectCommand: Symbol.for('CreateProjectCommand'),
   EditProjectCommand: Symbol.for('EditProjectCommand'),
@@ -45,7 +44,12 @@ const TYPES = {
   UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
   DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
   TodoOrderCommand: Symbol.for('TodoOrderCommand'),
-  RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand')
+  DeleteFileCommand: Symbol.for('DeleteFileCommand'),
+  RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
+  /* --------- interactive --------- */
+  InfoWindowQuery: Symbol.for('InfoWindowQuery'),
+  ConfirmWindowQuery: Symbol.for('ConfirmWindowQuery'),
+  CreateEditQuery: Symbol.for('CreateEditQuery')
 }
 
 export {

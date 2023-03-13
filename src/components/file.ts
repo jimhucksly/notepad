@@ -1,54 +1,68 @@
 import { Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Emit, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { _container } from '~/domain/container'
-import { IQueryBus } from '~/domain/interfaces'
 import { IFile } from '~/domain/models'
-import { YandexDiskResourceLinkQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
+import { getFileType } from '~/helpers'
 
 export default class File extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
+  @Prop() item: IFile
+  @Prop() index: number
+  @Prop() selected: boolean
+  @Prop() checking: boolean
+  @Prop() checked: boolean
 
-  @Prop() itemKey: string
-  @Prop() itemFile: IFile
+  isChecked = false
 
   @Getter('getDownloadsTargetPath') targetPath: string
 
-  downloading = false
+  onResizeHandler: () => void
 
-  get stamp() {
-    return this.itemKey
+  @Emit('on-select') onSelect() {
+    return this.checking ? null : this.item.id
   }
 
-  get fileName() {
-    return this.itemFile.name
+  @Emit('on-check') onCheck() {
+    return this.item.id
   }
 
-  get type() {
-    return this.itemFile.type
+  @Watch('index') onIndexChanged() {
+    this.setPosition()
   }
 
-  async downloadFile() {
-    try {
-      this.downloading = true
-      const link: string = await this.queryBus.exec(new YandexDiskResourceLinkQuery(this.fileName))
-      this.downloading = false
-      if(link) {
-        const a = document.createElement('a')
-        a.href = link
-        a.download = 'C:\\' + this.fileName
-        document.body.appendChild(a)
-        a.click()
-        setTimeout(() => {
-          document.body.removeChild(a)
-          window.URL.revokeObjectURL(link)
-        }, 0)
-      }
-    } catch(e) {
-      //
-    } finally {
-      this.downloading = false
+  @Watch('isChecked') onIsCheckedChanged() {
+    this.onCheck()
+  }
+
+  mounted() {
+    this.setPosition()
+    this.onResizeHandler = this.setPosition.bind(this)
+    window.addEventListener('resize', this.onResizeHandler)
+  }
+
+  setPosition() {
+    const elemW = 65
+    const gap = 8
+    const count = Math.floor(this.parent.clientWidth / (elemW + gap * 2)) + 1
+    const row = Math.floor(this.index / count)
+    const index = this.index - row * count
+    const x = gap + index * (gap + elemW)
+    let h = elemW
+    if (row > 0) {
+      let topLevelElems: Array<Element> = []
+      this.parent.querySelectorAll('.file').forEach(el => topLevelElems.push(el))
+      topLevelElems = topLevelElems.slice((row - 1) * count, row * count)
+      const hh = topLevelElems.map(el => el.clientHeight)
+      h = Math.max(...hh)
     }
+    const y = gap + row * (h + gap)
+    this.$el.style.transform = `translate(${x}px, ${y}px)`
+  }
+
+  get type(): string {
+    return getFileType(this.item.extension)
+  }
+
+  get parent(): HTMLElement {
+    return this.$parent.$el
   }
 }

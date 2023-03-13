@@ -3,15 +3,15 @@
     <div class="m-b-15">
       <input
         type="text"
-        ref="name"
-        v-model="file.name"
+        name="name"
+        required
+        v-model="name"
         placeholder="File name"
-        :class="{ 'input--error': errors.name }"
+        :class="{ error: v?.name?.isInvalid }"
       >
-      <span class="error-hint" v-if="errors.name">This field is required</span>
-    </div>
-    <div class="flex-end">
-      <button class="btn btn-primary" @click.prevent="save">Save</button>
+      <span class="form-label-error" v-show="isSubmitted && v?.name?.isInvalid">
+        Name is incorrect
+      </span>
     </div>
   </form>
 </template>

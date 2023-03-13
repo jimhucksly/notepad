@@ -8,9 +8,20 @@ export interface IMenu {
 }
 
 export interface IEditor {
+  container: {
+    remove: () => void
+  }
   getValue: () => string
   on: (event: string, callback: () => void) => void
   setValue: (value: string) => void
+  destroy: () => void
+  setShowPrintMargin: (value: boolean) => void
+  setHighlightActiveLine: (value: boolean) => void
+  getSession: () => {
+    selection: {
+      clearSelection: () => void
+    }
+  }
 }
 
 export interface ITreeItem {
@@ -21,22 +32,25 @@ export interface ITreeItem {
 }
 
 export interface IFile {
+  id: string
   name: string
-  type: string
+  extension: string
+  createDateTime: string
+  size: number
+  href: string
 }
 
-export interface IJsonItem {
+export interface IProject {
   key: string
   date: string
   name: string
   lock: boolean
   message?: string
   unread?: boolean
-  file?: IFile
 }
 
-export interface IJson {
-  [stamp: string]: IJsonItem
+export interface IProjects {
+  [stamp: string]: IProject
 }
 
 export interface IFilters {
@@ -44,12 +58,13 @@ export interface IFilters {
 }
 
 export interface IArchive {
+  id: string
   name: string
   date: string
 }
 
 export interface ILibraryFile {
-  id: number
+  id: string
   name: string // имя физического файла на сервере
 }
 
@@ -89,17 +104,9 @@ export interface ITodoOrder {
 }
 
 export interface ILink {
-  id: string
+  id?: string
   url: string
   name: string
-}
-
-export interface IJsonHeaders {
-  headers: {
-    'X-Honeypot': string
-    'Content-Type': string
-    'Authorization'?: string
-  }
 }
 
 type TResponseStatus = 'success' | 'error'
@@ -109,48 +116,21 @@ export interface IUser {
   login: string
   email: string
   displayName: string
+  waitingVerify?: boolean
   yandexDiskAccessToken: string
   yandexDiskRefreshToken: string
 }
 
 export interface IResponse<TData> {
   status: TResponseStatus
-  token?: string
   data?: TData
   message?: string
-  messages?: Array<string>
   user?: IUser
-}
-
-export interface ICheckResponse {
-  json: string
-  md: string
-  events: string
-  links: string
-  todo: string
-}
-
-export type IResolveFunc<T> = (value: T) => void
-
-export interface IModalInfo<R> {
-  title?: string
-  width?: string
-  resolveFunction?: IResolveFunc<R>
-}
-
-export interface IYandexTokenResponse {
-  /* eslint-disable-next-line camelcase */
-  access_token: string
-  /* eslint-disable-next-line camelcase */
-  expires_in: number
-  /* eslint-disable-next-line camelcase */
-  refresh_token: string
-  /* eslint-disable-next-line camelcase */
-  token_type: string
+  token?: string
 }
 
 export interface IProjectsState {
-  json: IJson
+  projects: IProjects
   archives: IArchive[]
   filter: IFilters
   selectedProjectKey: string
@@ -175,6 +155,10 @@ export interface ILinksState {
   links: ILink
 }
 
+export interface IFilesState {
+  files: IFile
+}
+
 export interface IRootState {
   endpoint: string
   apiPath: string
@@ -189,8 +173,25 @@ export interface IRootState {
   notification: boolean
   error: boolean
   component: string
+  section: Record<string, boolean>
   history: Array<keyof typeof FsmStates>
   yandexApiToken: string
   currentUser: IUser
   process: { name: string }
+}
+
+export interface IPopupWindowQuery<T> {
+  component: string
+  modal: {
+    title: string
+    width?: string
+    height?: string
+    resolveFunction?: (value: unknown) => Promise<T>
+  }
+  componentProps?: Record<string, unknown>
+  fsmState?: symbol
+}
+
+export interface IPopupComponent<T> {
+  save: () => T
 }

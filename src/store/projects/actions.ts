@@ -11,8 +11,7 @@ import {
 import { Commandable } from '~/domain/commands/command.bus'
 import {
   IArchive,
-  IFile,
-  IJson,
+  IProjects,
   IProjectsState,
   IRootState
 } from '~/domain/models'
@@ -39,23 +38,14 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param {Store} store
    */
   @Queryable(TYPES.ProjectsQuery, Actions.namespace)
-  async actionGetJson(store: TStore): Promise<IJson> {
+  async actionFetchProjects(store: TStore): Promise<IProjects> {
     try {
       setProcess(store, 'get projects...')
-      const resp = await $http.get<IJson>('projects')
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      if(resp instanceof Error && resp.message === 'Network Error') {
-        store.commit('setError', true)
-        return Promise.reject(resp)
-      }
-      store.commit('setJson', resp.data)
-      return resp.data
-    } catch(e) {
-      store.commit('setLoading', false)
-      store.dispatch('auth', false)
-      store.commit('setToken', null)
+      const { data } = await $http.get<IProjects>('/projects')
+      store.commit('setProjects', data)
+      return data
+    } catch (e) {
+      Hub.$emit('on-toasted-error', 'Error: Projects fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -71,10 +61,10 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'creating project...')
-      await $http.put<IJson, boolean>('project', command.data)
+      await $http.put<IProjects, boolean>('/project', command.data)
       return Promise.resolve(true)
-    } catch(e) {
-      Hub.$emit('on-toasted-error', 'Error: Project create failed')
+    } catch (e) {
+      Hub.$emit('on-toasted-error', 'Error: Project creating failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -90,9 +80,9 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'editing project...')
-      await $http.post<IJson, boolean>('project', command.data)
+      await $http.post<IProjects, boolean>('/project', command.data)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Project edit failed')
       return Promise.reject(e)
     } finally {
@@ -109,9 +99,9 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionDeleteProject(store: TStore, command: DeleteProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing project...')
-      await $http.delete(`project/?key=${command.stamp}`)
+      await $http.delete(`/project/?key=${command.stamp}`)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Project delete failed')
       return Promise.reject(e)
     } finally {
@@ -128,11 +118,11 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionArchiving(store: TStore, command: ArchivingCommand): Promise<boolean> {
     try {
       setProcess(store, 'move project to archive...')
-      await $http.put<{ key: string | number }, void>('project/archive', {
+      await $http.put<{ key: string | number }, void>('/project/archive', {
         key: command.stamp
       })
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Project archive failed')
       return Promise.reject(e)
     } finally {
@@ -149,13 +139,10 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
     try {
       setProcess(store, 'get archives...')
-      const resp = await $http.get<Array<IArchive>>('projects/archives')
-      if(!resp || !resp.data) {
-        return Promise.reject(resp)
-      }
-      store.commit('setArchives', resp.data)
-      return resp.data
-    } catch(e) {
+      const { data } = await $http.get<Array<IArchive>>('/projects/archives')
+      store.commit('setArchives', data)
+      return data
+    } catch (e) {
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -171,9 +158,9 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<boolean> {
     try {
       setProcess(store, 'archive restore...')
-      await $http.post('project/archive/restore', command)
+      await $http.post('/project/archive/restore', command)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Archive restore failed')
       return Promise.reject(e)
     } finally {
@@ -190,9 +177,9 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing archive...')
-      await $http.delete(`project/archive/?name=${command.name}`)
+      await $http.delete(`/project/archive/?id=${command.id}`)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Archive remove failed')
       return Promise.reject(e)
     } finally {
@@ -206,12 +193,12 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param {UploadFileCommand} command
    */
   @Commandable(TYPES.UploadFileCommand, Actions.namespace)
-  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<IFile> {
+  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<true> {
     try {
       setProcess(store, 'uploading file...')
-      const resp = await $http.post<FormData, IFile>('upload', command.file)
-      return Promise.resolve(resp.data)
-    } catch(e) {
+      await $http.put('/upload', command.form)
+      return true
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)
     } finally {

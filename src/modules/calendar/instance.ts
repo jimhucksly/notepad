@@ -22,8 +22,8 @@ export default class CalendarComponent extends Vue {
   }
 
   get currentDate() {
-    if(this.op.setDate && isDate(this.op.setDate)) {
-      if(getNativeDate(this.op.setDate) instanceof Date) {
+    if (this.op.setDate && isDate(this.op.setDate)) {
+      if (getNativeDate(this.op.setDate) instanceof Date) {
         return new Date(getNativeDate(this.op.setDate))
       }
     }
@@ -47,7 +47,7 @@ export default class CalendarComponent extends Vue {
   }
 
   @Watch('op') onOpSetDateChanged() {
-    if(this.op.mode === 'd') {
+    if (this.op.mode === 'd') {
       this.renderCalendar(this.currentDate)
     } else this.fillHeader()
   }
@@ -55,16 +55,16 @@ export default class CalendarComponent extends Vue {
   private checkDisabled(date: string): boolean {
     let result = false
     const d = getNativeDate(date)
-    if(d) {
-      if(this.op.disableDaysBefore instanceof Date) {
+    if (d) {
+      if (this.op.disableDaysBefore instanceof Date) {
         result = this.op.disableDaysBefore.getTime() > d.getTime()
       }
-      if(this.op.disableDaysAfter instanceof Date) {
+      if (this.op.disableDaysAfter instanceof Date) {
         result = this.op.disableDaysAfter.getTime() < d.getTime()
       }
     }
 
-    if(this.op.onlyDates && this.op.onlyDates.length) {
+    if (this.op.onlyDates && this.op.onlyDates.length) {
       result = !this.op.onlyDates.includes(date)
     }
     return result
@@ -75,7 +75,7 @@ export default class CalendarComponent extends Vue {
     const currYear = this.currentDate.getFullYear()
     this.header = this.op.month[currMon] + ' ' + currYear
 
-    if(this.op.eventsMode) {
+    if (this.op.eventsMode) {
       this.$emit('set-header', this.header)
     }
   }
@@ -96,7 +96,7 @@ export default class CalendarComponent extends Vue {
       days: []
     }
 
-    for(let i = 0; i < weekday; i++) {
+    for (let i = 0; i < weekday; i++) {
       const num = loastDayOfPrevMon - weekday + i + 1
       const mon = currMon === 0 ? '12' : this.op.monIndex[currMon - 1]
       const year = currMon === 0 ? currYear - 1 : currYear
@@ -116,7 +116,7 @@ export default class CalendarComponent extends Vue {
 
     let k = 0
     let result = 0
-    for(let i = weekday; i <= 6; i++) {
+    for (let i = weekday; i <= 6; i++) {
       const num = ++k
       const date = '0' + k + '.' + this.op.monIndex[currMon] + '.' + currYear
 
@@ -124,7 +124,7 @@ export default class CalendarComponent extends Vue {
       const isHoliday = i >= 5
       const isToday = num === +this.baseDay && +currMon === +this.baseMonth && +currYear === +this.baseYear
 
-      if(i === 6) result = num
+      if (i === 6) result = num
 
       week.days.push({
         date,
@@ -165,13 +165,13 @@ export default class CalendarComponent extends Vue {
 
     this.op.mode = 'd'
 
-    for(let j = 1; j <= weeksCount; j++) {
+    for (let j = 1; j <= weeksCount; j++) {
       const week: IWeek = {
         days: []
       }
-      for(let i = 0; i <= 6; i++) {
+      for (let i = 0; i <= 6; i++) {
         let isNextMonth = false
-        if(num <= count) {
+        if (num <= count) {
           number = num
           date = ('0' + num).slice(-2) + '.' + mon + '.' + currYear
         } else {
@@ -226,14 +226,14 @@ export default class CalendarComponent extends Vue {
   public btnPrevHandler(e: MouseEvent) {
     e.preventDefault()
     const date = new Date(this.currentDate)
-    switch(this.op.mode) {
+    switch (this.op.mode) {
       case 'd':
-        if(this.op.range) {
+        if (this.op.range) {
           this.$emit('prev-month')
         } else this.prevMonth()
         break
       case 'm':
-        if(this.op.range) {
+        if (this.op.range) {
           return
         } else {
           date.setFullYear(date.getFullYear() - 1)
@@ -242,7 +242,7 @@ export default class CalendarComponent extends Vue {
         }
         break
       case 'y':
-        if(this.op.range) {
+        if (this.op.range) {
           return
         } else {
           date.setFullYear(date.getFullYear() - 4)
@@ -254,14 +254,14 @@ export default class CalendarComponent extends Vue {
   public btnNextHandler(e: MouseEvent) {
     e.preventDefault()
     const date = new Date(this.currentDate)
-    switch(this.op.mode) {
+    switch (this.op.mode) {
       case 'd':
-        if(this.op.range) {
+        if (this.op.range) {
           this.$emit('next-month')
         } else this.nextMonth()
         break
       case 'm':
-        if(this.op.range) {
+        if (this.op.range) {
           return
         } else {
           date.setFullYear(date.getFullYear() + 1)
@@ -270,7 +270,7 @@ export default class CalendarComponent extends Vue {
         }
         break
       case 'y':
-        if(this.op.range) {
+        if (this.op.range) {
           return
         } else {
           date.setFullYear(date.getFullYear() + 8)
@@ -286,14 +286,14 @@ export default class CalendarComponent extends Vue {
 
   public btnMonthHandler(e: MouseEvent) {
     e.preventDefault()
-    if(this.op.mode !== 'm') {
+    if (this.op.mode !== 'm') {
       this.op.mode = 'm'
     }
   }
 
   public btnYearHandler(e: MouseEvent) {
     e.preventDefault()
-    if(this.op.mode !== 'y') {
+    if (this.op.mode !== 'y') {
       this.op.mode = 'y'
     }
   }
@@ -311,20 +311,20 @@ export default class CalendarComponent extends Vue {
   }
 
   public inRange(date: string): boolean {
-    if(this.op.range && this.range.length === 2) {
+    if (this.op.range && this.range.length === 2) {
       const date1 = getNativeDate(this.range[0])
       let r1: number
-      if(date1) {
+      if (date1) {
         r1 = date1.getTime()
       }
       const date2 = getNativeDate(this.range[1])
       let r2: number
-      if(date2) {
+      if (date2) {
         r2 = date2.getTime()
       }
       const date3 = getNativeDate(date)
       let d: number
-      if(date3) {
+      if (date3) {
         d = date3.getTime()
       }
       return d > r1 && d < r2
@@ -335,23 +335,23 @@ export default class CalendarComponent extends Vue {
   public inRangeHover(date: string): boolean {
     const date1 = getNativeDate(this.range[0])
     let r1: number
-    if(date1) {
+    if (date1) {
       r1 = date1.getTime()
     }
     const date2 = getNativeDate(date)
     let d: number
-    if(date2) {
+    if (date2) {
       d = date2.getTime()
     }
     const date3 = getNativeDate(this.active)
     let a: number
-    if(date3) {
+    if (date3) {
       a = date3.getTime()
     }
-    if(a > r1) {
+    if (a > r1) {
       return d < a && d > r1
     }
-    if(a < r1) {
+    if (a < r1) {
       return d > a && d < r1
     }
     return false
@@ -363,11 +363,11 @@ export default class CalendarComponent extends Vue {
       this.op[key] = this.options[key]
     })
 
-    if(this.op.disableDaysBefore && this.op.disableDaysAfter) {
+    if (this.op.disableDaysBefore && this.op.disableDaysAfter) {
       this.op.disableDaysBefore = null
     }
 
-    if(this.op.mode === 'd') {
+    if (this.op.mode === 'd') {
       this.renderCalendar(this.currentDate)
     } else {
       this.fillHeader()

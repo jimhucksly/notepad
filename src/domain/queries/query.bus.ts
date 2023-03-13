@@ -17,11 +17,11 @@ class QueryBus implements IQueryBus {
    */
   exec<T, R>(query: T): Promise<R> {
     const actionName = Reflect.getMetadata(TYPES[query.constructor.name], QueryBus)
-    if(actionName) {
+    if (actionName) {
       return this._store.dispatch(actionName, query)
     }
     const handler: IQueryHandler<T, R> = this._container.get(TYPES[query.constructor.name])
-    if(handler) {
+    if (handler) {
       return handler.exec(query)
     }
     return Promise.reject(`Query handler is not found: ${query.constructor.name}`)

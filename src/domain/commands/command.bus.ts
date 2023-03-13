@@ -17,11 +17,11 @@ class CommandBus implements ICommandBus {
    */
   do<T, R>(command: T) {
     const actionName = Reflect.getMetadata(TYPES[command.constructor.name], CommandBus)
-    if(actionName) {
+    if (actionName) {
       return this._store.dispatch(actionName, command)
     }
     const handler: ICommandHandler<T, R> = this._container.get(TYPES[command.constructor.name])
-    if(handler) {
+    if (handler) {
       return handler.do(command)
     }
     return Promise.reject(`Command handler is not found: ${command.constructor.name}`)

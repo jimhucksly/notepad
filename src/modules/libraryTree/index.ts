@@ -13,15 +13,15 @@ export default class LibraryTreeComponent extends Vue {
   selectNode(item: ITreeItem) {
     Hub.$emit('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor_content')
-    if(editor) {
+    if (editor) {
       const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug)
       const rect = elem.getBoundingClientRect()
       editor.scrollTo(0, editor.scrollTop + rect.top - 54 - 30)
-      if(item.children && item.children.length) {
+      if (item.children && item.children.length) {
         const node = this.$el.querySelector(`[data-ref="${item.id}"]`)
-        if(node) {
+        if (node) {
           const ul = node.nextElementSibling
-          if(ul) {
+          if (ul) {
             const isExpanded = node.classList.contains('expanded')
             node.classList[isExpanded ? 'remove' : 'add']('expanded')
             node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus')

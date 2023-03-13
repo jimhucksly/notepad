@@ -23,7 +23,7 @@
           <b-checkbox v-model="isLock" @change="toggleLock" />
         </div>
       </div>
-      <div class="form-group" v-if="!isFile">
+      <div class="form-group">
         <a href="" @click.prevent="archive">
           <i class="icon">
             <svg-icon icon="archiveIcon" />

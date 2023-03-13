@@ -3,25 +3,28 @@
     <div class="m-b-15">
       <input
         type="text"
-        ref="url"
-        v-model="link.url"
+        name="url"
+        required
+        v-model="url"
         placeholder="URL"
-        :class="{ 'input--error': errors.url }"
+        :class="{ error: v?.url?.isInvalid }"
       >
-      <span class="error-hint" v-if="errors.url">This field is required</span>
+      <span class="form-label-error" v-show="isSubmitted && v?.url?.isInvalid">
+        Url is incorrect
+      </span>
     </div>
     <div class="m-b-15">
       <input
         type="text"
-        ref="name"
-        v-model="link.name"
+        name="name"
+        required
+        v-model="name"
         placeholder="Name"
-        :class="{ 'input--error': errors.name }"
+        :class="{ error: v?.name?.isInvalid }"
       >
-      <span class="error-hint" v-if="errors.name">This field is required</span>
-    </div>
-    <div class="flex-end">
-      <button class="btn btn-primary" @click.prevent="save">Save</button>
+      <span class="form-label-error" v-show="isSubmitted && v?.name?.isInvalid">
+        Name is incorrect
+      </span>
     </div>
   </form>
 </template>

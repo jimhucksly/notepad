@@ -14,9 +14,13 @@ const toStr = (s: symbol): keyof IFsmStates => Symbol.keyFor(s) as keyof IFsmSta
 
 const fsm = new StateMachine({
   observeUnchangedState: true,
-  init: toStr(FsmStates.None),
+  init: toStr(FsmStates.Auth),
   transitions: [
-    { name: 'none', from: '*', to: toStr(FsmStates.None) },
+    { name: 'auth', from: '*', to: toStr(FsmStates.Auth) },
+    { name: 'reg', from: '*', to: toStr(FsmStates.Reg) },
+    { name: 'reset', from: '*', to: toStr(FsmStates.Reset) },
+    { name: 'verify', from: '*', to: toStr(FsmStates.Verify) },
+    { name: 'yandex', from: '*', to: toStr(FsmStates.Yandex) },
     { name: 'account', from: '*', to: toStr(FsmStates.Account) },
     { name: 'preferences', from: '*', to: toStr(FsmStates.Preferences) },
     { name: 'projects', from: '*', to: toStr(FsmStates.Projects) },
@@ -39,21 +43,11 @@ const fsm = new StateMachine({
     { name: 'todo', from: '*', to: toStr(FsmStates.Todo) },
     { name: 'events', from: '*', to: toStr(FsmStates.Events) },
     { name: 'links', from: '*', to: toStr(FsmStates.Links) },
+    { name: 'files', from: '*', to: toStr(FsmStates.Files) },
     { name: 'jsonviewer', from: '*', to: toStr(FsmStates.JsonViewer) },
-    {
-      name: 'addlinkpopup',
-      from: toStr(FsmStates.Links),
-      to: toStr(FsmStates.AddLinkPopup)
-    },
-    { name: 'about', from: '*', to: toStr(FsmStates.About) },
-    { name: 'uploading', from: '*', to: toStr(FsmStates.Uploading) },
-    { name: 'downloading', from: '*', to: toStr(FsmStates.Downloading) },
-    {
-      name: 'addlibraryfilepopup',
-      from: '*',
-      to: toStr(FsmStates.AddLibraryFilePopup)
-    },
-    { name: 'confirmpopup', from: '*', to: toStr(FsmStates.ConfirmPopup) }
+    { name: 'infowindow', from: '*', to: toStr(FsmStates.InfoWindow) },
+    { name: 'confirmwindow', from: '*', to: toStr(FsmStates.ConfirmWindow) },
+    { name: 'createedit', from: '*', to: toStr(FsmStates.CreateEdit) }
   ],
   methods: {
     onBeforeTransition: onBeforeTransition.bind(this)

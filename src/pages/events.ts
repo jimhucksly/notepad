@@ -3,11 +3,8 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
 import { IEvent, IEvents } from '~/domain/models'
 import { EventsQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 import BCalendar, { IBCalendar } from '~/modules/calendar'
 
 interface IBCalendarOptions {
@@ -33,9 +30,6 @@ interface IFilteredItem {
   }
 })
 export default class Events extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Getter('events/getEvents') items: IEvents
 
   bCalendarOptions: IBCalendarOptions = {
@@ -55,7 +49,7 @@ export default class Events extends Vue {
       items: o
     }
     const elems: NodeListOf<Element> = document.querySelectorAll('.processing[data-current]')
-    if(elems && elems.length) {
+    if (elems && elems.length) {
       elems.forEach(el => {
         el.classList.remove('processing')
       })
@@ -64,27 +58,27 @@ export default class Events extends Vue {
 
   private readonly debounced = debounce((v: string, context: Events): void => {
     context.itemsFiltered = []
-    if(!v) {
+    if (!v) {
       return
     }
     Object.keys(context.items).forEach((key: string) => {
       const title = context.items[key].title.toLowerCase()
       const content = context.items[key].content.toLowerCase()
-      if(title.indexOf(v) > -1 || content.indexOf(v) > -1) {
+      if (title.indexOf(v) > -1 || content.indexOf(v) > -1) {
         context.itemsFiltered.push({
           key,
           title: context.items[key].title
         })
       }
     })
-    if(context.itemsFiltered.length === 0) {
+    if (context.itemsFiltered.length === 0) {
       context.itemsFiltered.push({
         key: '0',
         title: 'Nothing to show'
       })
     }
     document.onkeydown = (e) => {
-      if(e.code === 'Escape') {
+      if (e.code === 'Escape') {
         context.itemsFiltered = []
         context.search = ''
         document.onclick = null
@@ -94,7 +88,7 @@ export default class Events extends Vue {
     document.onclick = (e) => {
       e.preventDefault()
       const el = e.target as HTMLElement
-      if(el.closest('.events__search > form') === null) {
+      if (el.closest('.events__search > form') === null) {
         context.itemsFiltered = []
         context.search = ''
       }
@@ -102,7 +96,7 @@ export default class Events extends Vue {
   }, 600)
 
   @Watch('search') onSearchChanged(val: string) {
-    if(!val) {
+    if (!val) {
       return
     }
     this.debounced(val.toLowerCase(), this)
@@ -127,22 +121,22 @@ export default class Events extends Vue {
 
   async save(event: IEvent) {
     const elem = document.querySelector('[data-current="' + event.date + '"]')
-    if(elem) {
+    if (elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
+    await this.$app.$commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
   }
 
   async remove(date: string) {
     const elem = document.querySelector('[data-current="' + date + '"]')
-    if(elem) {
+    if (elem) {
       elem.classList.add('processing')
     }
-    await this.commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
+    await this.$app.$commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
   }
 
   itemSelected(item: ISelected): void {
-    if(item.key === '0') {
+    if (item.key === '0') {
       return
     } else {
       this.bCalendarOptions = {
@@ -155,6 +149,6 @@ export default class Events extends Vue {
   }
 
   mounted() {
-    this.queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
+    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
   }
 }

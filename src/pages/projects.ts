@@ -1,16 +1,12 @@
 import { Watch } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
 import { cloneDeep, isEmpty, unset } from 'lodash'
-import { checkLinks, now, getFileType, dragAndDropLoader } from '~/helpers'
+import { checkLinks, now } from '~/helpers'
 import ProjectItem from '~/components/projectItem'
-import { ICommandBus } from '~/domain/interfaces'
-import { _container } from '~/domain/container'
-import { TYPES } from '~/domain/types'
-import { ReadCommand, UploadFileCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
-import { IFile, IFilters, IJson } from '~/domain/models'
+import { ReadCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
+import { IFilters, IProjects } from '~/domain/models'
 import { Getter, Mutation } from 'vuex-class'
-import { CreateEditCommand } from '~/domain/commands/createEdit.command'
-import FsmStates from '~/application/fsm.states'
+import { ArchivesQuery } from '~/domain/queries'
 
 @Options({
   components: {
@@ -22,12 +18,10 @@ import FsmStates from '~/application/fsm.states'
   }
 })
 export default class Projects extends Vue {
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
-  @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
 
   message = ''
@@ -37,19 +31,9 @@ export default class Projects extends Vue {
 
   onScrollHandler: () => void = null
 
-  get count(): number {
-    return this.json ? Object.keys(this.json).length : 0
-  }
-  get lastStamp(): string {
-    return this.count ? Object.keys(this.json)[this.count - 1] : ''
-  }
-  get hasFilter(): boolean {
-    return !isEmpty(this.filter)
-  }
-
   @Watch('hasFilter') onHasFilterChanged(flag: boolean) {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
-    if(flag) {
+    if (flag) {
       notepadCont.scrollTo(0, 0)
     } else {
       this.$nextTick(() => {
@@ -65,13 +49,24 @@ export default class Projects extends Vue {
     })
   }
 
+  updated() {
+    this.read()
+  }
+
+  mounted() {
+    const notepadCont = this.$refs.notepad_cont as HTMLElement
+    this.onScrollHandler = this.read.bind(this)
+    notepadCont.addEventListener('scroll', this.onScrollHandler)
+    this.$app.$queryBus.exec(new ArchivesQuery())
+  }
+
   send() {
-    if(!this.message.length) {
+    if (!this.message.length) {
       return
     }
     this.newMsgFlag = true
     const { date, stamp } = now()
-    const o: IJson = {
+    const o: IProjects = {
       [stamp]: {
         key: stamp,
         date,
@@ -85,65 +80,7 @@ export default class Projects extends Vue {
     this.$nextTick(() => {
       const notepadCont = this.$refs.notepad_cont as HTMLElement
       notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
-    })
-  }
-
-  onFileChange(e: InputEvent | DragEvent) {
-    const target = e.target as HTMLInputElement
-    let files = target.files
-    if(!files?.length) {
-      files = (e as DragEvent).dataTransfer.files
-    }
-    if(files?.length === 0) {
-      return
-    }
-    const formData = new FormData()
-    formData.append('file', files[0])
-    formData.set('file', files[0])
-    this.upload(formData, getFileType(files[0].name))
-  }
-
-  async upload(file: FormData, fileType: string) {
-    try {
-      const command = new CreateEditCommand({
-        component: 'uploading-popup',
-        componentProps: {},
-        modal: {
-          title: 'Uploading'
-        },
-        fsmState: FsmStates.Uploading
-      })
-      this.commandBus.do<CreateEditCommand<void>, void>(command)
-      const newFile = await this.commandBus.do<UploadFileCommand, IFile>(new UploadFileCommand(file))
-      this.$app.goBack()
-      this.addFile(newFile.name, fileType)
-    } catch(e) {
-      /* eslint-disable no-console */
-      console.error(e)
-    }
-  }
-
-  addFile(name: string, type: string) {
-    this.newMsgFlag = true
-    const { date, stamp } = now()
-    const o: IJson = {
-      [stamp]: {
-        key: stamp,
-        date,
-        name,
-        lock: false,
-        file: {
-          name,
-          type
-        }
-      }
-    }
-    this.setJson({ ...this.json, ...o })
-    this.$nextTick(() => {
-      const notepadCont = this.$refs.notepad_cont as HTMLElement
-      notepadCont.scrollTop = notepadCont.scrollHeight
-      this.commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
+      this.$app.$commandBus.do<CreateProjectCommand, boolean>(new CreateProjectCommand(o))
     })
   }
 
@@ -154,10 +91,10 @@ export default class Projects extends Vue {
     const unread: NodeListOf<HTMLElement> = self.querySelectorAll('.unread')
     unread.forEach((el: HTMLElement) => {
       const elRect = el.getBoundingClientRect()
-      if(elRect.top < viewportHeight) {
-        if(!el.classList.contains('.will-be-marked')) {
+      if (elRect.top < viewportHeight) {
+        if (!el.classList.contains('.will-be-marked')) {
           setTimeout(() => {
-            this.commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
+            this.$app.$commandBus.do<ReadCommand, void>(new ReadCommand(el.dataset.stamp))
             el.classList.remove('unread')
             el.classList.remove('will-be-marked')
             const hasStyle = el.attributes.getNamedItem('style')
@@ -170,7 +107,7 @@ export default class Projects extends Vue {
     })
   }
 
-  async onDelete(stamp: string) {
+  async onRemove(stamp: string) {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
     unset(buffJson, stamp)
@@ -178,25 +115,24 @@ export default class Projects extends Vue {
     this.setFilter(buffFilter)
     this.setJson(buffJson)
     this.removeStack.push(stamp)
-    if(this.removeStack[0] === stamp) {
-      await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
+    if (this.removeStack[0] === stamp) {
+      await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(stamp))
       this.removeStack = this.removeStack.filter(el => el !== stamp)
-      if(this.removeStack.length) {
-        this.onDelete(this.removeStack[0])
+      if (this.removeStack.length) {
+        this.onRemove(this.removeStack[0])
       }
     }
   }
 
-  updated() {
-    this.read()
+  get count(): number {
+    return this.json ? Object.keys(this.json).length : 0
   }
 
-  mounted() {
-    const notepadCont = this.$refs.notepad_cont as HTMLElement
-    this.onScrollHandler = this.read.bind(this)
-    notepadCont.addEventListener('scroll', this.onScrollHandler)
+  get lastStamp(): string {
+    return this.count ? Object.keys(this.json)[this.count - 1] : ''
+  }
 
-    dragAndDropLoader('notepad_cont', 'hightlight', this.onFileChange.bind(this))
-    window.ondragstart = () => false
+  get hasFilter(): boolean {
+    return !isEmpty(this.filter)
   }
 }

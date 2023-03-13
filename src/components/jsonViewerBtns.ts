@@ -1,5 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
+import Electron from 'electron'
 
 @Options({
   template: `
@@ -34,14 +35,14 @@ export default class JsonViewerBtns extends Vue {
 
     const readText = (filePath: HTMLInputElement) => {
       let reader = null
-      if(window.File && window.FileReader && window.FileList && window.Blob) {
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
         reader = new FileReader()
       } else {
         alert('The File APIs are not fully supported by your browser. Fallback required.')
         return false
       }
       let output = ''
-      if(filePath.files && filePath.files[0]) {
+      if (filePath.files && filePath.files[0]) {
         reader.onload = (e: ProgressEvent<FileReader>) => {
           output = e.target.result as string
           Hub.$emit('json-viewer-set', output)
@@ -59,7 +60,7 @@ export default class JsonViewerBtns extends Vue {
     this.$electron.ipcRenderer.on(
       'save-dialog-file-selected',
       (e: Electron.IpcRendererEvent, file: { filePath: string }) => {
-        if(file && file.filePath) {
+        if (file && file.filePath) {
           Hub.$emit('json-viewer-save', file.filePath)
         }
       }

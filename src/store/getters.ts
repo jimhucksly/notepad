@@ -35,10 +35,16 @@ const menu: Array<IMenu> = [
     id: 5
   },
   {
+    name: 'files',
+    nameAlt: 'Files',
+    fsmState: FsmStates.Files,
+    id: 6
+  },
+  {
     name: 'jsonViewer',
     nameAlt: 'Json Viewer',
     fsmState: FsmStates.JsonViewer,
-    id: 6
+    id: 7
   }
 ]
 
@@ -52,12 +58,18 @@ const getters: IGetters = {
   },
   getYandexToken(state: IRootState) {
     return state.currentUser?.yandexDiskAccessToken
+  },
+  getSection(state: IRootState) {
+    return {
+      ...state.section,
+      [state.component]: true
+    }
   }
 }
 
 stateKeys.forEach(key => {
   const getterKey = 'get' + upperFirst(key)
-  if(getters[getterKey] === undefined) {
+  if (getters[getterKey] === undefined) {
     getters[getterKey] = state => {
       return state[key]
     }

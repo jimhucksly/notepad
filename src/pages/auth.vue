@@ -7,8 +7,8 @@
           <div class="form-group-inner">
             <label
               :class="{
-                active: login.length > 0,
-                error: !!errors.login
+                active: v?.login?.value.length > 0,
+                error: v?.login?.isInvalid
               }"
             >
               Login:
@@ -16,13 +16,15 @@
             <input
               type="text"
               placeholder="Login"
-              :class="{ error: !!errors.login }"
+              :class="{ error: v?.login?.isInvalid }"
               v-model="login"
+              name="login"
+              required
               @keyup.enter.prevent="submit"
             >
           </div>
           <div>
-            <span class="form-label-error" v-show="!!errors.login && !!login.length">
+            <span class="form-label-error" v-show="isSubmitted && v?.login?.isInvalid">
               Login is incorrect
             </span>
           </div>
@@ -31,8 +33,8 @@
           <div class="form-group-inner">
             <label
               :class="{
-                active: pass.length > 0,
-                error: !!errors.pass
+                active: v?.pass?.value.length > 0,
+                error: v?.pass?.isInvalid
               }"
             >
               Password:
@@ -40,13 +42,17 @@
             <input
               type="password"
               placeholder="Password"
-              :class="{ error: !!errors.pass }"
+              :class="{ error: v?.pass?.isInvalid }"
               v-model="pass"
+              name="pass"
+              required
               @keyup.enter.prevent="submit"
             >
           </div>
           <div>
-            <span class="form-label-error" v-show="!!errors.pass && !!pass.length">Password is incorrect</span>
+            <span class="form-label-error" v-show="isSubmitted && v?.pass?.isInvalid">
+              Password is incorrect
+            </span>
           </div>
         </div>
         <div>
@@ -54,10 +60,10 @@
           <button class="btn btn-primary" @click.prevent="submit" ref="button">Go!</button>
         </div>
         <div class="flex-center p-y-10">
-          <span class="signup" @click="signup">Sign Up</span>
+          <span class="signup" @click="$app.goto($app.states.Reg)">Sign Up</span>
         </div>
         <div class="flex-center">
-          <span class="signup" @click="resetPass">Forgot password?</span>
+          <span class="signup" @click="$app.goto($app.states.Reset)">Forgot password?</span>
         </div>
       </div>
     </div>

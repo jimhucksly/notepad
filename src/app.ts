@@ -13,14 +13,18 @@ export default class AppComponent extends Vue {
       event.preventDefault()
       let selection = null
       let hasSelection = false
-      if(window.getSelection) {
+      if (window.getSelection) {
         const s = window.getSelection()
         selection = s ? s.toString() : ''
         hasSelection = selection ? !!selection.length : false
       }
-      if(hasSelection) {
+      if (hasSelection) {
         this.$electron.ipcRenderer.send('context-menu-popup')
       }
     })
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css'
+    document.getElementsByTagName('head')[0].appendChild(link)
   }
 }

@@ -28,13 +28,10 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
     try {
       setProcess(store, 'get todo list...')
-      const resp = await $http.get<Array<ITodo>>('todo')
-      if(!resp) {
-        return Promise.reject(resp)
-      }
-      store.commit('setTodo', resp.data)
-      return resp.data
-    } catch(e) {
+      const { data } = await $http.get<Array<ITodo>>('/todo')
+      store.commit('setTodo', data)
+      return data
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed')
       return Promise.reject(e)
     } finally {
@@ -51,9 +48,9 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
     try {
       setProcess(store, 'update todo list...')
-      await $http.put('todo', command.item)
+      await $http.put('/todo', command.item)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item update failed')
       return Promise.reject(e)
     } finally {
@@ -70,9 +67,9 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<boolean> {
     try {
       setProcess(store, 'remove todo item...')
-      await $http.delete(`todo/?id=${command.id}`)
+      await $http.delete(`/todo/?id=${command.id}`)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed')
       return Promise.reject(e)
     } finally {
@@ -89,9 +86,9 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
     try {
       setProcess(store, 'set todo order...')
-      await $http.post('todo/order', command.result)
+      await $http.post('/todo/order', command.result)
       return Promise.resolve(true)
-    } catch(e) {
+    } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed')
       return Promise.reject(e)
     } finally {

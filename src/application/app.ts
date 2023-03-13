@@ -5,16 +5,15 @@ import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IJson, IRootState, IUser } from '~/domain/models'
+import { IProjects, IRootState, IUser } from '~/domain/models'
 import {
   LibraryFileQuery,
   ProjectsQuery,
-  SessionQuery,
-  StartQuery
+  RefreshYandexTokenQuery,
+  SessionQuery
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
-import webApi from '../../config/api.config.json'
 
 interface IAppComponents {
   Projects: string
@@ -23,6 +22,7 @@ interface IAppComponents {
   Events: string
   JsonViewer: string
   Links: string
+  Files: string
   Todo: string
 }
 
@@ -34,6 +34,7 @@ export const AppComponents = {
   [toStr(FsmStates.Events)]: 'Events',
   [toStr(FsmStates.JsonViewer)]: 'JsonViewer',
   [toStr(FsmStates.Links)]: 'Links',
+  [toStr(FsmStates.Files)]: 'Files',
   [toStr(FsmStates.Todo)]: 'Todo'
 }
 
@@ -73,9 +74,9 @@ export default class Application implements IApplication {
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
-    this._store.commit('setApiPath', webApi.apiPath)
-    this._store.commit('setEndpoint', webApi.endpoint)
+    this._store.commit('setEndpoint', $ENDPOINT)
     this._store.commit('setUserDataPath', this.userDataPath)
+    this._store.commit('setFsmState', FsmStates.Auth)
   }
 
   loading(state: boolean) {
@@ -83,23 +84,42 @@ export default class Application implements IApplication {
   }
 
   async login(token: string) {
-    if(this.isAuth) {
+    if (this.isAuth) {
       return
     }
     try {
+      this.loading(true)
       this._store.commit('setToken', token)
       const userDataPath = this._store.getters.getUserDataPath
       await storage.set(userDataPath, userDataFileName, { token: token })
-      await this._queryBus.exec<StartQuery, void>(new StartQuery())
+      await this._queryBus.exec(new SessionQuery())
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
+      this.user(this._store.getters.getCurrentUser)
+      if (!this.currentUser.yandexDiskAccessToken) {
+        this.goto(FsmStates.Yandex)
+        return
+      }
+      await Promise.all([
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
+        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+      ])
+      this._queryBus.exec(new RefreshYandexTokenQuery())
       this.goHome()
-    } catch(e) {
-      throw new Error('Authentication is failed')
+    } catch (e) {
+      if (e?.message) {
+        throw new Error('Authentication is failed')
+      }
+      throw new Error(e)
+    } finally {
+      this.loading(false)
     }
   }
 
-  logout() {
-    this.goto(FsmStates.None)
+  async logout() {
+    const userDataPath = this._store.getters.getUserDataPath
+    await storage.set(userDataPath, userDataFileName, { token: '' })
+    this.goto(FsmStates.Auth)
+    this.loading(false)
   }
 
   user(data: IUser) {
@@ -108,41 +128,44 @@ export default class Application implements IApplication {
   }
 
   async goto(transition: symbol) {
-    if(this.state === transition) {
+    if (this.state === transition) {
       return
     }
     try {
       const func = this.getTransitionFunc(transition)
       const transitionResult: boolean = await func.call(this.fsm)
-      if(!transitionResult) {
-        return
-      }
-      if(transition === FsmStates.None) {
-        this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
-        this._store.commit('setToken', null)
-        const userDataPath = this._store.getters.getUserDataPath
-        storage.set(userDataPath, userDataFileName, { token: '' })
-        this.history = []
-        this._store.commit('setHistory', [])
+      if (!transitionResult) {
         return
       }
       this._store.commit('setFsmState', this.state)
-      if(this.lastState !== this.stateName) {
+      if (transition === FsmStates.Auth) {
+        if (this.isAuth) {
+          this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
+          this._store.commit('setToken', null)
+          const userDataPath = this._store.getters.getUserDataPath
+          storage.set(userDataPath, userDataFileName, { token: '' })
+          this.history = []
+          this._store.commit('setHistory', [])
+          this._store.commit('setComponent', null)
+        }
+        return
+      }
+      if (this.lastState !== this.stateName) {
         this.setHistory()
       }
-      if(AppComponents[this.stateName]) {
+      if (AppComponents[this.stateName]) {
         this._store.commit('setComponent', AppComponents[this.stateName])
         this.history = this.history.filter(item => item in AppComponents)
       }
-    } catch(e) {
+    } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
   }
 
   goBack() {
-    if(this.history.length === 1) {
-      if(this.state === FsmStates.Projects) {
+    if (this.history.length === 1) {
+      if (this.state === FsmStates.Projects) {
         return
       }
       this.goto(FsmStates.Projects)
@@ -167,22 +190,14 @@ export default class Application implements IApplication {
   async reload() {
     try {
       this.loading(true)
-      const token = this._store.getters.getToken
-      await this._queryBus.exec(new SessionQuery(token))
-      // await this._queryBus.exec<RefreshYandexTokenQuery, boolean>(
-      //   new RefreshYandexTokenQuery(Number(this.currentUser.id))
-      // )
-      // await this._queryBus.exec(new YandexTokenQuery(111, Number(this.currentUser.id)))
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IJson>(new ProjectsQuery()),
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
         this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-        // this._queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
-        // this._queryBus.exec<LinksQuery, Array<ILink>>(new LinksQuery())
       ])
       setTimeout(() => {
         this.loading(false)
-      }, 1500)
-    } catch(e) {
+      }, 1000)
+    } catch (e) {
       this.loading(false)
       /* eslint-disable no-console */
       console.error(e)
@@ -191,6 +206,18 @@ export default class Application implements IApplication {
 
   get fsm() {
     return _fsm
+  }
+
+  get $queryBus(): IQueryBus {
+    return this._queryBus
+  }
+
+  get $commandBus(): ICommandBus {
+    return this._commandBus
+  }
+
+  get states() {
+    return FsmStates
   }
 
   get state(): symbol {
@@ -226,7 +253,7 @@ export default class Application implements IApplication {
 
   private getTransitionFunc(transition: symbol): () => Promise<boolean> {
     const func = this.fsm[toStr(transition).toLowerCase()]
-    if(!func) {
+    if (!func) {
       throw new Error(`The transition ${toStr(transition)} is not exist in FSM`)
     }
     return func

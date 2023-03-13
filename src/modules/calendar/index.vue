@@ -29,7 +29,7 @@
             <input type="text" :readonly="true" v-model="event.date">
             <textarea v-model="event.content" placeholder="Text"></textarea>
             <div class="flex-between shrink-0">
-              <button class="btn btn-danger m-r-15" @click.prevent="formRemove">Remove</button>
+              <button class="btn btn-danger m-r-15" @click.prevent="formRemove" :disabled="!hasEvent(event.date)">Remove</button>
               <button class="btn btn-primary" @click.prevent="formSave">Save</button>
             </div>
           </form>

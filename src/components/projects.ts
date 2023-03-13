@@ -2,20 +2,15 @@ import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
-import { _container } from '~/domain/container'
-import { IQueryBus } from '~/domain/interfaces'
-import { IArchive, IFilters, IJson } from '~/domain/models'
+import { IFsmStates } from '~/application/fsm.states'
+import { IArchive, IFilters, IProjects } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
 
 export default class Projects extends Vue {
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
   @Getter('getHistory') history: Array<keyof IFsmStates>
@@ -23,14 +18,23 @@ export default class Projects extends Vue {
   selected = ''
 
   @Watch('fsmState') onFsmStateChanged() {
-    if(this.fsmState !== FsmStates.ProjectsEditor) {
+    if (this.fsmState !== this.$app.states.ProjectsEditor) {
       this.selected = ''
+    }
+  }
+
+  @Watch('isJsonLoaded') async onReady() {
+    try {
+      await this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.error(e)
     }
   }
 
   public clearCheck() {
     const input: NodeListOf<Element> = document.querySelectorAll('input[type="checkbox"]:checked')
-    if(input && input[0]) {
+    if (input && input[0]) {
       (input[0] as HTMLInputElement).checked = false
     }
   }
@@ -39,19 +43,19 @@ export default class Projects extends Vue {
     const items = this.$el.querySelectorAll('[data-role="projects-item"]')
     let item: HTMLElement = null
     items.forEach((el: HTMLElement) => {
-      if(el.dataset.stamp === stamp) {
+      if (el.dataset.stamp === stamp) {
         item = el
       }
     })
-    if(!item) {
+    if (!item) {
       return
     }
     const target = e.target as HTMLElement
-    if(target.closest('.projects_item_check')) {
+    if (target.closest('.projects_item_check')) {
       return null
     }
-    if(target.tagName === 'DIV' || target.tagName === 'LABEL') {
-      if(item.classList.contains('active')) {
+    if (target.tagName === 'DIV' || target.tagName === 'LABEL') {
+      if (item.classList.contains('active')) {
         const buff = cloneDeep(this.filter)
         unset(buff, stamp)
         this.setFilter({ ...buff })
@@ -64,11 +68,11 @@ export default class Projects extends Vue {
   toggleCheck(e: InputEvent) {
     const target = e.target as HTMLInputElement
     const isChecked = target.checked
-    if(isChecked) {
-      if(this.isArchivesInit) {
+    if (isChecked) {
+      if (this.isArchivesInit) {
         this.$app.goBack()
       }
-      this.$app.goto(FsmStates.ProjectsEditor)
+      this.$app.goto(this.$app.states.ProjectsEditor)
     } else {
       this.$app.goBack()
     }
@@ -77,23 +81,18 @@ export default class Projects extends Vue {
   }
 
   toggleArchives() {
-    if(this.isArchivesInit) {
+    if (this.isArchivesInit) {
       this.$app.goBack()
     } else {
-      if(this.isEditorInit) {
+      if (this.isEditorInit) {
         this.$app.goBack()
       }
-      this.$app.goto(FsmStates.ProjectsArchives)
+      this.$app.goto(this.$app.states.ProjectsArchives)
     }
   }
 
-  created() {
-    try {
-      this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
-    } catch(e) {
-      /* eslint-disable no-console */
-      console.error(e)
-    }
+  get isJsonLoaded(): boolean {
+    return Boolean(this.json)
   }
 
   get isArchivesInit(): boolean {

@@ -43,13 +43,13 @@
     }],
     // enforce spacing before and after keywords (keyword-spacing)
     "keyword-spacing": [2, {
-        "overrides": {
-        "if": {"after": false},
-        "for": {"after": false},
-        "while": {"after": false},
-        "switch": {"after": false},
-        "import": {"after": true},
-        "catch": {"after": false}
+          "overrides": {
+          "if": {"after": true},
+          "for": {"after": true},
+          "while": {"after": true},
+          "switch": {"after": true},
+          "import": {"after": true},
+          "catch": {"after": true}
         }
       }
     ],
@@ -82,6 +82,7 @@
     "vue/v-on-style": ["error", "shorthand"],
     "vue/v-bind-style": ["error", "shorthand"],
     "vue/no-v-html": "off",
+    "vue/valid-v-for": "off",
     "vue/require-default-prop": "off",
     "vue/component-definition-name-casing": "off",
     "vue/order-in-components": [

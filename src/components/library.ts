@@ -1,6 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
+import { IFsmStates } from '~/application/fsm.states'
 import { ITreeItem } from '~/domain/models'
 import LibraryFiles from '~/components/libraryFiles'
 import { Watch } from 'vue-property-decorator'
@@ -33,7 +33,7 @@ export default class Library extends Vue {
   tree: Array<ITreeItem> = []
 
   @Watch('items') onItemsChanged() {
-    if(this.items && this.items.length) {
+    if (this.items && this.items.length) {
       this.tree = this.items
     } else {
       this.tree = []
@@ -41,10 +41,10 @@ export default class Library extends Vue {
   }
 
   toggleFiles() {
-    if(this.isFilesInit) {
+    if (this.isFilesInit) {
       this.$app.goBack()
     } else {
-      this.$app.goto(FsmStates.LibraryFiles)
+      this.$app.goto(this.$app.states.LibraryFiles)
     }
   }
 

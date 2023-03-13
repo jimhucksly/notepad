@@ -1,0 +1,242 @@
+const {
+  responseModify,
+  checkHeaders,
+  checkSession,
+  checkToken,
+  getErrorCode,
+  dateFormat
+} = require('../utils.js')
+
+function put(router, $app) {
+  router.put('/project', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'notepad.json'
+      const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      let key = ''
+      Object.keys(req.body).forEach(k => { key = k })
+      content[key] = req.body[key]
+      const payload = Buffer.from(JSON.stringify(content))
+      await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+      res.send({
+        status: 'success',
+        message: 'new project is successfully created',
+        data: responseModify(req.body[key])
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/project/archive', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'archives'
+      const filename = 'notepad.json'
+      const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const item = content[req.body.key]
+      const name = item.name + '_(datetime)' + dateFormat(new Date(), 'YYYYMMDDHms') + '.html'
+      let payload = Buffer.from(item.message)
+      await $app.yandex.uploadFile(path + '/' + name, payload, user.yandex_disk_access_token)
+      delete content[req.body.key]
+      payload = Buffer.from(JSON.stringify(content))
+      await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+      res.send({
+        status: 'success',
+        message: 'project is moved to archives successfully'
+      })
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/library', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const path = 'library'
+      const filename = req.body.name + '.md'
+      let info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      if (info._embedded.items) {
+        let found = info._embedded.items.find(item => item.name === filename)
+        if (found) {
+          throw new Error('File with name "' + filename + '" is already exists')
+        }
+        await $app.yandex.uploadFile(path + '/' + filename, Buffer.from(''), user.yandex_disk_access_token)
+        info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+        found = info._embedded.items.find(item => item.name === filename)
+        if (found) {
+          res.send({
+            status: 'success',
+            message: 'a new library file is successfully created',
+            data: {
+              id: found.resource_id
+            }
+          })
+        } else {
+          throw new Error('File creating failed')
+        }
+      } else {
+        throw new Error('resource not found')
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/events', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'events.json'
+      const { title, date, content } = req.body
+      if (title && date && content) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+        json[date] = {
+          title,
+          content,
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: {
+            [date]: {
+              title,
+              content,
+            }
+          }
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/links', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'links.json'
+      const { id, name, url } = req.body
+      if (id && name && url) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+        json[id] = {
+          name,
+          url
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: [
+            {
+              id,
+              name,
+              url
+            }
+          ]
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/todo', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const user = await $app.db.query().user({ token }).get()
+      const filename = 'todo.json'
+      const { date, id, order } = req.body
+      if (date && id && order) {
+        const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+        json[id] = {
+          date,
+          order,
+          text: req.body.text ?? ''
+        }
+        const payload = Buffer.from(JSON.stringify(json))
+        await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
+        res.send({
+          status: 'success',
+          data: [
+            {
+              id,
+              date,
+              order,
+              text: req.body.text ?? ''
+            }
+          ]
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+  router.put('/upload', async (req, res, next) => {
+    try {
+      await checkHeaders(req.headers)
+      await checkSession(req.headers)
+      const token = await checkToken(req.headers)
+      const path = 'files'
+      const keys = Object.keys(req.files)
+      if (keys.length) {
+        const user = await $app.db.query().user({ token }).get()
+        for (const key of keys) {
+          const payload = req.files[key].data
+          const filename = req.files[key].name
+          await $app.yandex.uploadFile(path + '/' + filename, payload, user.yandex_disk_access_token)
+        }
+        res.send({
+          status: 'success',
+          message: 'files successfully uploaded'
+        })
+      } else {
+        throw new Error()
+      }
+    } catch (e) {
+      res.status(getErrorCode(e?.message)).send({
+        status: 'error',
+        message: e?.message || 'bad request'
+      })
+    }
+  })
+}
+
+module.exports = {
+  put
+}

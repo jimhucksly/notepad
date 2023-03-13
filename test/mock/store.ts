@@ -1,11 +1,11 @@
 import { ActionContext, Store, StoreOptions } from 'vuex'
-import { IEvents, IFilters, IJson, ILink, ITodo, ITreeItem } from '../../src/domain/models'
+import { IEvents, IFilters, ILink, IProjects, ITodo, ITreeItem } from '../../src/domain/models'
 
 interface IMockState {
   isDevelopment: boolean
   isAuth: boolean
   loading: boolean
-  json: IJson
+  json: IProjects
   filter: IFilters
   libraryData: string
   libraryTree: Array<ITreeItem>
@@ -92,7 +92,7 @@ const storeOptions: StoreOptions<IMockState> = {
     setLoading(state: IMockState, flag: boolean) {
       state.loading = flag
     },
-    setJson(state: IMockState, json: IJson) {
+    setJson(state: IMockState, json: IProjects) {
       state.json = json
     },
     setLibraryData(state: IMockState, data: string) {
@@ -121,7 +121,7 @@ const storeOptions: StoreOptions<IMockState> = {
     getLoading(state: IMockState): boolean {
       return state.loading
     },
-    getJson(state: IMockState): IJson {
+    getJson(state: IMockState): IProjects {
       return state.json
     },
     getFilter(state: IMockState): IFilters {

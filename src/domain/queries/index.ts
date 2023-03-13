@@ -2,11 +2,7 @@ export class AuthQuery {
   constructor(public login: string, public password: string) {}
 }
 
-export class SessionQuery {
-  constructor(public token: string) {}
-}
-
-export class StartQuery {}
+export class SessionQuery {}
 
 export class ProjectsQuery {}
 
@@ -24,15 +20,13 @@ export class LinksQuery {}
 
 export class TodoQuery {}
 
+export class FilesQuery {}
+
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }
 
-export class RefreshYandexTokenQuery {
-  constructor(public userId: number) {}
-}
-
-export class YandexDiskInfoQuery {}
+export class RefreshYandexTokenQuery {}
 
 export class YandexDiskResourceLinkQuery {
   constructor(public filename: string) {}

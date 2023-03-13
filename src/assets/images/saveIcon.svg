@@ -1,5 +1,5 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve" id="saveIcon">
-  <g style="fill: #2766BA">
+  <g style="fill: currentColor">
     <path d="M26,0h-2v13H8V0H0v32h32V6L26,0z M28,30H4V16h24V30z" />
     <rect x="6" y="18" width="20" height="2" />
     <rect x="6" y="22" width="20" height="2" />

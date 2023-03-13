@@ -3,24 +3,18 @@ import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { _container } from '~/domain/container'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IArchive, IFilters, IJson, IJsonItem } from '~/domain/models'
+import { IArchive, IFilters, IProjects, IProject } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
-import { ConfirmQuery } from '~/domain/queries/confirm.query'
-import { TYPES } from '~/domain/types'
+import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 
 export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
 
-  private readonly queryBus: IQueryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-  private readonly commandBus: ICommandBus = _container.get<ICommandBus>(TYPES.CommandBus)
-
   @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setJson') setJson: (value: IJson) => void
+  @Mutation('projects/setJson') setJson: (value: IProjects) => void
   @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getJson') json: IJson
+  @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('projects/getSelectedProjectKey') selected: string
 
@@ -30,13 +24,13 @@ export default class ProjectsEditor extends Vue {
   savingProcess = false
 
   @Watch('expanded') onExpandedChanged() {
-    if(!this.expanded) {
+    if (!this.expanded) {
       this.setSelectedProject('')
     }
   }
 
-  @Watch('item') onItemChanged(o: IJsonItem) {
-    if(o) {
+  @Watch('item') onItemChanged(o: IProject) {
+    if (o) {
       this.name = o.name
       this.isLock = o.lock
     } else {
@@ -45,37 +39,26 @@ export default class ProjectsEditor extends Vue {
     }
   }
 
-  get item(): IJsonItem {
-    if(!this.json) {
-      return null
-    }
-    return this.json[this.selected]
-  }
-
-  get isFile(): boolean {
-    return this.item && !!this.item.file
-  }
-
   async toggleLock(): Promise<void> {
-    if(!this.item) {
+    if (!this.item) {
       return
     }
     const isLocked = this.item.lock
     const updateJson = () => {
-      const o: IJson = {
+      const o: IProjects = {
         [this.item.key]: {
           ...this.item,
           lock: !isLocked
         }
       }
       this.setJson({ ...this.json, ...o })
-      this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+      this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
-    if(isLocked) {
-      const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+    if (isLocked) {
+      const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
         'Do you want to unlock this project?'
       ))
-      if(!isConfirm) {
+      if (!isConfirm) {
         this.isLock = !this.isLock
         return
       }
@@ -84,52 +67,57 @@ export default class ProjectsEditor extends Vue {
   }
 
   async archive() {
-    const selected = this.selected
+    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
+    this.removeHandler()
+    this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
     this.$app.goBack()
-    await this.commandBus.do<ArchivingCommand, void>(new ArchivingCommand(selected))
-    await this.removeHandler(selected)
-    await this.queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
   }
 
   async remove() {
-    const isConfirm = await this.queryBus.exec(new ConfirmQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
       'Do you want to remove this project?'
     ))
-    if(!isConfirm) {
+    if (!isConfirm) {
       return
     }
+    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
     this.removeHandler()
   }
 
-  async removeHandler(selected?: string) {
-    await this.commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(selected || this.selected))
+  removeHandler() {
     const buffJson = cloneDeep(this.json)
     const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, selected || this.selected)
-    unset(buffFilter, selected || this.selected)
+    unset(buffJson, this.selected)
+    unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.setJson(buffJson)
   }
 
   async save() {
     this.savingProcess = true
-    const o: IJson = {
+    const o: IProjects = {
       [this.selected]: {
         key: this.selected,
         date: this.item.date,
         name: this.name,
         lock: this.isLock,
-        message: this.item.message,
-        file: this.item.file
+        message: this.item.message
       }
     }
     this.setJson({ ...this.json, ...o })
-    await this.commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
+    await this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.savingProcess = false
     this.$app.goBack()
   }
 
   hide() {
     this.$app.goBack()
+  }
+
+  get item(): IProject {
+    if (!this.json) {
+      return null
+    }
+    return this.json[this.selected]
   }
 }
