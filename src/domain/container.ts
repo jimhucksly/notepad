@@ -18,9 +18,6 @@ if (process.env.NODE_ENV === 'test') {
   _store = mockStore
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-// type TAnyResult = any
-
 const _container = new Container()
 _container.bind<Container>(TYPES.Container).toConstantValue(_container)
 /* ------------ appliation ------------ */

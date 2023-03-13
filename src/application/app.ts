@@ -14,7 +14,6 @@ import {
 } from '~/domain/queries'
 import { TYPES } from '~/domain/types'
 import storage from '~/plugins/storage'
-import { endpoint } from '../../config/endpoint.json'
 
 interface IAppComponents {
   Projects: string
@@ -75,11 +74,7 @@ export default class Application implements IApplication {
 
   init() {
     this._store.commit('setIsDevelopment', this.isDev)
-    if (this.isDev) {
-      this._store.commit('setEndpoint', '127.0.0.1:8000')
-    } else {
-      this._store.commit('setEndpoint', endpoint)
-    }
+    this._store.commit('setEndpoint', $ENDPOINT)
     this._store.commit('setUserDataPath', this.userDataPath)
     this._store.commit('setFsmState', FsmStates.Auth)
   }
