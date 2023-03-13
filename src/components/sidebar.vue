@@ -73,6 +73,9 @@
         <button @click="onFileDownload" class="m-l-5">
           <svg-icon icon="btnOpen" width="32" height="23" />
         </button>
+        <button @click="onFileCheck" class="m-l-5">
+          <svg-icon icon="btnCheck" width="32" height="23" />
+        </button>
         <button @click="onFileRemove" class="m-l-35">
           <svg-icon icon="btnClear" width="32" height="23" />
         </button>

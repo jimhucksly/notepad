@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { IResponse } from '~/domain/models'
 import { uploadDownloadFile } from '~/helpers'
 import store from '~/store'
-import { endpoint } from '../../config/endpoint.json'
 
 axios.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
@@ -25,8 +24,7 @@ axios.interceptors.request.use(
       if (session) {
         config.headers.SSID = session
       }
-      const isDevelopment = store.getters.getIsDevelopment
-      config.url = (isDevelopment ? 'http://127.0.0.1:8000' : endpoint) + config.url
+      config.url = $ENDPOINT + config.url
       return config
     } catch (e) {
       throw new Error(e)

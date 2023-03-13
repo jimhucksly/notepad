@@ -43,6 +43,8 @@ export default class Sidebar extends Vue {
   fileSelected: IFile = null
   onFileSelectHandler: (file: IFile) => void
 
+  filesCheck = false
+
   @Watch('isProjects') onIsProjectsChanged() {
     this.projectEditedItemKey = ''
   }
@@ -138,6 +140,11 @@ export default class Sidebar extends Vue {
 
   onFileSelect(file: IFile) {
     this.fileSelected = file
+  }
+
+  onFileCheck() {
+    this.filesCheck = !this.filesCheck
+    Hub.$emit('on-file-check', this.filesCheck)
   }
 
   onFileDownload() {

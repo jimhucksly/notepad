@@ -913,6 +913,30 @@ main {
     border: 1px solid $blue_light;
     background-color: $blue_light-op-02;
   }
+  &.checking {
+    .file_icon, .file_name {
+      opacity: 0.6;
+    }
+    .file_check {
+      display: block;
+    }
+  }
+
+  &.checked {
+    .file_icon, .file_name {
+      opacity: 0.8;
+    }
+    .file_check {
+      span {
+        background-color: rgba(255, 255, 255, 1);
+        border-color: $editor_green_darken-10;
+        box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.2);
+        svg {
+          display: block;
+        }
+      }
+    }
+  }
 
   .file_icon {
     display: flex;
@@ -966,6 +990,35 @@ main {
 
       &.error {
         color: var(--red);
+      }
+    }
+  }
+  .file_check {
+    display: none;
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    z-index: 10;
+
+    input[type=checkbox] {
+      display: none;
+    }
+
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 23px;
+      height: 23px;
+      border: 1px solid $dark;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.1);
+      svg {
+        display: none;
       }
     }
   }

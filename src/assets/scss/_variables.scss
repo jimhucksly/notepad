@@ -42,6 +42,7 @@ $blue-gray: #b7c5ca;
 $blue-gray_light: lighten($blue-gray, 9%);
 
 $editor_green: #72c749;
+$editor_green_darken-10: darken($editor_green, 10%);
 $editor_dark:  #141414;
 $editor_blue: #35bdff;
 $editor_yellow: #eeea53 ;
@@ -78,6 +79,7 @@ $editor_red_light: lighten($editor_red, 3%);
   --blue-gray:  #{$blue-gray};
   --blue-gray_light: #{$blue-gray_light};
   --editor_green: #{$editor_green};
+  --editor_green_darken-10: #{$editor_green_darken-10};
   --editor_dark: #{$editor_dark};
   --editor_blue: #{$editor_blue};
   --editor_yellow: #{$editor_yellow};

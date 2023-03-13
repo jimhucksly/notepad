@@ -11,6 +11,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const { endpoint } = require('./endpoint.json')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isDevelopment = !isProduction
@@ -120,7 +121,8 @@ let rendererConfig = {
     }),
     new webpack.DefinePlugin({
       '__VUE_OPTIONS_API__': true,
-      '__VUE_PROD_DEVTOOLS__': false
+      '__VUE_PROD_DEVTOOLS__': false,
+      $ENDPOINT: isDevelopment ? `"http://127.0.01:8000"` : endpoint,
     })
   ],
   output: {

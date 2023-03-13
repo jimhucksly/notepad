@@ -6,7 +6,10 @@
       :item="item"
       :index="i"
       :selected="item.id === selected"
+      :checking="checking"
+      :checked="checkeds.includes(item.id)"
       @on-select="onSelect"
+      @on-check="onCheck"
     />
     <div id="upload-download-popup" v-if="uploading">
       <div class="label">

@@ -8,17 +8,29 @@ export default class File extends Vue {
   @Prop() item: IFile
   @Prop() index: number
   @Prop() selected: boolean
+  @Prop() checking: boolean
+  @Prop() checked: boolean
+
+  isChecked = false
 
   @Getter('getDownloadsTargetPath') targetPath: string
 
   onResizeHandler: () => void
 
   @Emit('on-select') onSelect() {
+    return this.checking ? null : this.item.id
+  }
+
+  @Emit('on-check') onCheck() {
     return this.item.id
   }
 
   @Watch('index') onIndexChanged() {
     this.setPosition()
+  }
+
+  @Watch('isChecked') onIsCheckedChanged() {
+    this.onCheck()
   }
 
   mounted() {

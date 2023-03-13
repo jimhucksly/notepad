@@ -19,10 +19,13 @@ export default class Files extends Vue {
 
   selected: string = null
   uploading = false
+  checking = false
+  checkeds: Array<string> = []
 
   onFileChangeHandler: (e: InputEvent) => void
   onFileRemoveHandler: () => void
   onFileDownloadHandler: () => void
+  onFileCheckHandler: (value: boolean) => void
 
   created() {
     this.fetchFiles()
@@ -32,6 +35,8 @@ export default class Files extends Vue {
     Hub.$on('on-file-remove', this.onFileRemoveHandler)
     this.onFileDownloadHandler = this.onFileDownload.bind(this)
     Hub.$on('on-file-download', this.onFileDownloadHandler)
+    this.onFileCheckHandler = this.onFileCheck.bind(this)
+    Hub.$on('on-file-check', this.onFileCheckHandler)
   }
 
   mounted() {
@@ -67,16 +72,23 @@ export default class Files extends Vue {
   }
 
   async onFileRemove() {
-    if (!this.selected) {
+    if (!this.selected && !this.checkeds?.length) {
       return
     }
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
-      'Do you realy want to remove this file?'
-    ))
+    let question = 'Do you realy want to remove this file?'
+    if (this.checkeds.length) {
+      question = `Do you realy want to remove ${this.checkeds.length} files?`
+    }
+    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(question))
     if (!isConfirm) {
       return
     }
-    await this.$app.$commandBus.do(new DeleteFileCommand(this.selected))
+    for (const id of this.selected ? [this.selected] : this.checkeds) {
+      await this.$app.$commandBus.do(new DeleteFileCommand(id))
+    }
+    this.selected = null
+    this.checkeds = []
+    this.checking = false
     this.fetchFiles()
   }
 
@@ -114,5 +126,24 @@ export default class Files extends Vue {
   onSelect(id: string) {
     this.selected = id
     Hub.$emit('on-file-select', this.files.find(f => f.id === id))
+  }
+
+  onFileCheck(value: boolean) {
+    if (!this.files.length) {
+      return
+    }
+    this.checking = value
+    this.selected = null
+    if (!value) {
+      this.checkeds = []
+    }
+  }
+
+  onCheck(id: string) {
+    if (this.checkeds.includes(id)) {
+      this.checkeds = this.checkeds.filter(el => el !== id)
+    } else {
+      this.checkeds.push(id)
+    }
   }
 }
