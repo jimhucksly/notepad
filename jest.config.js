@@ -2,7 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 let testRegex = [
-  "(spec).[tj]s?"
+  "(spec).ts?"
 ]
 
 if(process.env.UNIT) {
@@ -86,16 +86,14 @@ module.exports = {
   moduleFileExtensions: [
     "js",
     "json",
-    "jsx",
     "ts",
-    "tsx",
     "node",
     "vue"
   ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^~(.*)$": "<rootDir>/src/$1",
+    "^\~(.*)$": "<rootDir>/src/$1",
     "electron": "<rootDir>/test/mock/electron.js"
   },
 
@@ -133,9 +131,10 @@ module.exports = {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: [
+    "<rootDir>",
+    "/notepad-app/"
+  ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   runner: "jest-electron/runner",
@@ -186,13 +185,9 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    // обработка файлов с расширением `*.vue` с помощью `vue-jest`
-    "^.+\\.vue$": "<rootDir>/node_modules/vue-jest",
-    // обработка файлов с расширением `*.ts` с помощью `ts-jest`
-    "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest",
-    // обработка файлов (vuetify|ngx-datatable) с расширеним `*.(css|sass|scss)` с помощью `jest-transform-stub`
-    "^.+\\.s?[a|c]ss$": "<rootDir>/node_modules/jest-transform-stub"
+    "^.+\\.vue$": "@vue/vue3-jest",
+    "^.+\\.ts$": "babel-jest",
+    "^.+\\.(scss|css)$": "jest-css-modules-transform"
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

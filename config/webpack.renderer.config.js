@@ -123,7 +123,7 @@ let rendererConfig = {
       {
         '__VUE_OPTIONS_API__': true,
         '__VUE_PROD_DEVTOOLS__': false,
-        '$ENDPOINT': isDevelopment ? `"http://127.0.01:8000"` : `"${endpoint}"`,
+        '$ENDPOINT': 0 ? `"http://127.0.01:8000"` : `"${endpoint}"`,
       }
     )
   ],
