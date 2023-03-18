@@ -37,7 +37,7 @@ export default class NotepadItem extends Vue {
         item: this.item
       },
       modal: {
-        title: 'Edit project | ' + this.item.name,
+        title: 'Edit project | ' + (this.item.name || this.item.key),
         width: '65%',
         height: '95%'
       }

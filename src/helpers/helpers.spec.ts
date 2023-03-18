@@ -5,7 +5,10 @@ import {
   isJSON,
   getFileType,
   translit,
-  indexOf
+  indexOf,
+  isDefined,
+  upperFirst,
+  lowerFirst
 } from './index'
 
 const html = 'My site <br><a href=\"http:\/\/dn-web.ru\" target=\"_blank\">http:\/\/dn-web.ru<\/a>'
@@ -53,5 +56,22 @@ describe('Helpers', () => {
     div.innerHTML = html
     const li = div.querySelector('.a') as HTMLElement
     expect(indexOf(li)).toEqual(0)
+  })
+
+  it('upperFirst', () => {
+    expect(upperFirst('lorem')).toEqual('Lorem')
+  })
+
+  it('lowerFirst', () => {
+    expect(lowerFirst('LoremIpsum')).toEqual('loremIpsum')
+  })
+
+  it('isDefined', () => {
+    expect(isDefined(null)).toBeFalsy()
+    expect(isDefined(undefined)).toBeFalsy()
+    expect(isDefined(0)).toBeTruthy()
+    expect(isDefined('')).toBeTruthy()
+    expect(isDefined(Number('a555'))).toBeFalsy()
+    expect(isDefined(Number('555'))).toBeTruthy()
   })
 })

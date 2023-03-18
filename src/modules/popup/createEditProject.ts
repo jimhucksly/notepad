@@ -1,7 +1,8 @@
 import { Options, Prop, Vue } from 'vue-property-decorator'
-import { IEditor, IProject } from '~/domain/models'
-import { checkLinks, htmlToText } from '~/helpers'
+import { IProject } from '~/domain/models'
 import Editor from '~/lib/vue-ace-editor'
+import CodeMirror, { EditorFromTextArea } from 'codemirror'
+import { checkLinks, htmlToText } from '~/helpers'
 
 @Options({
   components: {
@@ -12,7 +13,7 @@ export default class CreateEditProject extends Vue {
   @Prop() item: IProject
 
   text = ''
-  editor: IEditor = null
+  editor: EditorFromTextArea = null
   onKeydownHander: (e: KeyboardEvent) => void
 
   created() {
@@ -22,11 +23,19 @@ export default class CreateEditProject extends Vue {
   mounted() {
     this.onKeydownHander = this.onKeydown.bind(this)
     document.addEventListener('keydown', this.onKeydownHander)
+    const textarea: HTMLTextAreaElement = document.querySelector('#editor')
+    const editor = CodeMirror.fromTextArea(textarea, {
+      mode: 'text/plain'
+    })
+    const doc = editor.getDoc()
+    doc.setValue(htmlToText(this.item.message))
+    setTimeout(() => {
+      editor.refresh()
+      this.editor = editor
+    }, 100)
   }
 
   beforeUnmount() {
-    this.editor.destroy()
-    this.editor.container.remove()
     document.removeEventListener('keydown', this.onKeydownHander)
   }
 
@@ -44,15 +53,13 @@ export default class CreateEditProject extends Vue {
     }
   }
 
-  editorInit(instance: IEditor) {
-    this.editor = instance
-    this.editor.setValue(htmlToText(this.item.message))
-    this.editor.setShowPrintMargin(false)
-    this.editor.getSession().selection.clearSelection()
-  }
-
   save() {
-    const value = this.editor.getValue()
+    const doc = this.editor.getDoc()
+    const value = doc.getValue()
+    if (value === this.item.message) {
+      this.$emit('cancel')
+      return
+    }
     this.$emit('set-result', value ? checkLinks(value) : ' ')
   }
 }
