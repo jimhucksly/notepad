@@ -84,11 +84,10 @@ module.exports = {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
+    "vue",
     "js",
     "json",
     "ts",
-    "node",
-    "vue"
   ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
@@ -107,7 +106,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -137,7 +136,7 @@ module.exports = {
   ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
-  runner: "jest-electron/runner",
+  // runner: "jest-electron/runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: [],
@@ -149,10 +148,15 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-electron/environment",
+  testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  testEnvironmentOptions: {
+    customExportConditions: [
+      "node",
+      "node-addons"
+    ]
+  },
 
   // Adds a location field to test results
   // testLocationInResults: false,
