@@ -65,7 +65,7 @@
     "json-formatter-js": "^2.3.3",
     "nodemailer": "^6.9.1",
     "simplemde": "^1.11.2",
-    "vue": "^3.2.20",
+    "vue": "^3.2.47",
     "vue-electron": "^1.0.6",
     "vuex": "^4.0.2"
   },

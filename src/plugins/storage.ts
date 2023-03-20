@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { isJSON } from '~/helpers'
+import { isDefined, isJSON } from '~/helpers'
 
 export default class Storage {
   static isPathExists(_path: string): Promise<boolean> {
@@ -88,11 +88,17 @@ export default class Storage {
         } catch (e) {
           json = {}
         }
-        if (key && json[key] !== undefined) {
-          resolve(json[key])
-        } else resolve(json)
+        if (!key) {
+          resolve(json)
+        }
+        if (key && key in json) {
+          resolve(isDefined(json[key]) ? json[key] : json)
+        }
+        if (key && !(key in json)) {
+          reject(null)
+        }
       } catch (err) {
-        return reject(null)
+        reject(null)
       }
     })
   }

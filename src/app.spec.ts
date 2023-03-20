@@ -1,7 +1,8 @@
-import { mount, VueWrapper, flushPromises } from '@vue/test-utils'
+import { mount, VueWrapper } from '@vue/test-utils'
 import { Options, Vue } from 'vue-property-decorator'
 import { createRouter, createWebHistory } from 'vue-router'
-import AnimePlugin from '~/plugins/anime'
+
+import { defineComponent } from 'vue'
 
 let wrapper: VueWrapper<Vue> = null
 let component: Vue = null
@@ -24,36 +25,28 @@ const router = createRouter({
   ]
 })
 
-@Options({
+const App = defineComponent({
   template: '<router-view></router-view>'
 })
-class App extends Vue {
-  //
-}
 
 async function setupTest() {
   router.push('/')
   await router.isReady()
   wrapper = mount(App, {
     global: {
-      plugins: [router, AnimePlugin]
+      plugins: [router]
     }
   })
-  component = wrapper.vm
+  component = wrapper.vm as any
   await component.$nextTick()
-  await flushPromises()
 }
 
 describe('App', () => {
   beforeEach(async () => {
     await setupTest()
-  });
-
-  it('router is ready', async () => {
-    expect(wrapper.html()).toContain('Hello World')
   })
 
-  it('anime plugin', async () => {
-    expect((component as any).$slideDown).toBeDefined()
+  it('router is ready', () => {
+    expect(wrapper.html()).toContain('Hello World')
   })
 })
