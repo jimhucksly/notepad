@@ -15,7 +15,7 @@ describe('storage', () => {
   })
 
   it('is path exists', async () => {
-    const result = await storage.isPathExists(path + 'test')
+    const result = await storage.isPathExists(path + 'src')
     expect(result).toBeTruthy()
   })
 

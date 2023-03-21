@@ -4,7 +4,7 @@ const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([
 export const REGEXP_LOGIN = /^[a-zA-Z\d\_]{1,}$/g
 export const REGEXP_EMAIL = /.+@.+\..+/i
 export const REGEXP_PASS = /^[a-zA-Z\d\_\*\?\!\.\,\(\)\=\+\\)]{1,}$/g
-export const REGEXP_NAME = /^[\w\W]{1,}$/g
+export const REGEXP_NAME = /^[a-zA-Zа-яА-ЯёЁ\D \-]{1,}$/g
 
 export const htmlToText = (html: string): string => {
   if (!html) {
@@ -93,9 +93,7 @@ export const isJSON = (value: any): boolean => {
       json = JSON.parse(value)
       return true
     } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e)
-      return false
+      //
     }
   } else {
     try {
@@ -104,8 +102,7 @@ export const isJSON = (value: any): boolean => {
         return true
       }
     } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e)
+      //
     }
   }
   return false

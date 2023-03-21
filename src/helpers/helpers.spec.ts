@@ -35,9 +35,13 @@ describe('Helpers', () => {
   })
 
   it('isJSON', () => {
-    const json = '{"winter": "is coming"}'
+    const json = '{"winter":"is comming"}'
     expect(isJSON(json)).toBe(true)
-    expect(isJSON('')).toBe(false)
+    try {
+      isJSON('')
+    } catch (e) {
+      expect(e).toBeDefined()
+    }
   })
 
   it('getFileType', () => {

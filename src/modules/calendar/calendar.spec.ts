@@ -56,39 +56,40 @@ describe('Calendar', () => {
     expect(wrapper.find('.b-calendar--events').exists()).toBe(true)
   })
 
-  xit('getNativeDate', () => {
+  it('getNativeDate', () => {
     const d = '15.01.2001'
     expect(getNativeDate(d) instanceof Date).toBe(true)
     expect(getNativeDate(d).toLocaleString()).toEqual('15.01.2001, 00:00:00')
   })
 
-  xit('isDate', () => {
+  it('isDate', () => {
     const d = '15.01.2001'
     expect(isDate(getNativeDate(d))).toBe(true)
   })
 
-  xit('show form when day is selected', async () => {
+  it('show form when day is selected', async () => {
     const d = '15.01.2001'
     const calendar: any = component.$refs.calendar
     calendar.daySelected(d)
+    await calendar.$nextTick()
     expect(wrapper.find('.b-calendar-form').exists()).toBe(true)
   })
 
-  xit('prev month', async () => {
+  it('prev month', async () => {
     const calendar: any = component.$refs.calendar
     calendar.prevMonth()
     await component.$nextTick()
     expect(getNativeDate(calendar.op.setDate).toLocaleDateString()).toEqual('15.12.2000')
   })
 
-  xit('next month', async () => {
+  it('next month', async () => {
     const calendar: any = component.$refs.calendar
     calendar.nextMonth()
     await component.$nextTick()
     expect(getNativeDate(calendar.op.setDate).toLocaleDateString()).toEqual('01.02.2001')
   })
 
-  xit('set today', async () => {
+  it('set today', async () => {
     const today = new Date().toLocaleDateString();
     const calendar: any = component.$refs.calendar
     calendar.setToday()

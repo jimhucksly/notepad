@@ -2,10 +2,9 @@ import { mount, VueWrapper } from '@vue/test-utils'
 import { defineComponent } from 'vue'
 import { Vue } from 'vue-class-component'
 import AnimePlugin from '~/plugins/anime'
-import path from 'path'
 
 let wrapper: VueWrapper<Vue> = null
-let component: Vue = null
+let component: any = null
 
 const App = defineComponent({
   template: '<div></div>'

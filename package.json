@@ -10,8 +10,7 @@
     "dev": "node config/runner.js",
     "serve": "nodemon api/server.js",
     "build": "node config/build.js && electron-builder -w",
-    "test": "cross-env NODE_ENV=test DEBUG_MODE=1 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest --no-cache",
-    "test:unit": "cross-env NODE_ENV=test DEBUG_MODE=1 UNIT=1 JEST_ELECTRON_STARTUP_ARGS='--no-sandbox' ELECTRON_DISABLE_SECURITY_WARNINGS=1 jest --no-cache"
+    "test": "jest --runInBand --no-cache --collect-coverage"
   },
   "build": {
     "productName": "Notepad App",
