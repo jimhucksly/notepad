@@ -26,6 +26,13 @@ class HubPlugin {
     }
   }
 
+  $flush() {
+    for (const key in this.listeners) {
+      this.listeners[key] = []
+    }
+    this.listeners = {}
+  }
+
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   $emit(eventName: string, ...args: any) {
     if (eventName in this.listeners) {

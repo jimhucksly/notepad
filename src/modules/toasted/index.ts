@@ -1,4 +1,4 @@
-import { Options, Vue } from 'vue-class-component'
+import { Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
 import { uniqueid } from '~/helpers'
 
@@ -14,12 +14,6 @@ interface IToast {
   type: ToastType
 }
 
-@Options({
-  beforeUnmount() {
-    Hub.$off('on-toasted-success', this.toastedSuccessHandler)
-    Hub.$off('on-toasted-error', this.toastedErrorHandler)
-  }
-})
 export default class Toasted extends Vue {
   toasts: Array<IToast> = []
 
@@ -31,6 +25,11 @@ export default class Toasted extends Vue {
     Hub.$on('on-toasted-success', this.toastedSuccessHandler)
     this.toastedErrorHandler = this.toastedError.bind(this)
     Hub.$on('on-toasted-error', this.toastedErrorHandler)
+  }
+
+  beforeUnmount() {
+    Hub.$off('on-toasted-success', this.toastedSuccessHandler)
+    Hub.$off('on-toasted-error', this.toastedErrorHandler)
   }
 
   toastedSuccess(subject: string) {

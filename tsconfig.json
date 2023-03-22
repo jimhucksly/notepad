@@ -6,9 +6,9 @@
     "target": "esnext",
     "baseUrl": "src",
     "paths": {
-      "~/*": ["*"]
+      "~/*": ["*"],
     },
-    "types": ["reflect-metadata", "node"],
+    "types": ["reflect-metadata", "node", "jest"],
     "outDir": "./dist",
     "newLine": "LF",
     "preserveConstEnums": true,
@@ -31,7 +31,6 @@
   "exclude": [
     "node_modules",
     "**/*.js",
-    "**/*.spec.ts"
   ],
   "include": ["src/**/*", "typings/**/*"],
 }

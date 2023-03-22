@@ -112,45 +112,14 @@ export default class BCalendarComponent extends Vue {
     this.op = { ...defaults, ...this.options }
   }
 
-  getOptions(index: number) {
-    return {
-      ...this.op,
-      setDate: index === 0 ? this.date1 : this.date2
-    }
-  }
-
-  get baseDate(): Date {
-    return new Date()
-  }
-
-  get date1(): Date {
-    if (this.op.setDate) {
-      const date = getNativeDate(this.op.setDate)
-      if (date && isDate(date)) {
-        return date
-      }
-    }
-    return new Date()
-  }
-
-  get date2(): Date {
-    const date = new Date(this.date1.getTime())
-    date.setDate(1)
-    return new Date(date.setMonth(date.getMonth() + 1))
-  }
-
   @Watch('options') onOptionsChanged(o: IOptions) {
     this.op = { ...defaults, ...o }
   }
 
-  private emit() {
-    const r1 = getNativeDate(this.range[0])
-    const r2 = getNativeDate(this.range[1])
-    if (r1 && r2) {
-      this.$emit('range-selected', [
-        r1.toString(),
-        r2.toString()
-      ])
+  getOptions(index: number) {
+    return {
+      ...this.op,
+      setDate: index === 0 ? this.date1 : this.date2
     }
   }
 
@@ -308,8 +277,10 @@ export default class BCalendarComponent extends Vue {
     }
   }
 
-  hasEvent(date: string) {
-    return `${date}` in this.op.items
+
+
+  hasEvent(date: string): boolean {
+    return this.hasItems && `${date}` in this.op.items
   }
 
   formClear() {
@@ -328,6 +299,41 @@ export default class BCalendarComponent extends Vue {
   formRemove() {
     this.$emit('remove', this.event.date)
     this.formClear()
+  }
+
+  private emit() {
+    const r1 = getNativeDate(this.range[0])
+    const r2 = getNativeDate(this.range[1])
+    if (r1 && r2) {
+      this.$emit('range-selected', [
+        r1.toString(),
+        r2.toString()
+      ])
+    }
+  }
+
+  get baseDate(): Date {
+    return new Date()
+  }
+
+  get date1(): Date {
+    if (this.op.setDate) {
+      const date = getNativeDate(this.op.setDate)
+      if (date && isDate(date)) {
+        return date
+      }
+    }
+    return new Date()
+  }
+
+  get date2(): Date {
+    const date = new Date(this.date1.getTime())
+    date.setDate(1)
+    return new Date(date.setMonth(date.getMonth() + 1))
+  }
+
+  get hasItems(): boolean {
+    return this.op.items && Object.keys(this.op.items).length > 0
   }
 }
 

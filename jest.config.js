@@ -2,7 +2,7 @@
 // https://jestjs.io/docs/en/configuration.html
 
 let testRegex = [
-  "(spec).[tj]s?"
+  "(spec).ts?"
 ]
 
 if(process.env.UNIT) {
@@ -84,18 +84,15 @@ module.exports = {
 
   // An array of file extensions your modules use
   moduleFileExtensions: [
+    "vue",
     "js",
     "json",
-    "jsx",
     "ts",
-    "tsx",
-    "node",
-    "vue"
   ],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^~(.*)$": "<rootDir>/src/$1",
+    "^\~(.*)$": "<rootDir>/src/$1",
     "electron": "<rootDir>/test/mock/electron.js"
   },
 
@@ -109,7 +106,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -133,12 +130,13 @@ module.exports = {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: [
+    "<rootDir>",
+    "/notepad-app/"
+  ],
 
   // Allows you to use a custom runner instead of Jest's default test runner
-  runner: "jest-electron/runner",
+  // runner: "jest-electron/runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
   // setupFiles: [],
@@ -150,10 +148,15 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "jest-electron/environment",
+  testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  testEnvironmentOptions: {
+    customExportConditions: [
+      "node",
+      "node-addons"
+    ]
+  },
 
   // Adds a location field to test results
   // testLocationInResults: false,
@@ -186,13 +189,9 @@ module.exports = {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-    // обработка файлов с расширением `*.vue` с помощью `vue-jest`
-    "^.+\\.vue$": "<rootDir>/node_modules/vue-jest",
-    // обработка файлов с расширением `*.ts` с помощью `ts-jest`
-    "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest",
-    // обработка файлов (vuetify|ngx-datatable) с расширеним `*.(css|sass|scss)` с помощью `jest-transform-stub`
-    "^.+\\.s?[a|c]ss$": "<rootDir>/node_modules/jest-transform-stub"
+    "^.+\\.vue$": "@vue/vue3-jest",
+    "^.+\\.ts$": "babel-jest",
+    "^.+\\.(scss|css)$": "jest-css-modules-transform"
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

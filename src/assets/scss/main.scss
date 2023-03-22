@@ -279,6 +279,21 @@ main {
   }
 }
 
+.project-editor {
+  font-family: $menlo;
+  font-size: 11px;
+  line-height: 19px;
+  overflow: hidden;
+
+  .CodeMirror {
+    height: 100%;
+  }
+
+  .CodeMirror-scroll {
+    overflow-y: auto;
+  }
+}
+
 .preferences {
   display: flex;
   flex-direction: column;

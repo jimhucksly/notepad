@@ -11,6 +11,7 @@
           :is="component"
           v-bind="props"
           @set-result="onSetResult"
+          @cancel="close"
           @popup-component-created="instance = $event"
         />
         <div v-else-if="isConfirmWindowDialog">

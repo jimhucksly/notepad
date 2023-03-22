@@ -17,15 +17,15 @@ import Loader from '~/modules/loader'
 import CreateEditLink from '~/modules/popup/createEditLink'
 import AboutPopup from '~/modules/popup/about'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
-import CodeInput from './modules/codeInput'
+import CreateEditProject from '~/modules/popup/createEditProject'
+import CodeInput from '~/modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
 import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
 import SocketPlugin from '~/plugins/socket'
-import Validate from './plugins/validate'
-import CreateEditProject from './modules/popup/createEditProject'
+import Validate from '~/plugins/validate'
 
 const isDev = process.env.NODE_ENV === 'development'
 
