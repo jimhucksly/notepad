@@ -1,5 +1,6 @@
 {
   "db_host": "127.0.0.1",
+  "prod_db_host": "62.113.108.185",
   "db_port": "8001",
   "db_user": "postgres",
   "db_password": "cska"

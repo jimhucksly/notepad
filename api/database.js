@@ -1,8 +1,10 @@
 const { Client } = require('pg')
 const config = require('./config.json')
 
+const useProdDB = 1
+
 const client = new Client({
-  host: config.db_host,
+  host: useProdDB ? config.prod_db_host : config.db_host,
   port: config.db_port,
   user: config.db_user,
   password: config.db_password
