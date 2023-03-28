@@ -50,8 +50,8 @@ export default class Files extends Vue {
     Hub.$off('on-file-download', this.onFileDownloadHandler)
   }
 
-  fetchFiles() {
-    this.$app.$queryBus.exec(new FilesQuery())
+  async fetchFiles() {
+    await this.$app.$queryBus.exec(new FilesQuery())
   }
 
   onFileChange(e: InputEvent | DragEvent) {
@@ -86,10 +86,11 @@ export default class Files extends Vue {
     for (const id of this.selected ? [this.selected] : this.checkeds) {
       await this.$app.$commandBus.do(new DeleteFileCommand(id))
     }
+    await this.fetchFiles()
     this.selected = null
     this.checkeds = []
     this.checking = false
-    this.fetchFiles()
+    Hub.$emit('on-file-select', null)
   }
 
   async upload(formData: FormData) {
