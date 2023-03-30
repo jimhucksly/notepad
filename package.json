@@ -6,11 +6,13 @@
   "description": "An electron-vue project",
   "license": "DN-WEB <admin@dn-web.ru>",
   "main": "./dist/main.js",
+  "path": "notepad-app",
   "scripts": {
     "dev": "node config/runner.js",
     "serve": "nodemon api/server.js",
-    "build": "node config/build.js && electron-builder -w",
-    "test": "jest --runInBand --no-cache --collect-coverage"
+    "build": "node config/build.js && electron-builder -w && npm run zip",
+    "test": "jest --runInBand --no-cache --collect-coverage",
+    "zip": "node gulp/index.js"
   },
   "build": {
     "productName": "Notepad App",
@@ -61,6 +63,8 @@
     "@types/vue": "^2.0.0",
     "@types/webpack-env": "^1.16.0",
     "axios": "^0.23.0",
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.1.0",
     "json-formatter-js": "^2.3.3",
     "nodemailer": "^6.9.1",
     "simplemde": "^1.11.2",
