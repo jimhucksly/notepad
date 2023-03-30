@@ -35,9 +35,10 @@ export default {
           const key = el.name
           keys.push(key)
           const target = el.dataset?.ruleTarget
+          const rule = rulesMap[key] || (target ? rulesMap[target] : null)
           instance.v[key] = {
             value: '',
-            rule: rulesMap[key] || rulesMap[target],
+            rule,
             isValid: true,
             isInvalid: false
           }
@@ -51,8 +52,14 @@ export default {
             () => `${instance.v[key].value}${instance.v.touched}`,
             () => {
               const _value = instance.v[key].value
-              const regexp = new RegExp(instance.v[key].rule)
-              instance.v[key].isValid = _value.length > 0 && regexp.test(_value)
+              let regexp: RegExp = null
+              if (instance.v[key].rule) {
+                regexp = new RegExp(instance.v[key].rule)
+              }
+              instance.v[key].isValid = _value.length > 0
+              if (instance.v[key].isValid && regexp) {
+                instance.v[key].isValid = regexp.test(_value)
+              }
               if (instance.v[key].target) {
                 instance.v[key].isValid = instance.v[key].isValid && _value === instance.v[instance.v[key].target].value
               }

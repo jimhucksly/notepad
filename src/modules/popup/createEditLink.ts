@@ -7,7 +7,7 @@ export default class CreateEditLinkComponent extends Vue {
   @Prop() item: ILink
 
   url = ''
-  name = ''
+  linkName = ''
 
   v: IValidate = {}
 
@@ -16,7 +16,7 @@ export default class CreateEditLinkComponent extends Vue {
   created() {
     if (this.item) {
       this.url = this.item.url
-      this.name = this.item.name
+      this.linkName = this.item.name
     }
     this.$emit('popup-component-created', this)
   }
@@ -37,7 +37,7 @@ export default class CreateEditLinkComponent extends Vue {
     }
     const o: ILink = {
       url: this.url,
-      name: this.name
+      name: this.linkName
     }
     if (this.item?.id) {
       o.id = this.item.id

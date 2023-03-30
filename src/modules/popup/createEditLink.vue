@@ -16,9 +16,9 @@
     <div class="m-b-15">
       <input
         type="text"
-        name="name"
+        name="linkName"
         required
-        v-model="name"
+        v-model="linkName"
         placeholder="Name"
         :class="{ error: v?.name?.isInvalid }"
       >
