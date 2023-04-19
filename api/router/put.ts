@@ -1,14 +1,16 @@
-const {
+import { Router, Request, Response, NextFunction } from 'express'
+import { IApp, TRequestFiles } from '../model'
+import {
   responseModify,
   checkHeaders,
   checkSession,
   checkToken,
   getErrorCode,
   dateFormat
-} = require('../utils.js')
+} from '../utils'
 
-function put(router, $app) {
-  router.put('/project', async (req, res, next) => {
+export function put(router: Router, $app: IApp) {
+  router.put('/project', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -17,7 +19,9 @@ function put(router, $app) {
       const filename = 'notepad.json'
       const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       let key = ''
-      Object.keys(req.body).forEach(k => { key = k })
+      Object.keys(req.body).forEach(k => {
+        key = k
+      })
       content[key] = req.body[key]
       const payload = Buffer.from(JSON.stringify(content))
       await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
@@ -33,7 +37,7 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/project/archive', async (req, res, next) => {
+  router.put('/project/archive', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -42,7 +46,7 @@ function put(router, $app) {
       const path = 'archives'
       const filename = 'notepad.json'
       const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
-      const item = content[req.body.key]
+      const item = content[req.body.key] as { name: string, message: string }
       const name = item.name + '_(datetime)' + dateFormat(new Date(), 'YYYYMMDDHms') + '.html'
       let payload = Buffer.from(item.message)
       await $app.yandex.uploadFile(path + '/' + name, payload, user.yandex_disk_access_token)
@@ -60,7 +64,7 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/library', async (req, res, next) => {
+  router.put('/library', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -98,7 +102,7 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/events', async (req, res, next) => {
+  router.put('/events', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -110,7 +114,7 @@ function put(router, $app) {
         const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
         json[date] = {
           title,
-          content,
+          content
         }
         const payload = Buffer.from(JSON.stringify(json))
         await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
@@ -119,7 +123,7 @@ function put(router, $app) {
           data: {
             [date]: {
               title,
-              content,
+              content
             }
           }
         })
@@ -133,7 +137,7 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/links', async (req, res, next) => {
+  router.put('/links', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -169,7 +173,7 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/todo', async (req, res, next) => {
+  router.put('/todo', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -207,18 +211,18 @@ function put(router, $app) {
       })
     }
   })
-  router.put('/upload', async (req, res, next) => {
+  router.put('/upload', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
       const token = await checkToken(req.headers)
       const path = 'files'
-      const keys = Object.keys(req.files)
+      const keys = Object.keys((req as unknown as { files: Record<string, unknown> }).files)
       if (keys.length) {
         const user = await $app.db.query().user({ token }).get()
         for (const key of keys) {
-          const payload = req.files[key].data
-          const filename = req.files[key].name
+          const payload = (req as unknown as { files: TRequestFiles }).files[key].data
+          const filename = (req as unknown as { files: TRequestFiles }).files[key].name
           await $app.yandex.uploadFile(path + '/' + filename, payload, user.yandex_disk_access_token)
         }
         res.send({
@@ -235,8 +239,4 @@ function put(router, $app) {
       })
     }
   })
-}
-
-module.exports = {
-  put
 }

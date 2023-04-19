@@ -1,22 +1,23 @@
-const {
-  responseModify,
+import { Router, Request, Response, NextFunction } from 'express'
+import { IApp } from '../model'
+import {
   checkHeaders,
   checkSession,
   checkToken,
   getErrorCode
-} = require('../utils.js')
+} from '../utils'
 
-function _delete(router, $app) {
-  router.delete('/project', async (req, res, next) => {
+export function _delete(router: Router, $app: IApp) {
+  router.delete('/project', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
       const token = await checkToken(req.headers)
       const user = await $app.db.query().user({ token }).get()
       const filename = 'notepad.json'
-      const key = req.query.key
+      const key = req.query.key as string
       const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
-      if ([key] in content) {
+      if (key in content) {
         delete content[key]
       }
       const payload = Buffer.from(JSON.stringify(content))
@@ -32,7 +33,7 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/project/archive', async (req, res, next) => {
+  router.delete('/project/archive', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -61,21 +62,21 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/library', async (req, res, next) => {
+  router.delete('/library', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
       const token = await checkToken(req.headers)
       const user = await $app.db.query().user({ token }).get()
       const path = 'library'
-      let info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
+      const info = await $app.yandex.diskInfo(path, user.yandex_disk_access_token)
       if (info._embedded.items) {
         const found = info._embedded.items.find(item => item.resource_id === req.query.id)
         if (found) {
           await $app.yandex.deleteFile(path + '/' + encodeURI(found.name), user.yandex_disk_access_token)
           res.send({
             status: 'success',
-            message: 'a library file is successfully removed',
+            message: 'a library file is successfully removed'
           })
         } else {
           throw new Error('resource not found')
@@ -90,7 +91,7 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/events', async (req, res, next)  => {
+  router.delete('/events', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -99,12 +100,12 @@ function _delete(router, $app) {
       const filename = 'events.json'
       const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       if (`${req.query.date}` in json) {
-        delete json[req.query.date]
+        delete json[req.query.date as string]
         const payload = Buffer.from(JSON.stringify(json))
         await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
         res.send({
           status: 'success',
-          message: 'event is successfully removed',
+          message: 'event is successfully removed'
         })
       } else {
         throw new Error()
@@ -116,7 +117,7 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/links', async (req, res, next) => {
+  router.delete('/links', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -126,12 +127,12 @@ function _delete(router, $app) {
       const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       const id = req.query.id
       if (`${id}` in json) {
-        delete json[id]
+        delete json[id as string]
         const payload = Buffer.from(JSON.stringify(json))
         await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
         res.send({
           status: 'success',
-          message: 'link is successfully removed',
+          message: 'link is successfully removed'
         })
       } else {
         throw new Error()
@@ -143,7 +144,7 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/todo', async (req, res, next) => {
+  router.delete('/todo', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -153,12 +154,12 @@ function _delete(router, $app) {
       const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       const id = req.query.id
       if (`${id}` in json) {
-        delete json[id]
+        delete json[id as string]
         const payload = Buffer.from(JSON.stringify(json))
         await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
         res.send({
           status: 'success',
-          message: 'todo item is successfully removed',
+          message: 'todo item is successfully removed'
         })
       } else {
         throw new Error()
@@ -170,7 +171,7 @@ function _delete(router, $app) {
       })
     }
   })
-  router.delete('/files', async (req, res, next) => {
+  router.delete('/files', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -184,7 +185,7 @@ function _delete(router, $app) {
           await $app.yandex.deleteFile(path + '/' + encodeURI(found.name), user.yandex_disk_access_token)
           res.send({
             status: 'success',
-            message: 'a file is successfully removed',
+            message: 'a file is successfully removed'
           })
         } else {
           throw new Error('resource not found')
@@ -192,7 +193,6 @@ function _delete(router, $app) {
       } else {
         throw new Error('resource not found')
       }
-
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',
@@ -200,8 +200,4 @@ function _delete(router, $app) {
       })
     }
   })
-}
-
-module.exports = {
-  _delete
 }

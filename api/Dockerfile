@@ -5,7 +5,9 @@ WORKDIR .
 COPY . .
 
 RUN npm install
+RUN npm i ts-node -g
+RUN npm i typescript@4.8.4 -g
 
 EXPOSE 4000
 
-CMD ["node", "server.js"]
+CMD ["ts-node", "server.ts"]

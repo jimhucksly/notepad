@@ -1,19 +1,16 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "commonjs",
     "target": "esnext",
-    "baseUrl": "src",
-    "paths": {
-      "~/*": ["*"],
-    },
-    "types": ["reflect-metadata", "node", "jest"],
-    "outDir": "./dist",
-    "newLine": "LF",
+    "module": "commonjs",
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
     "preserveConstEnums": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": false,
@@ -21,19 +18,19 @@
     "sourceMap": true,
     "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": true,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowJs": false,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "baseUrl": ".",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
   },
   "exclude": [
     "node_modules"
-  ],
-  "include": [
-    "src/**/*",
-    "api/**/*",
-    "typings/**/*"
-  ],
+  ]
 }
