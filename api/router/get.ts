@@ -1,4 +1,6 @@
-const {
+import { Router, Request, Response, NextFunction } from 'express'
+import { IApp } from '../model'
+import {
   checkHeaders,
   checkToken,
   checkSession,
@@ -6,10 +8,10 @@ const {
   responseModify,
   getFileExtension,
   getFileSize
-} = require('../utils.js')
+} from '../utils'
 
-function get(router, $app) {
-  router.get('/session', async (req, res, next) => {
+export function get(router: Router, $app: IApp) {
+  router.get('/session', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const ssid = await checkSession(req.headers)
@@ -27,7 +29,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/projects', async (req, res, next) => {
+  router.get('/projects', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -46,7 +48,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/projects/archives', async (req, res, next) => {
+  router.get('/projects/archives', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -81,7 +83,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/library', async (req, res, next) => {
+  router.get('/library', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -114,7 +116,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/library/list', async (req, res, next) => {
+  router.get('/library/list', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -125,7 +127,7 @@ function get(router, $app) {
       if (info._embedded.items) {
         res.send({
           status: 'success',
-          data: info._embedded.items.map(el => ({ id: el.resource_id, name: el.name})).sort((a, b) => a.name === 'main.md' ? -1 : 1)
+          data: info._embedded.items.map(el => ({ id: el.resource_id, name: el.name })).sort((a, b) => a.name === 'main.md' ? -1 : 1)
         })
         return
       }
@@ -137,14 +139,14 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/links', async (req, res, next) => {
+  router.get('/links', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
       const token = await checkToken(req.headers)
       const user = await $app.db.query().user({ token }).get()
       const filename = 'links.json'
-      const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
+      const content = (await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)) as Record<string, { name: string, url: string }>
       res.send({
         status: 'success',
         data: Object.keys(content).length
@@ -158,7 +160,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/events', async (req, res, next) => {
+  router.get('/events', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -177,7 +179,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/todo', async (req, res, next) => {
+  router.get('/todo', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -196,7 +198,7 @@ function get(router, $app) {
       })
     }
   })
-  router.get('/files', async (req, res, next) => {
+  router.get('/files', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -220,7 +222,7 @@ function get(router, $app) {
       data.sort((a, b) => new Date(a.createDateTime).getTime() < new Date(b.createDateTime).getTime() ? -1 : 1)
       res.send({
         status: 'success',
-        data,
+        data
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
@@ -229,8 +231,4 @@ function get(router, $app) {
       })
     }
   })
-}
-
-module.exports = {
-  get
 }

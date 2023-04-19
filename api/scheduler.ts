@@ -1,15 +1,17 @@
-function scheduler($app) {
+import { IApp } from './model'
 
+function scheduler($app: IApp) {
+  /* eslint-disable camelcase */
   async function db_delete_expired_tokens() {
     const tokens = await $app.db.query().tokens().get()
     for (const item of tokens) {
       if (new Date().getTime() > new Date(item.token_expired).getTime()) {
-        await $app.db.command().tokens(item.token).delete()
+        await $app.db.command().token(item.token).delete()
       }
     }
   }
 
-  function start(interval) {
+  function start(interval: number) {
     setInterval(() => {
       db_delete_expired_tokens()
     }, interval)
@@ -20,4 +22,4 @@ function scheduler($app) {
   }
 }
 
-module.exports = scheduler
+export default scheduler

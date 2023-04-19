@@ -1,4 +1,6 @@
-const {
+import { Router, Request, Response, NextFunction } from 'express'
+import { IApp, IUser, TemplateTypes } from '../model'
+import {
   generateVerifyCode,
   generatePassword,
   generateToken,
@@ -8,10 +10,10 @@ const {
   checkToken,
   getErrorCode,
   emailSecurity
-} = require('../utils.js')
+} from '../utils'
 
-function post(router, $app) {
-  router.post('/signup', async (req, res, next) => {
+export function post(router: Router, $app: IApp) {
+  router.post('/signup', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { login, password, name, email } = req.body
@@ -20,7 +22,7 @@ function post(router, $app) {
         const user = await $app.db.query().user({ login }).get()
         const code = generateVerifyCode()
         await $app.db.command().user({ id: user.id, email }).setVerifyCode(code)
-        await $app.sendmail(email, 'verify', { code })
+        await $app.sendmail(email, TemplateTypes.Verify, { code })
         res.send({
           status: 'success',
           message: 'user created',
@@ -40,9 +42,8 @@ function post(router, $app) {
         message: e?.message || 'bad request'
       })
     }
-
   })
-  router.post('/auth', async (req, res, next) => {
+  router.post('/auth', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { login, password } = req.body
@@ -65,7 +66,7 @@ function post(router, $app) {
             status: 'success',
             message: 'user authenticated',
             user: responseModify(user),
-            token,
+            token
           })
           return
         }
@@ -79,7 +80,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/verify', async (req, res, next) => {
+  router.post('/verify', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { userId, code } = req.body
@@ -107,7 +108,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/resend', async (req, res, next) => {
+  router.post('/resend', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { userId } = req.body
@@ -115,7 +116,7 @@ function post(router, $app) {
         const user = await $app.db.query().user({ id: userId }).get()
         const code = generateVerifyCode()
         await $app.db.command().user({ id: user.id }).resetVerifyCode(code)
-        await $app.sendmail(user.email, 'verify', { code })
+        await $app.sendmail(user.email, TemplateTypes.Verify, { code })
         res.send({
           status: 'success',
           message: 'code was been sent',
@@ -131,15 +132,15 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/reset', async (req, res, next) => {
+  router.post('/reset', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { email } = req.body
       if (email) {
-        const user = await $app.db.query().user({ login: email, email, }).search()
+        const user = await $app.db.query().user({ login: email, email }).search() as IUser
         const password = generatePassword()
         await $app.db.command().user({ id: user.id }).setTempPassword(password)
-        await $app.sendmail(user.email, 'resetPassword', { password })
+        await $app.sendmail(user.email, TemplateTypes.ResetPassword, { password })
         res.send({
           status: 'success',
           message: 'temporary password is sent to email',
@@ -155,7 +156,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/update', async (req, res, next) => {
+  router.post('/update', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -166,7 +167,7 @@ function post(router, $app) {
         await $app.db.command().user({ id: user.id }).updatePassword(old, pass)
         res.send({
           status: 'success',
-          message: 'password is updated',
+          message: 'password is updated'
         })
       }
       throw new Error()
@@ -177,7 +178,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/ydtoken', async (req, res, next) => {
+  router.post('/ydtoken', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       const { code, userId } = req.body
@@ -229,7 +230,7 @@ function post(router, $app) {
         }
         res.send({
           status: 'success',
-          message: 'connection to Yandex.Disk REST API successfully granted',
+          message: 'connection to Yandex.Disk REST API successfully granted'
         })
         return
       }
@@ -241,7 +242,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/ydtoken/refresh', async (req, res, next) => {
+  router.post('/ydtoken/refresh', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -254,7 +255,7 @@ function post(router, $app) {
       }
       res.send({
         status: 'success',
-        message: 'access token for connection to Yandex.Disk REST API successfully updated',
+        message: 'access token for connection to Yandex.Disk REST API successfully updated'
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
@@ -263,7 +264,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/ydtoken/revoke', async (req, res, next) => {
+  router.post('/ydtoken/revoke', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -273,7 +274,7 @@ function post(router, $app) {
       await $app.db.command().user({ id: user.id }).revokeYandexRefreshToken()
       res.send({
         status: 'success',
-        message: 'Yandex.Disk REST API disconnected',
+        message: 'Yandex.Disk REST API disconnected'
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
@@ -282,7 +283,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/project', async (req, res, next) => {
+  router.post('/project', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -291,7 +292,9 @@ function post(router, $app) {
       const filename = 'notepad.json'
       const content = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       let key = ''
-      Object.keys(req.body).forEach(k => { key = k })
+      Object.keys(req.body).forEach(k => {
+        key = k
+      })
       content[key] = req.body[key]
       const payload = Buffer.from(JSON.stringify(content))
       await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
@@ -307,7 +310,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/project/archive/restore', async (req, res, next) => {
+  router.post('/project/archive/restore', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -337,7 +340,7 @@ function post(router, $app) {
           await $app.yandex.deleteFile(path + '/' + found.name, user.yandex_disk_access_token)
           res.send({
             status: 'success',
-            message: 'archive is successfully restored',
+            message: 'archive is successfully restored'
           })
         } else {
           throw new Error('resource not found')
@@ -345,7 +348,6 @@ function post(router, $app) {
       } else {
         throw new Error('resource not found')
       }
-
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
         status: 'error',
@@ -353,7 +355,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/library', async (req, res, next) => {
+  router.post('/library', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -367,7 +369,7 @@ function post(router, $app) {
           await $app.yandex.uploadFile(path + '/' + found.name, Buffer.from(req.body.value), user.yandex_disk_access_token)
           res.send({
             status: 'success',
-            message: 'a library file is successfully updated',
+            message: 'a library file is successfully updated'
           })
         } else {
           throw new Error('resource not found')
@@ -382,7 +384,7 @@ function post(router, $app) {
       })
     }
   })
-  router.post('/todo/order', async (req, res, next) => {
+  router.post('/todo/order', async (req: Request, res: Response, next: NextFunction) => {
     try {
       await checkHeaders(req.headers)
       await checkSession(req.headers)
@@ -391,8 +393,8 @@ function post(router, $app) {
       const filename = 'todo.json'
       const json = await $app.yandex.downloadFile(filename, user.yandex_disk_access_token)
       for (const key in req.body) {
-        if (`${key}` in json) {
-          json[key].order = req.body[key]
+        if (key in json) {
+          (json[key] as { order: number }).order = req.body[key]
         } else {
           throw new Error('resource not found')
         }
@@ -401,7 +403,7 @@ function post(router, $app) {
       await $app.yandex.uploadFile(filename, payload, user.yandex_disk_access_token)
       res.send({
         status: 'success',
-        message: 'todo items is successfully ordered',
+        message: 'todo items is successfully ordered'
       })
     } catch (e) {
       res.status(getErrorCode(e?.message)).send({
@@ -410,8 +412,4 @@ function post(router, $app) {
       })
     }
   })
-}
-
-module.exports = {
-  post
 }

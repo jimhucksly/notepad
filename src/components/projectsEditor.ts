@@ -91,6 +91,7 @@ export default class ProjectsEditor extends Vue {
     unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.setJson(buffJson)
+    this.hide()
   }
 
   async save() {

@@ -1,4 +1,6 @@
-function generateVerifyCode() {
+import { IncomingHttpHeaders } from 'http'
+
+function generateVerifyCode(): number {
   let result = ''
   const dic = '1234567890'
   const len = 6
@@ -8,7 +10,7 @@ function generateVerifyCode() {
   return Number(result)
 }
 
-function generatePassword() {
+function generatePassword(): string {
   let result = ''
   const dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890'
   const len = 16
@@ -18,7 +20,7 @@ function generatePassword() {
   return result
 }
 
-function generateToken() {
+function generateToken(): string {
   let result = ''
   const dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ'
   const len = 54
@@ -28,19 +30,19 @@ function generateToken() {
   return result
 }
 
-function isObj(item) {
+function isObj(item: unknown): boolean {
   return Object.prototype.toString.call(item) === '[object Object]'
 }
 
-function isArr(item) {
+function isArr(item: unknown): boolean {
   return Object.prototype.toString.call(item) === '[object Array]'
 }
 
-function isStr(item) {
+function isStr(item: unknown): boolean {
   return typeof item === 'string'
 }
 
-function underscoreToCamelCase(str) {
+function underscoreToCamelCase(str: string): string {
   if (!str) {
     return str
   }
@@ -51,17 +53,17 @@ function underscoreToCamelCase(str) {
     .join('')
 }
 
-function capitalize(str) {
+function capitalize(str: string): string {
   if (!str) {
     return str
   }
   return str[0].toUpperCase() + str.substring(1)
 }
 
-function responseModify(response) {
+function responseModify(response: unknown): unknown {
   if (isObj(response)) {
     ['pswd_md5', 'temp_pswd_md5'].forEach(key => {
-      if (key in response) {
+      if (key in (response as Record<string, unknown>)) {
         delete response[key]
       }
     })
@@ -72,50 +74,50 @@ function responseModify(response) {
         delete response[key]
         key = newKey
       }
-      response[key] = responseModify(response[key])
+      response[key] = responseModify(response[key] as Record<string, unknown>)
     })
     return response
   }
   if (isArr(response)) {
-    response.forEach((item, i) => {
+    (response as Array<unknown>).forEach((item, i) => {
       response[i] = responseModify(item)
     })
     return response
   }
   if (isStr(response)) {
-    return response.trim()
+    return (response as string).trim()
   }
   return response
 }
 
-async function checkHeaders(headers) {
+async function checkHeaders(headers: IncomingHttpHeaders): Promise<boolean> {
   return new Promise((resolve, reject) => {
     if ('x-honeypot' in headers && headers['x-honeypot'] === 'App') {
-      resolve()
+      resolve(true)
     }
     reject(new Error('Forbidden'))
   })
 }
 
-async function checkToken(headers) {
+async function checkToken(headers: Record<string, unknown>): Promise<string> {
   return new Promise((resolve, reject) => {
     if ('authorization' in headers && headers['authorization']) {
-      resolve(headers['authorization'])
+      resolve(headers['authorization'] as string)
     }
     reject(new Error('Forbidden'))
   })
 }
 
-async function checkSession(headers) {
+async function checkSession(headers: IncomingHttpHeaders): Promise<string> {
   return new Promise((resolve, reject) => {
     if ('ssid' in headers && headers['ssid']) {
-      resolve(headers['ssid'])
+      resolve(headers['ssid'] as string)
     }
     reject(new Error('Forbidden'))
   })
 }
 
-function getErrorCode(text) {
+function getErrorCode(text: string): number {
   switch (text) {
     case 'Bad Request': return 400
     case 'Unauthorized': return 401
@@ -143,7 +145,7 @@ function getErrorCode(text) {
   }
 }
 
-function emailSecurity(email) {
+function emailSecurity(email: string): string {
   const a = email.replace(/(.+)@(.+)/, '$1')
   const b = email.replace(/(.+)@(.+)/, '$2')
   if (a.length === 1) {
@@ -155,7 +157,7 @@ function emailSecurity(email) {
   return `${a.slice(0, 1)}**${a.slice(-1)}@${b}`
 }
 
-function dateFormat(date, format) {
+function dateFormat(date: string | Date, format: string): string {
   date = new Date(date)
   if (isNaN(date.getTime())) {
     return null
@@ -170,34 +172,36 @@ function dateFormat(date, format) {
   switch (format) {
     case 'YYYYMMDDHms':
       return `${y}${m}${d}${hh}${mm}${ss}`
+    default:
+      return null
   }
 }
 
-function getFileExtension(filename) {
+function getFileExtension(filename: string) {
   if (/d\.ts$/.test(filename)) {
     return filename.replace(/(.+)\.d\.([\w]{2,})$/, 'd.$2')
   }
   return filename.replace(/(.+)\.([\w]{2,})$/, '$2')
 }
 
-function getFileSize(bytes, decimals = 2) {
+function getFileSize(bytes: string | number, decimals: number = 2) {
   if (!bytes) {
-    return '0 Bytes';
+    return '0 Bytes'
   }
   if (typeof bytes === 'string') {
-    bytes = Number(bytes);
+    bytes = Number(bytes)
   }
   if (Number.isNaN(bytes) || bytes === 0) {
-    return '0 Bytes';
+    return '0 Bytes'
   }
-  const k = 1024;
-  const dm = decimals <= 0 ? 0 : decimals || 2;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  const k = 1024
+  const dm = decimals <= 0 ? 0 : decimals || 2
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
-module.exports = {
+export {
   generateVerifyCode,
   generatePassword,
   generateToken,
