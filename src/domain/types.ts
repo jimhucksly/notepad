@@ -13,7 +13,6 @@ const TYPES = {
   LibraryFileQuery: Symbol.for('LibraryFileQuery'),
   ArchivesQuery: Symbol.for('ArchivesQuery'),
   EventsQuery: Symbol.for('EventsQuery'),
-  LinksQuery: Symbol.for('LinksQuery'),
   TodoQuery: Symbol.for('TodoQuery'),
   FilesQuery: Symbol.for('FilesQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),

@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import { ModuleTree, createStore } from 'vuex'
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
@@ -9,21 +9,27 @@ import { projects } from './projects'
 import { library } from './library'
 import { todo } from './todo'
 import { events } from './events'
-import { links } from './links'
 import { files } from './files'
 
-export default createStore<IRootState>({
-  strict: process.env.NODE_ENV !== 'production',
-  actions,
-  getters,
-  mutations,
-  state,
-  modules: {
-    projects,
-    library,
-    todo,
-    events,
-    links,
-    files
-  }
-})
+function buildStore(modules: ModuleTree<IRootState>) {
+  const store = createStore<IRootState>({
+    strict: process.env.NODE_ENV !== 'production',
+    actions,
+    getters,
+    mutations,
+    state,
+    modules: {
+      ...modules,
+      projects,
+      library,
+      todo,
+      events,
+      files
+    }
+  })
+  return store
+}
+
+export {
+  buildStore
+}

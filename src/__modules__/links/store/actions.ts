@@ -5,8 +5,9 @@ import { ILink, ILinksState, IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
+import $http from '~/http'
 import { Hub } from '~/plugins/hub'
-import $http from '../http'
+import { LinksQuery } from '../queries/queries'
 
 type TStore = ActionContext<ILinksState, IRootState>
 
@@ -18,13 +19,13 @@ class Actions implements ActionTree<ILinksState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'links'
+  static readonly namespace = 'Links'
 
   /**
    * Get Links
    * @param store Store
    */
-  @Queryable(TYPES.LinksQuery, Actions.namespace)
+  @Queryable(Symbol.for(LinksQuery.constructor.name), Actions.namespace)
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
     try {
       setProcess(store, 'get links...')

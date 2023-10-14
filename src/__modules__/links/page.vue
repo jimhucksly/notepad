@@ -18,4 +18,4 @@
     </div>
   </div>
 </template>
-<script src="./links.ts" lang="ts"></script>
+<script src="./page.ts" lang="ts"></script>

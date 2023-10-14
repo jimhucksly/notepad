@@ -1,7 +1,8 @@
 import { IRootState } from '~/domain/models'
-import { AppComponents } from '~/application/app'
 
 export const stateKeys: string[] = [
+  'manifest',
+  'menu',
   'endpoint',
   'loading',
   'isAuth',
@@ -14,17 +15,12 @@ export const stateKeys: string[] = [
   'notification',
   'error',
   'component',
-  'section',
+  'sections',
   'history',
   'currentUser',
   'process',
   'session'
 ]
-
-const section = {}
-Object.keys(AppComponents).forEach(key => {
-  section[AppComponents[key]] = false
-})
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const _state: any = {
@@ -32,7 +28,7 @@ const _state: any = {
   userDataPath: '',
   downloadsTargetPath: '',
   history: [],
-  section
+  sections: {}
 }
 
 stateKeys.forEach(key => {

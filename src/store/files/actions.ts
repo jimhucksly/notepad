@@ -5,8 +5,8 @@ import { IFile, IFilesState, IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
+import $http from '~/http'
 import { Hub } from '~/plugins/hub'
-import $http from '../http'
 
 type TStore = ActionContext<IFilesState, IRootState>
 
@@ -25,7 +25,7 @@ class Actions implements ActionTree<IFilesState, IRootState> {
    * @param store Store
    */
   @Queryable(TYPES.FilesQuery, Actions.namespace)
-  async actionGetLinks(store: TStore): Promise<Array<IFile>> {
+  async actionGetFiles(store: TStore): Promise<Array<IFile>> {
     try {
       setProcess(store, 'get files...')
       const { data } = await $http.get<Array<IFile>>('/files')

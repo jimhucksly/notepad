@@ -116,6 +116,10 @@ let rendererConfig = {
         {
           from: 'src/assets/images/icon.ico',
           to: './icon.ico',
+        },
+        {
+          from: 'src/manifest.json',
+          to: './manifest.json'
         }
       ]
     }),

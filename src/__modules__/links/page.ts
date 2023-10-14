@@ -1,13 +1,13 @@
 import { Vue } from 'vue-class-component'
-import { LinksQuery } from '~/domain/queries'
 import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
 import { ILink } from '~/domain/models'
 import { Getter } from 'vuex-class'
 import { CreateEditQuery } from '~/domain/queries/createEdit.query'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { LinksQuery } from './queries/queries'
 
-export default class Links extends Vue {
-  @Getter('links/getLinks') links: Array<ILink>
+export default class LinksPage extends Vue {
+  @Getter('Links/getLinks') links: Array<ILink>
 
   isEmpty = false
 
@@ -26,7 +26,7 @@ export default class Links extends Vue {
     const found = this.links.find(link => link.id === id)
     if (found) {
       const query = new CreateEditQuery<ILink>({
-        component: 'create-edit-link',
+        component: 'Links-Modal-createEditLink',
         componentProps: {
           item: {
             id,
@@ -68,3 +68,4 @@ export default class Links extends Vue {
     return `${index + 1}. ${item.name}`
   }
 }
+

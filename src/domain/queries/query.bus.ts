@@ -16,11 +16,11 @@ class QueryBus implements IQueryBus {
    * R - Result
    */
   exec<T, R>(query: T): Promise<R> {
-    const actionName = Reflect.getMetadata(TYPES[query.constructor.name], QueryBus)
+    const actionName = Reflect.getMetadata(Symbol.for(query.constructor.name), QueryBus)
     if (actionName) {
       return this._store.dispatch(actionName, query)
     }
-    const handler: IQueryHandler<T, R> = this._container.get(TYPES[query.constructor.name])
+    const handler: IQueryHandler<T, R> = this._container.get(TYPES[query.constructor.name as keyof typeof TYPES])
     if (handler) {
       return handler.exec(query)
     }

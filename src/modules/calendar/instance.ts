@@ -4,7 +4,7 @@ import { IDay, IOptions } from './calendar.model'
 import { defaults, getNativeDate, isDate } from './index'
 
 interface IWeek {
-  days: IDay[]
+  days: Array<IDay>
 }
 
 export default class CalendarComponent extends Vue {
@@ -13,9 +13,9 @@ export default class CalendarComponent extends Vue {
   @Prop() active: string
   @Prop() options: IOptions
 
-  weeks: IWeek[]
+  weeks: Array<IWeek> = []
   op: IOptions = { ...defaults }
-  header: string
+  header: string = null
 
   get baseDate() {
     return new Date()
@@ -359,8 +359,11 @@ export default class CalendarComponent extends Vue {
 
   created() {
     this.op = { ...this.options }
-    Object.keys(this.options).forEach(key => {
-      this.op[key] = this.options[key]
+    Object.keys(this.options).forEach((key: keyof IOptions) => {
+      this.op = {
+        ...this.op,
+        [key]: this.options[key]
+      }
     })
 
     if (this.op.disableDaysBefore && this.op.disableDaysAfter) {

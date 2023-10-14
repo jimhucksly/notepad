@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash'
-import $http from '~/store/http'
 import {
   IRootState,
   IResponse,
@@ -28,6 +27,7 @@ import {
 import { ActionTree, ActionContext } from 'vuex'
 import { Hub } from '~/plugins/hub'
 import { toActionTree } from '~/helpers'
+import $http from '~/http'
 
 type TStore = ActionContext<IRootState, IRootState>
 

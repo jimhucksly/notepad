@@ -1,6 +1,6 @@
 import { IQueryHandler } from '../interfaces'
 import { injectable } from 'inversify'
-import FsmStates from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 import { IPopupWindowQuery } from '../models'
 import { Hub } from '~/plugins/hub'
 

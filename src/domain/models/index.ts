@@ -1,4 +1,4 @@
-import FsmStates from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 
 export interface IMenu {
   name: string
@@ -79,7 +79,7 @@ export interface IEvent {
   /*
    * 01.03.2020
    */
-  date: string
+  date?: string
   title: string
   content: string
 }

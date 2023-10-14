@@ -1,7 +1,7 @@
 import { stateKeys } from './state'
 import { upperFirst } from '~/helpers'
 import { IRootState } from '~/domain/models'
-import { IFsmStates } from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 
 interface IMutations {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

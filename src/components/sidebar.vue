@@ -54,17 +54,15 @@
       v-show="section.JsonViewer"
       :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
     />
-    <div class="links" v-show="section.Links" :style="{ opacity: isSwitcherMenuExpanded ? 0.4 : 1 }">
-      <button @click="addLink">
-        <svg-icon icon="btnAdd" width="32" height="23" />
-      </button>
-    </div>
+    <template v-for="item in components">
+      <component :is="item.name" v-if="item.fsmState === mainSection" />
+    </template>
     <div class="todo" v-show="section.Todo" :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}">
       <button @click="addTodo">
         <svg-icon icon="btnAdd" width="32" height="23" />
       </button>
     </div>
-    <div class="files g-column" v-show="section.Files" :style="{ opacity: isSwitcherMenuExpanded ? 0.4 : 1 }">
+    <div class="files g-column" v-show="section.Files">
       <div class="g-row m-b-35">
         <label class="button">
           <svg-icon icon="btnAdd" width="32" height="23" />

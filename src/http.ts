@@ -1,53 +1,55 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { IResponse } from '~/domain/models'
+import { Store } from 'vuex'
+import { IResponse, IRootState } from '~/domain/models'
 import { uploadDownloadFile } from '~/helpers'
-import store from '~/store'
 
-axios.interceptors.request.use(
-  async (config: AxiosRequestConfig) => {
-    try {
-      config = config || {}
-      config.headers['X-Honeypot'] = 'App'
-      if (/upload/.test(config.url)) {
-        config.headers['Content-Type'] = 'multipart/form-data'
-        config.maxBodyLength = Infinity
-        config.maxContentLength = Infinity
-        config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
-          uploadDownloadFile(loaded, total)
+function createInterceptors(store: Store<IRootState>) {
+  axios.interceptors.request.use(
+    async (config: AxiosRequestConfig) => {
+      try {
+        config = config || {}
+        config.headers['X-Honeypot'] = 'App'
+        if (/upload/.test(config.url)) {
+          config.headers['Content-Type'] = 'multipart/form-data'
+          config.maxBodyLength = Infinity
+          config.maxContentLength = Infinity
+          config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+            uploadDownloadFile(loaded, total)
+          }
+        } else {
+          config.headers['Content-Type'] = 'application/json'
         }
-      } else {
-        config.headers['Content-Type'] = 'application/json'
+        config.headers.Authorization = store.getters.getToken
+        await checkAuth(config)
+        const session = store.getters.getSession
+        if (session) {
+          config.headers.SSID = session
+        }
+        config.url = $ENDPOINT + config.url
+        return config
+      } catch (e) {
+        throw new Error(e)
       }
-      config.headers.Authorization = store.getters.getToken
-      await checkAuth(config)
-      const session = store.getters.getSession
-      if (session) {
-        config.headers.SSID = session
-      }
-      config.url = $ENDPOINT + config.url
-      return config
-    } catch (e) {
-      throw new Error(e)
+    },
+    error => {
+      /* eslint-disable no-console */
+      console.error(error.request)
+      return Promise.reject(error)
     }
-  },
-  error => {
-    /* eslint-disable no-console */
-    console.error(error.request)
-    return Promise.reject(error)
-  }
-)
+  )
 
-axios.interceptors.response.use(
-  response => {
-    return response
-  },
-  error => {
-    return Promise.reject({
-      ...error.response,
-      message: error.response?.data?.message || error.message
-    })
-  }
-)
+  axios.interceptors.response.use(
+    response => {
+      return response
+    },
+    error => {
+      return Promise.reject({
+        ...error.response,
+        message: error.response?.data?.message || error.message
+      })
+    }
+  )
+}
 
 class Http {
   public async get<TResponse>(url: string): Promise<IResponse<TResponse>> {
@@ -104,6 +106,10 @@ function checkAuth(config: AxiosRequestConfig): Promise<boolean> {
     }
     return reject(new Error('Forbidden'))
   })
+}
+
+export {
+  createInterceptors
 }
 
 const $http = new Http()

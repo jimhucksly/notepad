@@ -18,8 +18,8 @@ import {
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
+import $http from '~/http'
 import { Hub } from '~/plugins/hub'
-import $http from '../http'
 
 type TStore = ActionContext<IProjectsState, IRootState>
 

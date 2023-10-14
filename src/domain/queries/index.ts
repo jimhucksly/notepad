@@ -16,8 +16,6 @@ export class ArchivesQuery {}
 
 export class EventsQuery {}
 
-export class LinksQuery {}
-
 export class TodoQuery {}
 
 export class FilesQuery {}

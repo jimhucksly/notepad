@@ -7,10 +7,12 @@ import mutations from './mutations'
 
 const namespaced = true
 
-export const links: Module<ILinksState, IRootState> = {
+const links: Module<ILinksState, IRootState> = {
   namespaced,
   state,
   getters,
   actions,
   mutations
 }
+
+export default links

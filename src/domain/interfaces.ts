@@ -13,3 +13,19 @@ export interface ICommandHandler<TCommand, TResult> {
 export interface IQueryHandler<TQuery, TResult> {
   exec(query: TQuery): Promise<TResult>
 }
+
+export interface IManifest {
+  main: Array<{
+    name: string
+    path: string
+  }>
+}
+
+export interface IModuleMaifest {
+  components: {
+    main: string
+    aside: string
+    modals: Array<string>
+  }
+  store: string
+}
