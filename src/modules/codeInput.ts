@@ -21,7 +21,7 @@ export default class CodeInput extends Vue {
   @Prop() count: number
   @Prop() error: boolean
 
-  values = {}
+  values: Record<number, unknown> = {}
   isError = false
 
   @Watch('values', { deep: true }) onValuesChanged() {

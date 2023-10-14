@@ -2,7 +2,7 @@ import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { IFsmStates } from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 import { IArchive, IFilters, IProjects } from '~/domain/models'
 import { ArchivesQuery } from '~/domain/queries'
 
@@ -13,7 +13,7 @@ export default class Projects extends Vue {
   @Getter('projects/getProjects') json: IProjects
   @Getter('projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
-  @Getter('getHistory') history: Array<keyof IFsmStates>
+  @Getter('getHistory') history: Array<keyof typeof FsmStates>
 
   selected = ''
 

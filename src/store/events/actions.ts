@@ -1,7 +1,7 @@
 import { ActionContext, ActionTree } from 'vuex'
 import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { IEvent, IEventsState, IRootState } from '~/domain/models'
+import { IEvent, IEvents, IEventsState, IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
 import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
@@ -48,7 +48,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<IEvent> {
     try {
       setProcess(store, 'update events...')
-      const { data } = await $http.put('/events', command.event)
+      const { data } = await $http.put<IEvent, IEvents>('/events', command.event)
       if (data[command.event.date]) {
         const buff = { ...store.getters.getEvents }
         buff[command.event.date] = data[command.event.date]

@@ -60,7 +60,8 @@ function capitalize(str: string): string {
   return str[0].toUpperCase() + str.substring(1)
 }
 
-function responseModify(response: unknown): unknown {
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+function responseModify(response: any): unknown {
   if (isObj(response)) {
     ['pswd_md5', 'temp_pswd_md5'].forEach(key => {
       if (key in (response as Record<string, unknown>)) {

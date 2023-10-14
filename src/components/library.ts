@@ -1,6 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import { IFsmStates } from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 import { ITreeItem } from '~/domain/models'
 import LibraryFiles from '~/components/libraryFiles'
 import { Watch } from 'vue-property-decorator'
@@ -27,7 +27,7 @@ import { Watch } from 'vue-property-decorator'
   `
 })
 export default class Library extends Vue {
-  @Getter('getHistory') history: Array<keyof IFsmStates>
+  @Getter('getHistory') history: Array<keyof typeof FsmStates>
   @Getter('library/getLibraryTree') items: Array<ITreeItem>
 
   tree: Array<ITreeItem> = []

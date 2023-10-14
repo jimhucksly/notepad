@@ -240,10 +240,10 @@ export const translit = (val: string) => {
   const text = val.toLowerCase()
 
   text.split('').forEach((s, i) => {
-    if (transl[text[i]] !== undefined) {
-      if (curentSim !== transl[text[i]] || curentSim !== space) {
-        result += transl[text[i]]
-        curentSim = transl[text[i]]
+    if (transl[text[i] as keyof typeof transl] !== undefined) {
+      if (curentSim !== transl[text[i] as keyof typeof transl] || curentSim !== space) {
+        result += transl[text[i] as keyof typeof transl]
+        curentSim = transl[text[i] as keyof typeof transl]
       }
     } else {
       result += text[i]

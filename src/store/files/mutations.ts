@@ -8,8 +8,8 @@ const _mutations: MutationTree<IFilesState> = {}
 stateKeys.forEach(key => {
   const commitKey = 'set' + upperFirst(key)
   if (_mutations[commitKey] === undefined) {
-    _mutations[commitKey] = (state, peyload) => {
-      state[key] = peyload
+    _mutations[commitKey] = (state, payload) => {
+      state[key as keyof IFilesState] = payload
     }
   }
 })

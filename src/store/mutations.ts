@@ -9,7 +9,7 @@ interface IMutations {
 }
 
 const _mutations: IMutations = {
-  setHistory(state: IRootState, history: Array<keyof IFsmStates>) {
+  setHistory(state: IRootState, history: Array<keyof typeof FsmStates>) {
     state.history = []
     state.history = history
   }
@@ -18,8 +18,8 @@ const _mutations: IMutations = {
 stateKeys.forEach(key => {
   const commitKey = 'set' + upperFirst(key)
   if (_mutations[commitKey] === undefined) {
-    _mutations[commitKey] = (state, peyload) => {
-      state[key] = peyload
+    _mutations[commitKey] = (state, payload) => {
+      (state as unknown as Record<string, unknown>)[key] = payload
     }
   }
 })

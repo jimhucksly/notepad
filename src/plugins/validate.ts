@@ -5,6 +5,8 @@ export interface IValidate {
   touched?: number
   touch?: () => Promise<void>
   valid?: () => boolean
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  [key: string]: any
 }
 
 export default {
@@ -32,9 +34,9 @@ export default {
           if (!el.name) {
             continue
           }
-          const key = el.name
+          const key: keyof typeof rulesMap = el.name
           keys.push(key)
-          const target = el.dataset?.ruleTarget
+          const target: keyof typeof rulesMap = el.dataset?.ruleTarget
           const rule = rulesMap[key] || (target ? rulesMap[target] : null)
           instance.v[key] = {
             value: '',

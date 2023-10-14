@@ -15,5 +15,6 @@ declare module '@vue/runtime-core' {
       error: (subject: string) => void
     }
     $validate: (instance: ComponentPublicInstance) => void
+    $dateFormat: (date: string | Date) => string
   }
 }

@@ -20,7 +20,6 @@
     "noUnusedLocals": false,
     "sourceMap": true,
     "strictNullChecks": false,
-    "suppressImplicitAnyIndexErrors": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,

@@ -13,7 +13,7 @@ async function createYandexDiskApi(db: Database.IDatabase): Promise<IYandexAPI> 
 
   async function post<T>(url: string, payload: TPayload, token?: string): Promise<T> {
     try {
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-type': 'application/x-www-form-urlencoded'
       }
       if (token) {
@@ -27,7 +27,7 @@ async function createYandexDiskApi(db: Database.IDatabase): Promise<IYandexAPI> 
   }
 
   async function get<T>(url: string, token?: string): Promise<T> {
-    const headers = {}
+    const headers: Record<string, string> = {}
     if (token) {
       headers['Authorization'] = 'OAuth ' + token
     }
@@ -40,7 +40,7 @@ async function createYandexDiskApi(db: Database.IDatabase): Promise<IYandexAPI> 
   }
 
   async function put<T>(url: string, payload: TPayload, token: string): Promise<T> {
-    const headers = {}
+    const headers: Record<string, string> = {}
     if (token) {
       headers['Authorization'] = 'OAuth ' + token
     }
@@ -66,7 +66,7 @@ async function createYandexDiskApi(db: Database.IDatabase): Promise<IYandexAPI> 
   }
 
   async function _delete(url: string, token: string): Promise<void> {
-    const headers = {}
+    const headers: Record<string, string> = {}
     if (token) {
       headers['Authorization'] = 'OAuth ' + token
     }
