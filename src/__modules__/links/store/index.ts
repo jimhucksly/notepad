@@ -1,9 +1,10 @@
 import { Module } from 'vuex'
-import { IRootState, ILinksState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import state from './state'
 import getters from './getters'
 import actions from './actions'
 import mutations from './mutations'
+import { ILinksState } from '../models'
 
 const namespaced = true
 

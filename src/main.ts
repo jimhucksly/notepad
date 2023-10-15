@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { createApp, defineAsyncComponent, defineComponent } from 'vue'
+import { createApp, defineComponent } from 'vue'
 import '~/assets/css/simplemde.css'
 import '~/assets/scss/main.scss'
 
@@ -33,6 +33,7 @@ import { IRootState } from './domain/models'
 import { TYPES } from './domain/types'
 import Application from './application/app'
 import { createInterceptors } from './http'
+import { registerModule } from './registerModule'
 
 async function init() {
   try {
@@ -51,38 +52,15 @@ async function init() {
     for (const _module of manifest.main) {
       const path = _module.path + '/'
       const _manifest: IModuleMaifest = require('~/__modules__/' + path + 'manifest.json')
-      if (_manifest && _manifest.components) {
-        for (const key in _manifest.components) {
-          switch (key) {
-            case 'main':
-              app.component(_module.name, defineAsyncComponent(() => import('~/__modules__/' + path + _manifest.components['main'])))
-              break
-            case 'aside':
-              app.component(_module.name + '-Sidebar', defineAsyncComponent(() => import('~/__modules__/' + path + _manifest.components['aside'])))
-              break
-            case 'modals':
-              for (const item of _manifest.components['modals']) {
-                app.component(
-                  _module.name + '-Modal-' + item,
-                  defineAsyncComponent(() => import('~/__modules__/' + path + 'modals/' + item))
-                )
-              }
-              break
-          }
+      if (_manifest) {
+        const data = await registerModule(_module, _manifest, app)
+        if (data && data.storeModule && data.namespace) {
+          storeModules[data.namespace] = { ...data.storeModule }
         }
-      }
-      if (_manifest && _manifest.store) {
-        storeModules[_module.name] = (await import('~/__modules__/' + path + _manifest.store)).default
       }
     }
 
-    /* eslint-disable no-console */
-    console.log('storeModules', storeModules)
-
     const store = buildStore(storeModules)
-
-    /* eslint-disable no-console */
-    console.log('store', store)
 
     store.commit('setManifest', manifest)
 

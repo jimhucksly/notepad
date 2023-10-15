@@ -14,11 +14,13 @@ export interface IQueryHandler<TQuery, TResult> {
   exec(query: TQuery): Promise<TResult>
 }
 
+export interface IModule {
+  name: string
+  path: string
+}
+
 export interface IManifest {
-  main: Array<{
-    name: string
-    path: string
-  }>
+  main: Array<IModule>
 }
 
 export interface IModuleMaifest {

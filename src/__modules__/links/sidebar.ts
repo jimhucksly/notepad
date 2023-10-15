@@ -1,9 +1,9 @@
 import { Vue } from 'vue-class-component'
-import { UpdateLinksCommand } from '~/domain/commands'
-import { ILink } from '~/domain/models'
 import { CreateEditQuery } from '~/domain/queries/createEdit.query'
 import { uniqueid } from '~/helpers'
 import { LinksQuery } from './queries/queries'
+import { ILink } from './models'
+import { UpdateLinksCommand } from './commands/commands'
 
 export default class LinksSidebar extends Vue {
   async addLink() {

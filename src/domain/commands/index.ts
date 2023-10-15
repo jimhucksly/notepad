@@ -1,7 +1,6 @@
 import {
   IProjects,
   IEvent,
-  ILink,
   ITodoOrder,
   ITodoItem
 } from '~/domain/models'
@@ -98,14 +97,6 @@ export class DeleteLibraryFileCommand {
 
 export class UpdateLibraryCommand {
   constructor(public id: string | number, public value: string) {}
-}
-
-export class UpdateLinksCommand {
-  constructor(public link: ILink) {}
-}
-
-export class DeleteLinkCommand {
-  constructor(public id: string) {}
 }
 
 export class TodoOrderCommand {

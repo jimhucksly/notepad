@@ -1,10 +1,10 @@
 import { Vue } from 'vue-class-component'
-import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
-import { ILink } from '~/domain/models'
 import { Getter } from 'vuex-class'
 import { CreateEditQuery } from '~/domain/queries/createEdit.query'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { LinksQuery } from './queries/queries'
+import { ILink } from './models'
+import { DeleteLinkCommand, UpdateLinksCommand } from './commands/commands'
 
 export default class LinksPage extends Vue {
   @Getter('Links/getLinks') links: Array<ILink>

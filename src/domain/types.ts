@@ -38,8 +38,6 @@ const TYPES = {
   AddLibraryFileCommand: Symbol.for('AddLibraryFileCommand'),
   UpdateLibraryCommand: Symbol.for('UpdateLibraryCommand'),
   DeleteLibraryFileCommand: Symbol.for('DeleteLibraryFileCommand'),
-  UpdateLinksCommand: Symbol.for('UpdateLinksCommand'),
-  DeleteLinkCommand: Symbol.for('DeleteLinkCommand'),
   UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
   DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
   TodoOrderCommand: Symbol.for('TodoOrderCommand'),

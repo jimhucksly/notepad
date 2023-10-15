@@ -103,12 +103,6 @@ export interface ITodoOrder {
   [id: string]: number
 }
 
-export interface ILink {
-  id?: string
-  url: string
-  name: string
-}
-
 type TResponseStatus = 'success' | 'error'
 
 export interface IUser {
@@ -149,10 +143,6 @@ export interface ITodoState {
 
 export interface IEventsState {
   events: IEvents
-}
-
-export interface ILinksState {
-  links: ILink
 }
 
 export interface IFilesState {

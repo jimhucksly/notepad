@@ -1,7 +1,7 @@
 import { Prop } from 'vue-property-decorator'
 import { Vue } from 'vue-class-component'
-import { ILink } from '~/domain/models'
 import { IValidate } from '~/plugins/validate'
+import { ILink } from '../models'
 
 export default class CreateEditLinkComponent extends Vue {
   @Prop() item: ILink

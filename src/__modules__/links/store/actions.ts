@@ -1,13 +1,13 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { DeleteLinkCommand, UpdateLinksCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { ILink, ILinksState, IRootState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
 import { Hub } from '~/plugins/hub'
-import { LinksQuery } from '../queries/queries'
+import { bindings } from './bindings'
+import { ILink, ILinksState } from '../models'
+import { DeleteLinkCommand, UpdateLinksCommand } from '../commands/commands'
 
 type TStore = ActionContext<ILinksState, IRootState>
 
@@ -25,7 +25,7 @@ class Actions implements ActionTree<ILinksState, IRootState> {
    * Get Links
    * @param store Store
    */
-  @Queryable(Symbol.for(LinksQuery.constructor.name), Actions.namespace)
+  @Queryable(bindings.LinksQuery, Actions.namespace)
   async actionGetLinks(store: TStore): Promise<Array<ILink>> {
     try {
       setProcess(store, 'get links...')
@@ -45,7 +45,7 @@ class Actions implements ActionTree<ILinksState, IRootState> {
    * @param store Store
    * @param {UpdateLinksCommand} command
    */
-  @Commandable(TYPES.UpdateLinksCommand, Actions.namespace)
+  @Commandable(bindings.UpdateLinksCommand, Actions.namespace)
   async actionUpdateLinks(store: TStore, command: UpdateLinksCommand): Promise<boolean> {
     try {
       setProcess(store, 'updating link...')
@@ -64,7 +64,7 @@ class Actions implements ActionTree<ILinksState, IRootState> {
    * @param store Store
    * @param {DeleteLinkCommand} command
    */
-  @Commandable(TYPES.DeleteLinkCommand, Actions.namespace)
+  @Commandable(bindings.DeleteLinkCommand, Actions.namespace)
   async actionDeleteLink(store: TStore, command: DeleteLinkCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing link...')
