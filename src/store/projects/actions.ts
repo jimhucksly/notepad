@@ -5,8 +5,7 @@ import {
   ArchivingCommand,
   CreateProjectCommand,
   DeleteProjectCommand,
-  EditProjectCommand,
-  UploadFileCommand
+  EditProjectCommand
 } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
 import {
@@ -181,25 +180,6 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
       return Promise.resolve(true)
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: Archive remove failed')
-      return Promise.reject(e)
-    } finally {
-      setProcess(store, null)
-    }
-  }
-
-  /**
-   * Upload File
-   * @param store Store
-   * @param {UploadFileCommand} command
-   */
-  @Commandable(TYPES.UploadFileCommand, Actions.namespace)
-  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<true> {
-    try {
-      setProcess(store, 'uploading file...')
-      await $http.put('/upload', command.form)
-      return true
-    } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

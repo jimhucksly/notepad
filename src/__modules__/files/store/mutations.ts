@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
-import { IFilesState } from '~/domain/models'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
+import { IFilesState } from '../models'
 
 const _mutations: MutationTree<IFilesState> = {}
 

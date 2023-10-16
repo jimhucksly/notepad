@@ -1,12 +1,13 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { DeleteFileCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { IFile, IFilesState, IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
 import { Hub } from '~/plugins/hub'
+import { DeleteFileCommand, UploadFileCommand } from '../commands/commands'
+import { bindings } from './bindings'
+import { IRootState } from '~/domain/models'
+import { IFile, IFilesState } from '../models'
 
 type TStore = ActionContext<IFilesState, IRootState>
 
@@ -18,13 +19,13 @@ class Actions implements ActionTree<IFilesState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'files'
+  static readonly namespace = 'Files'
 
   /**
    * Get Files
    * @param store Store
    */
-  @Queryable(TYPES.FilesQuery, Actions.namespace)
+  @Queryable(bindings.FilesQuery, Actions.namespace)
   async actionGetFiles(store: TStore): Promise<Array<IFile>> {
     try {
       setProcess(store, 'get files...')
@@ -39,7 +40,12 @@ class Actions implements ActionTree<IFilesState, IRootState> {
     }
   }
 
-  @Commandable(TYPES.DeleteFileCommand, Actions.namespace)
+  /**
+   * Delete File
+   * @param store Store
+   * @param {DeleteFileCommand} command
+   */
+  @Commandable(bindings.DeleteFileCommand, Actions.namespace)
   async actionRemoveFile(store: TStore, command: DeleteFileCommand): Promise<boolean> {
     try {
       setProcess(store, 'delete file...')
@@ -47,6 +53,25 @@ class Actions implements ActionTree<IFilesState, IRootState> {
       return true
     } catch (e) {
       Hub.$emit('on-toasted-error', 'Error: File removing is failed')
+      return Promise.reject(e)
+    } finally {
+      setProcess(store, null)
+    }
+  }
+
+  /**
+   * Upload File
+   * @param store Store
+   * @param {UploadFileToProjectCommand} command
+   */
+  @Commandable(bindings.UploadFileCommand, Actions.namespace)
+  async actionUploadFile(store: TStore, command: UploadFileCommand): Promise<true> {
+    try {
+      setProcess(store, 'uploading file...')
+      await $http.put('/upload', command.form)
+      return true
+    } catch (e) {
+      Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

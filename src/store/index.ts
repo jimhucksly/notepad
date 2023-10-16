@@ -9,7 +9,6 @@ import { projects } from './projects'
 import { library } from './library'
 import { todo } from './todo'
 import { events } from './events'
-import { files } from './files'
 
 function buildStore(modules: ModuleTree<IRootState>) {
   const store = createStore<IRootState>({
@@ -23,8 +22,7 @@ function buildStore(modules: ModuleTree<IRootState>) {
       projects,
       library,
       todo,
-      events,
-      files
+      events
     }
   })
   return store

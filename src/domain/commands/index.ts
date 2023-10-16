@@ -63,10 +63,6 @@ export class ReadCommand {
   constructor(public stamp: string | number) {}
 }
 
-export class UploadFileCommand {
-  constructor(public form: FormData) {}
-}
-
 export class ArchivingCommand {
   constructor(public stamp: string) {}
 }
@@ -108,10 +104,6 @@ export class UpdateTodoCommand {
 }
 
 export class DeleteTodoCommand {
-  constructor(public id: string) {}
-}
-
-export class DeleteFileCommand {
   constructor(public id: string) {}
 }
 

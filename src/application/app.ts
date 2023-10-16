@@ -41,7 +41,6 @@ let States = {
   LibraryFiles: Symbol.for('LibraryFiles'),
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),
-  Files: Symbol.for('Files'),
   JsonViewer: Symbol.for('JsonViewer'),
   Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
@@ -73,12 +72,6 @@ const menu: Array<IMenu> = [
     nameAlt: 'Events',
     fsmState: States.Events,
     id: 4
-  },
-  {
-    name: 'files',
-    nameAlt: 'Files',
-    fsmState: States.Files,
-    id: 6
   },
   {
     name: 'jsonViewer',
@@ -124,7 +117,6 @@ const appComponents = {
   [toStr(States.Library)]: 'Library',
   [toStr(States.Events)]: 'Events',
   [toStr(States.JsonViewer)]: 'JsonViewer',
-  [toStr(States.Files)]: 'Files',
   [toStr(States.Todo)]: 'Todo',
   [toStr(States.Postman)]: 'Postman'
 }

@@ -1,12 +1,12 @@
 import { Options, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import File from '~/components/file'
-import { DeleteFileCommand, UploadFileCommand } from '~/domain/commands'
-import { IFile } from '~/domain/models'
-import { FilesQuery } from '~/domain/queries'
+import File from './file'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { dragAndDropLoader } from '~/helpers'
 import { Hub } from '~/plugins/hub'
+import { IFile } from './models'
+import { FilesQuery } from './queries/queries'
+import { DeleteFileCommand, UploadFileCommand } from './commands/commands'
 
 @Options({
   components: {
@@ -14,7 +14,7 @@ import { Hub } from '~/plugins/hub'
   }
 })
 export default class Files extends Vue {
-  @Getter('files/getFiles') files: Array<IFile>
+  @Getter('Files/getFiles') files: Array<IFile>
   @Getter('getDownloadsTargetPath') downloadTargetPath: string
 
   selected: string = null

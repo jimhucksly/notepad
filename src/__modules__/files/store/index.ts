@@ -1,16 +1,19 @@
 import { Module } from 'vuex'
-import { IRootState, IFilesState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import state from './state'
 import getters from './getters'
 import actions from './actions'
 import mutations from './mutations'
+import { IFilesState } from '../models'
 
 const namespaced = true
 
-export const files: Module<IFilesState, IRootState> = {
+const files: Module<IFilesState, IRootState> = {
   namespaced,
   state,
   getters,
   actions,
   mutations
 }
+
+export default files

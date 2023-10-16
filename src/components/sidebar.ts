@@ -9,7 +9,7 @@ import Projects from '~/components/projects'
 import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
 import { IManifest } from '~/domain/interfaces'
-import { IFile, IMenu } from '~/domain/models'
+import { IMenu } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 
 @Options({
@@ -37,11 +37,6 @@ export default class Sidebar extends Vue {
 
   isExpand = false
 
-  fileSelected: IFile = null
-  onFileSelectHandler: (file: IFile) => void
-
-  filesCheck = false
-
   components: Array<{ name: string, fsmState: string }> = []
 
   @Watch('isProjects') onIsProjectsChanged() {
@@ -56,8 +51,6 @@ export default class Sidebar extends Vue {
   }
 
   created() {
-    this.onFileSelectHandler = this.onFileSelect.bind(this)
-    Hub.$on('on-file-select', this.onFileSelectHandler)
     if (this.manifest) {
       this.manifest.main.forEach(item => {
         this.components.push({
@@ -66,10 +59,6 @@ export default class Sidebar extends Vue {
         })
       })
     }
-  }
-
-  beforeUnmount() {
-    Hub.$off('on-file-select', this.onFileSelectHandler)
   }
 
   toggle() {
@@ -116,27 +105,6 @@ export default class Sidebar extends Vue {
 
   addTodo() {
     Hub.$emit('todo-add')
-  }
-
-  onFileChange(e: InputEvent) {
-    Hub.$emit('on-file-change', e)
-  }
-
-  onFileRemove() {
-    Hub.$emit('on-file-remove')
-  }
-
-  onFileSelect(file: IFile) {
-    this.fileSelected = file
-  }
-
-  onFileCheck() {
-    this.filesCheck = !this.filesCheck
-    Hub.$emit('on-file-check', this.filesCheck)
-  }
-
-  onFileDownload() {
-    Hub.$emit('on-file-download')
   }
 
   get mainSection() {

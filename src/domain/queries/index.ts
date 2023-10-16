@@ -18,8 +18,6 @@ export class EventsQuery {}
 
 export class TodoQuery {}
 
-export class FilesQuery {}
-
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }

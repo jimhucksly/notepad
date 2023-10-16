@@ -1,8 +1,8 @@
 import { Vue } from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { IFile } from '~/domain/models'
 import { getFileType } from '~/helpers'
+import { IFile } from './models'
 
 export default class File extends Vue {
   @Prop() item: IFile

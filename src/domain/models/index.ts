@@ -31,15 +31,6 @@ export interface ITreeItem {
   children?: ITreeItem[]
 }
 
-export interface IFile {
-  id: string
-  name: string
-  extension: string
-  createDateTime: string
-  size: number
-  href: string
-}
-
 export interface IProject {
   key: string
   date: string
@@ -143,10 +134,6 @@ export interface ITodoState {
 
 export interface IEventsState {
   events: IEvents
-}
-
-export interface IFilesState {
-  files: IFile
 }
 
 export interface IRootState {

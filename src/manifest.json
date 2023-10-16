@@ -3,6 +3,10 @@
     {
       "name": "Links",
       "path": "links"
+    },
+    {
+      "name": "Files",
+      "path": "files"
     }
   ]
 }
