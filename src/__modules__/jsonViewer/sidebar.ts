@@ -1,22 +1,7 @@
-import { Options, Vue } from 'vue-class-component'
+import { Vue } from 'vue-class-component'
 import { Hub } from '~/plugins/hub'
 import Electron from 'electron'
 
-@Options({
-  template: `
-    <div class="json_viewer">
-      <button @click="open">
-        <svg-icon icon="btnOpen" width="32" height="23" />
-      </button>
-      <button @click="save">
-        <svg-icon icon="btnSave" width="32" height="23" />
-      </button>
-      <button @click="clear" class="m-l-35">
-        <svg-icon icon="btnClear" width="32" height="23" />
-      </button>
-    </div>
-  `
-})
 export default class JsonViewerBtns extends Vue {
   open() {
     const openFile = () => {

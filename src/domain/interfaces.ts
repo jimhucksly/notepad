@@ -16,6 +16,7 @@ export interface IQueryHandler<TQuery, TResult> {
 
 export interface IModule {
   name: string
+  nameAlt: string
   path: string
 }
 

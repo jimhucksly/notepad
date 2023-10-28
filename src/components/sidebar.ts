@@ -2,7 +2,6 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { FsmStates, toStr } from '~/application/app'
-import JsonViewerBtns from '~/components/jsonViewerBtns'
 import Library from '~/components/library'
 import LibraryFiles from '~/components/libraryFiles'
 import Projects from '~/components/projects'
@@ -18,8 +17,7 @@ import { Hub } from '~/plugins/hub'
     ProjectsEditor,
     ProjectsArchives,
     Library,
-    LibraryFiles,
-    JsonViewerBtns
+    LibraryFiles
   }
 })
 export default class Sidebar extends Vue {

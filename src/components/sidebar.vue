@@ -50,10 +50,6 @@
       v-show="!isSwitcherMenuExpanded || isLibraryFilesVisibility"
       :expanded="isLibraryFilesVisibility"
     />
-    <json-viewer-btns
-      v-show="section.JsonViewer"
-      :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-    />
     <template v-for="item in components">
       <component :is="item.name" v-if="item.fsmState === mainSection" />
     </template>

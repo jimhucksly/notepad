@@ -2,11 +2,18 @@
   "main": [
     {
       "name": "Links",
+      "nameAlt": "Links",
       "path": "links"
     },
     {
       "name": "Files",
+      "nameAlt": "Files",
       "path": "files"
+    },
+    {
+      "name": "JsonViewer",
+      "nameAlt": "Json Viewer",
+      "path": "jsonViewer"
     }
   ]
 }

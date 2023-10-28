@@ -23,7 +23,6 @@ interface LifeCycle {
 
 const StateMachine = require('javascript-state-machine')
 
-
 let _fsm: typeof StateMachine = null
 
 let States = {
@@ -41,7 +40,6 @@ let States = {
   LibraryFiles: Symbol.for('LibraryFiles'),
   Todo: Symbol.for('Todo'),
   Events: Symbol.for('Events'),
-  JsonViewer: Symbol.for('JsonViewer'),
   Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
@@ -72,12 +70,6 @@ const menu: Array<IMenu> = [
     nameAlt: 'Events',
     fsmState: States.Events,
     id: 4
-  },
-  {
-    name: 'jsonViewer',
-    nameAlt: 'Json Viewer',
-    fsmState: States.JsonViewer,
-    id: 7
   },
   {
     name: 'postman',
@@ -116,7 +108,6 @@ const appComponents = {
   [toStr(States.Preferences)]: 'Preferences',
   [toStr(States.Library)]: 'Library',
   [toStr(States.Events)]: 'Events',
-  [toStr(States.JsonViewer)]: 'JsonViewer',
   [toStr(States.Todo)]: 'Todo',
   [toStr(States.Postman)]: 'Postman'
 }
@@ -139,7 +130,7 @@ function buildMenu(manifest: IManifest) {
   for (const item of manifest.main) {
     result.push({
       name: item.name,
-      nameAlt: item.name,
+      nameAlt: item.nameAlt,
       fsmState: States[item.name as keyof typeof States],
       id: len + index
     })
