@@ -2,16 +2,21 @@ import { debounce } from 'lodash'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
-import { IEvent, IEvents } from '~/domain/models'
-import { EventsQuery } from '~/domain/queries'
 import BCalendar, { IBCalendar } from '~/modules/calendar'
+import { IEvent, IEvents } from './models'
+import { DeleteEventCommand, UpdateEventCommand } from './commands/commands'
+import { EventsQuery } from './queries/queries'
 
 interface IBCalendarOptions {
   eventsMode: boolean
   items: IEvent | null
   disableDaysBefore: boolean
   setDate?: string
+  modelType?: {
+    date: string
+    title: string
+    content: string
+  }
 }
 
 interface ISelected {
@@ -30,12 +35,17 @@ interface IFilteredItem {
   }
 })
 export default class Events extends Vue {
-  @Getter('events/getEvents') items: IEvents
+  @Getter('Events/getEvents') items: IEvents
 
   bCalendarOptions: IBCalendarOptions = {
     eventsMode: true,
     items: null,
-    disableDaysBefore: false
+    disableDaysBefore: false,
+    modelType: {
+      date: 'date',
+      title: 'title',
+      content: 'content'
+    }
   }
   bCalendarFormShow = false
 
@@ -59,6 +69,13 @@ export default class Events extends Vue {
   private readonly debounced = debounce((v: string, context: Events): void => {
     context.itemsFiltered = []
     if (!v) {
+      return
+    }
+    if (!context?.items) {
+      context.itemsFiltered.push({
+        key: '0',
+        title: 'Nothing to show'
+      })
       return
     }
     Object.keys(context.items).forEach((key: string) => {

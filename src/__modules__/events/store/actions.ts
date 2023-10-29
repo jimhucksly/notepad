@@ -1,12 +1,13 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { DeleteEventCommand, UpdateEventCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { IEvent, IEvents, IEventsState, IRootState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
 import { Hub } from '~/plugins/hub'
+import { IEvent, IEvents, IEventsState } from '../models'
+import { DeleteEventCommand, UpdateEventCommand } from '../commands/commands'
+import { bindings } from './bindings'
 
 type TStore = ActionContext<IEventsState, IRootState>
 
@@ -18,13 +19,13 @@ class Actions implements ActionTree<IEventsState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'events'
+  static readonly namespace = 'Events'
 
   /**
    * Get Events
    * @param store Store
    */
-  @Queryable(TYPES.EventsQuery, Actions.namespace)
+  @Queryable(bindings.EventsQuery, Actions.namespace)
   async actionGetEvents(store: TStore): Promise<Array<IEvent>> {
     try {
       setProcess(store, 'get events...')
@@ -44,7 +45,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
    * @param store Store
    * @param {UpdateEventCommand} command
    */
-  @Commandable(TYPES.UpdateEventCommand, Actions.namespace)
+  @Commandable(bindings.UpdateEventCommand, Actions.namespace)
   async actionUpdateEvent(store: TStore, command: UpdateEventCommand): Promise<IEvent> {
     try {
       setProcess(store, 'update events...')
@@ -69,7 +70,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
    * @param store Store
    * @param {DeleteEventCommand} command
    */
-  @Commandable(TYPES.DeleteEventCommand, Actions.namespace)
+  @Commandable(bindings.DeleteEventCommand, Actions.namespace)
   async actionRemoveEvent(store: TStore, command: DeleteEventCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing event...')

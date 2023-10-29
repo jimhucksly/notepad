@@ -21,7 +21,7 @@ async function registerModule(_module: IModule, _manifest: IModuleMaifest, app: 
           break
         case 'aside':
           const name = moduleName + '-Sidebar'
-          if (typeof _manifest.components['aside'] === 'string') {
+          if (typeof _manifest.components['aside'] === 'string' && _manifest.components['aside']) {
             app.component(name, defineAsyncComponent(() => import('~/__modules__/' + path + _manifest.components['aside'])))
           } else {
             app.component(name, defineComponent({
@@ -30,7 +30,7 @@ async function registerModule(_module: IModule, _manifest: IModuleMaifest, app: 
           }
           break
         case 'modals':
-          for (const item of _manifest.components['modals']) {
+          for (const item of (_manifest.components['modals'] || [])) {
             app.component(moduleName + '-Modal-' + item, defineAsyncComponent(() => import('~/__modules__/' + path + 'modals/' + item)))
           }
           break

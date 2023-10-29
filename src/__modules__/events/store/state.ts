@@ -1,4 +1,4 @@
-import { IEventsState } from '~/domain/models'
+import { IEventsState } from '../models'
 
 export const stateKeys: string[] = [
   'events'

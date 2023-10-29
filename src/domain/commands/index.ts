@@ -1,6 +1,5 @@
 import {
   IProjects,
-  IEvent,
   ITodoOrder,
   ITodoItem
 } from '~/domain/models'
@@ -73,14 +72,6 @@ export class ArchiveRestoreCommand {
 
 export class ArchiveRemoveCommand {
   constructor(public id: string) {}
-}
-
-export class UpdateEventCommand {
-  constructor(public event: IEvent) {}
-}
-
-export class DeleteEventCommand {
-  constructor(public date: string) {}
 }
 
 export class AddLibraryFileCommand {

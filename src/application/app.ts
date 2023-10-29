@@ -39,7 +39,6 @@ let States = {
   Library: Symbol.for('Library'),
   LibraryFiles: Symbol.for('LibraryFiles'),
   Todo: Symbol.for('Todo'),
-  Events: Symbol.for('Events'),
   Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
@@ -66,16 +65,10 @@ const menu: Array<IMenu> = [
     id: 3
   },
   {
-    name: 'events',
-    nameAlt: 'Events',
-    fsmState: States.Events,
-    id: 4
-  },
-  {
     name: 'postman',
     nameAlt: 'Postman',
     fsmState: States.Postman,
-    id: 7
+    id: 9
   }
 ]
 
@@ -107,7 +100,6 @@ const appComponents = {
   [toStr(States.Projects)]: 'Projects',
   [toStr(States.Preferences)]: 'Preferences',
   [toStr(States.Library)]: 'Library',
-  [toStr(States.Events)]: 'Events',
   [toStr(States.Todo)]: 'Todo',
   [toStr(States.Postman)]: 'Postman'
 }

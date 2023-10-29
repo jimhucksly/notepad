@@ -27,7 +27,7 @@
                 v-for="item in itemsFiltered"
                 :key="item.key"
                 :data-current="item.key"
-                :class="{ 'not-clickable': item.key === 0 }"
+                :class="{ 'not-clickable': item.key === '0' }"
                 @click="itemSelected(item)"
               >
                 {{ item.title }}
@@ -49,4 +49,4 @@
     </div>
   </div>
 </template>
-<script src="./events.ts" lang="ts"></script>
+<script src="./main.ts" lang="ts"></script>

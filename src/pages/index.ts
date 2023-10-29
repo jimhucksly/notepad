@@ -9,7 +9,6 @@ import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IUser } from '~/domain/models'
 import Account from '~/pages/account'
 import Auth from '~/pages/auth'
-import Events from '~/pages/events'
 import Library from '~/pages/library'
 import Preferences from '~/pages/preferences'
 import Projects from '~/pages/projects'
@@ -39,7 +38,6 @@ interface IUserPreferences {
     Todo,
     Library,
     Preferences,
-    Events,
     Sidebar,
     Postman
   }

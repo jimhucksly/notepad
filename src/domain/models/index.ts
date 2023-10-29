@@ -59,22 +59,6 @@ export interface ILibraryFile {
   name: string // имя физического файла на сервере
 }
 
-export interface IEvents {
-  [date: string]: {
-    title: string
-    content: string
-  }
-}
-
-export interface IEvent {
-  /*
-   * 01.03.2020
-   */
-  date?: string
-  title: string
-  content: string
-}
-
 export interface ITodo {
   [key: string]: {
     date: string
@@ -130,10 +114,6 @@ export interface ILibraryState {
 
 export interface ITodoState {
   todo: ITodo
-}
-
-export interface IEventsState {
-  events: IEvents
 }
 
 export interface IRootState {

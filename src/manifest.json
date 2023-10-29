@@ -1,6 +1,11 @@
 {
   "main": [
     {
+      "name": "Events",
+      "nameAlt": "Events",
+      "path": "events"
+    },
+    {
       "name": "Links",
       "nameAlt": "Links",
       "path": "links"

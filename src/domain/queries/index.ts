@@ -14,8 +14,6 @@ export class LibraryFileQuery {
 
 export class ArchivesQuery {}
 
-export class EventsQuery {}
-
 export class TodoQuery {}
 
 export class YandexTokenQuery {

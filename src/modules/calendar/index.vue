@@ -25,11 +25,11 @@
         <div class="b-calendar-form">
           <div class="b-calendar-form-close" @click.prevent="formClear"></div>
           <form>
-            <input type="text" v-model="event.title" placeholder="Title">
-            <input type="text" :readonly="true" v-model="event.date">
-            <textarea v-model="event.content" placeholder="Text"></textarea>
+            <input type="text" v-model="event[op.modelType.title]" placeholder="Title">
+            <input type="text" :readonly="true" v-model="event[op.modelType.date]">
+            <textarea v-model="event[op.modelType.content]" placeholder="Text"></textarea>
             <div class="flex-between shrink-0">
-              <button class="btn btn-danger m-r-15" @click.prevent="formRemove" :disabled="!hasEvent(event.date)">Remove</button>
+              <button class="btn btn-danger m-r-15" @click.prevent="formRemove" :disabled="!hasEvent(event[op.modelType.date])">Remove</button>
               <button class="btn btn-primary" @click.prevent="formSave">Save</button>
             </div>
           </form>

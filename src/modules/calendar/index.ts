@@ -1,7 +1,6 @@
 import { Prop, Watch } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
 import CalendarInstance from './instance'
-import { IEvent } from '~/domain/models'
 import { IOptions } from './calendar.model'
 import './calendar.scss'
 
@@ -76,6 +75,11 @@ export const defaults: IOptions = {
   eventsMode: false,
   items: null,
   mode: 'd',
+  modelType: {
+    date: 'date',
+    title: 'title',
+    content: 'content'
+  },
   setDate: '', // 01.01.2001
   disableDaysBefore: null, // new Date(),
   disableDaysAfter: null, // new Date()
@@ -102,7 +106,7 @@ export default class BCalendarComponent extends Vue {
   range: string[] = []
   active = ''
   formShow = false
-  event: IEvent = {
+  event: Record<string, string> = {
     date: '',
     title: '',
     content: ''
@@ -195,8 +199,8 @@ export default class BCalendarComponent extends Vue {
       this.event.date = date
       this.$emit('form-toggle', this.formShow)
       if (this.op.items && this.op.items[date]) {
-        this.event.title = this.op.items[date].title
-        this.event.content = this.op.items[date].content
+        this.event.title = (this.op.items[date] as Record<string, string>)[this.op.modelType.title]
+        this.event.content = (this.op.items[date] as Record<string, string>)[this.op.modelType.content]
       }
     } else {
       this.$emit('day-selected', getNativeDate(date))

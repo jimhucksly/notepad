@@ -1,7 +1,8 @@
 import { GetterTree } from 'vuex'
-import { IRootState, IEventsState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
+import { IEventsState } from '../models'
 
 const getters: GetterTree<IEventsState, IRootState> = {}
 
