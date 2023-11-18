@@ -1,4 +1,4 @@
-import { ITodoState } from '~/domain/models'
+import { ITodoState } from '../models'
 
 export const stateKeys: string[] = [
   'todo'

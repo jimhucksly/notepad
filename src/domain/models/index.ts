@@ -59,25 +59,6 @@ export interface ILibraryFile {
   name: string // имя физического файла на сервере
 }
 
-export interface ITodo {
-  [key: string]: {
-    date: string
-    text: string
-    order: number
-  }
-}
-
-export interface ITodoItem {
-  id: string
-  date: string
-  text: string
-  order: number
-}
-
-export interface ITodoOrder {
-  [id: string]: number
-}
-
 type TResponseStatus = 'success' | 'error'
 
 export interface IUser {
@@ -110,10 +91,6 @@ export interface ILibraryState {
   libraryFiles: Array<ILibraryFile>
   libraryFileId: string | number
   libraryTree: Array<ITreeItem>
-}
-
-export interface ITodoState {
-  todo: ITodo
 }
 
 export interface IRootState {

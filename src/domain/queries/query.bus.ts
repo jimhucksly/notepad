@@ -20,7 +20,7 @@ class QueryBus implements IQueryBus {
     if (actionName) {
       return this._store.dispatch(actionName, query)
     }
-    const handler: IQueryHandler<T, R> = this._container.get(TYPES[query.constructor.name as keyof typeof TYPES])
+    const handler: IQueryHandler<T, R> = this._container.get(Symbol.for(query.constructor.name))
     if (handler) {
       return handler.exec(query)
     }

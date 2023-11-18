@@ -7,7 +7,6 @@ import { IRootState } from '~/domain/models'
 
 import { projects } from './projects'
 import { library } from './library'
-import { todo } from './todo'
 
 function buildStore(modules: ModuleTree<IRootState>) {
   const store = createStore<IRootState>({
@@ -19,8 +18,7 @@ function buildStore(modules: ModuleTree<IRootState>) {
     modules: {
       ...modules,
       projects,
-      library,
-      todo
+      library
     }
   })
   return store

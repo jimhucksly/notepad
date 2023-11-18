@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
-import { ITodoState } from '~/domain/models'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
+import { ITodoState } from '../models'
 
 const _mutations: MutationTree<ITodoState> = {}
 

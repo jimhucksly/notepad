@@ -2,11 +2,11 @@ import { cloneDeep } from 'lodash'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '~/domain/commands'
-import { ITodo, ITodoItem, ITodoOrder } from '~/domain/models'
-import { TodoQuery } from '~/domain/queries'
 import { indexOf, now } from '~/helpers'
 import { Hub } from '~/plugins/hub'
+import { ITodo, ITodoItem, ITodoOrder } from './models'
+import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from './commands/commands'
+import { TodoQuery } from './queries/queries'
 
 const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   return a.order < b.order ? -1 : 1
@@ -18,7 +18,7 @@ const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
   }
 })
 export default class Todo extends Vue {
-  @Getter('todo/getTodo') json: ITodo
+  @Getter('Todo/getTodo') json: ITodo
 
   items: Array<ITodoItem> = []
   isPopupShow = false
@@ -28,12 +28,21 @@ export default class Todo extends Vue {
 
   addTodoHandler: () => void
 
-  get keys(): Array<string> {
-    return this.items.map((item: ITodoItem) => item.id)
-  }
-
   @Watch('json') onJsonChanged() {
     this.setItems()
+  }
+
+  async mounted() {
+    try {
+      this.loading = true
+      await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
+      this.loading = false
+      this.addTodoHandler = this.addTodo.bind(this)
+      Hub.$on('todo-add', this.addTodoHandler)
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.log(e)
+    }
   }
 
   onMouseDown(event: MouseEvent, id: string) {
@@ -294,20 +303,11 @@ export default class Todo extends Vue {
     return split.join('')
   }
 
-  get isEmpty() {
-    return !this.loading && !this.items?.length
+  get keys(): Array<string> {
+    return this.items.map((item: ITodoItem) => item.id)
   }
 
-  async mounted() {
-    try {
-      this.loading = true
-      await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
-      this.loading = false
-      this.addTodoHandler = this.addTodo.bind(this)
-      Hub.$on('todo-add', this.addTodoHandler)
-    } catch (e) {
-      /* eslint-disable no-console */
-      console.log(e)
-    }
+  get isEmpty() {
+    return !this.loading && !this.items?.length
   }
 }

@@ -1,8 +1,4 @@
-import {
-  IProjects,
-  ITodoOrder,
-  ITodoItem
-} from '~/domain/models'
+import { IProjects } from '~/domain/models'
 
 export class AuthCommand {
   constructor(public flag: boolean) {}
@@ -84,18 +80,6 @@ export class DeleteLibraryFileCommand {
 
 export class UpdateLibraryCommand {
   constructor(public id: string | number, public value: string) {}
-}
-
-export class TodoOrderCommand {
-  constructor(public result: ITodoOrder) {}
-}
-
-export class UpdateTodoCommand {
-  constructor(public item: ITodoItem) {}
-}
-
-export class DeleteTodoCommand {
-  constructor(public id: string) {}
 }
 
 export class RevokeYandexTokenCommand {}

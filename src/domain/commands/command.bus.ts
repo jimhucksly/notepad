@@ -16,11 +16,11 @@ class CommandBus implements ICommandBus {
    * R - Result
    */
   do<T, R>(command: T) {
-    const actionName = Reflect.getMetadata(TYPES[command.constructor.name as keyof typeof TYPES], CommandBus)
+    const actionName = Reflect.getMetadata(Symbol.for(command.constructor.name), CommandBus)
     if (actionName) {
       return this._store.dispatch(actionName, command)
     }
-    const handler: ICommandHandler<T, R> = this._container.get(TYPES[command.constructor.name as keyof typeof TYPES])
+    const handler: ICommandHandler<T, R> = this._container.get(Symbol.for(command.constructor.name))
     if (handler) {
       return handler.do(command)
     }

@@ -9,7 +9,6 @@ import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
 import { IManifest } from '~/domain/interfaces'
 import { IMenu } from '~/domain/models'
-import { Hub } from '~/plugins/hub'
 
 @Options({
   components: {
@@ -99,10 +98,6 @@ export default class Sidebar extends Vue {
     } else {
       this.$app.goto(this.$app.states.LibraryFiles)
     }
-  }
-
-  addTodo() {
-    Hub.$emit('todo-add')
   }
 
   get mainSection() {

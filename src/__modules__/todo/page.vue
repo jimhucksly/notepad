@@ -35,4 +35,5 @@
     </template>
   </div>
 </template>
-<script src="./todo.ts" lang="ts"></script>
+<script src="./page.ts" lang="ts"></script>
+

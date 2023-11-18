@@ -53,11 +53,6 @@
     <template v-for="item in components">
       <component :is="item.name" v-if="item.fsmState === mainSection" />
     </template>
-    <div class="todo" v-show="section.Todo" :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}">
-      <button @click="addTodo">
-        <svg-icon icon="btnAdd" width="32" height="23" />
-      </button>
-    </div>
   </aside>
 </template>
 <script src="./sidebar.ts" lang="ts"></script>

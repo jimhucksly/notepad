@@ -21,7 +21,6 @@
   };
 
   prompt.get(schema, function (err, result) {
-
     if (result) {
       try {
         const modulePath = path.join(modulesPath, result.path)
@@ -76,9 +75,7 @@
         //
       }
     }
-
   });
-
 })();
 
 

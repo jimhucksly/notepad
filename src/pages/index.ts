@@ -14,7 +14,6 @@ import Preferences from '~/pages/preferences'
 import Projects from '~/pages/projects'
 import Reg from '~/pages/reg'
 import Reset from '~/pages/reset'
-import Todo from '~/pages/todo'
 import Verify from '~/pages/verify'
 import Yandex from '~/pages/yandex'
 import Postman from '~/pages/postman'
@@ -35,7 +34,6 @@ interface IUserPreferences {
     Error,
     Account,
     Projects,
-    Todo,
     Library,
     Preferences,
     Sidebar,

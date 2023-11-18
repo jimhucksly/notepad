@@ -1,12 +1,13 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { IRootState, ITodo, ITodoState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
 import { Hub } from '~/plugins/hub'
+import { ITodo, ITodoState } from '../models'
+import { bindings } from './bindings'
+import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '../commands/commands'
 
 type TStore = ActionContext<ITodoState, IRootState>
 
@@ -18,13 +19,13 @@ class Actions implements ActionTree<ITodoState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'todo'
+  static readonly namespace = 'Todo'
 
   /**
    * Get Todo
    * @param store Store
    */
-  @Queryable(TYPES.TodoQuery, Actions.namespace)
+  @Queryable(bindings.TodoQuery, Actions.namespace)
   async actionGetTodo(store: TStore): Promise<Array<ITodo>> {
     try {
       setProcess(store, 'get todo list...')
@@ -44,7 +45,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
    * @param store Store
    * @param {UpdateTodoCommand} command
    */
-  @Commandable(TYPES.UpdateTodoCommand, Actions.namespace)
+  @Commandable(bindings.UpdateTodoCommand, Actions.namespace)
   async actionUpdateTodo(store: TStore, command: UpdateTodoCommand): Promise<boolean> {
     try {
       setProcess(store, 'update todo list...')
@@ -63,7 +64,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
    * @param store Store
    * @param {DeleteTodoCommand} command
    */
-  @Commandable(TYPES.DeleteTodoCommand, Actions.namespace)
+  @Commandable(bindings.DeleteTodoCommand, Actions.namespace)
   async actionRemoveTodo(store: TStore, command: DeleteTodoCommand): Promise<boolean> {
     try {
       setProcess(store, 'remove todo item...')
@@ -82,7 +83,7 @@ class Actions implements ActionTree<ITodoState, IRootState> {
    * @param store Store
    * @param {TodoOrderCommand} command
    */
-  @Commandable(TYPES.TodoOrderCommand, Actions.namespace)
+  @Commandable(bindings.TodoOrderCommand, Actions.namespace)
   async actionTodoOrder(store: TStore, command: TodoOrderCommand): Promise<boolean> {
     try {
       setProcess(store, 'set todo order...')

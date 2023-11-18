@@ -12,7 +12,6 @@ const TYPES = {
   LibraryFilesQuery: Symbol.for('LibraryFilesQuery'),
   LibraryFileQuery: Symbol.for('LibraryFileQuery'),
   ArchivesQuery: Symbol.for('ArchivesQuery'),
-  TodoQuery: Symbol.for('TodoQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
@@ -33,9 +32,6 @@ const TYPES = {
   AddLibraryFileCommand: Symbol.for('AddLibraryFileCommand'),
   UpdateLibraryCommand: Symbol.for('UpdateLibraryCommand'),
   DeleteLibraryFileCommand: Symbol.for('DeleteLibraryFileCommand'),
-  UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
-  DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
-  TodoOrderCommand: Symbol.for('TodoOrderCommand'),
   RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
   /* --------- interactive --------- */
   InfoWindowQuery: Symbol.for('InfoWindowQuery'),

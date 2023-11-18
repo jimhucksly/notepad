@@ -14,8 +14,6 @@ export class LibraryFileQuery {
 
 export class ArchivesQuery {}
 
-export class TodoQuery {}
-
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }
