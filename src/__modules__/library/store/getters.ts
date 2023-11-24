@@ -1,7 +1,8 @@
-import { ILibraryState, IRootState } from '~/domain/models'
-import { stateKeys } from './state'
-import { upperFirst } from '~/helpers'
 import { GetterTree } from 'vuex'
+import { IRootState } from '~/domain/models'
+import { upperFirst } from '~/helpers'
+import { stateKeys } from './state'
+import { ILibraryState } from '../models'
 
 const getters: GetterTree<ILibraryState, IRootState> = {}
 

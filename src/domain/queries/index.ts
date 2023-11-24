@@ -6,12 +6,6 @@ export class SessionQuery {}
 
 export class ProjectsQuery {}
 
-export class LibraryFilesQuery {}
-
-export class LibraryFileQuery {
-  constructor(public id?: string | number) {}
-}
-
 export class ArchivesQuery {}
 
 export class YandexTokenQuery {

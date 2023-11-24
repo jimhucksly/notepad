@@ -12,7 +12,6 @@ import root from './app'
 import Titlebar from '~/components/titlebar'
 import Popup from '~/modules/popup'
 import Toasted from '~/modules/toasted'
-import LibraryTree from '~/modules/libraryTree'
 import BCheckbox from '~/modules/bcheckbox'
 import BBtn from '~/modules/bbtn'
 import SvgIcon from '~/modules/svgIcon'
@@ -71,7 +70,6 @@ async function init() {
     app.component('titlebar', Titlebar)
     app.component('popup', Popup)
     app.component('toasted', Toasted)
-    app.component('library-tree', LibraryTree)
     app.component('svg-icon', SvgIcon)
     app.component('loader', Loader)
     app.component('b-checkbox', BCheckbox)

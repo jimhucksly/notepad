@@ -24,13 +24,6 @@ export interface IEditor {
   }
 }
 
-export interface ITreeItem {
-  id: string
-  name: string
-  slug: string
-  children?: ITreeItem[]
-}
-
 export interface IProject {
   key: string
   date: string
@@ -52,11 +45,6 @@ export interface IArchive {
   id: string
   name: string
   date: string
-}
-
-export interface ILibraryFile {
-  id: string
-  name: string // имя физического файла на сервере
 }
 
 type TResponseStatus = 'success' | 'error'
@@ -84,13 +72,6 @@ export interface IProjectsState {
   archives: IArchive[]
   filter: IFilters
   selectedProjectKey: string
-}
-
-export interface ILibraryState {
-  libraryData: string
-  libraryFiles: Array<ILibraryFile>
-  libraryFileId: string | number
-  libraryTree: Array<ITreeItem>
 }
 
 export interface IRootState {

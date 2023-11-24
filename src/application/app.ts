@@ -5,7 +5,6 @@ import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IManifest, IQueryBus } from '~/domain/interfaces'
 import { IMenu, IProjects, IRootState, IUser } from '~/domain/models'
 import {
-  LibraryFileQuery,
   ProjectsQuery,
   RefreshYandexTokenQuery,
   SessionQuery
@@ -36,8 +35,6 @@ let States = {
   Projects: Symbol.for('Projects'),
   ProjectsArchives: Symbol.for('ProjectsArchives'),
   ProjectsEditor: Symbol.for('ProjectsEditor'),
-  Library: Symbol.for('Library'),
-  LibraryFiles: Symbol.for('LibraryFiles'),
   Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
@@ -50,12 +47,6 @@ const menu: Array<IMenu> = [
     nameAlt: 'Projects',
     fsmState: States.Projects,
     id: 1
-  },
-  {
-    name: 'library',
-    nameAlt: 'Library',
-    fsmState: States.Library,
-    id: 2
   },
   {
     name: 'postman',
@@ -92,7 +83,6 @@ const appComponents = {
   [toStr(States.Account)]: 'Account',
   [toStr(States.Projects)]: 'Projects',
   [toStr(States.Preferences)]: 'Preferences',
-  [toStr(States.Library)]: 'Library',
   [toStr(States.Postman)]: 'Postman'
 }
 
@@ -202,8 +192,8 @@ export default class Application implements IApplication {
         return
       }
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       this._queryBus.exec(new RefreshYandexTokenQuery())
       this.goHome()
@@ -293,8 +283,8 @@ export default class Application implements IApplication {
     try {
       this.loading(true)
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       setTimeout(() => {
         this.loading(false)

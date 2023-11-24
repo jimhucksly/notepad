@@ -1,16 +1,16 @@
-import { Watch } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
+import { EditorView } from '@codemirror/view'
 import cloneDeep from 'lodash/cloneDeep'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
-import { translit, uniqueid } from '~/helpers'
-// import { UpdateLibraryCommand } from '~/domain/commands'
+import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3'
+import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ILibraryFile, ITreeItem } from '~/domain/models'
+import { translit, uniqueid } from '~/helpers'
 import { Hub } from '~/plugins/hub'
-import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
-import { config, MdEditor, StaticTextDefaultValue } from 'md-editor-v3'
-import { EditorView } from '@codemirror/view'
+import { UpdateLibraryCommand } from './commands/commands'
+import { ILibraryFile, ITreeItem } from './models'
+import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries'
 
 @Options({
   components: {
@@ -18,12 +18,12 @@ import { EditorView } from '@codemirror/view'
   }
 })
 export default class LibraryPage extends Vue {
-  @Mutation('library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
-  @Mutation('library/setLibraryData') setLibraryData: (body: string) => void
-  @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
+  @Mutation('Library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
+  @Mutation('Library/setLibraryData') setLibraryData: (body: string) => void
+  @Mutation('Library/setLibraryFileId') setFileId: (id: string | number) => void
 
-  @Getter('library/getLibraryData') initialValue: string
-  @Getter('library/getLibraryFileId') currentId: string
+  @Getter('Library/getLibraryData') initialValue: string
+  @Getter('Library/getLibraryFileId') currentId: string
 
   isNewFile = false
   isPreview = true
@@ -63,12 +63,12 @@ export default class LibraryPage extends Vue {
   //   }
   // }
 
-  async created() {
-    await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-    await this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
+  created() {
+    this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
   }
 
-  mounted() {
+  async mounted() {
+    await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
     this.buildEditor()
 
     LibraryPage.md = new MarkdownIt()
@@ -112,25 +112,25 @@ export default class LibraryPage extends Vue {
     this.ready = true
     this.$nextTick(() => {
       const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view
-      const scroll = editor.scrollDOM
+      // const scroll = editor.scrollDOM
       const lines: Array<string> = []
       const children = editor.state.doc.children
       for (const el of children) {
         lines.push(...(el as unknown as { text: Array<string> }).text)
       }
-      const linkClickHandler = (name: string) => {
-        const scrolling = false
-        lines.forEach((el: string, index: number): void | null => {
-          if (scrolling) {
-            return null
-          }
-          if (el.indexOf(name) > -1) {
-            const line = editor.state.doc.line(index + 1)
-            editor.scrollDOM.scrollTo(0, line.number * 20 - scroll.clientHeight / 2 + 20)
-          }
-        })
-      }
-      Hub.$on('codemirror-link-click', linkClickHandler)
+      // const linkClickHandler = (name: string) => {
+      //   const scrolling = false
+      //   lines.forEach((el: string, index: number): void | null => {
+      //     if (scrolling) {
+      //       return null
+      //     }
+      //     if (el.indexOf(name) > -1) {
+      //       const line = editor.state.doc.line(index + 1)
+      //       editor.scrollDOM.scrollTo(0, line.number * 20 - scroll.clientHeight / 2 + 20)
+      //     }
+      //   })
+      // }
+      // Hub.$on('codemirror-link-click', linkClickHandler)
     })
   }
 
@@ -161,30 +161,20 @@ export default class LibraryPage extends Vue {
   }
 
   save() {
-    // const id = this.currentId
-    // const body = LibraryPage.editor.value()
-    // const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(
-    //   new UpdateLibraryCommand(id, body)
-    // )
-    // Promise
-    //   .all([promise])
-    //   .then(() => {
-    //     const statusBar = this.$el.querySelector('.editor-statusbar')
-    //     if (statusBar) {
-    //       const savedSatus = statusBar.querySelector('.saved-status')
-    //       const message = 'Markdown is successfully saved!'
-    //       savedSatus && (savedSatus.innerHTML = message)
-    //       setTimeout(() => {
-    //         savedSatus && (savedSatus.innerHTML = '')
-    //       }, 3000)
-    //     }
-    //     this.setFileId(id)
-    //     this.toggle(true)
-    //   })
-    //   .catch(e => {
-    //     /* eslint-disable no-console */
-    //     console.error(e)
-    //   })
+    const id = this.currentId
+    const body = this.value
+    const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(
+      new UpdateLibraryCommand(id, body)
+    )
+    Promise
+      .all([promise])
+      .then(() => {
+        this.setFileId(id)
+      })
+      .catch(e => {
+        /* eslint-disable no-console */
+        console.error(e)
+      })
   }
 
   toggle(state: boolean) {

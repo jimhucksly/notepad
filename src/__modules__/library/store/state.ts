@@ -1,4 +1,4 @@
-import { ILibraryState } from '~/domain/models'
+import { ILibraryState } from '../models'
 
 export const stateKeys: string[] = [
   'libraryData',
@@ -15,3 +15,4 @@ const state: ILibraryState = {
 }
 
 export default state
+

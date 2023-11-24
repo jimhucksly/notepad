@@ -1,7 +1,7 @@
 <template>
   <ul
     v-if="tree && tree.length"
-    :style="level > 1 ? 'display: none;' : false"
+    :style="level > 1 ? 'display: none;' : undefined"
   >
     <template v-for="(item, index) in tree">
       <li
@@ -23,7 +23,7 @@
           {{ item.name }}
         </span>
         <template v-if="item.children && item.children.length">
-          <library-tree :tree="item.children" :level="level + 1" />
+          <tree :tree="item.children" :level="level + 1" />
         </template>
       </li>
     </template>

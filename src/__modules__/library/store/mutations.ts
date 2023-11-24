@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
-import { ILibraryFile, ILibraryState } from '~/domain/models'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
+import { ILibraryFile, ILibraryState } from '../models'
 
 const _mutations: MutationTree<ILibraryState> = {
   setLibraryFiles(state: ILibraryState, files: Array<ILibraryFile>) {
@@ -24,3 +24,4 @@ const mutations: MutationTree<ILibraryState> = {
 }
 
 export default mutations
+

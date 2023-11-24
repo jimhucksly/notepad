@@ -1,11 +1,11 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '~/domain/commands'
-import { ILibraryFile } from '~/domain/models'
-import { LibraryFilesQuery } from '~/domain/queries'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { CreateEditQuery } from '~/domain/queries/createEdit.query'
+import { ILibraryFile } from '../models'
+import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '../commands/commands'
+import { LibraryFilesQuery } from '../queries/queries'
 
 export default class LibraryFiles extends Vue {
   @Prop() expanded: boolean

@@ -1,10 +1,10 @@
 import { Prop } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
-import { ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
+import { ITreeItem } from '../models'
 
 @Options({
-  name: 'LibraryTree'
+  name: 'Tree'
 })
 export default class LibraryTreeComponent extends Vue {
   @Prop() tree: Array<ITreeItem>

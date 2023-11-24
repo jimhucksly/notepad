@@ -1,6 +1,11 @@
 {
   "main": [
     {
+      "name": "Library",
+      "nameAlt": "library",
+      "path": "library"
+    },
+    {
       "name": "Todo",
       "nameAlt": "Todo",
       "path": "todo"

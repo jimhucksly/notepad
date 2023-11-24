@@ -6,7 +6,6 @@ import state from './state'
 import { IRootState } from '~/domain/models'
 
 import { projects } from './projects'
-import { library } from './library'
 
 function buildStore(modules: ModuleTree<IRootState>) {
   const store = createStore<IRootState>({
@@ -17,8 +16,7 @@ function buildStore(modules: ModuleTree<IRootState>) {
     state,
     modules: {
       ...modules,
-      projects,
-      library
+      projects
     }
   })
   return store

@@ -58,7 +58,7 @@
             );
             fs.writeFileSync(
               path.join(modulePath, 'store/index.ts'),
-              `import { Module } from 'vuex'\nimport { IRootState } from '~/domain/models'\nimport state from './state'\nimport getters from './getters'\nimport actions from './actions'\nimport mutations from './mutations'\nimport { ... } from '../models'\n\nconst namespaced = true\n\nconst links: Module<..., IRootState> = {\n\tnamespaced,\n\tstate,\n\tgetters,\n\tactions,\n\tmutations\n}\n\nexport default links\n`
+              `import { Module } from 'vuex'\nimport { IRootState } from '~/domain/models'\nimport state from './state'\nimport getters from './getters'\nimport actions from './actions'\nimport mutations from './mutations'\nimport { ... } from '../models'\n\nconst namespaced = true\n\nconst ...: Module<..., IRootState> = {\n\tnamespaced,\n\tstate,\n\tgetters,\n\tactions,\n\tmutations\n}\n\nexport default ...\n`
             );
             fs.writeFileSync(
               path.join(modulePath, 'store/getters.ts'),

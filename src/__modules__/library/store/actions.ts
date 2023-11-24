@@ -1,13 +1,14 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { AddLibraryFileCommand, DeleteLibraryFileCommand, UpdateLibraryCommand } from '~/domain/commands'
 import { Commandable } from '~/domain/commands/command.bus'
-import { ILibraryFile, ILibraryState, IRootState } from '~/domain/models'
-import { LibraryFileQuery } from '~/domain/queries'
+import { IRootState } from '~/domain/models'
 import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
 import { Hub } from '~/plugins/hub'
+import { bindings } from './bindings'
+import { LibraryFileQuery } from '../queries/queries'
+import { AddLibraryFileCommand, DeleteLibraryFileCommand, UpdateLibraryCommand } from '../commands/commands'
+import { ILibraryFile, ILibraryState } from '../models'
 
 type TStore = ActionContext<ILibraryState, IRootState>
 
@@ -19,13 +20,13 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'library'
+  static readonly namespace = 'Library'
 
   /**
    * Get Library Files
    * @param {Store} store
    */
-  @Queryable(TYPES.LibraryFilesQuery, Actions.namespace)
+  @Queryable(bindings.LibraryFilesQuery, Actions.namespace)
   async actionGetLibraryFiles(store: TStore): Promise<Array<ILibraryFile>> {
     try {
       setProcess(store, 'get library files...')
@@ -52,7 +53,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
    * @param store Store
    * @param {LibraryFileQuery} query
    */
-  @Queryable(TYPES.LibraryFileQuery, Actions.namespace)
+  @Queryable(bindings.LibraryFileQuery, Actions.namespace)
   async actionFetchLibraryFile(store: TStore, query: LibraryFileQuery): Promise<string> {
     try {
       let url = '/library'
@@ -76,7 +77,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
    * @param store Store
    * @param {AddLibraryFileCommand} command
    */
-  @Commandable(TYPES.AddLibraryFileCommand, Actions.namespace)
+  @Commandable(bindings.AddLibraryFileCommand, Actions.namespace)
   async actionAddLibraryFile(
     store: TStore, command: AddLibraryFileCommand
   ): Promise<boolean> {
@@ -108,7 +109,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
    * @param store Store
    * @param {UpdateLibraryCommand} command
    */
-  @Commandable(TYPES.UpdateLibraryCommand, Actions.namespace)
+  @Commandable(bindings.UpdateLibraryCommand, Actions.namespace)
   async actionUpdateLibraryFile(store: TStore, command: UpdateLibraryCommand): Promise<boolean> {
     if (!command.id) {
       return void 0
@@ -130,7 +131,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
    * @param store Store
    * @param {DeleteLibraryFileCommand} command
    */
-  @Commandable(TYPES.DeleteLibraryFileCommand, Actions.namespace)
+  @Commandable(bindings.DeleteLibraryFileCommand, Actions.namespace)
   async actionDeleteLibraryFile(
     store: TStore, command: DeleteLibraryFileCommand
   ): Promise<boolean> {
@@ -150,3 +151,4 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
 const actions = toActionTree(new Actions())
 
 export default actions
+

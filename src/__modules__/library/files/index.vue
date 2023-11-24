@@ -26,4 +26,4 @@
     </div>
   </div>
 </template>
-<script src="./libraryFiles.ts" lang="ts"></script>
+<script src="./index.ts" lang="ts"></script>
