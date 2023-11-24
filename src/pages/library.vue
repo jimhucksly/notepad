@@ -8,11 +8,25 @@
         Text
       </div>
     </div>
-    <button class="editor_save" v-if="isPreview" @click="save">
+    <button class="editor_save" @click="save">
       <span class="fa fa-save"></span>
     </button>
-    <div class="editor_content" v-if="isPreview && !updating" v-html="template"></div>
-    <div class="editor_text" ref="editor_text" v-show="!isPreview"></div>
+    <div class="editor_content" v-if="isPreview" v-html="template"></div>
+    <template v-if="ready">
+      <md-editor
+        v-show="!isPreview"
+        v-model="value"
+        :preview="false"
+        :footers="[]"
+        :toolbars="toolbars"
+        no-mermaid
+        no-katex
+        language="ru-RU"
+        ref="editor"
+        class="d-flex"
+        style="height: 100% !important"
+      />
+    </template>
   </div>
 </template>
 <script src="./library.ts" lang="ts"></script>

@@ -58,7 +58,16 @@ let rendererConfig = {
       {
         test: /\.css$/,
         exclude: /node_modules/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('node-sass'),
+            }
+          }
+        ]
       }
     ]
   },

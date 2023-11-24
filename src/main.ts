@@ -1,7 +1,8 @@
 import 'reflect-metadata'
-import { createApp, defineComponent } from 'vue'
-import '~/assets/css/simplemde.css'
 import '~/assets/scss/main.scss'
+import '~/assets/css/md-editor.css'
+
+import { createApp, defineComponent } from 'vue'
 
 import router from './router'
 import { buildStore } from './store'

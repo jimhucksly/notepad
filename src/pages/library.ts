@@ -1,7 +1,6 @@
 import { Watch } from 'vue-property-decorator'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import cloneDeep from 'lodash/cloneDeep'
-// import SimpleMDE from 'simplemde'
 import MarkdownIt from 'markdown-it'
 import MarkdownItAnchor from 'markdown-it-anchor'
 import { translit, uniqueid } from '~/helpers'
@@ -10,44 +9,15 @@ import { Getter, Mutation } from 'vuex-class'
 import { ILibraryFile, ITreeItem } from '~/domain/models'
 import { Hub } from '~/plugins/hub'
 import { LibraryFileQuery, LibraryFilesQuery } from '~/domain/queries'
+import { config, MdEditor, StaticTextDefaultValue } from 'md-editor-v3'
+import { EditorView } from '@codemirror/view'
 
-// interface ILinkedDoc {
-//   lines: Array<{ text: string }>
-//   children: Array<ILinkedDoc>
-// }
-
-// interface IToolbarItem {
-//   name: string
-//   action: () => void
-// }
-
-// interface SimpleMDEExt extends SimpleMDE {
-//   toolbar?: IToolbarItem[]
-// }
-
-// const linked = (value: ILinkedDoc): Array<string> => {
-//   const result: Array<string> = []
-//   function _linked(o: ILinkedDoc) {
-//     if (o.children) {
-//       o.children.forEach(item => {
-//         if (item.lines) {
-//           item.lines.forEach(line => {
-//             result.push(line.text)
-//           })
-//         }
-//         if (item.children) {
-//           _linked(item)
-//         }
-//       })
-//     }
-//   }
-//   _linked(value)
-//   return result
-// }
-
+@Options({
+  components: {
+    'md-editor': MdEditor
+  }
+})
 export default class LibraryPage extends Vue {
-  // static editor: SimpleMDEExt = null
-
   @Mutation('library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
   @Mutation('library/setLibraryData') setLibraryData: (body: string) => void
   @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
@@ -55,11 +25,11 @@ export default class LibraryPage extends Vue {
   @Getter('library/getLibraryData') initialValue: string
   @Getter('library/getLibraryFileId') currentId: string
 
-  links: string[] = []
   isNewFile = false
   isPreview = true
+  ready = false
   template = ''
-  updating = false
+  value = ''
 
   static nodes: ITreeItem[] = []
   static md: MarkdownIt = null
@@ -99,6 +69,8 @@ export default class LibraryPage extends Vue {
   }
 
   mounted() {
+    this.buildEditor()
+
     LibraryPage.md = new MarkdownIt()
 
     LibraryPage.md.use(MarkdownItAnchor, {
@@ -117,8 +89,8 @@ export default class LibraryPage extends Vue {
       permalinkClass: 'md-anchor',
       permalinkBefore: false
     })
-
-    this.previewRender(this.initialValue)
+    this.value = this.initialValue
+    this.previewRender()
     this.buildTree()
   }
 
@@ -127,79 +99,39 @@ export default class LibraryPage extends Vue {
     Hub.$off('codemirror-link-click', this.linkClickHandler)
   }
 
-  buildEditor(element: HTMLElement) {
-    // const config: SimpleMDE.Options = {
-    //   autofocus: true,
-    //   toolbar: [
-    //     'bold',
-    //     'italic',
-    //     'strikethrough',
-    //     '|',
-    //     'heading-1',
-    //     'heading-2',
-    //     'heading-3',
-    //     '|',
-    //     'unordered-list',
-    //     'ordered-list',
-    //     '|',
-    //     'code',
-    //     'link',
-    //     '|',
-    //     {
-    //       action: () => false,
-    //       className: 'fa fa-save no-disable',
-    //       name: 'save',
-    //       title: 'Save'
-    //     }
-    //   ],
-    //   status: [
-    //     {
-    //       className: 'saved-status',
-    //       defaultValue: () => null,
-    //       onUpdate: () => null
-    //     },
-    //     'autosave', 'lines', 'words', 'cursor'
-    //   ],
-    //   tabSize: 4,
-    //   autoDownloadFontAwesome: false
-    // }
-    // if (element) {
-    //   config.element = element
-    // }
+  buildEditor() {
+    config({
+      editorConfig: {
+        languageUserDefined: {
+          /* eslint-disable-next-line @typescript-eslint/naming-convention */
+          'ru-RU': this.ru_RU
+        }
+      }
+    })
 
-    // LibraryPage.editor = new SimpleMDE(config)
-    // await this.$nextTick()
-    // LibraryPage.editor.value(this.initialValue)
-
-    // const toolbarItemSave = LibraryPage.editor.toolbar.find(item => item.name === 'save')
-    // if (toolbarItemSave) {
-    //   toolbarItemSave.action = this.save.bind(this)
-    // }
-    // const doc = LibraryPage.editor.codemirror.getDoc()
-    // const count = doc.lineCount()
-    // const linkedDoc = doc.linkedDoc({
-    //   from: 0,
-    //   to: count,
-    //   mode: 'html'
-    // })
-    // this.links = linked(linkedDoc)
-    // this.linkClickHandler = (name: string) => {
-    //   let scrolling = false
-    //   this.links.forEach((link: string, index: number): void | null => {
-    //     if (scrolling) {
-    //       return null
-    //     }
-    //     if (link.indexOf(name) > -1) {
-    //       scrolling = true
-    //       LibraryPage.editor.codemirror.scrollIntoView({ line: index, char: 0 }, 200)
-    //       if (index > 0) {
-    //         const scrollInfo = LibraryPage.editor.codemirror.getScrollInfo()
-    //         LibraryPage.editor.codemirror.scrollTo(0, scrollInfo.top + scrollInfo.clientHeight / 2)
-    //       }
-    //     }
-    //   })
-    // }
-    // Hub.$on('codemirror-link-click', this.linkClickHandler)
+    this.ready = true
+    this.$nextTick(() => {
+      const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view
+      const scroll = editor.scrollDOM
+      const lines: Array<string> = []
+      const children = editor.state.doc.children
+      for (const el of children) {
+        lines.push(...(el as unknown as { text: Array<string> }).text)
+      }
+      const linkClickHandler = (name: string) => {
+        const scrolling = false
+        lines.forEach((el: string, index: number): void | null => {
+          if (scrolling) {
+            return null
+          }
+          if (el.indexOf(name) > -1) {
+            const line = editor.state.doc.line(index + 1)
+            editor.scrollDOM.scrollTo(0, line.number * 20 - scroll.clientHeight / 2 + 20)
+          }
+        })
+      }
+      Hub.$on('codemirror-link-click', linkClickHandler)
+    })
   }
 
   async buildTree(nodes?: ITreeItem[]) {
@@ -256,31 +188,81 @@ export default class LibraryPage extends Vue {
   }
 
   toggle(state: boolean) {
-    // if (state === this.isPreview) {
-    //   return
-    // }
-    // this.isPreview = state
-    // if (this.isPreview) {
-    //   const value = LibraryPage.editor ? LibraryPage.editor.value() : this.initialValue
-    //   this.previewRender(value)
-    //   this.buildTree()
-    // } else {
-    //   const container = this.$refs.editor_text as HTMLElement
-    //   if (container && !container.innerHTML) {
-    //     const textarea = document.createElement('textarea')
-    //     textarea.name = 'editor'
-    //     textarea.id = 'editor'
-    //     container.appendChild(textarea)
-    //     const editorElement = document.getElementById('editor')
-    //     setTimeout(() => {
-    //       this.buildEditor(editorElement)
-    //     }, 100)
-    //   }
-    // }
+    if (state === this.isPreview) {
+      return
+    }
+    this.isPreview = state
+    if (this.isPreview) {
+      this.previewRender()
+      this.buildTree()
+    }
   }
 
-  previewRender(plaintext: string) {
+  previewRender() {
     LibraryPage.nodes = []
-    this.template = LibraryPage.md.render(plaintext)
+    this.template = LibraryPage.md.render(this.value)
+  }
+
+  get toolbars() {
+    return [
+      'bold',
+      'underline',
+      'italic',
+      '-',
+      'title',
+      'strikeThrough',
+      'sub',
+      'sup',
+      'quote',
+      'unorderedList',
+      'orderedList',
+      '-',
+      'codeRow',
+      'code'
+    ]
+  }
+
+  /* eslint-disable-next-line camelcase */
+  get ru_RU(): StaticTextDefaultValue {
+    return {
+      toolbarTips: {
+        bold: 'Полужирный',
+        underline: 'Подчеркнутый',
+        italic: 'Курсив',
+        strikeThrough: 'strikeThrough',
+        title: 'Заголовок',
+        sub: 'subscript',
+        sup: 'superscript',
+        quote: 'quote',
+        unorderedList: 'Список',
+        orderedList: 'Нумерованный список',
+        task: 'task list',
+        codeRow: 'Программый код',
+        code: 'block-level code',
+        link: 'Создать ссылку',
+        image: 'image',
+        table: 'Добавить таблицу',
+        mermaid: 'mermaid',
+        katex: 'formula',
+        revoke: 'revoke',
+        next: 'undo revoke',
+        save: 'save',
+        prettier: 'prettier',
+        pageFullscreen: 'fullscreen in page',
+        fullscreen: 'fullscreen',
+        preview: 'Превью',
+        htmlPreview: 'html preview',
+        catalog: 'catalog',
+        github: 'source code'
+      },
+      titleItem: {
+        h1: 'Lv1 Heading',
+        h2: 'Lv2 Heading',
+        h3: 'Lv3 Heading',
+        h4: 'Lv4 Heading',
+        h5: 'Lv5 Heading',
+        h6: 'Lv6 Heading'
+      }
+    }
   }
 }
