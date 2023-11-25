@@ -2,8 +2,6 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { FsmStates, toStr } from '~/application/app'
-import Library from '~/components/library'
-import LibraryFiles from '~/components/libraryFiles'
 import Projects from '~/components/projects'
 import ProjectsArchives from '~/components/projectsArchives'
 import ProjectsEditor from '~/components/projectsEditor'
@@ -14,9 +12,7 @@ import { IMenu } from '~/domain/models'
   components: {
     Projects,
     ProjectsEditor,
-    ProjectsArchives,
-    Library,
-    LibraryFiles
+    ProjectsArchives
   }
 })
 export default class Sidebar extends Vue {
@@ -30,7 +26,6 @@ export default class Sidebar extends Vue {
 
   isSwitcherMenuExpanded = false
   projectEditedItemKey = ''
-  isLibraryFilesInit = false
 
   isExpand = false
 
@@ -92,14 +87,6 @@ export default class Sidebar extends Vue {
     this.toggle()
   }
 
-  toggleLibraryFiles() {
-    if (this.isLibraryFilesVisibility) {
-      this.$app.goBack()
-    } else {
-      this.$app.goto(this.$app.states.LibraryFiles)
-    }
-  }
-
   get mainSection() {
     const found = Object.entries(this.section).find(item => item[1])
     return found[0]
@@ -119,9 +106,5 @@ export default class Sidebar extends Vue {
 
   get isProjectArchivesVisibility() {
     return this.history.includes('ProjectsArchives')
-  }
-
-  get isLibraryFilesVisibility() {
-    return this.history.includes('LibraryFiles')
   }
 }

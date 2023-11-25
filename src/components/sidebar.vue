@@ -41,15 +41,6 @@
       v-show="!isSwitcherMenuExpanded || isProjectArchivesVisibility"
       :expanded="isProjectArchivesVisibility"
     />
-    <library
-      v-show="section.Library"
-      :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-    />
-    <library-files
-      v-if="section.Library"
-      v-show="!isSwitcherMenuExpanded || isLibraryFilesVisibility"
-      :expanded="isLibraryFilesVisibility"
-    />
     <template v-for="item in components">
       <component :is="item.name" v-if="item.fsmState === mainSection" />
     </template>

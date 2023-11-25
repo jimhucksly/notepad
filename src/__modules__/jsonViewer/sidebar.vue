@@ -12,4 +12,30 @@
   </div>
 </template>
 <script src="./sidebar.ts" lang="ts"></script>
+<style lang="scss" scoped>
+.json_viewer {
+  display: flex;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-top: 5px;
+  button {
+    width: 33px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.85;
+    margin-right: 5px;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:active {
+      opacity: 1;
+      transform: scale(0.85);
+    }
+  }
+}
+</style>
 

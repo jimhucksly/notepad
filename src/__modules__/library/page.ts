@@ -39,29 +39,17 @@ export default class LibraryPage extends Vue {
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
       await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
+      this.value = this.initialValue
+      if (this.isPreview) {
+        this.previewRender()
+      } else {
+        this.toggle(true)
+      }
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)
     }
   }
-
-  // @Watch('initialValue') onInitialValueChanged() {
-  //   if (this.isPreview) {
-  //     this.previewRender(this.initialValue)
-  //     this.updating = true
-  //     this.$nextTick(() => {
-  //       this.updating = false
-  //       this.buildTree()
-  //     })
-  //     const container = this.$refs.editor_text as HTMLElement
-  //     if (container) {
-  //       container.innerHTML = ''
-  //       LibraryPage.editor = null
-  //     }
-  //   } else {
-  //     LibraryPage.editor.value(this.initialValue)
-  //   }
-  // }
 
   created() {
     this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
@@ -91,7 +79,6 @@ export default class LibraryPage extends Vue {
     })
     this.value = this.initialValue
     this.previewRender()
-    this.buildTree()
   }
 
   beforeUnmount() {
@@ -134,11 +121,10 @@ export default class LibraryPage extends Vue {
     })
   }
 
-  async buildTree(nodes?: ITreeItem[]) {
+  buildTree(nodes?: ITreeItem[]) {
     const tree: Array<ITreeItem> = []
     let index = -1
     const items = nodes || LibraryPage.nodes
-    await this.$nextTick()
     items.forEach(item => {
       const node = document.querySelector('#' + item.slug)
       if (node) {
@@ -184,13 +170,15 @@ export default class LibraryPage extends Vue {
     this.isPreview = state
     if (this.isPreview) {
       this.previewRender()
-      this.buildTree()
     }
   }
 
   previewRender() {
     LibraryPage.nodes = []
     this.template = LibraryPage.md.render(this.value)
+    this.$nextTick(() => {
+      this.buildTree()
+    })
   }
 
   get toolbars() {

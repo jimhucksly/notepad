@@ -10,20 +10,19 @@ import { LibraryFilesQuery } from '../queries/queries'
 export default class LibraryFiles extends Vue {
   @Prop() expanded: boolean
 
-  @Mutation('library/setLibraryFileId') setFileId: (id: string | number) => void
+  @Mutation('Library/setLibraryFileId') setFileId: (id: string | number) => void
 
-  @Getter('library/getLibraryFiles') libraryFiles: Array<ILibraryFile>
-  @Getter('library/getLibraryFileId') currentId: string
+  @Getter('Library/getLibraryFiles') libraryFiles: Array<ILibraryFile>
+  @Getter('Library/getLibraryFileId') currentId: string
 
   idForDelete = ''
 
   openFile(file: ILibraryFile) {
     this.setFileId(file.id)
-    this.$app.goBack()
+    this.$emit('hide')
   }
 
   async add() {
-    this.$app.goBack()
     const query = new CreateEditQuery<ILibraryFile>({
       component: 'create-edit-library-file',
       modal: {

@@ -18,6 +18,8 @@ export default class Library extends Vue {
 
   tree: Array<ITreeItem> = []
 
+  isFilesExpanded = false
+
   @Watch('items') onItemsChanged() {
     if (this.items && this.items.length) {
       this.tree = this.items
@@ -27,6 +29,6 @@ export default class Library extends Vue {
   }
 
   toggleFiles() {
-    // this.$app.goBack()
+    this.isFilesExpanded = !this.isFilesExpanded
   }
 }

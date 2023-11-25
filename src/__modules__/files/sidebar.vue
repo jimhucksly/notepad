@@ -32,3 +32,46 @@
   </div>
 </template>
 <script src="./sidebar.ts" lang="ts"></script>
+<style lang="scss" scoped>
+.files {
+  display: flex;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-top: 5px;
+  button {
+    width: 32px;
+    height: 25px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.85;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &:active {
+      opacity: 1;
+      transform: scale(0.85);
+    }
+  }
+  .file-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-right: 15px;
+    margin-bottom: 15px;
+    &_label {
+      color: var(--blue-gray);
+      margin-bottom: 5px;
+    }
+    &_name {
+      font-size: 12px;
+      color: var(--editor-yellow);
+      white-space: pre-line;
+      word-wrap: break-word;
+    }
+  }
+}
+</style>
