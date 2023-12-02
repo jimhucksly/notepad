@@ -1,4 +1,4 @@
-import { IProjectsState } from '~/domain/models'
+import { IProjectsState } from '../models'
 
 export const stateKeys: string[] = [
   'projects',

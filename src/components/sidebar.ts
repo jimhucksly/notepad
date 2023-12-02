@@ -1,20 +1,9 @@
-import { Options, Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import { FsmStates, toStr } from '~/application/app'
-import Projects from '~/components/projects'
-import ProjectsArchives from '~/components/projectsArchives'
-import ProjectsEditor from '~/components/projectsEditor'
 import { IManifest } from '~/domain/interfaces'
 import { IMenu } from '~/domain/models'
 
-@Options({
-  components: {
-    Projects,
-    ProjectsEditor,
-    ProjectsArchives
-  }
-})
 export default class Sidebar extends Vue {
   @Getter('getHistory') history: Array<keyof typeof FsmStates>
   @Getter('getComponent') component: string
@@ -25,22 +14,9 @@ export default class Sidebar extends Vue {
   @Getter('getSections') sections: Record<string, string>
 
   isSwitcherMenuExpanded = false
-  projectEditedItemKey = ''
-
   isExpand = false
 
   components: Array<{ name: string, fsmState: string }> = []
-
-  @Watch('isProjects') onIsProjectsChanged() {
-    this.projectEditedItemKey = ''
-  }
-
-  @Watch('projectEditedItemKey') onProjectEditedItemKeyChanged(v: string) {
-    if (!v) {
-      const cont = this.$refs.projects as Projects
-      cont.clearCheck()
-    }
-  }
 
   created() {
     if (this.manifest) {
@@ -98,13 +74,5 @@ export default class Sidebar extends Vue {
 
   get isNotClickable() {
     return [FsmStates.Preferences, FsmStates.Account].includes(this.$app.state)
-  }
-
-  get isProjectEditorVisibility() {
-    return this.history.includes('ProjectsEditor')
-  }
-
-  get isProjectArchivesVisibility() {
-    return this.history.includes('ProjectsArchives')
   }
 }

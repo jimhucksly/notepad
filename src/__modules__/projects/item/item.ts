@@ -1,20 +1,20 @@
 import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { EditProjectCommand } from '~/domain/commands'
-import { IFilters, IProject, IProjects } from '~/domain/models'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { CreateEditQuery } from '~/domain/queries/createEdit.query'
+import { IFilters, IProject, IProjects } from '../models'
+import { EditProjectCommand } from '../commands/commands'
 
 export default class NotepadItem extends Vue {
   @Prop() item: IProject
   @Prop() isLast: boolean
 
-  @Getter('projects/getProjects') json: IProjects
-  @Getter('projects/getFilter') filter: IFilters
+  @Getter('Projects/getProjects') json: IProjects
+  @Getter('Projects/getFilter') filter: IFilters
 
-  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setJson') setJson: (value: IProjects) => void
+  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('Projects/setJson') setJson: (value: IProjects) => void
 
   message = ''
   isEdit = false

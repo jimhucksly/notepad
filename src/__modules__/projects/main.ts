@@ -1,16 +1,16 @@
-import { Watch } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
 import { cloneDeep, isEmpty, unset } from 'lodash'
-import { checkLinks, now } from '~/helpers'
-import ProjectItem from '~/components/projectItem'
-import { ReadCommand, CreateProjectCommand, DeleteProjectCommand } from '~/domain/commands'
-import { IFilters, IProjects } from '~/domain/models'
+import { Options, Vue } from 'vue-class-component'
+import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ArchivesQuery } from '~/domain/queries'
+import { checkLinks, now } from '~/helpers'
+import { CreateProjectCommand, DeleteProjectCommand, ReadCommand } from './commands/commands'
+import Item from './item/item.vue'
+import { IFilters, IProjects } from './models'
+import { ArchivesQuery, ProjectsQuery } from './queries/queries'
 
 @Options({
   components: {
-    ProjectItem
+    Item
   },
   beforeUnmount() {
     const notepadCont = this.$refs.notepad_cont as HTMLElement
@@ -18,11 +18,11 @@ import { ArchivesQuery } from '~/domain/queries'
   }
 })
 export default class Projects extends Vue {
-  @Mutation('projects/setJson') setJson: (value: IProjects) => void
-  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('Projects/setJson') setJson: (value: IProjects) => void
+  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
 
-  @Getter('projects/getProjects') json: IProjects
-  @Getter('projects/getFilter') filter: IFilters
+  @Getter('Projects/getProjects') json: IProjects
+  @Getter('Projects/getFilter') filter: IFilters
 
   message = ''
   newMsgFlag = false
@@ -51,6 +51,10 @@ export default class Projects extends Vue {
 
   updated() {
     this.read()
+  }
+
+  created() {
+    this.fetchProjects()
   }
 
   mounted() {
@@ -122,6 +126,10 @@ export default class Projects extends Vue {
         this.onRemove(this.removeStack[0])
       }
     }
+  }
+
+  private fetchProjects() {
+    this.$app.$queryBus.exec(new ProjectsQuery())
   }
 
   get count(): number {

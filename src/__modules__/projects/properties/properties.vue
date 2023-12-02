@@ -56,4 +56,20 @@
     </div>
   </div>
 </template>
-<script src="./projectsEditor.ts" lang="ts"></script>
+<script src="./properties.ts" lang="ts"></script>
+<style lang="scss" scoped>
+.project-editor {
+  font-family: var(--font-menlo);
+  font-size: 11px;
+  line-height: 19px;
+  overflow: hidden;
+
+  .CodeMirror {
+    height: 100%;
+  }
+
+  .CodeMirror-scroll {
+    overflow-y: auto;
+  }
+}
+</style>

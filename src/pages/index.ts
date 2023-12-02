@@ -10,7 +10,6 @@ import { IUser } from '~/domain/models'
 import Account from '~/pages/account'
 import Auth from '~/pages/auth'
 import Preferences from '~/pages/preferences'
-import Projects from '~/pages/projects'
 import Reg from '~/pages/reg'
 import Reset from '~/pages/reset'
 import Verify from '~/pages/verify'
@@ -32,7 +31,6 @@ interface IUserPreferences {
     Yandex,
     Error,
     Account,
-    Projects,
     Preferences,
     Sidebar,
     Postman

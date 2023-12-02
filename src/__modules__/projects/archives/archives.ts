@@ -1,16 +1,16 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '~/domain/commands'
-import { IArchive, IProjects } from '~/domain/models'
-import { ArchivesQuery, ProjectsQuery } from '~/domain/queries'
 import { now } from '~/helpers'
+import { IArchive, IProjects } from '../models'
+import { ArchivesQuery, ProjectsQuery } from '../queries/queries'
+import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '../commands/commands'
 
 export default class ProjectsArchives extends Vue {
-  @Mutation('projects/setArchives') setArchives: (value: Array<IArchive>) => void
+  @Mutation('Projects/setArchives') setArchives: (value: Array<IArchive>) => void
 
-  @Getter('projects/getArchives') items: IArchive[]
-  @Getter('projects/getProjects') json: IProjects
+  @Getter('Projects/getArchives') items: IArchive[]
+  @Getter('Projects/getProjects') json: IProjects
 
   @Prop() expanded: boolean
 

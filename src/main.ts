@@ -18,7 +18,6 @@ import SvgIcon from '~/modules/svgIcon'
 import Loader from '~/modules/loader'
 import AboutPopup from '~/modules/popup/about'
 import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
-import CreateEditProject from '~/modules/popup/createEditProject'
 import CodeInput from '~/modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
@@ -75,7 +74,6 @@ async function init() {
     app.component('b-checkbox', BCheckbox)
     app.component('b-btn', BBtn)
     app.component('about-popup', AboutPopup)
-    app.component('create-edit-project', CreateEditProject)
     app.component('create-edit-library-file', CreateEditLibraryFile)
     app.component('code-input', CodeInput)
 

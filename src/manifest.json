@@ -1,8 +1,13 @@
 {
   "main": [
     {
+      "name": "Projects",
+      "nameAlt": "Projects",
+      "path": "projects"
+    },
+    {
       "name": "Library",
-      "nameAlt": "library",
+      "nameAlt": "Library",
       "path": "library"
     },
     {

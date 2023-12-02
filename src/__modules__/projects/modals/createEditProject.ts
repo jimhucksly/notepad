@@ -1,7 +1,7 @@
 import { Prop, Vue } from 'vue-property-decorator'
-import { IProject } from '~/domain/models'
 import { EditorView } from '@codemirror/view'
 import { checkLinks, htmlToText } from '~/helpers'
+import { IProject } from '../models'
 
 export default class CreateEditProject extends Vue {
   @Prop() item: IProject

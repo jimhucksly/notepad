@@ -5,8 +5,6 @@ import mutations from './mutations'
 import state from './state'
 import { IRootState } from '~/domain/models'
 
-import { projects } from './projects'
-
 function buildStore(modules: ModuleTree<IRootState>) {
   const store = createStore<IRootState>({
     strict: process.env.NODE_ENV !== 'production',
@@ -15,8 +13,7 @@ function buildStore(modules: ModuleTree<IRootState>) {
     mutations,
     state,
     modules: {
-      ...modules,
-      projects
+      ...modules
     }
   })
   return store

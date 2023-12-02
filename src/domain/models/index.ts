@@ -24,29 +24,6 @@ export interface IEditor {
   }
 }
 
-export interface IProject {
-  key: string
-  date: string
-  name: string
-  lock: boolean
-  message?: string
-  unread?: boolean
-}
-
-export interface IProjects {
-  [stamp: string]: IProject
-}
-
-export interface IFilters {
-  [stamp: string]: boolean
-}
-
-export interface IArchive {
-  id: string
-  name: string
-  date: string
-}
-
 type TResponseStatus = 'success' | 'error'
 
 export interface IUser {
@@ -65,13 +42,6 @@ export interface IResponse<TData> {
   message?: string
   user?: IUser
   token?: string
-}
-
-export interface IProjectsState {
-  projects: IProjects
-  archives: IArchive[]
-  filter: IFilters
-  selectedProjectKey: string
 }
 
 export interface IRootState {

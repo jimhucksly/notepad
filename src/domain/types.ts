@@ -7,8 +7,6 @@ const TYPES = {
   /* --------- queries --------- */
   AuthQuery: Symbol.for('AuthQuery'),
   SessionQuery: Symbol.for('SessionQuery'),
-  ProjectsQuery: Symbol.for('ProjectsQuery'),
-  ArchivesQuery: Symbol.for('ArchivesQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
@@ -19,13 +17,6 @@ const TYPES = {
   ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
   UpdatePasswordCommand: Symbol.for('UpdatePasswordCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
-  CreateProjectCommand: Symbol.for('CreateProjectCommand'),
-  EditProjectCommand: Symbol.for('EditProjectCommand'),
-  DeleteProjectCommand: Symbol.for('DeleteProjectCommand'),
-  ReadCommand: Symbol.for('ReadCommand'),
-  ArchiveRestoreCommand: Symbol.for('ArchiveRestoreCommand'),
-  ArchiveRemoveCommand: Symbol.for('ArchiveRemoveCommand'),
-  ArchivingCommand: Symbol.for('ArchivingCommand'),
   RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
   /* --------- interactive --------- */
   InfoWindowQuery: Symbol.for('InfoWindowQuery'),

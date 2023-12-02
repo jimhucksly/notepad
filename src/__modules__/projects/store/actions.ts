@@ -1,24 +1,22 @@
 import { ActionContext, ActionTree } from 'vuex'
+import { Commandable } from '~/domain/commands/command.bus'
+import { IRootState } from '~/domain/models'
+import { Queryable } from '~/domain/queries/query.bus'
+import { toActionTree } from '~/helpers'
+import $http from '~/http'
+import { Hub } from '~/plugins/hub'
+import { IArchive, IProjects, IProjectsState } from '../models'
+import { bindings } from './bindings'
 import {
   ArchiveRemoveCommand,
   ArchiveRestoreCommand,
   ArchivingCommand,
   CreateProjectCommand,
   DeleteProjectCommand,
-  EditProjectCommand
-} from '~/domain/commands'
-import { Commandable } from '~/domain/commands/command.bus'
-import {
-  IArchive,
-  IProjects,
-  IProjectsState,
-  IRootState
-} from '~/domain/models'
-import { Queryable } from '~/domain/queries/query.bus'
-import { TYPES } from '~/domain/types'
-import { toActionTree } from '~/helpers'
-import $http from '~/http'
-import { Hub } from '~/plugins/hub'
+  EditProjectCommand,
+  ReadCommand
+} from '../commands/commands'
+import cloneDeep from 'lodash/cloneDeep'
 
 type TStore = ActionContext<IProjectsState, IRootState>
 
@@ -30,13 +28,13 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
-  static readonly namespace = 'projects'
+  static readonly namespace = 'Projects'
 
   /**
    * Get Projects
    * @param {Store} store
    */
-  @Queryable(TYPES.ProjectsQuery, Actions.namespace)
+  @Queryable(bindings.ProjectsQuery, Actions.namespace)
   async actionFetchProjects(store: TStore): Promise<IProjects> {
     try {
       setProcess(store, 'get projects...')
@@ -51,12 +49,19 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
     }
   }
 
+  @Commandable(bindings.ReadCommand)
+  read(store: TStore, command: ReadCommand): void {
+    const json = cloneDeep(store.getters['getJson'])
+    delete json[command.stamp]['unread']
+    store.commit('projects/setJson', json)
+  }
+
   /**
    * Create New Project
    * @param store Store
    * @param {CreateProjectCommand} command
    */
-  @Commandable(TYPES.CreateProjectCommand, Actions.namespace)
+  @Commandable(bindings.CreateProjectCommand, Actions.namespace)
   async actionCreateProject(store: TStore, command: CreateProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'creating project...')
@@ -75,7 +80,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Commandable(TYPES.EditProjectCommand, Actions.namespace)
+  @Commandable(bindings.EditProjectCommand, Actions.namespace)
   async actionEditProject(store: TStore, command: EditProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'editing project...')
@@ -94,7 +99,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param {DeleteProjectCommand} command
    */
-  @Commandable(TYPES.DeleteProjectCommand, Actions.namespace)
+  @Commandable(bindings.DeleteProjectCommand, Actions.namespace)
   async actionDeleteProject(store: TStore, command: DeleteProjectCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing project...')
@@ -113,7 +118,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param {ArchivingCommand} command
    */
-  @Commandable(TYPES.ArchivingCommand, Actions.namespace)
+  @Commandable(bindings.ArchivingCommand, Actions.namespace)
   async actionArchiving(store: TStore, command: ArchivingCommand): Promise<boolean> {
     try {
       setProcess(store, 'move project to archive...')
@@ -134,7 +139,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param data
    */
-  @Queryable(TYPES.ArchivesQuery, Actions.namespace)
+  @Queryable(bindings.ArchivesQuery, Actions.namespace)
   async actionGetArchives(store: TStore): Promise<Array<IArchive>> {
     try {
       setProcess(store, 'get archives...')
@@ -153,7 +158,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param command { name: string}
    */
-  @Commandable(TYPES.ArchiveRestoreCommand, Actions.namespace)
+  @Commandable(bindings.ArchiveRestoreCommand, Actions.namespace)
   async actionArchiveRestore(store: TStore, command: ArchiveRestoreCommand): Promise<boolean> {
     try {
       setProcess(store, 'archive restore...')
@@ -172,7 +177,7 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
    * @param store Store
    * @param {ArchiveRemoveCommand} command
    */
-  @Commandable(TYPES.ArchiveRemoveCommand, Actions.namespace)
+  @Commandable(bindings.ArchiveRemoveCommand, Actions.namespace)
   async actionArchiveRemove(store: TStore, command: ArchiveRemoveCommand): Promise<boolean> {
     try {
       setProcess(store, 'removing archive...')
@@ -190,3 +195,4 @@ class Actions implements ActionTree<IProjectsState, IRootState> {
 const actions = toActionTree(new Actions())
 
 export default actions
+

@@ -20,4 +20,4 @@
     </div>
   </div>
 </template>
-<script src="./projectsArchives.ts" lang="ts"></script>
+<script src="./archives.ts" lang="ts"></script>

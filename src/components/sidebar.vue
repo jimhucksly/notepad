@@ -25,22 +25,6 @@
         </ul>
       </div>
     </div>
-    <projects
-      ref="projects"
-      class="projects"
-      v-show="section.Projects"
-      :style="{opacity: isSwitcherMenuExpanded ? 0.4 : 1}"
-    />
-    <projects-editor
-      v-if="section.Projects"
-      v-show="!isSwitcherMenuExpanded || isProjectEditorVisibility"
-      :expanded="isProjectEditorVisibility"
-    />
-    <projects-archives
-      v-if="section.Projects"
-      v-show="!isSwitcherMenuExpanded || isProjectArchivesVisibility"
-      :expanded="isProjectArchivesVisibility"
-    />
     <template v-for="item in components">
       <component :is="item.name" v-if="item.fsmState === mainSection" />
     </template>

@@ -3,15 +3,15 @@ import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { FsmStates } from '~/application/app'
-import { IArchive, IFilters, IProjects } from '~/domain/models'
-import { ArchivesQuery } from '~/domain/queries'
+import { IArchive, IFilters, IProjects } from './models'
+import { ArchivesQuery } from './queries/queries'
 
 export default class Projects extends Vue {
-  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
+  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('Projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getProjects') json: IProjects
-  @Getter('projects/getFilter') filter: IFilters
+  @Getter('Projects/getProjects') json: IProjects
+  @Getter('Projects/getFilter') filter: IFilters
   @Getter('getFsmState') fsmState: symbol
   @Getter('getHistory') history: Array<keyof typeof FsmStates>
 

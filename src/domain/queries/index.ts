@@ -4,10 +4,6 @@ export class AuthQuery {
 
 export class SessionQuery {}
 
-export class ProjectsQuery {}
-
-export class ArchivesQuery {}
-
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }

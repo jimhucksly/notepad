@@ -2,21 +2,21 @@ import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '~/domain/commands'
-import { IArchive, IFilters, IProjects, IProject } from '~/domain/models'
-import { ArchivesQuery } from '~/domain/queries'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { IArchive, IFilters, IProject, IProjects } from '../models'
+import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands'
+import { ArchivesQuery } from '../queries/queries'
 
 export default class ProjectsEditor extends Vue {
   @Prop() expanded: boolean
 
-  @Mutation('projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('projects/setJson') setJson: (value: IProjects) => void
-  @Mutation('projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
+  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
+  @Mutation('Projects/setJson') setJson: (value: IProjects) => void
+  @Mutation('Projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
 
-  @Getter('projects/getProjects') json: IProjects
-  @Getter('projects/getFilter') filter: IFilters
-  @Getter('projects/getSelectedProjectKey') selected: string
+  @Getter('Projects/getProjects') json: IProjects
+  @Getter('Projects/getFilter') filter: IFilters
+  @Getter('Projects/getSelectedProjectKey') selected: string
 
   name = ''
   isLock = false

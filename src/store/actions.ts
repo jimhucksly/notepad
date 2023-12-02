@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash'
 import {
   IRootState,
   IResponse,
@@ -16,7 +15,6 @@ import {
 } from '~/domain/queries'
 import {
   AuthCommand,
-  ReadCommand,
   RegistrationCommand,
   ResendCodeCommand,
   ResetPasswordCommand,
@@ -55,13 +53,6 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(TYPES.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
-  }
-
-  @Commandable(TYPES.ReadCommand)
-  read(store: TStore, command: ReadCommand): void {
-    const json = cloneDeep(store.getters['getJson'])
-    delete json[command.stamp]['unread']
-    store.commit('projects/setJson', json)
   }
 
   /**

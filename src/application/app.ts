@@ -3,9 +3,8 @@ import { Store } from 'vuex'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
 import { ICommandBus, IManifest, IQueryBus } from '~/domain/interfaces'
-import { IMenu, IProjects, IRootState, IUser } from '~/domain/models'
+import { IMenu, IRootState, IUser } from '~/domain/models'
 import {
-  ProjectsQuery,
   RefreshYandexTokenQuery,
   SessionQuery
 } from '~/domain/queries'
@@ -20,11 +19,15 @@ interface LifeCycle {
   prevResult?: any
 }
 
+interface IStates {
+  [key: string]: symbol
+}
+
 const StateMachine = require('javascript-state-machine')
 
 let _fsm: typeof StateMachine = null
 
-let States = {
+let States: IStates = {
   Auth: Symbol.for('Auth'),
   Reg: Symbol.for('Reg'),
   Reset: Symbol.for('Reset'),
@@ -32,9 +35,6 @@ let States = {
   Yandex: Symbol.for('Yandex'),
   Account: Symbol.for('Account'),
   Preferences: Symbol.for('Preferences'),
-  Projects: Symbol.for('Projects'),
-  ProjectsArchives: Symbol.for('ProjectsArchives'),
-  ProjectsEditor: Symbol.for('ProjectsEditor'),
   Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
@@ -42,12 +42,6 @@ let States = {
 }
 
 const menu: Array<IMenu> = [
-  {
-    name: 'projects',
-    nameAlt: 'Projects',
-    fsmState: States.Projects,
-    id: 1
-  },
   {
     name: 'postman',
     nameAlt: 'Postman',
@@ -77,11 +71,10 @@ export interface IApplication {
   userDataPath: string
 }
 
-export const toStr = (s: symbol): keyof typeof States => Symbol.keyFor(s) as keyof typeof States
+export const toStr = (s: symbol): string => Symbol.keyFor(s)
 
 const appComponents = {
   [toStr(States.Account)]: 'Account',
-  [toStr(States.Projects)]: 'Projects',
   [toStr(States.Preferences)]: 'Preferences',
   [toStr(States.Postman)]: 'Postman'
 }
@@ -136,13 +129,16 @@ export default class Application implements IApplication {
     @inject(TYPES.Store) private readonly _store: Store<IRootState>
   ) { }
 
-  homeState = States.Projects
   history: Array<keyof typeof States> = []
   currentUser: IUser = null
 
   get states() {
     States = buildStates(this.$manifest)
     return States
+  }
+
+  get homeState() {
+    return States.Projects
   }
 
   get fsm() {
@@ -192,7 +188,7 @@ export default class Application implements IApplication {
         return
       }
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
         // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       this._queryBus.exec(new RefreshYandexTokenQuery())
@@ -283,7 +279,7 @@ export default class Application implements IApplication {
     try {
       this.loading(true)
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
         // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       setTimeout(() => {

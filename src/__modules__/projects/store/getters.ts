@@ -1,7 +1,8 @@
-import { IProjectsState, IRootState } from '~/domain/models'
+import { IRootState } from '~/domain/models'
 import { stateKeys } from './state'
 import { upperFirst } from '~/helpers'
 import { GetterTree } from 'vuex'
+import { IProjectsState } from '../models'
 
 const getters: GetterTree<IProjectsState, IRootState> = {}
 
@@ -15,3 +16,4 @@ stateKeys.forEach(key => {
 })
 
 export default getters
+
