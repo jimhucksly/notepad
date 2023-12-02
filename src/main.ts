@@ -17,7 +17,6 @@ import BBtn from '~/modules/bbtn'
 import SvgIcon from '~/modules/svgIcon'
 import Loader from '~/modules/loader'
 import AboutPopup from '~/modules/popup/about'
-import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
 import CodeInput from '~/modules/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
@@ -74,7 +73,6 @@ async function init() {
     app.component('b-checkbox', BCheckbox)
     app.component('b-btn', BBtn)
     app.component('about-popup', AboutPopup)
-    app.component('create-edit-library-file', CreateEditLibraryFile)
     app.component('code-input', CodeInput)
 
     const $app: Application = container.get(TYPES.Application)

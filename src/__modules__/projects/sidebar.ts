@@ -1,11 +1,19 @@
 import { cloneDeep, unset } from 'lodash'
-import { Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { FsmStates } from '~/application/app'
+import Archives from './archives/archives'
 import { IArchive, IFilters, IProjects } from './models'
+import Properties from './properties/properties'
 import { ArchivesQuery } from './queries/queries'
 
+@Options({
+  components: {
+    Archives,
+    Properties
+  }
+})
 export default class Projects extends Vue {
   @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
   @Mutation('Projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
@@ -17,11 +25,8 @@ export default class Projects extends Vue {
 
   selected = ''
 
-  @Watch('fsmState') onFsmStateChanged() {
-    if (this.fsmState !== this.$app.states.ProjectsEditor) {
-      this.selected = ''
-    }
-  }
+  isArchivesExpaned = false
+  isPropertiesExpanded = false
 
   @Watch('isJsonLoaded') async onReady() {
     try {
@@ -40,7 +45,7 @@ export default class Projects extends Vue {
   }
 
   toggleFilter(e: MouseEvent, stamp: string): void | null {
-    const items = this.$el.querySelectorAll('[data-role="projects-item"]')
+    const items = (this.$refs.projects as HTMLElement).querySelectorAll('[data-role="projects-item"]')
     let item: HTMLElement = null
     items.forEach((el: HTMLElement) => {
       if (el.dataset.stamp === stamp) {
@@ -67,39 +72,33 @@ export default class Projects extends Vue {
 
   toggleCheck(e: InputEvent) {
     const target = e.target as HTMLInputElement
-    const isChecked = target.checked
-    if (isChecked) {
-      if (this.isArchivesInit) {
-        this.$app.goBack()
-      }
-      this.$app.goto(this.$app.states.ProjectsEditor)
-    } else {
-      this.$app.goBack()
-    }
-    this.selected = isChecked ? target.dataset?.stamp ?? '' : ''
+    this.isPropertiesExpanded = target.checked
+    this.isArchivesExpaned = false
+    this.selected = target.checked ? target.dataset?.stamp ?? '' : ''
     this.setSelectedProject(this.selected)
   }
 
   toggleArchives() {
-    if (this.isArchivesInit) {
-      this.$app.goBack()
-    } else {
-      if (this.isEditorInit) {
-        this.$app.goBack()
-      }
-      this.$app.goto(this.$app.states.ProjectsArchives)
+    if (this.isPropertiesExpanded) {
+      this.onPropertiesHide()
     }
+    this.isArchivesExpaned = !this.isArchivesExpaned
+  }
+
+  onPropertiesHide() {
+    const inputs = (this.$refs.projects as HTMLElement).querySelectorAll('input')
+    for (const el of inputs) {
+      if (el.dataset.stamp === this.selected) {
+        el.click()
+      }
+    }
+  }
+
+  onArchivesHide() {
+    this.isArchivesExpaned = !this.isArchivesExpaned
   }
 
   get isJsonLoaded(): boolean {
     return Boolean(this.json)
-  }
-
-  get isArchivesInit(): boolean {
-    return this.history.includes('ProjectsArchives')
-  }
-
-  get isEditorInit(): boolean {
-    return this.history.includes('ProjectsEditor')
   }
 }

@@ -1,5 +1,5 @@
 import { Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Emit, Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { now } from '~/helpers'
 import { IArchive, IProjects } from '../models'
@@ -14,6 +14,10 @@ export default class ProjectsArchives extends Vue {
 
   @Prop() expanded: boolean
 
+  @Emit('on-hide') emitHide() {
+    return true
+  }
+
   getDate(stamp: string): string {
     return now(stamp).date
   }
@@ -23,7 +27,7 @@ export default class ProjectsArchives extends Vue {
       await this.$app.$commandBus.do(new ArchiveRestoreCommand(o.id))
       this.$app.$queryBus.exec(new ArchivesQuery())
       this.$app.$queryBus.exec(new ProjectsQuery())
-      this.$app.goBack()
+      this.emitHide()
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e)

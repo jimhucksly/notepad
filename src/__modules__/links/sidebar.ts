@@ -8,7 +8,7 @@ import { UpdateLinksCommand } from './commands/commands'
 export default class LinksSidebar extends Vue {
   async addLink() {
     const query = new CreateEditQuery<ILink>({
-      component: 'Links-Modal-createEditLink',
+      component: 'Links-Modal-createEdit',
       modal: {
         title: 'Add link',
         width: '30%'

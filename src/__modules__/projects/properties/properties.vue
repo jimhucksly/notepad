@@ -43,7 +43,7 @@
     <div class="projects_editor_footer">
       <button
         class="btn btn-transparency m-r-15"
-        @click="hide"
+        @click="emitHide"
       >
         Cancel
       </button>
@@ -58,18 +58,86 @@
 </template>
 <script src="./properties.ts" lang="ts"></script>
 <style lang="scss" scoped>
-.project-editor {
-  font-family: var(--font-menlo);
-  font-size: 11px;
-  line-height: 19px;
-  overflow: hidden;
+.projects_editor {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-left: 15px;
+  background-color: var(--dark_darken-2);
+  z-index: 8;
+  transition: 0.3s;
 
-  .CodeMirror {
-    height: 100%;
+  &.expanded {
+    transform: translateX(100%);
   }
 
-  .CodeMirror-scroll {
+  .projects_editor_inner {
+    flex-basis: 100%;
+    flex-grow: 1;
+    overflow-x: hidden;
     overflow-y: auto;
+    padding-right: 15px;
+
+    a {
+      display: flex;
+      text-decoration: none;
+      color: #fff;
+      font-size: 13px;
+
+      &.--remove {
+        color: var(--editor_red);
+
+        span {
+          border-color: var(--editor_red);
+        }
+      }
+
+      span {
+        display: block;
+        border-bottom: 1px dashed #fff;
+      }
+    }
+
+    .icon {
+      display: block;
+      width: 15px;
+      height: 15px;
+      margin-right: 6px;
+    }
   }
+
+  .form-group {
+    .form-group-inner {
+      label {
+        color: #fff;
+      }
+    }
+  }
+
+  form {
+    input[type="text"] {
+      height: 20px;
+      font-size: 13px;
+    }
+  }
+
+  .projects_editor_footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-basis: 54px;
+    flex-shrink: 0;
+    padding-right: 15px;
+  }
+}
+.projects_editor_title {
+  display: flex;
+  align-items: center;
+  flex-basis: 54px;
+  flex-shrink: 0;
 }
 </style>

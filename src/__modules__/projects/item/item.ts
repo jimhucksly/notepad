@@ -32,7 +32,7 @@ export default class NotepadItem extends Vue {
 
   async edit() {
     const query = new CreateEditQuery<IProject>({
-      component: 'create-edit-project',
+      component: 'Projects-Modal-createEdit',
       componentProps: {
         item: this.item
       },

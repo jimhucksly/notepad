@@ -26,7 +26,7 @@ export default class LinksPage extends Vue {
     const found = this.links.find(link => link.id === id)
     if (found) {
       const query = new CreateEditQuery<ILink>({
-        component: 'Links-Modal-createEditLink',
+        component: 'Links-Modal-createEdit',
         componentProps: {
           item: {
             id,

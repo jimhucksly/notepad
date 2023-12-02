@@ -24,7 +24,7 @@ export default class LibraryFiles extends Vue {
 
   async add() {
     const query = new CreateEditQuery<ILibraryFile>({
-      component: 'create-edit-library-file',
+      component: 'Library-Modal-createEditFile',
       modal: {
         title: 'Add library file',
         width: '30%'

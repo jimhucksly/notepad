@@ -2,7 +2,7 @@
 	"components": {
 		"main": "main",
 		"aside": "sidebar",
-		"modals": ["createEditProject"]
+		"modals": ["createEdit"]
 	},
 	"store": "store"
 }

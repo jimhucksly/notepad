@@ -28,5 +28,5 @@
     </div>
   </form>
 </template>
-<script src="./createEditLink.ts" lang="ts"></script>
+<script src="./createEdit.ts" lang="ts"></script>
 

@@ -1,6 +1,6 @@
 import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
-import { Prop, Watch } from 'vue-property-decorator'
+import { Emit, Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
 import { IArchive, IFilters, IProject, IProjects } from '../models'
@@ -22,6 +22,10 @@ export default class ProjectsEditor extends Vue {
   isLock = false
   isDialog = false
   savingProcess = false
+
+  @Emit('on-hide') emitHide() {
+    return true
+  }
 
   @Watch('expanded') onExpandedChanged() {
     if (!this.expanded) {
@@ -91,7 +95,7 @@ export default class ProjectsEditor extends Vue {
     unset(buffFilter, this.selected)
     this.setFilter(buffFilter)
     this.setJson(buffJson)
-    this.hide()
+    this.emitHide()
   }
 
   async save() {
@@ -108,11 +112,7 @@ export default class ProjectsEditor extends Vue {
     this.setJson({ ...this.json, ...o })
     await this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     this.savingProcess = false
-    this.$app.goBack()
-  }
-
-  hide() {
-    this.$app.goBack()
+    this.emitHide()
   }
 
   get item(): IProject {
