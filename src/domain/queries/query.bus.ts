@@ -2,13 +2,13 @@ import { Container, inject, injectable } from 'inversify'
 import { Store } from 'vuex'
 import { IQueryBus, IQueryHandler } from '~/domain/interfaces'
 import { IRootState } from '~/domain/models'
-import { TYPES } from '~/domain/types'
+import { bindings } from '~/domain/types'
 
 @injectable()
 class QueryBus implements IQueryBus {
   constructor(
-    @inject(TYPES.Container) private readonly _container: Container,
-    @inject(TYPES.Store) private readonly _store: Store<IRootState>
+    @inject(bindings.Container) private readonly _container: Container,
+    @inject(bindings.Store) private readonly _store: Store<IRootState>
   ) {}
 
   /**

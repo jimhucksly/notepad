@@ -5645,7 +5645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^1.20.1":
+"body-parser@npm:^1.20.2":
   version: 1.20.2
   resolution: "body-parser@npm:1.20.2"
   dependencies:
@@ -14877,7 +14877,7 @@ __metadata:
     auto-launch: ^5.0.5
     axios: ^0.23.0
     babel-jest: ^29.5.0
-    body-parser: ^1.20.1
+    body-parser: ^1.20.2
     copy-webpack-plugin: ^6.3.0
     cross-env: ^5.2.1
     css-loader: 6.7.1

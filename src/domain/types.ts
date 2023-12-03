@@ -1,4 +1,4 @@
-const TYPES = {
+const bindings = {
   Application: Symbol.for('Application'),
   Container: Symbol.for('Container'),
   Store: Symbol.for('Store'),
@@ -25,5 +25,5 @@ const TYPES = {
 }
 
 export {
-  TYPES
+  bindings
 }

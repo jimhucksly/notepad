@@ -14,7 +14,6 @@ import Reg from '~/pages/reg'
 import Reset from '~/pages/reset'
 import Verify from '~/pages/verify'
 import Yandex from '~/pages/yandex'
-import Postman from '~/pages/postman'
 import storage from '~/plugins/storage'
 
 interface IUserPreferences {
@@ -32,8 +31,7 @@ interface IUserPreferences {
     Error,
     Account,
     Preferences,
-    Sidebar,
-    Postman
+    Sidebar
   }
 })
 export default class Index extends Vue {

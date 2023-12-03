@@ -28,16 +28,17 @@ import Validate from '~/plugins/validate'
 import { IManifest, IModuleMaifest } from './domain/interfaces'
 import { ModuleTree, Store } from 'vuex'
 import { IRootState } from './domain/models'
-import { TYPES } from './domain/types'
+import { bindings } from './domain/types'
 import Application from './application/app'
 import { createInterceptors } from './http'
 import { registerModule } from './registerModule'
 
 async function init() {
   try {
-    const response: { json: () => Promise<IManifest>, status: number } = await fetch('/manifest.json')
+    const manifestURL = $DEV ? '/manifest.json' : 'manifest.json'
+    const response: { json: () => Promise<IManifest>, status: number } = await fetch(manifestURL)
     if (response.status === 404) {
-      throw new Error('Menifest is not found')
+      throw new Error('Manifest is not found')
     }
     const manifest: IManifest = await response.json()
 
@@ -63,7 +64,7 @@ async function init() {
     store.commit('setManifest', manifest)
 
     const container = buildContainer()
-    container.bind<Store<IRootState>>(TYPES.Store).toConstantValue(store)
+    container.bind<Store<IRootState>>(bindings.Store).toConstantValue(store)
 
     app.component('titlebar', Titlebar)
     app.component('popup', Popup)
@@ -75,7 +76,7 @@ async function init() {
     app.component('about-popup', AboutPopup)
     app.component('code-input', CodeInput)
 
-    const $app: Application = container.get(TYPES.Application)
+    const $app: Application = container.get(bindings.Application)
 
     app.use(store)
     app.use(router)

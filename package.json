@@ -99,7 +99,7 @@
     "animejs": "^3.2.1",
     "auto-launch": "^5.0.5",
     "babel-jest": "^29.5.0",
-    "body-parser": "^1.20.1",
+    "body-parser": "^1.20.2",
     "copy-webpack-plugin": "^6.3.0",
     "cross-env": "^5.2.1",
     "css-loader": "6.7.1",

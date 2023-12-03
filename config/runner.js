@@ -10,6 +10,8 @@ const WebpackDevServer = require('webpack-dev-server')
 const mainConfig = require('./webpack.main.config')
 const rendererConfig = require('./webpack.renderer.config')
 
+const { port } = require('./endpoint.json')
+
 delete mainConfig.optimization
 delete rendererConfig.optimization
 
@@ -60,7 +62,7 @@ function startRenderer () {
 
     const server = new WebpackDevServer(
       {
-        port: 9080,
+        port,
         host: 'localhost',
         historyApiFallback: true,
         hot: true,
