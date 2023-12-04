@@ -11,7 +11,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
-const { endpoint } = require('./endpoint.json')
+const { endpoint, port } = require('./endpoint.json')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isDevelopment = !isProduction
@@ -47,7 +47,10 @@ let rendererConfig = {
         options: {
           appendTsSuffixTo: ['\\.vue$'],
           transpileOnly: isDevelopment,
-          happyPackMode: isDevelopment
+          happyPackMode: isDevelopment,
+          compilerOptions: {
+            noImplicitAny: isDevelopment,
+          }
         }
       },
       {
@@ -136,7 +139,9 @@ let rendererConfig = {
       {
         '__VUE_OPTIONS_API__': true,
         '__VUE_PROD_DEVTOOLS__': false,
-        '$ENDPOINT': 0 ? `"http://127.0.01:8000"` : `"${endpoint}"`,
+        "$DEV": isDevelopment,
+        '$ENDPOINT': `"${endpoint}"`,
+        "$PORT": `"${port}"`
       }
     )
   ],

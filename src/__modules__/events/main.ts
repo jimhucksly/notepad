@@ -2,10 +2,10 @@ import { debounce } from 'lodash'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import BCalendar, { IBCalendar } from '~/modules/calendar'
 import { IEvent, IEvents } from './models'
 import { DeleteEventCommand, UpdateEventCommand } from './commands/commands'
 import { EventsQuery } from './queries/queries'
+import BCalendarComponent, { IBCalendar } from './calendar'
 
 interface IBCalendarOptions {
   eventsMode: boolean
@@ -31,7 +31,7 @@ interface IFilteredItem {
 
 @Options({
   components: {
-    'b-calendar': BCalendar
+    'b-calendar': BCalendarComponent
   }
 })
 export default class Events extends Vue {

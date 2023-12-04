@@ -10,14 +10,15 @@ import { buildContainer } from './domain/container'
 import root from './app'
 
 import Titlebar from '~/components/titlebar'
-import Popup from '~/modules/popup'
-import Toasted from '~/modules/toasted'
-import BCheckbox from '~/modules/bcheckbox'
-import BBtn from '~/modules/bbtn'
-import SvgIcon from '~/modules/svgIcon'
-import Loader from '~/modules/loader'
-import AboutPopup from '~/modules/popup/about'
-import CodeInput from '~/modules/codeInput'
+import Popup from '~/components/popup'
+import Toasted from '~/components/toasted'
+import BCheckbox from '~/components/bcheckbox'
+import BBtn from '~/components/bbtn'
+import BTabs, { BTab } from '~/components/btabs'
+import SvgIcon from '~/components/svgIcon'
+import Loader from '~/components/loader'
+import AboutPopup from '~/components/popup/about'
+import CodeInput from '~/components/codeInput'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
@@ -73,6 +74,8 @@ async function init() {
     app.component('loader', Loader)
     app.component('b-checkbox', BCheckbox)
     app.component('b-btn', BBtn)
+    app.component('b-tabs', BTabs)
+    app.component('b-tab', BTab)
     app.component('about-popup', AboutPopup)
     app.component('code-input', CodeInput)
 

@@ -3362,7 +3362,7 @@
     scrollbar-width: none;
     flex-shrink: 0;
     padding: 4px;
-    border-bottom: 1px solid var(--md-border-color);
+    /* border-bottom: 1px solid var(--md-border-color); */
     background-color: var(--white);
     border-top-right-radius: 8px;
     border-top-left-radius: 8px;
@@ -3596,7 +3596,7 @@
     height: 500px;
     position: relative;
     box-sizing: border-box;
-    border: 1px solid var(--md-border-color);
+    /* border: 1px solid var(--md-border-color); */
     display: flex;
     flex-direction: column;
     /* overflow: hidden; */

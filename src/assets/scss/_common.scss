@@ -40,6 +40,9 @@
 .basis-100 {flex-basis: 100%}
 .shrink-0 {flex-shrink: 0}
 
+.w-full {width: 100%}
+.h-full {height: 100%}
+
 .flex-start,
 .flex-end,
 .flex-center,
@@ -55,10 +58,13 @@
 }
 
 @each $elem in (
-  'dark', 'blue', 'red', 'grey'
+  'dark', 'blue', 'red', 'grey', 'white'
 ) {
   .#{$elem}--text {
     color: var(--#{$elem});
+  }
+  .#{$elem}--bg {
+    background: var(--#{$elem});
   }
 }
 
@@ -81,22 +87,6 @@ a[href] {
 
 .font-bold {
   font-weight: bold;
-}
-
-.json_viewer {
-  .ace_scrollbar.ace_scrollbar-v {
-    display: none !important;
-  }
-  .ace_scrollbar.ace_scrollbar-h {
-    display: none !important;
-  }
-  .ace-twilight .ace_print-margin {
-    display: none !important;
-  }
-}
-
-.ace_editor {
-  font-size: 11px !important;
 }
 
 // scrollbar styling
@@ -142,7 +132,7 @@ body {
 
 @each $elem in ('projects_inner', 'library_inner',
   'projects_editor_inner', 'projects_archives_inner',
-  'preferences_form'
+  'preferences_form', 'scroller'
 ) {
   .#{$elem}::-webkit-scrollbar-button {
     background-image: none;

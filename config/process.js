@@ -12,6 +12,10 @@ import electron, {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
+import { port } from './endpoint.json'
+
+import express from 'express'
+import bodyParser from 'body-parser'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -32,7 +36,7 @@ let mainWindow
 let appTray
 
 const winURL = $DEV
-  ? 'http://localhost:9080'
+  ? ['http://localhost', port].join(':')
   : `file://${__dirname}/index.html`
 
 const appIconTray = path.resolve(__static, 'iconTray.ico')
@@ -235,3 +239,19 @@ ipcMain.on('save-file-dialog', (event, arg) => {
     event.sender.send('save-dialog-file-selected', file)
   })
 })
+
+const server = express()
+
+server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({ extended: true }))
+server.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, X-Authorization-Token')
+  next()
+})
+
+server.post('/postman', function (req, res) {
+  res.send('Hello World')
+})
+
+server.listen(Number(port) + 1)

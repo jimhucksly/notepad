@@ -1,13 +1,11 @@
 <template>
   <div class="editor_wrapper" ref="editor_wrapper">
-    <div class="editor_tabs">
-      <div class="editor_tabs_item --tab-preview" :class="{ '--active': isPreview }" @click="toggle(true)">
-        Preview
-      </div>
-      <div class="editor_tabs_item --tab-text" :class="{ '--active': !isPreview }" @click="toggle(false)">
-        Text
-      </div>
-    </div>
+    <b-tabs v-model="isPreview">
+      <template #default="props">
+        <b-tab :value="true" v-bind="props">Preview</b-tab>
+        <b-tab :value="false" v-bind="props">Text</b-tab>
+      </template>
+    </b-tabs>
     <button class="editor_save" @click="save">
       <span class="fa fa-save"></span>
     </button>
@@ -95,53 +93,6 @@
     overflow-y: auto;
   }
 
-  .editor_tabs {
-    position: relative;
-    display: flex;
-    flex-shrink: 0;
-    z-index: 1;
-    &:after {
-      content: '';
-      display: block;
-      width: 12px;
-      height: 34px;
-      position: absolute;
-      top: 0;
-      left: 79px;
-      background-color: var(--grey);
-      z-index: 1;
-    }
-    &_item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 85px;
-      height: 34px;
-      padding: 0 8px;
-      background-color: var(--grey);
-      color: var(--blue-gray);
-      cursor: pointer;
-      z-index: 2;
-
-      &.--active {
-        background-color: var(--white);
-        color: var(--dark);
-      }
-
-      &.--tab-preview {
-        border-top-left-radius: 8px;
-        &.--active {
-          border-top-right-radius: 8px;
-        }
-      }
-      &.--tab-text {
-        border-top-right-radius: 8px;
-        &.--active {
-          border-top-left-radius: 8px;
-        }
-      }
-    }
-  }
   .editor_content {
     flex-basis: 100%;
     padding: 10px;

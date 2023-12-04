@@ -1,7 +1,7 @@
 import { mount, VueWrapper, flushPromises } from '@vue/test-utils'
 import BCalendar, { getNativeDate, isDate } from './index'
 import { Options, Vue } from 'vue-class-component'
-import SvgIcon from '~/modules/svgIcon'
+import { defineComponent } from 'vue'
 
 @Options({
   template: `
@@ -33,7 +33,9 @@ async function setupTest() {
     wrapper = mount(WrapperComponent, {
       global: {
         components: {
-          SvgIcon
+          'svg-icon': defineComponent({
+            template: '<div></div>'
+          })
         }
       }
     })
