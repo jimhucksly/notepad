@@ -87,7 +87,7 @@
 .postman_cont {
   display: flex;
   flex-direction: column;
-  background: var(--editor_dark);
+  background: var(--dark_darken-1);
   .col {
     width: 50%;
   }

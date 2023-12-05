@@ -1,6 +1,6 @@
+import debounce from 'lodash/debounce'
 import { Options, Vue } from 'vue-class-component'
 import { IEditor } from '~/domain/models'
-import { isJSON } from '~/helpers'
 import Editor from '~/lib/vue-ace-editor'
 
 @Options({
@@ -9,41 +9,42 @@ import Editor from '~/lib/vue-ace-editor'
   }
 })
 export default class PostmanPage extends Vue {
-  url = ''
+  url = 'http://dsud-webdev-390/LanDocs.WebApi.NetCore/api/v1/client/options'
   method: 'GET' | 'POST' = 'GET'
   tab: 'HEADERS' | 'BODY' = 'HEADERS'
 
   headers: Array<{ key: string, value: string }> = [
     {
-      key: '',
-      value: ''
+      key: 'Host',
+      value: 'dsud-webdev-390'
+    },
+    {
+      key: 'User-Agent',
+      value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.2470 YaBrowser/23.11.0.2470 Yowser/2.5 Safari/537.36'
     }
   ]
 
   body = ''
   editor: IEditor = null
 
-  response = ''
+  response: unknown = ''
 
-  static readonly URL = ['http://localhost', Number($PORT) + 1].join(':') + '/postman'
+  debounced: () => void = null
+
+  static readonly URL = ['http://127.0.0.1', Number($PORT) + 1].join(':') + '/postman'
 
   send() {
+    const payload = {
+      url: this.url,
+      method: this.method,
+      headers: this.headers,
+      body: this.body
+    }
+
     const xhr = new XMLHttpRequest()
-    xhr.open(this.method, PostmanPage.URL, true)
-    for (const item of this.headers) {
-      if (item.key?.trim() && item.value?.trim()) {
-        xhr.setRequestHeader(item.key, item.value)
-      }
-    }
-    if (this.method === 'GET') {
-      xhr.send()
-    }
-    if (this.method === 'POST') {
-      const value = this.editor.getValue()
-      if (isJSON(value)) {
-        xhr.send(value)
-      }
-    }
+    xhr.open('POST', PostmanPage.URL, true)
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.send(JSON.stringify(payload))
     const responseHandler = (value: string) => {
       this.response = value
     }
@@ -69,6 +70,18 @@ export default class PostmanPage extends Vue {
   }
 
   onEditorInit(instance: IEditor) {
+    this.debounced = debounce(() => {
+      const value = instance.getValue()
+      let json: Record<string, unknown> = null
+      try {
+        json = JSON.parse(value)
+        const text = JSON.stringify(json, null, 2)
+        instance.setValue(text)
+      } catch (e) {
+        //
+      }
+    }, 1000)
+    instance.on('change', this.debounced)
     this.editor = instance
   }
 

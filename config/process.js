@@ -14,8 +14,7 @@ import path from 'path'
 import pkg from '../package.json'
 import { port } from './endpoint.json'
 
-import express from 'express'
-import bodyParser from 'body-parser'
+import initServer from './server'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -240,18 +239,4 @@ ipcMain.on('save-file-dialog', (event, arg) => {
   })
 })
 
-const server = express()
-
-server.use(bodyParser.json())
-server.use(bodyParser.urlencoded({ extended: true }))
-server.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, X-Authorization-Token')
-  next()
-})
-
-server.post('/postman', function (req, res) {
-  res.send('Hello World')
-})
-
-server.listen(Number(port) + 1)
+initServer()
