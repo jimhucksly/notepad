@@ -70,7 +70,8 @@
     max-height: 100%;
     overflow: auto;
   }
-
+}
+:deep() {
   .json-formatter-constructor-name {
     color: #fff;
   }

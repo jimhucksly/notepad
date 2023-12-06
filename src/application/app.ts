@@ -8,7 +8,7 @@ import {
   RefreshYandexTokenQuery,
   SessionQuery
 } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
+import { bindings } from '~/domain/types'
 import storage from '~/plugins/storage'
 
 interface LifeCycle {
@@ -35,20 +35,10 @@ let States: IStates = {
   Yandex: Symbol.for('Yandex'),
   Account: Symbol.for('Account'),
   Preferences: Symbol.for('Preferences'),
-  Postman: Symbol.for('Postman'),
   CreateEdit: Symbol.for('CreateEdit'),
   InfoWindow: Symbol.for('InfoWindow'),
   ConfirmWindow: Symbol.for('ConfirmWindow')
 }
-
-const menu: Array<IMenu> = [
-  {
-    name: 'postman',
-    nameAlt: 'Postman',
-    fsmState: States.Postman,
-    id: 9
-  }
-]
 
 export interface IApplication {
   init: () => void
@@ -75,8 +65,7 @@ export const toStr = (s: symbol): string => Symbol.keyFor(s)
 
 const appComponents = {
   [toStr(States.Account)]: 'Account',
-  [toStr(States.Preferences)]: 'Preferences',
-  [toStr(States.Postman)]: 'Postman'
+  [toStr(States.Preferences)]: 'Preferences'
 }
 
 function buildStates(manifest: IManifest) {
@@ -91,7 +80,7 @@ function buildStates(manifest: IManifest) {
 }
 
 function buildMenu(manifest: IManifest) {
-  const result = [...menu]
+  const result: Array<IMenu> = []
   const len = result.length
   let index = 1
   for (const item of manifest.main) {
@@ -124,9 +113,9 @@ function onBeforeTransition(lifecycle: LifeCycle) {
 @injectable()
 export default class Application implements IApplication {
   constructor(
-    @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus,
-    @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
-    @inject(TYPES.Store) private readonly _store: Store<IRootState>
+    @inject(bindings.QueryBus) private readonly _queryBus: IQueryBus,
+    @inject(bindings.CommandBus) private readonly _commandBus: ICommandBus,
+    @inject(bindings.Store) private readonly _store: Store<IRootState>
   ) { }
 
   history: Array<keyof typeof States> = []
@@ -138,7 +127,7 @@ export default class Application implements IApplication {
   }
 
   get homeState() {
-    return States.Projects
+    return States.JsonViewer
   }
 
   get fsm() {
