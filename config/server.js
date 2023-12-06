@@ -37,14 +37,23 @@ function initServer() {
         }
       }
 
+      const body = JSON.parse(req.body.body);
+
       switch (method) {
         case 'GET':
-          const { data } = await axios.get(url, {
+          const { data: getResp } = await axios.get(url, {
             headers,
           })
-          res.json(data)
+          res.json(getResp)
           break;
         case 'POST':
+          if (!body) {
+            throw new Error('Bad Request')
+          }
+          const { data: postResp } = await axios.post(url, body, {
+            headers
+          })
+          res.json(postResp)
           break;
       }
 
@@ -52,8 +61,6 @@ function initServer() {
     } catch (e) {
       res.status(500).send(e.message)
     }
-
-
   })
 
   server.listen(Number(port) + 1)

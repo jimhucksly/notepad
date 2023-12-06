@@ -58,7 +58,6 @@
                 <editor
                   :value="body"
                   lang="javascript"
-                  theme="twilight"
                   width="100%"
                   height="100%"
                   @init="onEditorInit($event)"
@@ -68,15 +67,15 @@
           </div>
         </form>
       </div>
-      <div class="col">
+      <div class="col g-column">
         <div class="caption white--text">Response</div>
-        <div class="response">
-          {{ response }}
+        <div class="response basis-100">
+          <textarea id="response" style="display: none;"></textarea>
         </div>
       </div>
     </div>
     <div class="btn_wrapper">
-      <b-btn :primary="true" label="Send" @click="send" />
+      <b-btn :primary="true" label="Send" :processing="fetching" @click="send" />
     </div>
     <div class="g-row" style="">
     </div>
