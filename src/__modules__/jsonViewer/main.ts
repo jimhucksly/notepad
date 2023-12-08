@@ -79,56 +79,6 @@ export default class JsonViewer extends Vue {
     this.notice('Json parse successed!')
   }
 
-  drag(event?: MouseEvent): void {
-    const src: HTMLElement | null = document.querySelector('.json_viewer_src')
-    const res: HTMLElement | null = document.querySelector('.json_viewer_res')
-    const container = document.querySelector('.json_viewer_cont')
-
-    if (event.button !== 0) {
-      return
-    }
-    const startX = event.screenX
-    const minW = 17
-
-    if (container && src && res) {
-      const srcW = src.clientWidth
-      const resW = res.clientWidth
-      const contW = container.clientWidth
-      document.onmousemove = (e: MouseEvent) => {
-        if (e.screenX < startX) {
-          const w: number = srcW - (startX - e.screenX)
-          const p: number = w * 100 / contW
-          if (p > minW) {
-            src.style.maxWidth = p + '%'
-            src.style.minWidth = p + '%'
-            res.style.maxWidth = 100 - p + '%'
-            res.style.minWidth = 100 - p + '%'
-          }
-        }
-        if (e.screenX > startX) {
-          const w: number = resW - (e.screenX - startX)
-          const p = w * 100 / contW
-          if (p > minW) {
-            res.style.maxWidth = p + '%'
-            res.style.minWidth = p + '%'
-            src.style.maxWidth = 100 - p + '%'
-            src.style.minWidth = 100 - p + '%'
-          }
-        }
-
-        src.classList.add('non-selectable')
-        res.classList.add('non-selectable')
-      }
-
-      document.onmouseup = () => {
-        document.onmousemove = null
-        document.onmouseup = null
-        src.classList.remove('non-selectable')
-        res.classList.remove('non-selectable')
-      }
-    }
-  }
-
   notice(text: string) {
     const notice: HTMLElement = document.querySelector('.json_viewer_notice')
     if (notice) {

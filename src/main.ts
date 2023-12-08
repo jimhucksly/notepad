@@ -19,6 +19,7 @@ import SvgIcon from '~/components/svgIcon'
 import Loader from '~/components/loader'
 import AboutPopup from '~/components/popup/about'
 import CodeInput from '~/components/codeInput'
+import BSplitter from '~/components/bsplitter'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
@@ -78,6 +79,7 @@ async function init() {
     app.component('b-tab', BTab)
     app.component('about-popup', AboutPopup)
     app.component('code-input', CodeInput)
+    app.component('b-splitter', BSplitter)
 
     const $app: Application = container.get(bindings.Application)
 

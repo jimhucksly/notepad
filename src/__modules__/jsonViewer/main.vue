@@ -1,26 +1,21 @@
 <template>
   <div class="json_viewer json_viewer_cont">
-    <div class="json_viewer_src">
-      <editor
-        :value="content"
-        lang="javascript"
-        theme="twilight"
-        width="100%"
-        height="100%"
-        @init="editorInit($event)"
-        @input="$emit('input', $event)"
-      />
-      <div class="json_viewer_separator items-center" @mousedown="drag($event)">
-        <div>
-          <div style="width: 100%; height: 3px" class="items-center" v-for="i in [1, 2, 3, 4, 5, 6, 7, 8]" :key="i">
-            <i style="width: 1px; height: 2px; background-color: var(--white)"></i>
-            <i style="width: 1px; height: 2px;"></i>
-            <i style="width: 1px; height: 2px; background-color: var(--white)"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="json_viewer_res"></div>
+    <b-splitter>
+      <template #left-panel>
+        <editor
+          :value="content"
+          lang="javascript"
+          theme="twilight"
+          width="100%"
+          height="100%"
+          @init="editorInit($event)"
+          @input="$emit('input', $event)"
+        />
+      </template>
+      <template #right-panel>
+        <div class="json_viewer_res"></div>
+      </template>
+    </b-splitter>
     <div class="json_viewer_notice"></div>
   </div>
 </template>
@@ -41,33 +36,14 @@
     width: 300px;
     height: 25px;
     color: #fff;
-    background-color: rgba(var(----editor_green), 0.6);
+    background-color: rgba(var(--editor_green), 0.6);
     border-radius: 5px;
-  }
-
-  .json_viewer_src,
-  .json_viewer_res {
-    position: relative;
-    flex-basis: 50%;
-  }
-
-  .json_viewer_separator {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 5px;
-    height: 100%;
-    background-color: var(--dark_darken-2);
-    border-left: 1px solid var(--blue-gray);
-    border-right: 1px solid var(--blue-gray);
-    z-index: 999;
-    cursor: e-resize;
   }
 
   .json_viewer_res {
     padding: 6px;
     background-color: var(--editor_dark);
-    max-height: 100%;
+    height: 100%;
     overflow: auto;
   }
 }
