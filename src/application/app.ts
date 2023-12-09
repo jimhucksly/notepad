@@ -127,7 +127,7 @@ export default class Application implements IApplication {
   }
 
   get homeState() {
-    return States.JsonViewer
+    return States.Projects
   }
 
   get fsm() {

@@ -52,7 +52,7 @@
                         </button>
                       </div>
                     </template>
-                    <button class="btn btn-default" @click="onAddHeader">
+                    <button class="btn btn-default" @click.prevent="onAddHeader">
                       Add
                     </button>
                   </div>
@@ -71,9 +71,11 @@
           </div>
         </template>
         <template #right-panel>
-          <div class="caption white--text">Response</div>
-          <div class="response basis-100">
-            <textarea id="response" style="display: none;"></textarea>
+          <div class="g-column h-full">
+            <div class="caption white--text">Response</div>
+            <div class="response basis-100">
+              <textarea id="response" style="display: none;"></textarea>
+            </div>
           </div>
         </template>
       </b-splitter>
@@ -113,7 +115,7 @@
   }
 
   .response {
-    padding: 15px;
+    padding: 5px;
     color: var(--blue-gray);
   }
 

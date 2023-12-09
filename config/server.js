@@ -37,8 +37,6 @@ function initServer() {
         }
       }
 
-      const body = JSON.parse(req.body.body);
-
       switch (method) {
         case 'GET':
           const { data: getResp } = await axios.get(url, {
@@ -47,6 +45,7 @@ function initServer() {
           res.json(getResp)
           break;
         case 'POST':
+          const body = JSON.parse(req.body.body);
           if (!body) {
             throw new Error('Bad Request')
           }

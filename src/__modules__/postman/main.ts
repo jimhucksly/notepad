@@ -15,26 +15,18 @@ require('brace/theme/chrome')
   }
 })
 export default class PostmanPage extends Vue {
-  url = 'http://dsud-webdev-390/LanDocs.WebApi.NetCore/api/v1/instructions/folder/1999/instructions'
-  method: 'GET' | 'POST' = 'POST'
+  url = ''
+  method: 'GET' | 'POST' = 'GET'
   tab: 'HEADERS' | 'BODY' = 'HEADERS'
 
   headers: Array<{ key: string, value: string }> = [
     {
-      key: 'Host',
-      value: 'dsud-webdev-390'
-    },
-    {
-      key: 'User-Agent',
-      value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.2470 YaBrowser/23.11.0.2470 Yowser/2.5 Safari/537.36'
-    },
-    {
-      key: 'Cookie',
-      value: 'retrieveRoute=/; landocs_sessionid=9a62fba3-e994-a84c-aa04-01075e3f0275; landocs_claims=CfDJ8LVLFbzRkZNOmlQVoZlx-0-i8Mk-SXrd88pYoxX7Jb-GBg8XmpHLlFzjqELqvdvAdTjEkg2sgc1Wqyhm22BKdYmdZ7e37ogfxo8TD2Y07usq3UNUiEGnJht6F0hS9Ia2mJNgwI1WlnPEMtU6tdQ_RwVObBUomILkQsq-nR8Evx9pA9KgxaLIWmc9OWQGt1r2vT7RjOf4kokNees0lYyozgvkPjE2f0DomllQkd1mYSkvOAY0r488hADewiHfYECeEDUnY-zFWbjgiEfJhhTgnAJef8Zd-KCLeRZN92VQNUTphxbpxZUl1FNsL6zs65vrSnA7ON8NquS1g1_LORxLVBSa-ITTEggUMbd1iKbAQ_nQ4541mfdZ4hLRObrQTs0CA7q52S3Vk9mqLv0jLjizb7_V7VWj2HV5k6Fzan69OXu9MYgRpswBm3lwopWERR5-fnl6_3gBZAepbwcagRw2f--lOzmn4DM6CMCaf2yB3STjhrin9KFZU6b62Pac_iYIa7FvkveqWyXB7FMS4WRkzA0B7SA4Kwz41d5RJ8rLB8yV'
+      key: '',
+      value: ''
     }
   ]
 
-  body = '{"top":100,"skip":0,"searchText":null,"members":null,"filterId":null,"filterValues":null,"createDateTimeStart":null,"createDateTimeFinish":null,"forceReload":true,"permissionCheckMode":"none"}'
+  body = ''
   editor: IEditor = null
   response: EditorView = null
 
