@@ -1,21 +1,18 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { Commandable } from '~/domain/commands/command.bus'
-import { Queryable } from '~/domain/queries/query.bus'
+import { Commandable, Queryable, Plugins, Types } from '~/core'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
-import { Hub } from '~/plugins/hub'
 import { DeleteFileCommand, UploadFileCommand } from '../commands/commands'
 import { bindings } from './bindings'
-import { IRootState } from '~/domain/models'
 import { IFile, IFilesState } from '../models'
 
-type TStore = ActionContext<IFilesState, IRootState>
+type TStore = ActionContext<IFilesState, Types.IRootState>
 
 function setProcess(store: TStore, process: string | null) {
   store.commit('setProcess', process ? { name: process } : null, { root: true })
 }
 
-class Actions implements ActionTree<IFilesState, IRootState> {
+class Actions implements ActionTree<IFilesState, Types.IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
@@ -33,7 +30,7 @@ class Actions implements ActionTree<IFilesState, IRootState> {
       store.commit('setFiles', data)
       return data
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Files list fetch failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Files list fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -52,7 +49,7 @@ class Actions implements ActionTree<IFilesState, IRootState> {
       await $http.delete(`/files?id=${command.id}`)
       return true
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: File removing is failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: File removing is failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -71,7 +68,7 @@ class Actions implements ActionTree<IFilesState, IRootState> {
       await $http.put('/upload', command.form)
       return true
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Upload file failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Upload file failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

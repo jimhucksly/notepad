@@ -2,7 +2,7 @@ import { cloneDeep, unset } from 'lodash'
 import { Vue } from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { Queries, Types } from '~/core'
 import { IArchive, IFilters, IProject, IProjects } from '../models'
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands'
 import { ArchivesQuery } from '../queries/queries'
@@ -59,7 +59,7 @@ export default class ProjectsEditor extends Vue {
       this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
     }
     if (isLocked) {
-      const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+      const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(new Queries.ConfirmWindowQuery(
         'Do you want to unlock this project?'
       ))
       if (!isConfirm) {
@@ -78,7 +78,7 @@ export default class ProjectsEditor extends Vue {
   }
 
   async remove() {
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+    const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(new Queries.ConfirmWindowQuery(
       'Do you want to remove this project?'
     ))
     if (!isConfirm) {

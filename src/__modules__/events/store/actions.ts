@@ -1,21 +1,18 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { Commandable } from '~/domain/commands/command.bus'
-import { IRootState } from '~/domain/models'
-import { Queryable } from '~/domain/queries/query.bus'
+import { Commandable, Plugins, Queryable, Types } from '~/core'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
-import { Hub } from '~/plugins/hub'
-import { IEvent, IEvents, IEventsState } from '../models'
 import { DeleteEventCommand, UpdateEventCommand } from '../commands/commands'
+import { IEvent, IEvents, IEventsState } from '../models'
 import { bindings } from './bindings'
 
-type TStore = ActionContext<IEventsState, IRootState>
+type TStore = ActionContext<IEventsState, Types.IRootState>
 
 function setProcess(store: TStore, process: string | null) {
   store.commit('setProcess', process ? { name: process } : null, { root: true })
 }
 
-class Actions implements ActionTree<IEventsState, IRootState> {
+class Actions implements ActionTree<IEventsState, Types.IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
@@ -33,7 +30,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
       store.commit('setEvents', data)
       return data
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Events list fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -58,7 +55,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
       }
       return null
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Event update failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Event update failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -80,7 +77,7 @@ class Actions implements ActionTree<IEventsState, IRootState> {
       store.commit('setEvents', buff)
       return true
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Event remove failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Event remove failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

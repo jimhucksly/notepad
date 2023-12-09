@@ -1,6 +1,6 @@
 import { Prop } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
-import { Hub } from '~/plugins/hub'
+import { Plugins } from '~/core'
 import { ITreeItem } from '../models'
 
 @Options({
@@ -11,7 +11,7 @@ export default class LibraryTreeComponent extends Vue {
   @Prop({ default: 1 }) level: number
 
   selectNode(item: ITreeItem) {
-    Hub.$emit('codemirror-link-click', item.name)
+    Plugins.Hub.$emit('codemirror-link-click', item.name)
     const editor = document.querySelector('.editor_content')
     if (editor) {
       const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug)

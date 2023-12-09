@@ -1,8 +1,7 @@
 import { Vue } from 'vue-class-component'
 import { Prop, Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
-import { CreateEditQuery } from '~/domain/queries/createEdit.query'
+import { Queries, Types } from '~/core'
 import { IFilters, IProject, IProjects } from '../models'
 import { EditProjectCommand } from '../commands/commands'
 
@@ -31,7 +30,7 @@ export default class NotepadItem extends Vue {
   }
 
   async edit() {
-    const query = new CreateEditQuery<IProject>({
+    const query = new Queries.CreateEditQuery<IProject>({
       component: 'Projects-Modal-createEdit',
       componentProps: {
         item: this.item
@@ -42,7 +41,7 @@ export default class NotepadItem extends Vue {
         height: '95%'
       }
     })
-    const message = await this.$app.$queryBus.exec<CreateEditQuery<IProject>, string>(query)
+    const message = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<IProject>, string>(query)
     if (!message) {
       return
     }
@@ -62,14 +61,14 @@ export default class NotepadItem extends Vue {
   }
 
   async remove() {
-    let isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+    let isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(
       'Do you realy want to remove this project?'
     ))
     if (!isConfirm) {
       return
     }
     if (this.item.lock) {
-      isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+      isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(
         'Project is locked. Do you realy want to remove this project?'
       ))
     }

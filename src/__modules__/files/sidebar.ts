@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component'
 import { IFile } from './models'
-import { Hub } from '~/plugins/hub'
+import { Plugins } from '~/core'
 
 export default class FilesSidebar extends Vue {
   fileSelected: IFile = null
@@ -10,11 +10,11 @@ export default class FilesSidebar extends Vue {
 
   created() {
     this.onFileSelectHandler = this.onFileSelect.bind(this)
-    Hub.$on('on-file-select', this.onFileSelectHandler)
+    Plugins.Hub.$on('on-file-select', this.onFileSelectHandler)
   }
 
   beforeUnmount() {
-    Hub.$off('on-file-select', this.onFileSelectHandler)
+    Plugins.Hub.$off('on-file-select', this.onFileSelectHandler)
   }
 
   onFileSelect(file: IFile) {
@@ -22,19 +22,19 @@ export default class FilesSidebar extends Vue {
   }
 
   onFileChange(e: InputEvent) {
-    Hub.$emit('on-file-change', e)
+    Plugins.Hub.$emit('on-file-change', e)
   }
 
   onFileRemove() {
-    Hub.$emit('on-file-remove')
+    Plugins.Hub.$emit('on-file-remove')
   }
 
   onFileCheck() {
     this.filesCheck = !this.filesCheck
-    Hub.$emit('on-file-check', this.filesCheck)
+    Plugins.Hub.$emit('on-file-check', this.filesCheck)
   }
 
   onFileDownload() {
-    Hub.$emit('on-file-download')
+    Plugins.Hub.$emit('on-file-download')
   }
 }

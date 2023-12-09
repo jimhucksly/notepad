@@ -1,5 +1,5 @@
 import { Module } from 'vuex'
-import { IRootState } from '~/domain/models'
+import { Types } from '~/core'
 import state from './state'
 import getters from './getters'
 import actions from './actions'
@@ -8,7 +8,7 @@ import { ILibraryState } from '../models'
 
 const namespaced = true
 
-const library: Module<ILibraryState, IRootState> = {
+const library: Module<ILibraryState, Types.IRootState> = {
   namespaced,
   state,
   getters,

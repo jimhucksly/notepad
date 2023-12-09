@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce'
 import { Options, Vue } from 'vue-class-component'
-import { IEditor } from '~/domain/models'
-import Editor from '~/lib/vue-ace-editor'
+import { Types, Libs } from '~/core'
 import { EditorView } from '@codemirror/view'
 import { EditorState, Compartment } from '@codemirror/state'
 import { json } from '@codemirror/lang-json'
@@ -11,7 +10,7 @@ require('brace/theme/chrome')
 
 @Options({
   components: {
-    Editor
+    'editor': Libs.Editor
   }
 })
 export default class PostmanPage extends Vue {
@@ -27,7 +26,7 @@ export default class PostmanPage extends Vue {
   ]
 
   body = ''
-  editor: IEditor = null
+  editor: Types.IEditor = null
   response: EditorView = null
 
   fetching = false
@@ -103,7 +102,7 @@ export default class PostmanPage extends Vue {
     this.headers.splice(index, 1)
   }
 
-  onEditorInit(instance: IEditor) {
+  onEditorInit(instance: Types.IEditor) {
     let isEditorReady = false
     this.debounced = debounce(() => {
       if (isEditorReady) {

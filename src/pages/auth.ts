@@ -1,8 +1,7 @@
 import { Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { IResponse } from '~/domain/models'
+import { IResponse, IValidate } from '~/domain/models'
 import { AuthQuery } from '~/domain/queries'
-import { IValidate } from '~/plugins/validate'
 
 export default class Auth extends Vue {
   @Getter('getEndpoint') endpoint: string

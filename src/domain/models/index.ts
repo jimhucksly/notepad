@@ -1,12 +1,5 @@
 import { FsmStates } from '~/application/app'
 
-export interface IMenu {
-  name: string
-  nameAlt: string
-  fsmState: symbol
-  id: number
-}
-
 export interface IEditor {
   container: {
     remove: () => void
@@ -22,6 +15,21 @@ export interface IEditor {
       clearSelection: () => void
     }
   }
+}
+
+export interface IValidate {
+  touched?: number
+  touch?: () => Promise<void>
+  valid?: () => boolean
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  [key: string]: any
+}
+
+export interface IMenu {
+  name: string
+  nameAlt: string
+  fsmState: symbol
+  id: number
 }
 
 type TResponseStatus = 'success' | 'error'

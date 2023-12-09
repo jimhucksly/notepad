@@ -1,8 +1,7 @@
 import { Vue } from 'vue-class-component'
 import { Prop } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
-import { CreateEditQuery } from '~/domain/queries/createEdit.query'
+import { Queries, Types } from '~/core'
 import { ILibraryFile } from '../models'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '../commands/commands'
 import { LibraryFilesQuery } from '../queries/queries'
@@ -23,14 +22,14 @@ export default class LibraryFiles extends Vue {
   }
 
   async add() {
-    const query = new CreateEditQuery<ILibraryFile>({
+    const query = new Queries.CreateEditQuery<ILibraryFile>({
       component: 'Library-Modal-createEditFile',
       modal: {
         title: 'Add library file',
         width: '30%'
       }
     })
-    const result = await this.$app.$queryBus.exec<CreateEditQuery<ILibraryFile>, ILibraryFile>(query)
+    const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILibraryFile>, ILibraryFile>(query)
     if (!result) {
       return
     }
@@ -38,7 +37,7 @@ export default class LibraryFiles extends Vue {
   }
 
   async removeFile(file: ILibraryFile) {
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(
       'Do you want to remove the library file?'
     ))
     if (!isConfirm) {

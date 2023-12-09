@@ -7,7 +7,7 @@ import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { translit, uniqueid } from '~/helpers'
-import { Hub } from '~/plugins/hub'
+import { Plugins } from '~/core'
 import { UpdateLibraryCommand } from './commands/commands'
 import { ILibraryFile, ITreeItem } from './models'
 import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries'
@@ -83,7 +83,7 @@ export default class LibraryPage extends Vue {
 
   beforeUnmount() {
     this.setFileId(0)
-    Hub.$off('codemirror-link-click', this.linkClickHandler)
+    Plugins.Hub.$off('codemirror-link-click', this.linkClickHandler)
   }
 
   buildEditor() {

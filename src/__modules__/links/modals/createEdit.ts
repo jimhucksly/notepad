@@ -1,6 +1,6 @@
 import { Prop } from 'vue-property-decorator'
 import { Vue } from 'vue-class-component'
-import { IValidate } from '~/plugins/validate'
+import { Types } from '~/core'
 import { ILink } from '../models'
 
 export default class CreateEditLinkComponent extends Vue {
@@ -9,7 +9,7 @@ export default class CreateEditLinkComponent extends Vue {
   url = ''
   linkName = ''
 
-  v: IValidate = {}
+  v: Types.IValidate = {}
 
   isSubmitted = false
 

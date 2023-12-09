@@ -1,6 +1,5 @@
 import { Vue } from 'vue-class-component'
 import { Emit, Prop, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
 import { getFileType } from '~/helpers'
 import { IFile } from './models'
 
@@ -12,8 +11,6 @@ export default class File extends Vue {
   @Prop() checked: boolean
 
   isChecked = false
-
-  @Getter('getDownloadsTargetPath') targetPath: string
 
   onResizeHandler: () => void
 

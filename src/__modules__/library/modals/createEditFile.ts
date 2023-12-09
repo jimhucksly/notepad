@@ -1,10 +1,10 @@
 import { Vue } from 'vue-class-component'
-import { IValidate } from '~/plugins/validate'
+import { Types } from '~/core'
 
 export default class CreateEditLibraryFileComponent extends Vue {
   name = ''
 
-  v: IValidate = {}
+  v: Types.IValidate = {}
 
   isSubmitted = false
 

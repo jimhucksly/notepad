@@ -1,8 +1,8 @@
 import { Vue } from 'vue-class-component'
-import { Hub } from '~/plugins/hub'
+import { Plugins } from '~/core'
 
 export default class TodoSidebar extends Vue {
   addTodo() {
-    Hub.$emit('todo-add')
+    Plugins.Hub.$emit('todo-add')
   }
 }

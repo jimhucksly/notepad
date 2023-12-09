@@ -1,5 +1,5 @@
 import { Module } from 'vuex'
-import { IRootState } from '~/domain/models'
+import { Types } from '~/core'
 import state from './state'
 import getters from './getters'
 import actions from './actions'
@@ -8,7 +8,7 @@ import { IEventsState } from '../models'
 
 const namespaced = true
 
-const events: Module<IEventsState, IRootState> = {
+const events: Module<IEventsState, Types.IRootState> = {
   namespaced,
   state,
   getters,

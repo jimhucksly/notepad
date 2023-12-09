@@ -1,13 +1,6 @@
 import { App, ComponentPublicInstance } from 'vue'
+import { IValidate } from '~/domain/models'
 import { REGEXP_LOGIN, REGEXP_EMAIL, REGEXP_PASS, REGEXP_NAME } from '~/helpers'
-
-export interface IValidate {
-  touched?: number
-  touch?: () => Promise<void>
-  valid?: () => boolean
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key: string]: any
-}
 
 export default {
   install: (vue: App) => {

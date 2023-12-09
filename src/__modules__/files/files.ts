@@ -1,7 +1,7 @@
 import { Options, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import File from './file'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { Queries } from '~/core'
 import { dragAndDropLoader } from '~/helpers'
 import { Hub } from '~/plugins/hub'
 import { IFile } from './models'
@@ -15,7 +15,6 @@ import { DeleteFileCommand, UploadFileCommand } from './commands/commands'
 })
 export default class Files extends Vue {
   @Getter('Files/getFiles') files: Array<IFile>
-  @Getter('getDownloadsTargetPath') downloadTargetPath: string
 
   selected: string = null
   uploading = false
@@ -79,7 +78,7 @@ export default class Files extends Vue {
     if (this.checkeds.length) {
       question = `Do you realy want to remove ${this.checkeds.length} files?`
     }
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(question))
+    const isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(question))
     if (!isConfirm) {
       return
     }
@@ -114,7 +113,7 @@ export default class Files extends Vue {
     if (found) {
       const a = document.createElement('a')
       a.href = found.href
-      a.download = this.downloadTargetPath + '\\' + found.name
+      a.download = ''
       document.body.appendChild(a)
       a.click()
       setTimeout(() => {

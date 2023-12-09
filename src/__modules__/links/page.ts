@@ -1,7 +1,6 @@
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import { CreateEditQuery } from '~/domain/queries/createEdit.query'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
+import { Queries, Types } from '~/core'
 import { LinksQuery } from './queries/queries'
 import { ILink } from './models'
 import { DeleteLinkCommand, UpdateLinksCommand } from './commands/commands'
@@ -25,7 +24,7 @@ export default class LinksPage extends Vue {
   async edit(id: string) {
     const found = this.links.find(link => link.id === id)
     if (found) {
-      const query = new CreateEditQuery<ILink>({
+      const query = new Queries.CreateEditQuery<ILink>({
         component: 'Links-Modal-createEdit',
         componentProps: {
           item: {
@@ -39,7 +38,7 @@ export default class LinksPage extends Vue {
           width: '30%'
         }
       })
-      const result = await this.$app.$queryBus.exec<CreateEditQuery<ILink>, ILink>(query)
+      const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILink>, ILink>(query)
       if (!result) {
         return
       }
@@ -49,7 +48,7 @@ export default class LinksPage extends Vue {
   }
 
   async remove(id: string) {
-    const isConfirm = await this.$app.$queryBus.exec(new ConfirmWindowQuery(
+    const isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(
       'Do you want to remove link?'
     ))
     if (!isConfirm) {

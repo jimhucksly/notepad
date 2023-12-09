@@ -1,10 +1,10 @@
 import { GetterTree } from 'vuex'
-import { IRootState } from '~/domain/models'
+import { Types } from '~/core'
 import { upperFirst } from '~/helpers'
 import { stateKeys } from './state'
 import { ILibraryState } from '../models'
 
-const getters: GetterTree<ILibraryState, IRootState> = {}
+const getters: GetterTree<ILibraryState, Types.IRootState> = {}
 
 stateKeys.forEach(key => {
   const getterKey = 'get' + upperFirst(key)

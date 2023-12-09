@@ -1,22 +1,19 @@
 import { ActionContext, ActionTree } from 'vuex'
-import { Commandable } from '~/domain/commands/command.bus'
-import { IRootState } from '~/domain/models'
-import { Queryable } from '~/domain/queries/query.bus'
+import { Commandable, Queryable, Types, Plugins } from '~/core'
 import { toActionTree } from '~/helpers'
 import $http from '~/http'
-import { Hub } from '~/plugins/hub'
 import { bindings } from './bindings'
 import { LibraryFileQuery } from '../queries/queries'
 import { AddLibraryFileCommand, DeleteLibraryFileCommand, UpdateLibraryCommand } from '../commands/commands'
 import { ILibraryFile, ILibraryState } from '../models'
 
-type TStore = ActionContext<ILibraryState, IRootState>
+type TStore = ActionContext<ILibraryState, Types.IRootState>
 
 function setProcess(store: TStore, process: string | null) {
   store.commit('setProcess', process ? { name: process } : null, { root: true })
 }
 
-class Actions implements ActionTree<ILibraryState, IRootState> {
+class Actions implements ActionTree<ILibraryState, Types.IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   [key: string]: (injectee: TStore, payload: any) => any
 
@@ -41,7 +38,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       }
       return data
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Library files fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -65,7 +62,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       store.commit('setLibraryData', data)
       return data
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file fetch failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -97,7 +94,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       return true
     } catch (e) {
       const message = e?.message || 'Library file creating failed'
-      Hub.$emit('on-toasted-error', 'Error: ' + message)
+      Plugins.Hub.$emit('on-toasted-error', 'Error: ' + message)
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -119,7 +116,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       await $http.post('/library', command)
       return Promise.resolve(true)
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file edit failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)
@@ -140,7 +137,7 @@ class Actions implements ActionTree<ILibraryState, IRootState> {
       await $http.delete(`/library/?id=${command.id}`)
       return Promise.resolve(true)
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
+      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file delete failed')
       return Promise.reject(e)
     } finally {
       setProcess(store, null)

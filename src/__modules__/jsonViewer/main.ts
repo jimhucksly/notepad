@@ -1,8 +1,6 @@
 import { Options, Vue } from 'vue-class-component'
 import { debounce } from 'lodash'
-import { IEditor } from '~/domain/models'
-import { Hub } from '~/plugins/hub'
-import Editor from '~/lib/vue-ace-editor'
+import { Types, Libs, Plugins } from '~/core'
 
 require('brace/mode/javascript')
 require('brace/theme/twilight')
@@ -12,16 +10,16 @@ const fs = require('fs')
 
 @Options({
   components: {
-    Editor
+    'editor': Libs.Editor
   },
   beforeUnmount() {
-    Hub.$off('json-viewer-src-set', this.onJsonHandler)
-    Hub.$off('json-viewer-save', this.onJsonSaveHandler)
-    Hub.$off('json-viewer-clear', this.onJsonClearHandler)
+    Plugins.Hub.$off('json-viewer-src-set', this.onJsonHandler)
+    Plugins.Hub.$off('json-viewer-save', this.onJsonSaveHandler)
+    Plugins.Hub.$off('json-viewer-clear', this.onJsonClearHandler)
   }
 })
 export default class JsonViewer extends Vue {
-  editor: IEditor = null
+  editor: Types.IEditor = null
   content = ''
   formatted = false
 
@@ -31,7 +29,7 @@ export default class JsonViewer extends Vue {
   onJsonSaveHandler: (fileName: string) => void
   onJsonClearHandler: () => void
 
-  editorInit(instance: IEditor) {
+  editorInit(instance: Types.IEditor) {
     this.debounced = debounce(() => {
       this.format(instance)
     }, 3000)
@@ -39,7 +37,7 @@ export default class JsonViewer extends Vue {
     this.editor = instance
   }
 
-  format(instance: IEditor) {
+  format(instance: Types.IEditor) {
     const res: HTMLElement | null = document.querySelector('.json_viewer_res')
     if (this.formatted) {
       this.formatted = false
@@ -118,11 +116,11 @@ export default class JsonViewer extends Vue {
 
   mounted() {
     this.onJsonHandler = this.onJson.bind(this)
-    Hub.$on('json-viewer-set', this.onJsonHandler)
+    Plugins.Hub.$on('json-viewer-set', this.onJsonHandler)
     this.onJsonSaveHandler = this.onJsonSave.bind(this)
-    Hub.$on('json-viewer-save', this.onJsonSaveHandler)
+    Plugins.Hub.$on('json-viewer-save', this.onJsonSaveHandler)
     this.onJsonClearHandler = this.onJsonClear.bind(this)
-    Hub.$on('json-viewer-clear', this.onJsonClearHandler)
+    Plugins.Hub.$on('json-viewer-clear', this.onJsonClearHandler)
     if (window.localStorage) {
       const value = localStorage.getItem('json_viewer')
       let json: Record<string, unknown> = null
