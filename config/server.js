@@ -20,7 +20,7 @@ function initServer() {
 
   server.post('/postman', async function (req, res) {
     try {
-      const url = req.body.url.trim()
+      const url = req.body.url.trim().replace('localhost', '127.0.0.1')
       if (!url) {
         throw new Error('Invalid URL')
       }
@@ -58,6 +58,8 @@ function initServer() {
 
       res.json(req.body)
     } catch (e) {
+      /* eslint-desable no-console */
+      console.log(e)
       res.status(500).send(e.message)
     }
   })

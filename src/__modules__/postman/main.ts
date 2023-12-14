@@ -42,8 +42,8 @@ export default class PostmanPage extends Vue {
     const payload = {
       url: this.url,
       method: this.method,
-      headers: this.headers,
-      body: this.body
+      headers: this.headers.filter(h => Boolean(h.key.trim()) && Boolean(h.value.trim())),
+      body: this.editor.getValue()
     }
     try {
       this.fetching = true
