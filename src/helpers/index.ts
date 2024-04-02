@@ -15,10 +15,13 @@ export const htmlToText = (html: string): string => {
   const urls = div.querySelectorAll('a')
   urls.length && urls.forEach((el: HTMLAnchorElement) => {
     const href: string = el.href.replace(/\/$/, '')
-    const p = document.createElement('p')
-    p.innerHTML = href
-    div.insertBefore(p, el)
-    el.remove()
+    const a = div.querySelector(`a[href="${href}"]`)
+    if (a) {
+      const p = document.createElement('p')
+      p.innerHTML = href
+      a.parentNode.insertBefore(p, a)
+      a.remove()
+    }
   })
   const marks = div.querySelectorAll('mark')
   marks.length && marks.forEach((el: HTMLElement) => {

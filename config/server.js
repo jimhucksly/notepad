@@ -58,9 +58,7 @@ function initServer() {
 
       res.json(req.body)
     } catch (e) {
-      /* eslint-desable no-console */
-      console.log(e)
-      res.status(500).send(e.message)
+      res.send(e)
     }
   })
 
