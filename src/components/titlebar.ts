@@ -1,18 +1,8 @@
 import { Vue } from 'vue-class-component'
-import { Getter } from 'vuex-class'
-import { _container } from '~/domain/container'
-import { IQueryBus } from '~/domain/interfaces'
 import { IUser } from '~/domain/models'
 import { InfoWindowQuery } from '~/domain/queries/infoWindow.query'
-import { TYPES } from '~/domain/types'
 
 export default class Titlebar extends Vue {
-  private readonly queryBus = _container.get<IQueryBus>(TYPES.QueryBus)
-
-  @Getter('getIsAuth') isAuth: boolean
-  @Getter('getCurrentUser') currentUser: IUser
-  @Getter('getProcess') process: { name: string }
-
   title = ''
   isMaximized = false
 
@@ -33,7 +23,7 @@ export default class Titlebar extends Vue {
         width: '25%'
       }
     })
-    this.queryBus.exec(query)
+    this.$app.$queryBus.exec(query)
   }
 
   toAccount() {
@@ -46,5 +36,26 @@ export default class Titlebar extends Vue {
 
   get yandexDiskAccessToken() {
     return this.currentUser?.yandexDiskAccessToken
+  }
+
+  get isAuth(): boolean {
+    if ('$store' in this) {
+      return this.$store.getters.getIsAuth
+    }
+    return false
+  }
+
+  get currentUser(): IUser {
+    if ('$store' in this) {
+      return this.$store.getters.getCurrentUser
+    }
+    return null
+  }
+
+  get process(): { name: string } {
+    if ('$store' in this) {
+      return this.$store.getters.getProcess
+    }
+    return null
   }
 }

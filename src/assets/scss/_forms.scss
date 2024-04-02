@@ -48,9 +48,11 @@
     letter-spacing: 1px;
     z-index: 10;
   }
+
   button {
     width: 100%;
   }
+
   label {
     display: flex;
     position: absolute;
@@ -69,7 +71,7 @@
 input[type=text],
 input[type=password] {
   border: 1px solid var(--blue-gray);
-  height: 30px;
+  height: var(--input-height);
   font-size: 14px;
   width: 100%;
   padding: 0 6px;
@@ -103,6 +105,19 @@ textarea {
   border: 1px solid var(--blue-gray);
   resize: none;
   overflow: auto;
+
+  &:focus {
+    outline: none;
+    border: 1px solid var(--blue_light);
+  }
+}
+
+select {
+  border: 1px solid var(--blue-gray);
+  height: var(--input-height);
+  font-size: 14px;
+  width: 100%;
+  padding: 0 6px;
 
   &:focus {
     outline: none;

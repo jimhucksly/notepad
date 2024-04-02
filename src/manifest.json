@@ -1,0 +1,44 @@
+{
+  "main": [
+    {
+      "name": "Projects",
+      "nameAlt": "Projects",
+      "path": "projects"
+    },
+    {
+      "name": "Library",
+      "nameAlt": "Library",
+      "path": "library"
+    },
+    {
+      "name": "Todo",
+      "nameAlt": "Todo",
+      "path": "todo"
+    },
+    {
+      "name": "Events",
+      "nameAlt": "Events",
+      "path": "events"
+    },
+    {
+      "name": "Links",
+      "nameAlt": "Links",
+      "path": "links"
+    },
+    {
+      "name": "Files",
+      "nameAlt": "Files",
+      "path": "files"
+    },
+    {
+      "name": "Postman",
+      "nameAlt": "Postman",
+      "path": "postman"
+    },
+    {
+      "name": "JsonViewer",
+      "nameAlt": "Json Viewer",
+      "path": "jsonViewer"
+    }
+  ]
+}

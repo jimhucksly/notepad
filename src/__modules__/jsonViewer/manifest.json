@@ -1,0 +1,7 @@
+{
+	"components": {
+		"main": "main",
+		"aside": "sidebar",
+		"modals": []
+	}
+}

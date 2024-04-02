@@ -1,11 +1,9 @@
-import { cloneDeep } from 'lodash'
-import $http from '~/store/http'
 import {
   IRootState,
   IResponse,
   IUser
 } from '~/domain/models'
-import { TYPES } from '~/domain/types'
+import { bindings } from '~/domain/types'
 import { Queryable } from '~/domain/queries/query.bus'
 import { Commandable } from '~/domain/commands/command.bus'
 import {
@@ -17,7 +15,6 @@ import {
 } from '~/domain/queries'
 import {
   AuthCommand,
-  ReadCommand,
   RegistrationCommand,
   ResendCodeCommand,
   ResetPasswordCommand,
@@ -28,6 +25,7 @@ import {
 import { ActionTree, ActionContext } from 'vuex'
 import { Hub } from '~/plugins/hub'
 import { toActionTree } from '~/helpers'
+import $http from '~/http'
 
 type TStore = ActionContext<IRootState, IRootState>
 
@@ -40,7 +38,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {RegistrationCommand} command
    */
-  @Commandable(TYPES.RegistrationCommand)
+  @Commandable(bindings.RegistrationCommand)
   async actionReg(store: TStore, command: RegistrationCommand): Promise<IResponse<boolean>> {
     try {
       setProcess(store, 'registration...')
@@ -52,16 +50,9 @@ class Actions implements ActionTree<IRootState, IRootState> {
     }
   }
 
-  @Commandable(TYPES.AuthCommand)
+  @Commandable(bindings.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
     store.commit('setIsAuth', command.flag)
-  }
-
-  @Commandable(TYPES.ReadCommand)
-  read(store: TStore, command: ReadCommand): void {
-    const json = cloneDeep(store.getters['getJson'])
-    delete json[command.stamp]['unread']
-    store.commit('projects/setJson', json)
   }
 
   /**
@@ -69,7 +60,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {AuthQuery} command
    */
-  @Queryable(TYPES.AuthQuery)
+  @Queryable(bindings.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
       setProcess(store, 'authentication...')
@@ -89,7 +80,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {VerifyCommand} command
    */
-  @Commandable(TYPES.VerifyCommand)
+  @Commandable(bindings.VerifyCommand)
   async actionVerify(store: TStore, command: VerifyCommand): Promise<IResponse<boolean>> {
     try {
       setProcess(store, 'verifying...')
@@ -110,7 +101,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {ResendCodeCommand} command
    */
-  @Commandable(TYPES.ResendCodeCommand)
+  @Commandable(bindings.ResendCodeCommand)
   async actionResend(store: TStore, command: ResendCodeCommand): Promise<IResponse<void>> {
     try {
       setProcess(store, 'resend code...')
@@ -130,7 +121,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {ResetPasswordCommand} command
    */
-  @Commandable(TYPES.ResetPasswordCommand)
+  @Commandable(bindings.ResetPasswordCommand)
   async actionResetPass(store: TStore, command: ResetPasswordCommand): Promise<IResponse<IUser>> {
     try {
       setProcess(store, 'reset password...')
@@ -147,7 +138,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {UpdatePasswordCommand} command
    */
-  @Commandable(TYPES.UpdatePasswordCommand)
+  @Commandable(bindings.UpdatePasswordCommand)
   async actionUpdatePass(store: TStore, command: UpdatePasswordCommand): Promise<IResponse<boolean>> {
     try {
       setProcess(store, 'update password...')
@@ -164,7 +155,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {SessionQuery} query
    */
-  @Queryable(TYPES.SessionQuery)
+  @Queryable(bindings.SessionQuery)
   async actionSession(store: TStore, query: SessionQuery): Promise<IUser> {
     try {
       setProcess(store, 'get session...')
@@ -189,7 +180,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {YandexTokenQuery} query
    */
-  @Queryable(TYPES.YandexTokenQuery)
+  @Queryable(bindings.YandexTokenQuery)
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<IResponse<string>> {
     try {
       setProcess(store, 'creating yandex disk token...')
@@ -207,7 +198,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {RefreshYandexTokenQuery} query
    */
-  @Queryable(TYPES.RefreshYandexTokenQuery)
+  @Queryable(bindings.RefreshYandexTokenQuery)
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
       setProcess(store, 'updating yandex disk token...')
@@ -226,7 +217,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {RevokeYandexTokenCommand} command
    */
-  @Commandable(TYPES.RevokeYandexTokenCommand)
+  @Commandable(bindings.RevokeYandexTokenCommand)
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
       setProcess(store, 'revoke yandex disk token...')
@@ -245,7 +236,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param store Store
    * @param {YandexDiskResourceLinkQuery} query
    */
-  @Queryable(TYPES.YandexDiskResourceLinkQuery)
+  @Queryable(bindings.YandexDiskResourceLinkQuery)
   async fetchResourceLink(
     store: TStore, query: YandexDiskResourceLinkQuery
   ): Promise<string> {

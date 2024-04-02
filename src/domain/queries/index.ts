@@ -4,24 +4,6 @@ export class AuthQuery {
 
 export class SessionQuery {}
 
-export class ProjectsQuery {}
-
-export class LibraryFilesQuery {}
-
-export class LibraryFileQuery {
-  constructor(public id?: string | number) {}
-}
-
-export class ArchivesQuery {}
-
-export class EventsQuery {}
-
-export class LinksQuery {}
-
-export class TodoQuery {}
-
-export class FilesQuery {}
-
 export class YandexTokenQuery {
   constructor(public code: number, public userId: number) {}
 }

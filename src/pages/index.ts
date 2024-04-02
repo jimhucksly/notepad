@@ -1,27 +1,19 @@
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import FsmStates from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 import Error from '~/components/error'
 import Loading from '~/components/loading'
 import Sidebar from '~/components/sidebar'
-import Titlebar from '~/components/titlebar'
 import { userDataFileName, userPreferencesFileName } from '~/constants'
 import { IUser } from '~/domain/models'
 import Account from '~/pages/account'
 import Auth from '~/pages/auth'
-import Events from '~/pages/events'
-import JsonViewer from '~/pages/jsonViewer'
-import Library from '~/pages/library'
-import Links from '~/pages/links'
 import Preferences from '~/pages/preferences'
-import Projects from '~/pages/projects'
 import Reg from '~/pages/reg'
 import Reset from '~/pages/reset'
-import Todo from '~/pages/todo'
 import Verify from '~/pages/verify'
 import Yandex from '~/pages/yandex'
-import Files from '~/pages/files'
 import storage from '~/plugins/storage'
 
 interface IUserPreferences {
@@ -30,7 +22,6 @@ interface IUserPreferences {
 
 @Options({
   components: {
-    Titlebar,
     Loading,
     Auth,
     Reg,
@@ -39,14 +30,7 @@ interface IUserPreferences {
     Yandex,
     Error,
     Account,
-    Projects,
-    Todo,
-    Library,
     Preferences,
-    Events,
-    JsonViewer,
-    Links,
-    Files,
     Sidebar
   }
 })

@@ -1,11 +1,4 @@
-import FsmStates from '~/application/fsm.states'
-
-export interface IMenu {
-  name: string
-  nameAlt: string
-  fsmState: symbol
-  id: number
-}
+import { FsmStates } from '~/application/app'
 
 export interface IEditor {
   container: {
@@ -24,89 +17,19 @@ export interface IEditor {
   }
 }
 
-export interface ITreeItem {
-  id: string
+export interface IValidate {
+  touched?: number
+  touch?: () => Promise<void>
+  valid?: () => boolean
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  [key: string]: any
+}
+
+export interface IMenu {
   name: string
-  slug: string
-  children?: ITreeItem[]
-}
-
-export interface IFile {
-  id: string
-  name: string
-  extension: string
-  createDateTime: string
-  size: number
-  href: string
-}
-
-export interface IProject {
-  key: string
-  date: string
-  name: string
-  lock: boolean
-  message?: string
-  unread?: boolean
-}
-
-export interface IProjects {
-  [stamp: string]: IProject
-}
-
-export interface IFilters {
-  [stamp: string]: boolean
-}
-
-export interface IArchive {
-  id: string
-  name: string
-  date: string
-}
-
-export interface ILibraryFile {
-  id: string
-  name: string // имя физического файла на сервере
-}
-
-export interface IEvents {
-  [date: string]: {
-    title: string
-    content: string
-  }
-}
-
-export interface IEvent {
-  /*
-   * 01.03.2020
-   */
-  date: string
-  title: string
-  content: string
-}
-
-export interface ITodo {
-  [key: string]: {
-    date: string
-    text: string
-    order: number
-  }
-}
-
-export interface ITodoItem {
-  id: string
-  date: string
-  text: string
-  order: number
-}
-
-export interface ITodoOrder {
-  [id: string]: number
-}
-
-export interface ILink {
-  id?: string
-  url: string
-  name: string
+  nameAlt: string
+  fsmState: symbol
+  id: number
 }
 
 type TResponseStatus = 'success' | 'error'
@@ -127,36 +50,6 @@ export interface IResponse<TData> {
   message?: string
   user?: IUser
   token?: string
-}
-
-export interface IProjectsState {
-  projects: IProjects
-  archives: IArchive[]
-  filter: IFilters
-  selectedProjectKey: string
-}
-
-export interface ILibraryState {
-  libraryData: string
-  libraryFiles: Array<ILibraryFile>
-  libraryFileId: string | number
-  libraryTree: Array<ITreeItem>
-}
-
-export interface ITodoState {
-  todo: ITodo
-}
-
-export interface IEventsState {
-  events: IEvents
-}
-
-export interface ILinksState {
-  links: ILink
-}
-
-export interface IFilesState {
-  files: IFile
 }
 
 export interface IRootState {

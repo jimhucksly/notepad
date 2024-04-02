@@ -1,5 +1,5 @@
 import { injectable } from 'inversify'
-import FsmStates from '~/application/fsm.states'
+import { FsmStates } from '~/application/app'
 import { Hub } from '~/plugins/hub'
 import { IQueryHandler } from '../interfaces'
 import { IPopupWindowQuery } from '../models'

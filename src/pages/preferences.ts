@@ -3,29 +3,16 @@ import { Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
 import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands'
-import { IResponse, IUser } from '~/domain/models'
+import { IResponse, IUser, IValidate } from '~/domain/models'
 import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
-import { IValidate } from '~/plugins/validate'
 import pkg from '../../package.json'
 
 export default class Preferences extends Vue {
-  // @Mutation('setDownloadsTargetPath') setDownloadsTargetPath: (value: string) => void
   @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void
 
   @Getter('getUserDataPath') userDataPath: string
-  // @Getter('getDownloadsTargetPath') downloadsTargetPath: string
   @Getter('getYandexApiToken') yandexApiToken: string
   @Getter('getCurrentUser') currentUser: IUser
-
-  // preferences = {
-  //   downloadsTargetPath: ''
-  // }
-  // defaults = {
-  //   downloadsTargetPath: ''
-  // }
-  // errors = {
-  //   downloadsTargetPath: 0
-  // }
 
   appAutoLauncher: AutoLaunch = null
   isAutoLaunchEnabled = false
@@ -54,9 +41,6 @@ export default class Preferences extends Vue {
   }
 
   mounted() {
-    // this.preferences.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
-    // this.defaults.downloadsTargetPath = this.$store.getters.getDownloadsTargetPath
-
     const appAutoLauncher = new AutoLaunch({
       name: pkg.build.productName.replace(/ /g, '')
     })

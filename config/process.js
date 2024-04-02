@@ -12,6 +12,9 @@ import electron, {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
+import { port } from './endpoint.json'
+
+import initServer from './server'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -32,7 +35,7 @@ let mainWindow
 let appTray
 
 const winURL = $DEV
-  ? 'http://localhost:9080'
+  ? ['http://localhost', port].join(':')
   : `file://${__dirname}/index.html`
 
 const appIconTray = path.resolve(__static, 'iconTray.ico')
@@ -235,3 +238,5 @@ ipcMain.on('save-file-dialog', (event, arg) => {
     event.sender.send('save-dialog-file-selected', file)
   })
 })
+
+initServer()

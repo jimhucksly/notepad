@@ -1,24 +1,25 @@
 import 'reflect-metadata'
-import { createApp } from 'vue'
-import '~/assets/css/simplemde.css'
 import '~/assets/scss/main.scss'
+import '~/assets/css/md-editor.css'
+
+import { createApp, defineComponent } from 'vue'
 
 import router from './router'
-import store from './store'
+import { buildStore } from './store'
+import { buildContainer } from './domain/container'
 import root from './app'
 
-import Popup from '~/modules/popup'
-import Toasted from '~/modules/toasted'
-import LibraryTree from '~/modules/libraryTree'
-import BCheckbox from '~/modules/bcheckbox'
-import BBtn from '~/modules/bbtn'
-import SvgIcon from '~/modules/svgIcon'
-import Loader from '~/modules/loader'
-import CreateEditLink from '~/modules/popup/createEditLink'
-import AboutPopup from '~/modules/popup/about'
-import CreateEditLibraryFile from '~/modules/popup/createEditLibraryFile'
-import CreateEditProject from '~/modules/popup/createEditProject'
-import CodeInput from '~/modules/codeInput'
+import Titlebar from '~/components/titlebar'
+import Popup from '~/components/popup'
+import Toasted from '~/components/toasted'
+import BCheckbox from '~/components/bcheckbox'
+import BBtn from '~/components/bbtn'
+import BTabs, { BTab } from '~/components/btabs'
+import SvgIcon from '~/components/svgIcon'
+import Loader from '~/components/loader'
+import AboutPopup from '~/components/popup/about'
+import CodeInput from '~/components/codeInput'
+import BSplitter from '~/components/bsplitter'
 
 import AnimePlugin from '~/plugins/anime'
 import ToastedPlugin from '~/plugins/toasted'
@@ -26,45 +27,110 @@ import AppPlugin from '~/plugins/app'
 import ElectronPlugin from '~/plugins/electron'
 import SocketPlugin from '~/plugins/socket'
 import Validate from '~/plugins/validate'
+import { IManifest, IModuleMaifest } from './domain/interfaces'
+import { ModuleTree, Store } from 'vuex'
+import { IRootState } from './domain/models'
+import { bindings } from './domain/types'
+import Application from './application/app'
+import { createInterceptors } from './http'
+import { registerModule } from './registerModule'
 
-const isDev = process.env.NODE_ENV === 'development'
+async function init() {
+  try {
+    const manifestURL = $DEV ? '/manifest.json' : 'manifest.json'
+    const response: { json: () => Promise<IManifest>, status: number } = await fetch(manifestURL)
+    if (response.status === 404) {
+      throw new Error('Manifest is not found')
+    }
+    const manifest: IManifest = await response.json()
 
-const app = createApp(root)
+    const isDev = process.env.NODE_ENV === 'development'
 
-app.component('popup', Popup)
-app.component('toasted', Toasted)
-app.component('create-edit-link', CreateEditLink)
-app.component('library-tree', LibraryTree)
-app.component('svg-icon', SvgIcon)
-app.component('loader', Loader)
-app.component('b-checkbox', BCheckbox)
-app.component('b-btn', BBtn)
-app.component('about-popup', AboutPopup)
-app.component('create-edit-project', CreateEditProject)
-app.component('create-edit-library-file', CreateEditLibraryFile)
-app.component('code-input', CodeInput)
+    const app = createApp(root)
 
-app.use(store)
-app.use(router)
-app.use(AppPlugin)
-app.use(ElectronPlugin)
-app.use(AnimePlugin)
-app.use(ToastedPlugin)
-app.use(SocketPlugin, { store })
-app.use(Validate)
+    const storeModules: ModuleTree<IRootState> = {}
 
-app.config.globalProperties.$dateFormat = (date: string | Date) => {
-  if (typeof date === 'string') {
-    date = new Date(date)
+    for (const _module of manifest.main) {
+      const path = _module.path + '/'
+      const _manifest: IModuleMaifest = require('~/__modules__/' + path + 'manifest.json')
+      if (_manifest) {
+        const data = await registerModule(_module, _manifest, app)
+        if (data && data.storeModule && data.namespace) {
+          storeModules[data.namespace] = { ...data.storeModule }
+        }
+      }
+    }
+
+    const store = buildStore(storeModules)
+
+    store.commit('setManifest', manifest)
+
+    const container = buildContainer()
+    container.bind<Store<IRootState>>(bindings.Store).toConstantValue(store)
+
+    app.component('titlebar', Titlebar)
+    app.component('popup', Popup)
+    app.component('toasted', Toasted)
+    app.component('svg-icon', SvgIcon)
+    app.component('loader', Loader)
+    app.component('b-checkbox', BCheckbox)
+    app.component('b-btn', BBtn)
+    app.component('b-tabs', BTabs)
+    app.component('b-tab', BTab)
+    app.component('about-popup', AboutPopup)
+    app.component('code-input', CodeInput)
+    app.component('b-splitter', BSplitter)
+
+    const $app: Application = container.get(bindings.Application)
+
+    app.use(store)
+    app.use(router)
+    app.use(AppPlugin, { app: $app })
+    app.use(ElectronPlugin)
+    app.use(AnimePlugin)
+    app.use(ToastedPlugin)
+    app.use(SocketPlugin, { store })
+    app.use(Validate)
+
+    createInterceptors(store)
+
+    app.config.globalProperties.$dateFormat = (date: string | Date) => {
+      if (typeof date === 'string') {
+        date = new Date(date)
+      }
+      if (isNaN(date.getTime())) {
+        return 'Invalid date'
+      }
+      return date.toLocaleString('ru')
+    }
+
+    if (isDev && window && window.location) {
+      (window as unknown as { reload: () => void }).reload = window.location.reload.bind(window.location)
+    }
+
+    app.mount('#app')
+  } catch (e) {
+    /* eslint-disable no-console */
+    console.error(e)
+    const error = defineComponent({
+      components: {
+        Titlebar
+      },
+      data() {
+        return {
+          error: e.message || 'Unrecognized error'
+        }
+      },
+      template: `
+        <titlebar />
+        <div class="flex-center items-center basis-100">Error: {{ error }}</div>
+      `
+    })
+    const app = createApp(error)
+    app.component('svg-icon', SvgIcon)
+    app.component('loader', Loader)
+    app.mount('#app')
   }
-  if (isNaN(date.getTime())) {
-    return 'Invalid date'
-  }
-  return date.toLocaleString('ru')
 }
 
-if (isDev && window && window.location) {
-  (window as unknown as { reload: () => void }).reload = window.location.reload.bind(window.location)
-}
-
-app.mount('#app')
+init()

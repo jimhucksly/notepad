@@ -1,8 +1,7 @@
 import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
 import { RegistrationCommand } from '~/domain/commands'
-import { IUser } from '~/domain/models'
-import { IValidate } from '~/plugins/validate'
+import { IUser, IValidate } from '~/domain/models'
 
 export default class Reg extends Vue {
   login = ''

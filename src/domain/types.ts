@@ -1,4 +1,4 @@
-const TYPES = {
+const bindings = {
   Application: Symbol.for('Application'),
   Container: Symbol.for('Container'),
   Store: Symbol.for('Store'),
@@ -7,15 +7,6 @@ const TYPES = {
   /* --------- queries --------- */
   AuthQuery: Symbol.for('AuthQuery'),
   SessionQuery: Symbol.for('SessionQuery'),
-  ProjectsQuery: Symbol.for('ProjectsQuery'),
-  LibraryQuery: Symbol.for('LibraryQuery'),
-  LibraryFilesQuery: Symbol.for('LibraryFilesQuery'),
-  LibraryFileQuery: Symbol.for('LibraryFileQuery'),
-  ArchivesQuery: Symbol.for('ArchivesQuery'),
-  EventsQuery: Symbol.for('EventsQuery'),
-  LinksQuery: Symbol.for('LinksQuery'),
-  TodoQuery: Symbol.for('TodoQuery'),
-  FilesQuery: Symbol.for('FilesQuery'),
   YandexTokenQuery: Symbol.for('YandexTokenQuery'),
   RefreshYandexTokenQuery: Symbol.for('RefreshYandexTokenQuery'),
   YandexDiskResourceLinkQuery: Symbol.for('YandexDiskResourceLinkQuery'),
@@ -26,25 +17,6 @@ const TYPES = {
   ResetPasswordCommand: Symbol.for('ResetPasswordCommand'),
   UpdatePasswordCommand: Symbol.for('UpdatePasswordCommand'),
   AuthCommand: Symbol.for('AuthCommand'),
-  CreateProjectCommand: Symbol.for('CreateProjectCommand'),
-  EditProjectCommand: Symbol.for('EditProjectCommand'),
-  DeleteProjectCommand: Symbol.for('DeleteProjectCommand'),
-  ReadCommand: Symbol.for('ReadCommand'),
-  UploadFileCommand: Symbol.for('UploadFileCommand'),
-  ArchiveRestoreCommand: Symbol.for('ArchiveRestoreCommand'),
-  ArchiveRemoveCommand: Symbol.for('ArchiveRemoveCommand'),
-  ArchivingCommand: Symbol.for('ArchivingCommand'),
-  UpdateEventCommand: Symbol.for('UpdateEventCommand'),
-  DeleteEventCommand: Symbol.for('DeleteEventCommand'),
-  AddLibraryFileCommand: Symbol.for('AddLibraryFileCommand'),
-  UpdateLibraryCommand: Symbol.for('UpdateLibraryCommand'),
-  DeleteLibraryFileCommand: Symbol.for('DeleteLibraryFileCommand'),
-  UpdateLinksCommand: Symbol.for('UpdateLinksCommand'),
-  DeleteLinkCommand: Symbol.for('DeleteLinkCommand'),
-  UpdateTodoCommand: Symbol.for('UpdateTodoCommand'),
-  DeleteTodoCommand: Symbol.for('DeleteTodoCommand'),
-  TodoOrderCommand: Symbol.for('TodoOrderCommand'),
-  DeleteFileCommand: Symbol.for('DeleteFileCommand'),
   RevokeYandexTokenCommand: Symbol.for('RevokeYandexTokenCommand'),
   /* --------- interactive --------- */
   InfoWindowQuery: Symbol.for('InfoWindowQuery'),
@@ -53,5 +25,5 @@ const TYPES = {
 }
 
 export {
-  TYPES
+  bindings
 }

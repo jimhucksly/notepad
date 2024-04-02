@@ -1,14 +1,14 @@
 import { Container, inject, injectable } from 'inversify'
 import { ICommandBus, ICommandHandler } from '~/domain/interfaces'
-import { TYPES } from '~/domain/types'
+import { bindings } from '~/domain/types'
 import { Store } from 'vuex'
 import { IRootState } from '~/domain/models'
 
 @injectable()
 class CommandBus implements ICommandBus {
   constructor(
-    @inject(TYPES.Container) private readonly _container: Container,
-    @inject(TYPES.Store) private readonly _store: Store<IRootState>
+    @inject(bindings.Container) private readonly _container: Container,
+    @inject(bindings.Store) private readonly _store: Store<IRootState>
   ) {}
 
   /**
@@ -16,11 +16,11 @@ class CommandBus implements ICommandBus {
    * R - Result
    */
   do<T, R>(command: T) {
-    const actionName = Reflect.getMetadata(TYPES[command.constructor.name as keyof typeof TYPES], CommandBus)
+    const actionName = Reflect.getMetadata(Symbol.for(command.constructor.name), CommandBus)
     if (actionName) {
       return this._store.dispatch(actionName, command)
     }
-    const handler: ICommandHandler<T, R> = this._container.get(TYPES[command.constructor.name as keyof typeof TYPES])
+    const handler: ICommandHandler<T, R> = this._container.get(Symbol.for(command.constructor.name))
     if (handler) {
       return handler.do(command)
     }

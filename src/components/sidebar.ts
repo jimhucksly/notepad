@@ -1,68 +1,32 @@
-import { Options, Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
+import { Vue } from 'vue-class-component'
 import { Getter } from 'vuex-class'
-import { AppComponents } from '~/application/app'
-import { toStr } from '~/application/fsm'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
-import JsonViewerBtns from '~/components/jsonViewerBtns'
-import Library from '~/components/library'
-import LibraryFiles from '~/components/libraryFiles'
-import Projects from '~/components/projects'
-import ProjectsArchives from '~/components/projectsArchives'
-import ProjectsEditor from '~/components/projectsEditor'
-import { UpdateLinksCommand } from '~/domain/commands'
-import { IFile, ILink, IMenu } from '~/domain/models'
-import { LinksQuery } from '~/domain/queries'
-import { CreateEditQuery } from '~/domain/queries/createEdit.query'
-import { uniqueid } from '~/helpers'
-import { Hub } from '~/plugins/hub'
+import { FsmStates, toStr } from '~/application/app'
+import { IManifest } from '~/domain/interfaces'
+import { IMenu } from '~/domain/models'
 
-@Options({
-  components: {
-    Projects,
-    ProjectsEditor,
-    ProjectsArchives,
-    Library,
-    LibraryFiles,
-    JsonViewerBtns
-  }
-})
 export default class Sidebar extends Vue {
-  @Getter('getHistory') history: Array<keyof IFsmStates>
+  @Getter('getHistory') history: Array<keyof typeof FsmStates>
   @Getter('getComponent') component: string
   @Getter('getMenu') menu: Array<IMenu>
   @Getter('getFsmState') fsmState: symbol
   @Getter('getSection') section: Record<string, boolean>
+  @Getter('getManifest') manifest: IManifest
+  @Getter('getSections') sections: Record<string, string>
 
   isSwitcherMenuExpanded = false
-  projectEditedItemKey = ''
-  isLibraryFilesInit = false
+  isExpand = false
 
-  private isExpand = false
-
-  fileSelected: IFile = null
-  onFileSelectHandler: (file: IFile) => void
-
-  filesCheck = false
-
-  @Watch('isProjects') onIsProjectsChanged() {
-    this.projectEditedItemKey = ''
-  }
-
-  @Watch('projectEditedItemKey') onProjectEditedItemKeyChanged(v: string) {
-    if (!v) {
-      const cont = this.$refs.projects as Projects
-      cont.clearCheck()
-    }
-  }
+  components: Array<{ name: string, fsmState: string }> = []
 
   created() {
-    this.onFileSelectHandler = this.onFileSelect.bind(this)
-    Hub.$on('on-file-select', this.onFileSelectHandler)
-  }
-
-  beforeUnmount() {
-    Hub.$off('on-file-select', this.onFileSelectHandler)
+    if (this.manifest) {
+      this.manifest.main.forEach(item => {
+        this.components.push({
+          name: item.name + '-Sidebar',
+          fsmState: toStr(this.$app.states[item.name as keyof typeof this.$app.states])
+        })
+      })
+    }
   }
 
   toggle() {
@@ -99,80 +63,16 @@ export default class Sidebar extends Vue {
     this.toggle()
   }
 
-  toggleLibraryFiles() {
-    if (this.isLibraryFilesVisibility) {
-      this.$app.goBack()
-    } else {
-      this.$app.goto(this.$app.states.LibraryFiles)
-    }
-  }
-
-  async addLink() {
-    const query = new CreateEditQuery<ILink>({
-      component: 'create-edit-link',
-      modal: {
-        title: 'Add link',
-        width: '30%'
-      }
-    })
-    const result = await this.$app.$queryBus.exec<CreateEditQuery<ILink>, ILink>(query)
-    if (!result) {
-      return
-    }
-    if (!result.id) {
-      result.id = uniqueid(6) as string
-    }
-    await this.$app.$commandBus.do(new UpdateLinksCommand(result))
-    await this.$app.$queryBus.exec(new LinksQuery())
-  }
-
-  addTodo() {
-    Hub.$emit('todo-add')
-  }
-
-  onFileChange(e: InputEvent) {
-    Hub.$emit('on-file-change', e)
-  }
-
-  onFileRemove() {
-    Hub.$emit('on-file-remove')
-  }
-
-  onFileSelect(file: IFile) {
-    this.fileSelected = file
-  }
-
-  onFileCheck() {
-    this.filesCheck = !this.filesCheck
-    Hub.$emit('on-file-check', this.filesCheck)
-  }
-
-  onFileDownload() {
-    Hub.$emit('on-file-download')
-  }
-
   get mainSection() {
     const found = Object.entries(this.section).find(item => item[1])
     return found[0]
   }
 
   get current() {
-    return this.menu.find(item => toStr(item.fsmState) === AppComponents[this.mainSection])
+    return this.menu.find(item => toStr(item.fsmState) === this.mainSection)
   }
 
   get isNotClickable() {
     return [FsmStates.Preferences, FsmStates.Account].includes(this.$app.state)
-  }
-
-  get isProjectEditorVisibility() {
-    return this.history.includes('ProjectsEditor')
-  }
-
-  get isProjectArchivesVisibility() {
-    return this.history.includes('ProjectsArchives')
-  }
-
-  get isLibraryFilesVisibility() {
-    return this.history.includes('LibraryFiles')
   }
 }

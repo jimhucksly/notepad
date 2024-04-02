@@ -1,41 +1,43 @@
 import { inject, injectable } from 'inversify'
 import { Store } from 'vuex'
-import _fsm, { toStr } from '~/application/fsm'
-import FsmStates, { IFsmStates } from '~/application/fsm.states'
 import { userDataFileName } from '~/constants'
 import { AuthCommand } from '~/domain/commands'
-import { ICommandBus, IQueryBus } from '~/domain/interfaces'
-import { IProjects, IRootState, IUser } from '~/domain/models'
+import { ICommandBus, IManifest, IQueryBus } from '~/domain/interfaces'
+import { IMenu, IRootState, IUser } from '~/domain/models'
 import {
-  LibraryFileQuery,
-  ProjectsQuery,
   RefreshYandexTokenQuery,
   SessionQuery
 } from '~/domain/queries'
-import { TYPES } from '~/domain/types'
+import { bindings } from '~/domain/types'
 import storage from '~/plugins/storage'
 
-interface IAppComponents {
-  Projects: string
-  Preferences: string
-  Library: string
-  Events: string
-  JsonViewer: string
-  Links: string
-  Files: string
-  Todo: string
+interface LifeCycle {
+  transition: string
+  from: string
+  to: string
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  prevResult?: any
 }
 
-export const AppComponents = {
-  [toStr(FsmStates.Account)]: 'Account',
-  [toStr(FsmStates.Projects)]: 'Projects',
-  [toStr(FsmStates.Preferences)]: 'Preferences',
-  [toStr(FsmStates.Library)]: 'Library',
-  [toStr(FsmStates.Events)]: 'Events',
-  [toStr(FsmStates.JsonViewer)]: 'JsonViewer',
-  [toStr(FsmStates.Links)]: 'Links',
-  [toStr(FsmStates.Files)]: 'Files',
-  [toStr(FsmStates.Todo)]: 'Todo'
+interface IStates {
+  [key: string]: symbol
+}
+
+const StateMachine = require('javascript-state-machine')
+
+let _fsm: typeof StateMachine = null
+
+let States: IStates = {
+  Auth: Symbol.for('Auth'),
+  Reg: Symbol.for('Reg'),
+  Reset: Symbol.for('Reset'),
+  Verify: Symbol.for('Verify'),
+  Yandex: Symbol.for('Yandex'),
+  Account: Symbol.for('Account'),
+  Preferences: Symbol.for('Preferences'),
+  CreateEdit: Symbol.for('CreateEdit'),
+  InfoWindow: Symbol.for('InfoWindow'),
+  ConfirmWindow: Symbol.for('ConfirmWindow')
 }
 
 export interface IApplication {
@@ -52,31 +54,106 @@ export interface IApplication {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   fsm: any
   state: symbol
-  stateName: keyof IFsmStates
-  lastState: keyof IFsmStates
+  stateName: keyof typeof States
+  lastState: keyof typeof States
   isDev: boolean
   isAuth: boolean
-  component: keyof IAppComponents
   userDataPath: string
+}
+
+export const toStr = (s: symbol): string => Symbol.keyFor(s)
+
+const appComponents = {
+  [toStr(States.Account)]: 'Account',
+  [toStr(States.Preferences)]: 'Preferences'
+}
+
+function buildStates(manifest: IManifest) {
+  const result: Record<string, symbol> = {}
+  for (const item of manifest.main) {
+    result[item.name] = Symbol.for(item.name)
+  }
+  return {
+    ...result,
+    ...States
+  }
+}
+
+function buildMenu(manifest: IManifest) {
+  const result: Array<IMenu> = []
+  const len = result.length
+  let index = 1
+  for (const item of manifest.main) {
+    result.push({
+      name: item.name,
+      nameAlt: item.nameAlt,
+      fsmState: States[item.name as keyof typeof States],
+      id: len + index
+    })
+    index++
+  }
+  return result
+}
+
+function buildSections(manifest: IManifest) {
+  const result: Record<string, boolean> = {}
+  Object.keys(appComponents).forEach(key => {
+    result[key] = false
+  })
+  for (const item of manifest.main) {
+    result[toStr(States[item.name as keyof typeof States])] = false
+  }
+  return result
+}
+
+function onBeforeTransition(lifecycle: LifeCycle) {
+  // console.log('onBeforeTransition', lifecycle)
 }
 
 @injectable()
 export default class Application implements IApplication {
   constructor(
-    @inject(TYPES.QueryBus) private readonly _queryBus: IQueryBus,
-    @inject(TYPES.CommandBus) private readonly _commandBus: ICommandBus,
-    @inject(TYPES.Store) private readonly _store: Store<IRootState>
-  ) {}
+    @inject(bindings.QueryBus) private readonly _queryBus: IQueryBus,
+    @inject(bindings.CommandBus) private readonly _commandBus: ICommandBus,
+    @inject(bindings.Store) private readonly _store: Store<IRootState>
+  ) { }
 
-  homeState = FsmStates.Projects
-  history: Array<keyof IFsmStates> = []
+  history: Array<keyof typeof States> = []
   currentUser: IUser = null
 
+  get states() {
+    States = buildStates(this.$manifest)
+    return States
+  }
+
+  get homeState() {
+    return States.Projects
+  }
+
+  get fsm() {
+    return _fsm
+  }
+
   init() {
+    _fsm = new StateMachine({
+      observeUnchangedState: true,
+      init: toStr(States.Auth),
+      transitions: Object.keys(this.states).map(key => ({
+        name: key.toLowerCase(),
+        from: '*',
+        to: toStr(this.states[key as keyof typeof States])
+      })),
+      methods: {
+        onBeforeTransition: onBeforeTransition.bind(this)
+      }
+    })
+
+    this._store.commit('setMenu', buildMenu(this.$manifest))
+    this._store.commit('setSections', buildSections(this.$manifest))
     this._store.commit('setIsDevelopment', this.isDev)
     this._store.commit('setEndpoint', $ENDPOINT)
     this._store.commit('setUserDataPath', this.userDataPath)
-    this._store.commit('setFsmState', FsmStates.Auth)
+    this._store.commit('setFsmState', States.Auth)
   }
 
   loading(state: boolean) {
@@ -96,12 +173,12 @@ export default class Application implements IApplication {
       this._commandBus.do<AuthCommand, void>(new AuthCommand(true))
       this.user(this._store.getters.getCurrentUser)
       if (!this.currentUser.yandexDiskAccessToken) {
-        this.goto(FsmStates.Yandex)
+        this.goto(States.Yandex)
         return
       }
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        // this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       this._queryBus.exec(new RefreshYandexTokenQuery())
       this.goHome()
@@ -118,7 +195,7 @@ export default class Application implements IApplication {
   async logout() {
     const userDataPath = this._store.getters.getUserDataPath
     await storage.set(userDataPath, userDataFileName, { token: '' })
-    this.goto(FsmStates.Auth)
+    this.goto(States.Auth)
     this.loading(false)
   }
 
@@ -137,8 +214,8 @@ export default class Application implements IApplication {
       if (!transitionResult) {
         return
       }
-      this._store.commit('setFsmState', this.state)
-      if (transition === FsmStates.Auth) {
+      this._store.commit('setFsmState', transition)
+      if (transition === States.Auth) {
         if (this.isAuth) {
           this._commandBus.do<AuthCommand, void>(new AuthCommand(false))
           this._store.commit('setToken', null)
@@ -153,9 +230,9 @@ export default class Application implements IApplication {
       if (this.lastState !== this.stateName) {
         this.setHistory()
       }
-      if (AppComponents[this.stateName]) {
-        this._store.commit('setComponent', AppComponents[this.stateName])
-        this.history = this.history.filter(item => item in AppComponents)
+      if (this.stateName in this.sections) {
+        this._store.commit('setComponent', this.stateName)
+        this.history = this.history.filter(item => item in this.sections)
       }
     } catch (e) {
       /* eslint-disable no-console */
@@ -165,20 +242,20 @@ export default class Application implements IApplication {
 
   goBack() {
     if (this.history.length === 1) {
-      if (this.state === FsmStates.Projects) {
+      if (this.state === States.Projects) {
         return
       }
-      this.goto(FsmStates.Projects)
+      this.goto(States.Projects)
       return
     }
     this.history.splice(-1, 1)
     this._store.commit('setHistory', [...this.history])
-    this.goto(FsmStates[this.lastState])
+    this.goto(States[this.lastState])
   }
 
   goHome() {
-    const state = process.env.NODE_ENV === 'production' ? FsmStates.Projects : this.homeState
-    this.history.push(toStr(state))
+    const state = process.env.NODE_ENV === 'production' ? States.Projects : this.homeState
+    this.history.push(toStr(state as unknown as symbol))
     this.goto(state)
   }
 
@@ -191,8 +268,8 @@ export default class Application implements IApplication {
     try {
       this.loading(true)
       await Promise.all([
-        this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery()),
-        this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
+        // this._queryBus.exec<ProjectsQuery, IProjects>(new ProjectsQuery())
+        // this._queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
       ])
       setTimeout(() => {
         this.loading(false)
@@ -204,10 +281,6 @@ export default class Application implements IApplication {
     }
   }
 
-  get fsm() {
-    return _fsm
-  }
-
   get $queryBus(): IQueryBus {
     return this._queryBus
   }
@@ -216,19 +289,19 @@ export default class Application implements IApplication {
     return this._commandBus
   }
 
-  get states() {
-    return FsmStates
+  get $manifest() {
+    return this._store.getters.getManifest
   }
 
   get state(): symbol {
-    return FsmStates[this.fsm.state]
+    return States[this.fsm.state as keyof typeof States]
   }
 
-  get stateName(): keyof IFsmStates {
+  get stateName(): keyof typeof States {
     return toStr(this.state)
   }
 
-  get lastState(): keyof IFsmStates {
+  get lastState(): keyof typeof States {
     return this.history[this.history.length - 1]
   }
 
@@ -243,8 +316,8 @@ export default class Application implements IApplication {
     return this._store.getters.getIsAuth
   }
 
-  get component(): keyof IAppComponents {
-    return AppComponents[this.stateName] as keyof IAppComponents
+  get sections(): Record<string, string> {
+    return this._store.getters.getSections
   }
 
   get userDataPath() {
@@ -259,3 +332,5 @@ export default class Application implements IApplication {
     return func
   }
 }
+
+export const FsmStates = States
