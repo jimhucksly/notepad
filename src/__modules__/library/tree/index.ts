@@ -15,7 +15,7 @@ export default class LibraryTreeComponent extends Vue {
     const editor = document.querySelector('.editor_content')
     const node = this.$el.querySelector(`[data-ref="${item.id}"]`)
     if (node) {
-      if (!node.classList.contains('tree_item_empty')) {
+      if (!node.classList.contains('tree_item_node')) {
         const isExpanded = node.classList.contains('expanded')
         node.classList[isExpanded ? 'remove' : 'add']('expanded')
         node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus')

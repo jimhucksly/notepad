@@ -6,7 +6,7 @@ import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter, Mutation } from 'vuex-class'
-import { translit, uniqueid } from '~/helpers'
+import { delay, translit, uniqueid } from '~/helpers'
 import { Plugins } from '~/core'
 import { UpdateLibraryCommand } from './commands/commands'
 import { ILibraryFile, ITreeItem } from './models'
@@ -56,6 +56,8 @@ export default class LibraryPage extends Vue {
   }
 
   async mounted() {
+    this.linkClickHandler = this.linkClick.bind(this)
+    Plugins.Hub.$on('codemirror-link-click', this.linkClickHandler)
     await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
     this.buildEditor()
 
@@ -99,25 +101,11 @@ export default class LibraryPage extends Vue {
     this.ready = true
     this.$nextTick(() => {
       const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view
-      // const scroll = editor.scrollDOM
       const lines: Array<string> = []
       const children = editor.state.doc.children
       for (const el of children) {
         lines.push(...(el as unknown as { text: Array<string> }).text)
       }
-      // const linkClickHandler = (name: string) => {
-      //   const scrolling = false
-      //   lines.forEach((el: string, index: number): void | null => {
-      //     if (scrolling) {
-      //       return null
-      //     }
-      //     if (el.indexOf(name) > -1) {
-      //       const line = editor.state.doc.line(index + 1)
-      //       editor.scrollDOM.scrollTo(0, line.number * 20 - scroll.clientHeight / 2 + 20)
-      //     }
-      //   })
-      // }
-      // Hub.$on('codemirror-link-click', linkClickHandler)
     })
   }
 
@@ -179,6 +167,39 @@ export default class LibraryPage extends Vue {
     this.$nextTick(() => {
       this.buildTree()
     })
+  }
+
+  async linkClick(item: ITreeItem) {
+    if (this.isPreview) {
+      return
+    }
+    const contains = (selector: string, text: string): Array<HTMLElement> => {
+      const editor = this.$el.querySelector('.cm-editor')
+      const elements = editor.querySelectorAll(selector)
+      return Array.prototype.filter.call(elements, function(element: HTMLElement) {
+        return element.textContent.indexOf(text) > -1
+      })
+    }
+    const scroller = this.$el.querySelector('.cm-scroller') as HTMLElement
+    if (scroller) {
+      scroller.scrollTo(0, 0)
+      await delay(10)
+      let needSearch = true
+      let scrollY = 0
+      const scrollH = scroller.scrollHeight
+      while (needSearch) {
+        const span = contains('span', item.name)
+        if (span.length > 0 || scrollY > scrollH) {
+          needSearch = false
+          scroller.scrollTo(0, scrollY + 300)
+        }
+        if (needSearch) {
+          scrollY += 300
+          scroller.scrollTo(0, scrollY)
+          await delay(10)
+        }
+      }
+    }
   }
 
   get toolbars() {
