@@ -31,11 +31,6 @@
       "path": "files"
     },
     {
-      "name": "Postman",
-      "nameAlt": "Postman",
-      "path": "postman"
-    },
-    {
       "name": "JsonViewer",
       "nameAlt": "Json Viewer",
       "path": "jsonViewer"

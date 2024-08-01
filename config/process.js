@@ -14,8 +14,6 @@ import path from 'path'
 import pkg from '../package.json'
 import { port } from './endpoint.json'
 
-import initServer from './server'
-
 const $DEV = process.env.NODE_ENV === 'development'
 
 global.__static = path.join(__dirname, '../dist/assets/images').replace(/\\/g, '\\\\')
@@ -238,5 +236,3 @@ ipcMain.on('save-file-dialog', (event, arg) => {
     event.sender.send('save-dialog-file-selected', file)
   })
 })
-
-initServer()

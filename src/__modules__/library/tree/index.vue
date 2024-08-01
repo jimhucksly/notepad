@@ -85,17 +85,21 @@ ul {
           width: 12px;
           height: 12px;
           font-weight: 700;
-          color: var(--yellow_light);
-          border: 1px solid var(--yellow_light);
           line-height: 8px;
           opacity: 0.7;
         }
-      }
-      &.tree_item_empty {
-        &:before {
-          color: var(--red_light);
-          border-color: var(--red_light);
-          opacity: 0.4;
+        &:not(.tree_item_node):not(.tree_item_empty) {
+          &:before {
+            color: var(--yellow_light);
+            border: 1px solid var(--yellow_light);
+          }
+        }
+        &:not(.tree_item_node).tree_item_empty {
+          &:before {
+            color: var(--red_light);
+            border: 1px solid var(--red_light);
+            opacity: 0.4;
+          }
         }
       }
       &.tree_item_node {
