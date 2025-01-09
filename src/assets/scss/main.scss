@@ -1,18 +1,18 @@
-@import './variables';
-@import './normalize';
-@import './fonts';
-@import './common';
-@import './forms';
-@import './titlebar';
-@import './aside';
-@import './popup';
-@import './toasted';
-@import './loader';
-@import './bcheckbox';
-@import './bbtn';
-@import './btabs';
-@import './editor';
-@import './splitter';
+@use './variables';
+@use './normalize';
+@use './fonts';
+@use './common';
+@use './forms';
+@use './titlebar';
+@use './aside';
+@use './popup';
+@use './toasted';
+@use './loader';
+@use './bcheckbox';
+@use './bbtn';
+@use './btabs';
+@use './editor';
+@use './splitter';
 
 html {
   font-family: var(--font-regular);
@@ -261,14 +261,14 @@ main {
     display: grid;
     grid-template-columns: 50% 50%;
 
-    label {
+    & > label {
       display: block;
       color: var(--blue);
       font-size: 13px;
       line-height: 30px;
     }
 
-    caption {
+    & > span {
       display: flex;
       justify-content: flex-end;
       color: var(--black_light);

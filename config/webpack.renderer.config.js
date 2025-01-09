@@ -67,7 +67,7 @@ let rendererConfig = {
           {
             loader: 'sass-loader',
             options: {
-              implementation: require('node-sass'),
+              implementation: require('sass'),
             }
           }
         ]
@@ -104,16 +104,15 @@ let rendererConfig = {
     }),
     new ForkTsCheckerWebpackPlugin({
       typescript: {
+        memoryLimit: 4096,
+        vue: true,
         diagnosticOptions: {
-          syntactic: false,
+          syntactic: true,
           semantic: true,
           declaration: false,
           global: false
         }
       },
-      eslint: {
-        files: './src/**/*.{ts,tsx,js}'
-      }
     }),
     new CopyWebpackPlugin({
       patterns: [

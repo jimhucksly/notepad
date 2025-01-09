@@ -33,6 +33,7 @@
   "include": [
     "src/**/*",
     "api/**/*",
-    "typings/**/*"
+    "typings/**/*",
+    "node_modules/@types/**/*"
   ],
 }

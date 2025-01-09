@@ -4,11 +4,11 @@
     <div class="account-content">
       <div class="content-row">
         <label>Login</label>
-        <caption>{{ currentUser.login }}</caption>
+        <span>{{ currentUser.login }}</span>
       </div>
       <div class="content-row">
         <label>E-mail</label>
-        <caption>{{ currentUser.email }}</caption>
+        <span>{{ currentUser.email }}</span>
       </div>
     </div>
     <div class="account-actions">

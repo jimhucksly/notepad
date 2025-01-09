@@ -54,7 +54,7 @@ async function init() {
       const path = _module.path + '/'
       const _manifest: IModuleMaifest = require('~/__modules__/' + path + 'manifest.json')
       if (_manifest) {
-        const data = await registerModule(_module, _manifest, app)
+        const data = registerModule(_module, _manifest, app)
         if (data && data.storeModule && data.namespace) {
           storeModules[data.namespace] = { ...data.storeModule }
         }

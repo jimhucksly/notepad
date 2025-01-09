@@ -1,3 +1,4 @@
+@use "sass:color";
 
 // fonts
 $regular: 'Roboto-Regular';
@@ -9,23 +10,24 @@ $menlo: 'Menlo';
 $input-height: 30px;
 
 $dark: #303d3c;
-$dark_lighten: lighten($dark, 45%);
-$dark_light: lighten($dark, 15%);
-$dark_light_lighten: lighten($dark, 20%);
-$dark_darken-1: darken($dark, 3%);
-$dark_darken-2: darken($dark, 5%);
+$dark_lighten: color.adjust($dark, $lightness: 45%);
+$dark_lighten-1: color.adjust($dark, $lightness: 35%);
+$dark_light: color.adjust($dark, $lightness: 15%);
+$dark_light_lighten: color.adjust($dark, $lightness: 20%);
+$dark_darken-1: color.adjust($dark, $blackness: 3%);
+$dark_darken-2: color.adjust($dark, $blackness: 5%);
 
 // colors
 $white: #fff;
 $black: #0b0b0b;
-$black_light: lighten($black, 20%);
+$black_light: color.adjust($black, $lightness: 20%);
 
 $blue: #2766BA;
 $blue_light: #2A86BB;
 $blue_light-op-04: rgba($blue_light, 0.4);
 $blue_light-op-02: rgba($blue_light, 0.2);
-$blue_light-1: lighten($blue_light, 5%);
-$blue_light-2: lighten($blue_light, 50%);
+$blue_light-1: color.adjust($blue_light, $lightness: 5%);
+$blue_light-2: color.adjust($blue_light, $lightness: 50%);
 
 $red: #FB004D;
 $red_light: #FB404F;
@@ -39,18 +41,18 @@ $green_light: #AEFF00;
 $grey: #E6EBEC;
 $magenta: #5F2F73;
 $magenta_light: #752F73;
-$magenta_light-1: lighten($magenta_light, 10%);
+$magenta_light-1: color.adjust($magenta_light, $lightness: 10%);
 
 $blue-gray: #b7c5ca;
-$blue-gray_light: lighten($blue-gray, 9%);
+$blue-gray_light: color.adjust($blue-gray, $lightness: 9%);
 
 $editor_green: #72c749;
-$editor_green_darken-10: darken($editor_green, 10%);
+$editor_green_darken-10: color.adjust($editor_green, $blackness: 10%);
 $editor_dark:  #141414;
 $editor_blue: #35bdff;
 $editor_yellow: #eeea53 ;
 $editor_red: #CF6A4C;
-$editor_red_light: lighten($editor_red, 3%);
+$editor_red_light: color.adjust($editor_red, $lightness: 3%);
 
 :root {
   --font-regular: #{$regular};
@@ -63,6 +65,7 @@ $editor_red_light: lighten($editor_red, 3%);
   --black_light: #{$black_light};
   --dark: #{$dark};
   --dark_lighten: #{$dark_lighten};
+  --dark_lighten-1: #{$dark_lighten-1};
   --dark_light: #{$dark_light};
   --dark_light_lighten: #{$dark_light_lighten};
   --dark_darken-1: #{$dark_darken-1};

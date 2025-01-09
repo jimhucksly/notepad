@@ -146,10 +146,10 @@ body {
   .#{$elem}::-webkit-scrollbar-thumb {
     -webkit-border-radius: 0px;
     border-radius: 0px;
-    background-color: lighten(#303d3c, 35%);
+    background-color: var(--dark_lighten-1);
   }
   .#{$elem}::-webkit-scrollbar-thumb:hover {
-    background-color: lighten(#303d3c, 35%);
+    background-color: var(--dark_lighten-1);
     border: 1px solid #eee;
   }
   .#{$elem}::-webkit-resizer {

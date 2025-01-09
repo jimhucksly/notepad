@@ -126,7 +126,7 @@
     ],
     "vue/one-component-per-file": "off",
     "vue/no-multiple-template-root": "off",
-    "@typescript-eslint/no-shadow": ["error"],
+    "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/restrict-plus-operands": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
@@ -153,7 +153,7 @@
         "variableDeclarationIgnoreFunction": true
       }
     ],
-    "@typescript-eslint/explicit-module-boundary-types": ["off"],
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-misused-promises": [
       "error",
       {
@@ -194,8 +194,6 @@
         "allowExpressions": true
       }
     ],
-    "@typescript-eslint/brace-style": ["error", "1tbs"],
-    "@typescript-eslint/indent": ["off", 2],
     "@typescript-eslint/quotes": [
       "error",
       "single",
@@ -204,6 +202,7 @@
       }
     ],
     "@typescript-eslint/member-ordering": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-magic-numbers": [
       "off",
       {
