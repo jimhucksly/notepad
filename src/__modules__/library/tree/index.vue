@@ -16,7 +16,7 @@
             'tree_item_plus': item.children && item.children.length,
             'tree_item_minus tree_item_empty' : (!item.children || !item.children.length) && level === 1,
             'tree_item_node': (!item.children || !item.children.length) && level > 1,
-            'tree_item_node--last': index === tree.length - 1
+            'tree_item_node--last': Number(index) === tree.length - 1
           }"
           @click="selectNode(item)"
         >

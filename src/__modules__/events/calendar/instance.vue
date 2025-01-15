@@ -9,7 +9,7 @@
     <!-- body -->
     <div class="b-calendar__body" ref="bofy">
       <!-- head -->
-      <div class="b-calendar__head" v-if="!op.eventsMode && op.mode === 'd'">
+      <div class="b-calendar__head" v-if="isDaySelection">
         <div v-for="i in [0, 1, 2, 3, 4, 5, 6]" :key="i">
           {{ op.daysShort[i] }}
         </div>
@@ -20,7 +20,7 @@
         :key="i"
         class="b-calendar__week"
         :class="{
-          'b-calendar__first-week': i === 0
+          'b-calendar__first-week': Number(i) === 0
         }"
       >
         <!-- days -->
@@ -43,11 +43,11 @@
           @mouseover="$emit('active-date', d.date)"
         >
           <template v-if="op.eventsMode">
-            <span>{{ `${i === 0 ? op.weekDays[j] + ', ' : ''}${d.num}` }}</span>
+            <span>{{ `${Number(i) === 0 ? op.weekDays[j] + ', ' : ''}${d.num}` }}</span>
             <div>
               <template v-if="op.items">
-                <strong>{{ op.items[d.date] ? op.items[d.date].title : '' }}</strong>
-                <p>{{ op.items[d.date] ? op.items[d.date].content : '' }}</p>
+                <strong>{{ getTitle(d.date) }} </strong>
+                <p>{{ getContent(d.date) }} </p>
               </template>
             </div>
             <svg-icon icon="loader" width="30px" height="30px" />
@@ -58,7 +58,7 @@
         </div>
       </div>
       <!-- month -->
-      <template v-if="!op.eventsMode && op.mode === 'm'">
+      <template v-if="isMonthSelection">
         <div
           v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
           :key="i"
@@ -72,7 +72,7 @@
         </div>
       </template>
       <!-- year -->
-      <template v-if="!op.eventsMode && op.mode === 'y'">
+      <template v-if="isYearSelection">
         <div
           v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8]"
           :key="i"

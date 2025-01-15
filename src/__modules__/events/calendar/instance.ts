@@ -42,6 +42,18 @@ export default class CalendarComponent extends Vue {
     return this.baseDate.getFullYear()
   }
 
+  get isDaySelection(): boolean {
+    return !this.op.eventsMode && this.op.mode === 'd'
+  }
+
+  get isMonthSelection(): boolean {
+    return !this.op.eventsMode && this.op.mode === 'm'
+  }
+
+  get isYearSelection(): boolean {
+    return !this.op.eventsMode && this.op.mode === 'y'
+  }
+
   @Watch('options') onOptionsSetDateChanged() {
     this.op = { ...this.options }
   }
@@ -355,6 +367,20 @@ export default class CalendarComponent extends Vue {
       return d > a && d < r1
     }
     return false
+  }
+
+  public getTitle(date: string): string {
+    if (this.op.items[date]) {
+      return (this.op.items[date] as { title: string }).title
+    }
+    return ''
+  }
+
+  public getContent(date: string): string {
+    if (this.op.items[date]) {
+      return (this.op.items[date] as { content: string }).content
+    }
+    return ''
   }
 
   created() {

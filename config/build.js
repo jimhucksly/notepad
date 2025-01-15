@@ -16,11 +16,11 @@ const doneLog = chalk.bgGreen.white(' DONE ') + ' '
 const errorLog = chalk.bgRed.white(' ERROR ') + ' '
 const okayLog = chalk.bgBlue.white(' OKAY ') + ' '
 
-function clean () {
-  del.sync(['dist/*', 'build/*', '!build/icons', '!build/icons/icon.*'])
-  console.log(`\n${doneLog}\n`)
-  process.exit()
-}
+// function clean () {
+//   del.sync(['dist/*', 'build/*', '!build/icons', '!build/icons/icon.*'])
+//   console.log(`\n${doneLog}\n`)
+//   process.exit()
+// }
 
 function build () {
   del.sync(['dist/*', 'build/*'])
@@ -74,7 +74,7 @@ function pack (config) {
         let err = ''
 
         stats.toString({
-          chunks: false,
+          chunks: true,
           colors: true
         })
         .split(/\r?\n/)

@@ -3839,10 +3839,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.26":
-  version: 16.18.123
-  resolution: "@types/node@npm:16.18.123"
-  checksum: 10/461cb72845a539941e38720362a391e873b5ae26c8eabc04252ed883a165d15281cc7a45da7a47b3c4e7b8cf59da8a2d9025aae9b9b74ecfdc7d3147a638a6c0
+"@types/node@npm:^20.9.0":
+  version: 20.17.12
+  resolution: "@types/node@npm:20.17.12"
+  dependencies:
+    undici-types: "npm:~6.19.2"
+  checksum: 10/d4748de76c6c4fa0371802429d4bcd68ecd638f5cd7d8a4510d3196302d417b6bb17e31c5b1117bfa09b58276d05c14a5fde73b9da2547200195e819e4b43368
   languageName: node
   linkType: hard
 
@@ -8278,16 +8280,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:23.1.3":
-  version: 23.1.3
-  resolution: "electron@npm:23.1.3"
+"electron@npm:29.4.0":
+  version: 29.4.0
+  resolution: "electron@npm:29.4.0"
   dependencies:
     "@electron/get": "npm:^2.0.0"
-    "@types/node": "npm:^16.11.26"
+    "@types/node": "npm:^20.9.0"
     extract-zip: "npm:^2.0.1"
   bin:
     electron: cli.js
-  checksum: 10/3b7f25b41d8ef5ad113b4fa4e624db6a425ee04d9a986359b5146bd12e954246535eada4b5425cb7e1c1b223b47f91e137052e746bfabc48997c1cbfbb9611aa
+  checksum: 10/90dc042357bd8de93da6860062de114aab89675dee24464661145764c2568cd60ff4b975bb316e802fc3735294f8c5e1c6fde46a13aab785c0f433fad687422a
   languageName: node
   linkType: hard
 
@@ -15470,7 +15472,7 @@ __metadata:
     cross-env: "npm:5.2.1"
     css-loader: "npm:6.7.1"
     del: "npm:3.0.0"
-    electron: "npm:23.1.3"
+    electron: "npm:29.4.0"
     electron-builder: "npm:23.6.0"
     eslint: "npm:8.56.0"
     eslint-config-standard: "npm:11.0.0"
@@ -19954,6 +19956,13 @@ __metadata:
     object.reduce: "npm:^1.0.0"
     undertaker-registry: "npm:^1.0.0"
   checksum: 10/6cb5898b0b8fd4b094fbd6ed9c2e155f436d698fdc13f45444d5083825cc29bca7a364c5e27922366f0ce3fff7bb5b834f6ff3583f77cb655bbc3a60fee632ed
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~6.19.2":
+  version: 6.19.8
+  resolution: "undici-types@npm:6.19.8"
+  checksum: 10/cf0b48ed4fc99baf56584afa91aaffa5010c268b8842f62e02f752df209e3dea138b372a60a963b3b2576ed932f32329ce7ddb9cb5f27a6c83040d8cd74b7a70
   languageName: node
   linkType: hard
 

@@ -63,6 +63,7 @@
     "no-useless-escape": "off",
     "no-useless-constructor": "off",
     "no-useless-return": "off",
+    "no-use-before-define": "off",
     "prefer-promise-reject-errors": "off",
     "object-curly-spacing": ["error", "always"],
     "vue/html-self-closing": [

@@ -1,5 +1,5 @@
-import { Prop } from 'vue-property-decorator'
 import { Options, Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator'
 import { Plugins } from '~/core'
 import { ITreeItem } from '../models'
 
