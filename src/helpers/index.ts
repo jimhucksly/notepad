@@ -134,6 +134,8 @@ export const getFileType = (name: string): string => {
   if (/xlsx?$/.test(name)) return 'xls'
   if (/exe?$/.test(name)) return 'exe'
   if (/msi?$/.test(name)) return 'msi'
+  if (/cer?$/.test(name)) return 'cer'
+  if (/pfx?$/.test(name)) return 'pfx'
 
   return 'default'
 }
