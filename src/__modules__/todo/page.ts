@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import { Options, Vue } from 'vue-class-component'
 import { Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
@@ -21,6 +21,7 @@ export default class Todo extends Vue {
   @Getter('Todo/getTodo') json: ITodo
 
   items: Array<ITodoItem> = []
+  order: Array<string> = []
   isPopupShow = false
   itemSelected: ITodoItem | null = null
   isDrag = false
@@ -30,6 +31,7 @@ export default class Todo extends Vue {
 
   @Watch('json') onJsonChanged() {
     this.setItems()
+    this.setOrder()
   }
 
   async mounted() {
@@ -53,6 +55,11 @@ export default class Todo extends Vue {
       return
     }
 
+    document.onmousemove = () => {
+      this.isDrag = true
+      this.move(event, id)
+    }
+
     document.onmouseup = () => {
       this.isDrag = false
       const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
@@ -66,11 +73,6 @@ export default class Todo extends Vue {
         elem.style.transform = 'scale(1)'
         elem.removeAttribute('style')
       }, 100)
-    }
-
-    document.onmousemove = () => {
-      this.isDrag = true
-      this.move(event, id)
     }
   }
 
@@ -94,25 +96,26 @@ export default class Todo extends Vue {
     let avatar: HTMLElement = null
 
     const finishDrag = () => {
-      if (!dragItem || !avatar) {
-        return
+      if (dragItem) {
+        dragItem.classList.remove('dragable')
+        dragItem.removeAttribute('style')
+        if (avatar) {
+          const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
+          dropableElems.forEach(el => {
+            el.classList.remove('dropable')
+            el.removeAttribute('style')
+          })
+          container.classList.remove('todo_cont--drag')
+          container.insertBefore(dragItem, avatar)
+          container.removeChild(avatar)
+        }
       }
-      dragItem.classList.remove('dragable')
-      dragItem.removeAttribute('style')
-      const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
-      dropableElems.forEach(el => {
-        el.classList.remove('dropable')
-        el.removeAttribute('style')
-      })
-      container.classList.remove('todo_cont--drag')
-      container.insertBefore(dragItem, avatar)
-      container.removeChild(avatar)
       document.onmousemove = null
       document.onmouseup = null
       dragItem = null
       avatar = null
       this.isDrag = false
-      this.setOrder()
+      this.reorder()
     }
 
     document.onmousemove = (ev: MouseEvent) => {
@@ -140,14 +143,16 @@ export default class Todo extends Vue {
         elem.style.top = startY + 'px'
         elem.style.zIndex = '99'
         elem.style.opacity = '0.7'
-        elem.style.transform = 'rotate(7deg)'
+        elem.style.transform = 'rotate(5deg)'
 
         const childNodes: NodeListOf<HTMLElement> = container.childNodes as NodeListOf<HTMLElement>
         childNodes.forEach(el => {
           if (el.classList) {
             const isAvatar = el.classList.contains('dragable-avatar')
             const isSelf = el.classList.contains('dragable')
-            if (!isAvatar && !isSelf && el.classList.contains(elemsClassName)) el.classList.add('dropable')
+            if (!isAvatar && !isSelf && el.classList.contains(elemsClassName)) {
+              el.classList.add('dropable')
+            }
           }
         })
 
@@ -201,7 +206,23 @@ export default class Todo extends Vue {
     }
   }
 
+  setItems() {
+    this.items = Object.keys(this.json).map((key: string): ITodoItem => {
+      const o: ITodoItem = {
+        id: key,
+        date: now(key).date,
+        text: this.json[key].text,
+        order: this.json[key].order
+      }
+      return o
+    }).sort(sortByOrder)
+  }
+
   setOrder() {
+    this.order = this.items.map(item => item.id)
+  }
+
+  reorder() {
     const result: ITodoOrder = {}
     const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]')
     if (!elems.length) {
@@ -215,7 +236,11 @@ export default class Todo extends Vue {
         item && (item.order = index + 1)
       }
     })
-    this.items = [...this.items]
+    if (isEqual(this.order, Object.entries(result).map(el => el[0]))) {
+      return
+    }
+    this.items = [...this.items.sort(sortByOrder)]
+    this.setOrder()
     this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
   }
 
@@ -266,20 +291,8 @@ export default class Todo extends Vue {
       this.items = this.items.filter((item: ITodoItem) => item.id !== id)
       this.cancel()
       await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
-      this.setOrder()
+      this.reorder()
     }
-  }
-
-  setItems() {
-    this.items = Object.keys(this.json).map((key: string): ITodoItem => {
-      const o: ITodoItem = {
-        id: key,
-        date: now(key).date,
-        text: this.json[key].text,
-        order: this.json[key].order
-      }
-      return o
-    }).sort(sortByOrder)
   }
 
   addTodo() {

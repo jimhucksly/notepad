@@ -11,10 +11,10 @@
         :data-id="item.id"
         @mousedown="onMouseDown($event, item.id)"
       >
-        <div class="todo_item-header">
+        <div class="todo_item-header non-selectable">
           {{ item.date }}
         </div>
-        <div class="todo_item-content" v-html="getText(item.text)"></div>
+        <div class="todo_item-content non-selectable" v-html="getText(item.text)"></div>
       </div>
     </template>
     <template v-if="isPopupShow">
