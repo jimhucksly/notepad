@@ -111,35 +111,6 @@ export const isJSON = (value: any): boolean => {
   return false
 }
 
-export const getFileType = (name: string): string => {
-  if (/jpe?g$/.test(name)) return 'jpg'
-  if (/png$/.test(name)) return 'png'
-  if (/gif$/.test(name)) return 'image'
-  if (/html?$/.test(name)) return 'html'
-  if (/js$/.test(name)) return 'js'
-  if (/d.ts$/.test(name)) return 'dts'
-  if (/ts$/.test(name)) return 'ts'
-  if (/json$/.test(name)) return 'json'
-  if (/vue$/.test(name)) return 'vue'
-  if (/(sass|scss)$/.test(name)) return 'sass'
-  if (/css$/.test(name)) return 'css'
-  if (/svg$/.test(name)) return 'svg'
-  if (/docx?$/.test(name)) return 'doc'
-  if (/pdf$/.test(name)) return 'pdf'
-  if (/txt$/.test(name)) return 'txt'
-  if (/zip$/.test(name)) return 'zip'
-  if (/rar$/.test(name)) return 'rar'
-  if (/md$/.test(name)) return 'md'
-  if (/7z$/.test(name)) return '7z'
-  if (/xlsx?$/.test(name)) return 'xls'
-  if (/exe?$/.test(name)) return 'exe'
-  if (/msi?$/.test(name)) return 'msi'
-  if (/cer?$/.test(name)) return 'cer'
-  if (/pfx?$/.test(name)) return 'pfx'
-
-  return 'default'
-}
-
 export function dragAndDropLoader(
   DOMElementId: string,
   CSSClassHighlight: string,

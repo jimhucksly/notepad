@@ -3,7 +3,6 @@ import {
   checkLinks,
   now,
   isJSON,
-  getFileType,
   translit,
   indexOf,
   isDefined,
@@ -42,11 +41,6 @@ describe('Helpers', () => {
     } catch (e) {
       expect(e).toBeDefined()
     }
-  })
-
-  it('getFileType', () => {
-    const fileName = 'file.pdf'
-    expect(getFileType(fileName)).toEqual('pdf')
   })
 
   it('translit', () => {

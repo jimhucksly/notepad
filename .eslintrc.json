@@ -167,7 +167,7 @@
         "allowFinally": true
       }
     ],
-    "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
