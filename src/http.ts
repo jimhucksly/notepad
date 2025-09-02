@@ -1,19 +1,18 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { Store } from 'vuex'
 import { IResponse, IRootState } from '~/domain/models'
 import { uploadDownloadFile } from '~/helpers'
 
 function createInterceptors(store: Store<IRootState>) {
   axios.interceptors.request.use(
-    async (config: AxiosRequestConfig) => {
+    async (config: InternalAxiosRequestConfig) => {
       try {
-        config = config || {}
         config.headers['X-Honeypot'] = 'App'
         if (/upload/.test(config.url)) {
           config.headers['Content-Type'] = 'multipart/form-data'
           config.maxBodyLength = Infinity
           config.maxContentLength = Infinity
-          config.onUploadProgress = ({ loaded, total }: { loaded: number, total: number }) => {
+          config.onUploadProgress = ({ loaded, total }: AxiosProgressEvent) => {
             uploadDownloadFile(loaded, total)
           }
         } else {

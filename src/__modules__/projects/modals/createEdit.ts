@@ -25,7 +25,6 @@ export default class CreateEditProject extends Vue {
       changes: { from: 0, to: editor.state.doc.length, insert: htmlToText(this.item.message) }
     })
     setTimeout(() => {
-      // editor.refresh()
       this.editor = editor
     }, 100)
   }

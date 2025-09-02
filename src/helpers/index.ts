@@ -44,6 +44,9 @@ export const checkLinks = (message: string): string => {
         return
       }
       const isURL = new RegExp(REGEXP_URL).test(item)
+      if (item.endsWith('/')) {
+        item = item.replace(/^(.+)\/$/, '$1')
+      }
       if (isURL) {
         if (item.indexOf('###') === 0) {
           item = item.replace(/^\#\#\#/, '')

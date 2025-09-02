@@ -142,7 +142,8 @@ let rendererConfig = {
         '$ENDPOINT': `"${endpoint}"`,
         "$PORT": `"${port}"`
       }
-    )
+    ),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   output: {
     filename: '[name].js',
