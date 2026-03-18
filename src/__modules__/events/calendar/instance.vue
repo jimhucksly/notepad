@@ -1,15 +1,15 @@
 <template>
   <div class="b-calendar" :class="{ 'b-calendar--events': op.eventsMode }">
     <!-- nav -->
-    <div class="b-calendar__nav" v-if="!op.eventsMode">
+    <div v-if="!op.eventsMode" class="b-calendar__nav">
       <button class="b-calendar__back" @click="btnPrevHandler"></button>
       <div class="b-calendar__header">{{ header }}</div>
       <button class="b-calendar__forward" @click="btnNextHandler"></button>
     </div>
     <!-- body -->
-    <div class="b-calendar__body" ref="bofy">
+    <div ref="bofy" class="b-calendar__body">
       <!-- head -->
-      <div class="b-calendar__head" v-if="isDaySelection">
+      <div v-if="isDaySelection" class="b-calendar__head">
         <div v-for="i in [0, 1, 2, 3, 4, 5, 6]" :key="i">
           {{ op.daysShort[i] }}
         </div>
@@ -20,7 +20,7 @@
         :key="i"
         class="b-calendar__week"
         :class="{
-          'b-calendar__first-week': Number(i) === 0
+          'b-calendar__first-week': Number(i) === 0,
         }"
       >
         <!-- days -->
@@ -37,7 +37,7 @@
             'b-calendar__range-start': op.range && d.date === range[0],
             'b-calendar__range-end': op.range && d.date === range[1],
             'b-calendar__in-range': inRange(d.date),
-            'b-calendar__range-hover': inRangeHover(d.date)
+            'b-calendar__range-hover': inRangeHover(d.date),
           }"
           @click="d.isDisabled ? null : daySelection(d.date)"
           @mouseover="$emit('active-date', d.date)"
@@ -47,7 +47,7 @@
             <div>
               <template v-if="op.items">
                 <strong>{{ getTitle(d.date) }} </strong>
-                <p>{{ getContent(d.date) }} </p>
+                <p>{{ getContent(d.date) }}</p>
               </template>
             </div>
             <svg-icon icon="loader" width="30px" height="30px" />
@@ -64,7 +64,7 @@
           :key="i"
           class="b-calendar__month"
           :class="{
-            'b-calendar__today': i === baseMonth && currentDate.getFullYear() === baseYear
+            'b-calendar__today': i === baseMonth && currentDate.getFullYear() === baseYear,
           }"
           @click="monthSelection(i)"
         >
@@ -78,7 +78,7 @@
           :key="i"
           class="b-calendar__year"
           :class="{
-            'b-calendar__today': (currentDate.getFullYear() - 4 + i) === baseYear
+            'b-calendar__today': currentDate.getFullYear() - 4 + i === baseYear,
           }"
           @click="yearSelection(currentDate.getFullYear() - 4 + i)"
         >
@@ -87,7 +87,7 @@
       </template>
     </div>
     <!-- footer -->
-    <div class="b-calendar__footer" v-if="!op.eventsMode">
+    <div v-if="!op.eventsMode" class="b-calendar__footer">
       <button class="b-calendar__month-btn" @click="btnMonthHandler">Month</button>
       <button class="b-calendar__today-btn" @click="btnTodayHandler">Today</button>
       <button class="b-calendar__year-btn" @click="btnYearHandler">Year</button>

@@ -1,12 +1,12 @@
-import { Prop, Watch } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
-import CalendarInstance from './instance'
-import { IOptions } from './calendar.model'
-import './calendar.scss'
+import { Prop, Watch } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
+import CalendarInstance from './instance';
+import { IOptions } from './calendar.model';
+import './calendar.scss';
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 export function isDate(date: any): boolean {
-  return date instanceof Date && !isNaN(date.getFullYear())
+  return date instanceof Date && !isNaN(date.getFullYear());
 }
 
 /**
@@ -15,16 +15,16 @@ export function isDate(date: any): boolean {
  */
 export function getNativeDate(d: string): Date | null {
   if (/^(\d+).(\d+).(\d+)$/.test(d)) {
-    return new Date(d.replace(/^(\d+)\.(\d+)\.(\d+)$/, '$2/$1/$3'))
+    return new Date(d.replace(/^(\d+)\.(\d+)\.(\d+)$/, '$2/$1/$3'));
   }
   try {
-    const date = new Date(d)
-    return date
+    const date = new Date(d);
+    return date;
   } catch (e) {
     /* eslint-disable no-console */
-    console.error(e)
+    console.error(e);
   }
-  return null
+  return null;
 }
 
 export const defaults: IOptions = {
@@ -40,7 +40,7 @@ export const defaults: IOptions = {
     'September',
     'October',
     'November',
-    'Devember'
+    'Devember',
   ],
   months: [
     'января',
@@ -54,20 +54,12 @@ export const defaults: IOptions = {
     'сентября',
     'октября',
     'ноября',
-    'декабря'
+    'декабря',
   ],
   monIndex: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
   daysCount: [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
   daysShort: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-  weekDays: [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ],
+  weekDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
 
   /* options */
 
@@ -78,266 +70,264 @@ export const defaults: IOptions = {
   modelType: {
     date: 'date',
     title: 'title',
-    content: 'content'
+    content: 'content',
   },
   setDate: '', // 01.01.2001
   disableDaysBefore: null, // new Date(),
   disableDaysAfter: null, // new Date()
   onlyDates: [], // [31.10.2018, 01.11.2018, 02.11.2018, ...]
   labels: [], // [15000, 16000]
-  labelFormat: '' // '... %DATA% ...'
-}
+  labelFormat: '', // '... %DATA% ...'
+};
 
 export interface IBCalendar extends Vue {
-  prevMonth: () => void
-  nextMonth: () => void
-  setToday: () => void
+  prevMonth: () => void;
+  nextMonth: () => void;
+  setToday: () => void;
 }
 
 @Options({
   components: {
-    CalendarInstance
-  }
+    CalendarInstance,
+  },
 })
 export default class BCalendarComponent extends Vue {
-  @Prop() options: IOptions
+  @Prop() options: IOptions;
 
-  op: IOptions = { ...defaults }
-  range: string[] = []
-  active = ''
-  formShow = false
+  op: IOptions = { ...defaults };
+  range: string[] = [];
+  active = '';
+  formShow = false;
   event: Record<string, string> = {
     date: '',
     title: '',
-    content: ''
-  }
+    content: '',
+  };
 
   created() {
-    this.op = { ...defaults, ...this.options }
+    this.op = { ...defaults, ...this.options };
   }
 
   @Watch('options') onOptionsChanged(o: IOptions) {
-    this.op = { ...defaults, ...o }
+    this.op = { ...defaults, ...o };
   }
 
   getOptions(index: number) {
     return {
       ...this.op,
-      setDate: index === 0 ? this.date1 : this.date2
-    }
+      setDate: index === 0 ? this.date1 : this.date2,
+    };
   }
 
   apply() {
     if (this.range.length === 2) {
-      this.emit()
+      this.emit();
     }
   }
 
   reset() {
-    this.range = []
+    this.range = [];
   }
 
   daySelected(date: string) {
     if (this.op.range) {
       if (!this.range.length) {
-        this.range.push(date)
-        return
+        this.range.push(date);
+        return;
       }
       if (this.range.length === 1) {
-        const date1 = getNativeDate(this.range[0])
-        let r1: number
+        const date1 = getNativeDate(this.range[0]);
+        let r1: number;
         if (date1) {
-          r1 = date1.getTime()
+          r1 = date1.getTime();
         }
-        const date2 = getNativeDate(date)
-        let d: number
+        const date2 = getNativeDate(date);
+        let d: number;
         if (date2) {
-          d = date2.getTime()
+          d = date2.getTime();
         }
         if (d && r1) {
-          if (d < r1) this.range.unshift(date)
-          else this.range.push(date)
+          if (d < r1) {
+            this.range.unshift(date);
+          } else {
+            this.range.push(date);
+          }
         }
-        return
+        return;
       }
       if (this.range.length === 2) {
-        const date1 = getNativeDate(this.range[0])
-        let r1: number
+        const date1 = getNativeDate(this.range[0]);
+        let r1: number;
         if (date1) {
-          r1 = date1.getTime()
+          r1 = date1.getTime();
         }
-        const date2 = getNativeDate(this.range[1])
-        let r2: number
+        const date2 = getNativeDate(this.range[1]);
+        let r2: number;
         if (date2) {
-          r2 = date2.getTime()
+          r2 = date2.getTime();
         }
-        const date3 = getNativeDate(date)
-        let d: number
+        const date3 = getNativeDate(date);
+        let d: number;
         if (date3) {
-          d = date3.getTime()
+          d = date3.getTime();
         }
         if (d && r1 && r2) {
           if (d < r1) {
-            this.range = this.range.slice(1)
-            this.range.unshift(date)
-            return
+            this.range = this.range.slice(1);
+            this.range.unshift(date);
+            return;
           }
           if (d > r2) {
-            this.range = this.range.slice(0, 1)
-            this.range.push(date)
-            return
+            this.range = this.range.slice(0, 1);
+            this.range.push(date);
+            return;
           }
           if (d === r1 || d === r2 || (d > r1 && d < r2)) {
-            this.range = []
-            this.range.push(date)
+            this.range = [];
+            this.range.push(date);
           }
         }
-        return
       }
     } else if (this.op.eventsMode) {
-      this.formShow = true
-      this.event.date = date
-      this.$emit('form-toggle', this.formShow)
+      this.formShow = true;
+      this.event.date = date;
+      this.$emit('form-toggle', this.formShow);
       if (this.op.items && this.op.items[date]) {
-        this.event.title = (this.op.items[date] as Record<string, string>)[this.op.modelType.title]
-        this.event.content = (this.op.items[date] as Record<string, string>)[this.op.modelType.content]
+        this.event.title = (this.op.items[date] as Record<string, string>)[this.op.modelType.title];
+        this.event.content = (this.op.items[date] as Record<string, string>)[this.op.modelType.content];
       }
     } else {
-      this.$emit('day-selected', getNativeDate(date))
+      this.$emit('day-selected', getNativeDate(date));
     }
   }
 
   prevMonth() {
-    const date = getNativeDate(this.date1.toString())
+    const date = getNativeDate(this.date1.toString());
     if (date) {
-      this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
+      this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString();
     }
   }
 
   nextMonth() {
-    const date = getNativeDate(this.date1.toString())
+    const date = getNativeDate(this.date1.toString());
     if (date) {
-      date.setDate(1)
-      this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString()
+      date.setDate(1);
+      this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString();
     }
   }
 
   nextRangeMonth() {
-    const date = getNativeDate(this.date1.toString())
+    const date = getNativeDate(this.date1.toString());
     if (date) {
-      date.setDate(1)
-      this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString()
+      date.setDate(1);
+      this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString();
     }
   }
 
   prevRangeMonth() {
-    const date = getNativeDate(this.date1.toString())
+    const date = getNativeDate(this.date1.toString());
     if (date) {
-      this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString()
+      this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString();
     }
   }
 
   setActiveDate(date: string) {
     if (this.op.range && this.range.length === 1) {
-      const d = getNativeDate(date)
+      const d = getNativeDate(date);
       if (d) {
-        this.active = d.toString()
-        return
+        this.active = d.toString();
+        return;
       }
     }
-    this.active = ''
+    this.active = '';
   }
 
   setMonth(instanceId: number, index: number) {
     if (instanceId === 1) {
-      const date: Date = getNativeDate(this.date1.toString())
+      const date: Date = getNativeDate(this.date1.toString());
       if (date) {
-        this.op.setDate = new Date(date.setMonth(index)).toString()
+        this.op.setDate = new Date(date.setMonth(index)).toString();
       }
     }
     if (instanceId === 2) {
-      const date: Date = getNativeDate(this.date1.toString())
+      const date: Date = getNativeDate(this.date1.toString());
       if (date) {
         if (index === 0) {
-          date.setFullYear(date.getFullYear() - 1)
-          date.setMonth(11)
-          this.op.setDate = new Date(date).toString()
-        } else this.op.setDate = new Date(date.setMonth(index)).toString()
+          date.setFullYear(date.getFullYear() - 1);
+          date.setMonth(11);
+          this.op.setDate = new Date(date).toString();
+        } else {
+          this.op.setDate = new Date(date.setMonth(index)).toString();
+        }
       }
     }
   }
 
   setYear(year: number) {
-    const date: Date = getNativeDate(this.date1.toString())
+    const date: Date = getNativeDate(this.date1.toString());
     if (date) {
-      this.op.setDate = new Date(date.setFullYear(year)).toString()
+      this.op.setDate = new Date(date.setFullYear(year)).toString();
     }
   }
 
   setToday() {
-    const date = getNativeDate(this.baseDate.toString())
+    const date = getNativeDate(this.baseDate.toString());
     if (date) {
-      this.op.setDate = new Date(date).toString()
+      this.op.setDate = new Date(date).toString();
     }
   }
 
-
-
   hasEvent(date: string): boolean {
-    return this.hasItems && `${date}` in this.op.items
+    return this.hasItems && `${date}` in this.op.items;
   }
 
   formClear() {
-    this.event = { date: '', title: '', content: '' }
-    this.formShow = false
-    this.$emit('form-toggle', this.formShow)
+    this.event = { date: '', title: '', content: '' };
+    this.formShow = false;
+    this.$emit('form-toggle', this.formShow);
   }
 
   formSave() {
     if (this.event.title && this.event.content) {
-      this.$emit('save', this.event)
-      this.formClear()
+      this.$emit('save', this.event);
+      this.formClear();
     }
   }
 
   formRemove() {
-    this.$emit('remove', this.event.date)
-    this.formClear()
+    this.$emit('remove', this.event.date);
+    this.formClear();
   }
 
   private emit() {
-    const r1 = getNativeDate(this.range[0])
-    const r2 = getNativeDate(this.range[1])
+    const r1 = getNativeDate(this.range[0]);
+    const r2 = getNativeDate(this.range[1]);
     if (r1 && r2) {
-      this.$emit('range-selected', [
-        r1.toString(),
-        r2.toString()
-      ])
+      this.$emit('range-selected', [r1.toString(), r2.toString()]);
     }
   }
 
   get baseDate(): Date {
-    return new Date()
+    return new Date();
   }
 
   get date1(): Date {
     if (this.op.setDate) {
-      const date = getNativeDate(this.op.setDate)
+      const date = getNativeDate(this.op.setDate);
       if (date && isDate(date)) {
-        return date
+        return date;
       }
     }
-    return new Date()
+    return new Date();
   }
 
   get date2(): Date {
-    const date = new Date(this.date1.getTime())
-    date.setDate(1)
-    return new Date(date.setMonth(date.getMonth() + 1))
+    const date = new Date(this.date1.getTime());
+    date.setDate(1);
+    return new Date(date.setMonth(date.getMonth() + 1));
   }
 
   get hasItems(): boolean {
-    return this.op.items && Object.keys(this.op.items).length > 0
+    return this.op.items && Object.keys(this.op.items).length > 0;
   }
 }
-

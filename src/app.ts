@@ -1,4 +1,5 @@
 import { Options, Vue } from 'vue-class-component'
+import { generatePalette } from 'dn-core';
 
 @Options({
   template: `
@@ -26,5 +27,9 @@ export default class AppComponent extends Vue {
     link.rel = 'stylesheet'
     link.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css'
     document.getElementsByTagName('head')[0].appendChild(link)
+    const palette = document.createElement('style');
+    palette.innerHTML = generatePalette();
+    palette.id = 'ldmui-palette';
+    document.body.appendChild(palette);
   }
 }

@@ -65,7 +65,6 @@ function startRenderer () {
         port,
         host: 'localhost',
         historyApiFallback: true,
-        hot: true,
         devMiddleware: {
           writeToDisk: true,
         },
