@@ -1,5 +1,5 @@
 <template>
-  <div class="popup" v-show="showPopup">
+  <div v-show="showPopup" class="popup">
     <div class="popup-window" :style="`width: ${width}; height: ${height}`">
       <div class="popup-title-bar">
         <span>{{ title }}</span>
@@ -7,8 +7,8 @@
       </div>
       <div class="popup-inner">
         <component
-          v-if="component"
           :is="component"
+          v-if="component"
           v-bind="props"
           @set-result="onSetResult"
           @cancel="close"
@@ -18,11 +18,11 @@
           {{ props.question }}
         </div>
       </div>
-      <div class="popup-actions flex-center" v-if="isConfirmWindowDialog">
+      <div v-if="isConfirmWindowDialog" class="popup-actions flex-center">
         <button class="btn btn-primary" @click.prevent="onSetResult(true)">Yes</button>
         <button class="btn btn-default" @click.prevent="onSetResult(false)">No</button>
       </div>
-      <div class="popup-actions flex-end" v-if="isCreateEditDialog">
+      <div v-if="isCreateEditDialog" class="popup-actions flex-end">
         <button class="btn btn-primary" @click.prevent="save">Save</button>
       </div>
     </div>

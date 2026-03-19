@@ -1,10 +1,10 @@
 <template>
-  <div class="notepad_item" ref="item" :data-stamp="item.key" :class="{ unread: item.unread }">
+  <div ref="item" class="notepad_item" :data-stamp="item.key" :class="{ unread: item.unread }">
     <div>
       <div class="notepad_item_date">{{ item.date }}</div>
     </div>
-    <div class="notepad_item_content" ref="content">
-      <p v-html="message" @click.prevent="openLink($event)"></p>
+    <div ref="content" class="notepad_item_content">
+      <p @click.prevent="openLink($event)" v-html="message"></p>
     </div>
     <div class="notepad_item_btns">
       <button @click.prevent="edit">
@@ -25,7 +25,7 @@
   line-height: 15px;
   background-color: #fff;
   margin-bottom: 7px;
-  box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
   border: 1px solid transparent;
 
   &.unread {

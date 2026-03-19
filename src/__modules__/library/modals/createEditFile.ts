@@ -1,33 +1,33 @@
-import { Vue } from 'vue-class-component'
-import { Types } from '~/core'
+import { Vue } from 'vue-class-component';
+import { Types } from '~/core';
 
 export default class CreateEditLibraryFileComponent extends Vue {
-  name = ''
+  name = '';
 
-  v: Types.IValidate = {}
+  v: Types.IValidate = {};
 
-  isSubmitted = false
+  isSubmitted = false;
 
   created() {
-    this.$emit('popup-component-created', this)
+    this.$emit('popup-component-created', this);
   }
 
   mounted() {
-    this.$validate(this)
+    this.$validate(this);
   }
 
   async validate(): Promise<boolean> {
-    await this.v.touch()
-    return this.v.valid()
+    await this.v.touch();
+    return this.v.valid();
   }
 
   async save() {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if (!(await this.validate())) {
-      return
+      return;
     }
     this.$emit('set-result', {
-      name: this.name
-    })
+      name: this.name,
+    });
   }
 }

@@ -1,28 +1,28 @@
-import { MutationTree } from 'vuex'
-import { upperFirst } from '~/helpers'
-import { stateKeys } from './state'
-import { IProjectsState, IFilters, IProjects } from '../models'
+import { MutationTree } from 'vuex';
+import { upperFirst } from '~/helpers';
+import { stateKeys } from './state';
+import { IProjectsState, IFilters, IProjects } from '../models';
 
 const _mutations: MutationTree<IProjectsState> = {
   setJson(state: IProjectsState, payload: IProjects) {
-    state.projects = { ...payload }
+    state.projects = { ...payload };
   },
   setFilter(state: IProjectsState, filter: IFilters) {
-    state.filter = Object.assign({}, filter)
-  }
-}
+    state.filter = Object.assign({}, filter);
+  },
+};
 
 stateKeys.forEach(key => {
-  const commitKey = 'set' + upperFirst(key)
+  const commitKey = 'set' + upperFirst(key);
   if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, payload) => {
-      state[key as keyof IProjectsState] = payload
-    }
+      state[key as keyof IProjectsState] = payload;
+    };
   }
-})
+});
 
 const mutations: MutationTree<IProjectsState> = {
-  ..._mutations
-}
+  ..._mutations,
+};
 
-export default mutations
+export default mutations;

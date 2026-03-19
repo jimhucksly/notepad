@@ -1,5 +1,5 @@
-import { Options, Vue } from 'vue-class-component'
-import { Prop, Watch } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
 
 @Options({
   template: `
@@ -12,27 +12,27 @@ import { Prop, Watch } from 'vue-property-decorator'
       <input type="checkbox" :value="internalValue">
       <span class="b-checkbox_runner" @click="toggle"></span>
     </label>
-  `
+  `,
 })
 export default class BCheckboxComponent extends Vue {
-  @Prop() modelValue: boolean
+  @Prop() modelValue: boolean;
 
-  internalValue = false
+  internalValue = false;
 
   mounted() {
-    this.internalValue = this.modelValue
+    this.internalValue = this.modelValue;
   }
 
   @Watch('modelValue') onModelValueChanged() {
-    this.internalValue = this.modelValue
+    this.internalValue = this.modelValue;
   }
 
   @Watch('internalValue') onInternalValueChanged() {
-    this.$emit('update:modelValue', this.internalValue)
+    this.$emit('update:modelValue', this.internalValue);
   }
 
   toggle() {
-    this.internalValue = !this.internalValue
-    this.$emit('change', this.internalValue)
+    this.internalValue = !this.internalValue;
+    this.$emit('change', this.internalValue);
   }
 }

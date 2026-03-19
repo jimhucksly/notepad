@@ -6,7 +6,7 @@
     <div
       class="library_files_btn"
       :class="{
-        active: false
+        active: false,
       }"
       @click="toggleFiles"
     >

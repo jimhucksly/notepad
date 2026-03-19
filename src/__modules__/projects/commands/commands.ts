@@ -1,4 +1,4 @@
-import { IProjects } from '../models'
+import { IProjects } from '../models';
 
 export class CreateProjectCommand {
   constructor(public data: IProjects) {}
@@ -27,4 +27,3 @@ export class ArchiveRemoveCommand {
 export class ReadCommand {
   constructor(public stamp: string | number) {}
 }
-

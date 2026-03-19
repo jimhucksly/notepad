@@ -1,9 +1,9 @@
-import { Vue } from 'vue-class-component'
-import { Queries, Types } from '~/core'
-import { uniqueid } from '~/helpers'
-import { LinksQuery } from './queries/queries'
-import { ILink } from './models'
-import { UpdateLinksCommand } from './commands/commands'
+import { Vue } from 'vue-class-component';
+import { Queries, Types } from '~/core';
+import { uniqueid } from '~/helpers';
+import { LinksQuery } from './queries/queries';
+import { ILink } from './models';
+import { UpdateLinksCommand } from './commands/commands';
 
 export default class LinksSidebar extends Vue {
   async addLink() {
@@ -11,17 +11,17 @@ export default class LinksSidebar extends Vue {
       component: 'Links-Modal-createEdit',
       modal: {
         title: 'Add link',
-        width: '30%'
-      }
-    })
-    const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILink>, ILink>(query)
+        width: '30%',
+      },
+    });
+    const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILink>, ILink>(query);
     if (!result) {
-      return
+      return;
     }
     if (!result.id) {
-      result.id = uniqueid(6) as string
+      result.id = uniqueid(6) as string;
     }
-    await this.$app.$commandBus.do(new UpdateLinksCommand(result))
-    await this.$app.$queryBus.exec(new LinksQuery())
+    await this.$app.$commandBus.do(new UpdateLinksCommand(result));
+    await this.$app.$queryBus.exec(new LinksQuery());
   }
 }

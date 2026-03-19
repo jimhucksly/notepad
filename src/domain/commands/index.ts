@@ -3,26 +3,16 @@ export class AuthCommand {
 }
 
 export class RegistrationCommand {
-  login = ''
-  password = ''
-  name = ''
-  email = ''
+  login = '';
+  password = '';
+  name = '';
+  email = '';
 
-  constructor({
-    login,
-    password,
-    name,
-    email
-  }: {
-    login: string
-    password: string
-    name: string
-    email: string
-  }) {
-    this.login = login
-    this.password = password
-    this.name = name
-    this.email = email
+  constructor({ login, password, name, email }: { login: string; password: string; name: string; email: string }) {
+    this.login = login;
+    this.password = password;
+    this.name = name;
+    this.email = email;
   }
 }
 
@@ -37,7 +27,10 @@ export class ResetPasswordCommand {
 }
 
 export class UpdatePasswordCommand {
-  constructor(public old: string, public pass: string) {}
+  constructor(
+    public old: string,
+    public pass: string
+  ) {}
 }
 
 export class RevokeYandexTokenCommand {}

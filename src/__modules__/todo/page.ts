@@ -1,49 +1,47 @@
-import { cloneDeep, isEqual } from 'lodash'
-import { Options, Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { indexOf, now } from '~/helpers'
-import { Plugins } from '~/core'
-import { ITodo, ITodoItem, ITodoOrder } from './models'
-import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from './commands/commands'
-import { TodoQuery } from './queries/queries'
+import { cloneDeep, isEqual } from 'lodash';
+import { Options, Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
+import { indexOf, now } from '~/helpers';
+import { Plugins } from '~/core';
+import { ITodo, ITodoItem, ITodoOrder } from './models';
+import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from './commands/commands';
+import { TodoQuery } from './queries/queries';
 
-const sortByOrder = (a: ITodoItem, b: ITodoItem) => {
-  return a.order < b.order ? -1 : 1
-}
+const sortByOrder = (a: ITodoItem, b: ITodoItem) => (a.order < b.order ? -1 : 1);
 
 @Options({
   beforeUnmount() {
-    Plugins.Hub.$off('todo-add', this.addTodoHandler)
-  }
+    Plugins.Hub.$off('todo-add', this.addTodoHandler);
+  },
 })
 export default class Todo extends Vue {
-  @Getter('Todo/getTodo') json: ITodo
+  @Getter('Todo/getTodo') json: ITodo;
 
-  items: Array<ITodoItem> = []
-  order: Array<string> = []
-  isPopupShow = false
-  itemSelected: ITodoItem | null = null
-  isDrag = false
-  loading = false
+  items: Array<ITodoItem> = [];
+  order: Array<string> = [];
+  isPopupShow = false;
+  itemSelected: ITodoItem | null = null;
+  isDrag = false;
+  loading = false;
 
-  addTodoHandler: () => void
+  addTodoHandler: () => void;
 
   @Watch('json') onJsonChanged() {
-    this.setItems()
-    this.setOrder()
+    this.setItems();
+    this.setOrder();
   }
 
   async mounted() {
     try {
-      this.loading = true
-      await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery())
-      this.loading = false
-      this.addTodoHandler = this.addTodo.bind(this)
-      Plugins.Hub.$on('todo-add', this.addTodoHandler)
+      this.loading = true;
+      await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery());
+      this.loading = false;
+      this.addTodoHandler = this.addTodo.bind(this);
+      Plugins.Hub.$on('todo-add', this.addTodoHandler);
     } catch (e) {
       /* eslint-disable no-console */
-      console.log(e)
+      console.log(e);
     }
   }
 
@@ -52,275 +50,282 @@ export default class Todo extends Vue {
       /**
        * если клик правой кнопкой мыши
        */
-      return
+      return;
     }
 
     document.onmousemove = () => {
-      this.isDrag = true
-      this.move(event, id)
-    }
+      this.isDrag = true;
+      this.move(event, id);
+    };
 
     document.onmouseup = () => {
-      this.isDrag = false
-      const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
+      this.isDrag = false;
+      const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`);
       if (!elem) {
-        return
+        return;
       }
-      elem.style.transition = 'all 0.1s'
-      elem.style.transform = 'scale(0.95)'
-      this.edit(id)
+      elem.style.transition = 'all 0.1s';
+      elem.style.transform = 'scale(0.95)';
+      this.edit(id);
       setTimeout(() => {
-        elem.style.transform = 'scale(1)'
-        elem.removeAttribute('style')
-      }, 100)
-    }
+        elem.style.transform = 'scale(1)';
+        elem.removeAttribute('style');
+      }, 100);
+    };
   }
 
   move(event: MouseEvent, id: string): void {
     if (!this.isDrag) {
-      return
+      return;
     }
-    const container: HTMLElement = document.querySelector('.todo_cont')
-    const elemsClassName = 'todo_item'
+    const container: HTMLElement = document.querySelector('.todo_cont');
+    const elemsClassName = 'todo_item';
     if (!container || container.childElementCount === 1) {
-      return null
+      return null;
     }
-    const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`)
+    const elem: HTMLElement | null = document.querySelector(`[data-id="${id}"]`);
 
     const startPos = {
       x: event.clientX,
-      y: event.clientY
-    }
+      y: event.clientY,
+    };
 
-    let dragItem: HTMLElement = null
-    let avatar: HTMLElement = null
+    let dragItem: HTMLElement = null;
+    let avatar: HTMLElement = null;
 
     const finishDrag = () => {
       if (dragItem) {
-        dragItem.classList.remove('dragable')
-        dragItem.removeAttribute('style')
+        dragItem.classList.remove('dragable');
+        dragItem.removeAttribute('style');
         if (avatar) {
-          const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable')
+          const dropableElems: NodeListOf<HTMLElement> = container.querySelectorAll('.dropable');
           dropableElems.forEach(el => {
-            el.classList.remove('dropable')
-            el.removeAttribute('style')
-          })
-          container.classList.remove('todo_cont--drag')
-          container.insertBefore(dragItem, avatar)
-          container.removeChild(avatar)
+            el.classList.remove('dropable');
+            el.removeAttribute('style');
+          });
+          container.classList.remove('todo_cont--drag');
+          container.insertBefore(dragItem, avatar);
+          container.removeChild(avatar);
         }
       }
-      document.onmousemove = null
-      document.onmouseup = null
-      dragItem = null
-      avatar = null
-      this.isDrag = false
-      this.reorder()
-    }
+      document.onmousemove = null;
+      document.onmouseup = null;
+      dragItem = null;
+      avatar = null;
+      this.isDrag = false;
+      this.reorder();
+    };
 
     document.onmousemove = (ev: MouseEvent) => {
       if (Math.abs(ev.clientX - startPos.x) > 10 || Math.abs(ev.clientY - startPos.y) > 10) {
-        container.classList.add('todo_cont--drag')
+        container.classList.add('todo_cont--drag');
 
-        avatar = document.createElement('div')
-        avatar.style.display = 'block'
-        avatar.style.float = 'left'
-        avatar.style.width = elem.offsetWidth + 'px'
-        avatar.style.height = elem.offsetHeight + 'px'
-        avatar.style.margin = '3px'
-        avatar.style.border = '1px dashed #333'
-        avatar.style.opacity = '0.6'
-        avatar.style.borderRadius = '6px'
+        avatar = document.createElement('div');
+        avatar.style.display = 'block';
+        avatar.style.float = 'left';
+        avatar.style.width = elem.offsetWidth + 'px';
+        avatar.style.height = elem.offsetHeight + 'px';
+        avatar.style.margin = '3px';
+        avatar.style.border = '1px dashed #333';
+        avatar.style.opacity = '0.6';
+        avatar.style.borderRadius = '6px';
 
-        const rectElem: DOMRect = elem.getBoundingClientRect()
-        const rectCont: DOMRect = container.getBoundingClientRect()
-        const startX = rectElem.left - rectCont.left
-        const startY = rectElem.top - rectCont.top
+        const rectElem: DOMRect = elem.getBoundingClientRect();
+        const rectCont: DOMRect = container.getBoundingClientRect();
+        const startX = rectElem.left - rectCont.left;
+        const startY = rectElem.top - rectCont.top;
 
-        container.insertBefore(avatar, elem)
-        elem.style.position = 'absolute'
-        elem.style.left = startX + 'px'
-        elem.style.top = startY + 'px'
-        elem.style.zIndex = '99'
-        elem.style.opacity = '0.7'
-        elem.style.transform = 'rotate(5deg)'
+        container.insertBefore(avatar, elem);
+        elem.style.position = 'absolute';
+        elem.style.left = startX + 'px';
+        elem.style.top = startY + 'px';
+        elem.style.zIndex = '99';
+        elem.style.opacity = '0.7';
+        elem.style.transform = 'rotate(5deg)';
 
-        const childNodes: NodeListOf<HTMLElement> = container.childNodes as NodeListOf<HTMLElement>
+        const childNodes: NodeListOf<HTMLElement> = container.childNodes as NodeListOf<HTMLElement>;
         childNodes.forEach(el => {
           if (el.classList) {
-            const isAvatar = el.classList.contains('dragable-avatar')
-            const isSelf = el.classList.contains('dragable')
+            const isAvatar = el.classList.contains('dragable-avatar');
+            const isSelf = el.classList.contains('dragable');
             if (!isAvatar && !isSelf && el.classList.contains(elemsClassName)) {
-              el.classList.add('dropable')
+              el.classList.add('dropable');
             }
           }
-        })
+        });
 
-        dragItem = elem
+        dragItem = elem;
 
         document.onmousemove = (e: MouseEvent) => {
-          const moveX = startPos.x - e.clientX
-          const moveY = startPos.y - e.clientY
+          const moveX = startPos.x - e.clientX;
+          const moveY = startPos.y - e.clientY;
 
-          dragItem.style.left = startX - moveX + 'px'
-          dragItem.style.top = startY - moveY + 'px'
+          dragItem.style.left = startX - moveX + 'px';
+          dragItem.style.top = startY - moveY + 'px';
 
-          const { clientX, clientY } = e
-          dragItem.style.display = 'none'
-          const el: Element | null = document.elementFromPoint(clientX, clientY)
-          dragItem.style.display = 'block'
+          const { clientX, clientY } = e;
+          dragItem.style.display = 'none';
+          const el: Element | null = document.elementFromPoint(clientX, clientY);
+          dragItem.style.display = 'block';
           if (!el) {
-            return
+            return;
           }
-          const dropItem: HTMLElement | null = el.closest('.dropable')
+          const dropItem: HTMLElement | null = el.closest('.dropable');
           if (!dropItem) {
-            return
+            return;
           }
-          const dropRect: DOMRect = dropItem.getBoundingClientRect()
+          const dropRect: DOMRect = dropItem.getBoundingClientRect();
           const dropCoords = {
             x: e.clientX - dropRect.left,
-            y: e.clientY - dropRect.top
-          }
+            y: e.clientY - dropRect.top,
+          };
           if (dropCoords.x < dropRect.width / 2) {
-            const next: Element | null = dropItem.nextElementSibling
+            const next: Element | null = dropItem.nextElementSibling;
             if (next) {
-              container.insertBefore(avatar, next)
+              container.insertBefore(avatar, next);
             } else {
-              container.appendChild(avatar)
+              container.appendChild(avatar);
             }
+          } else if (indexOf(dropItem) === container.childElementCount - 1) {
+            container.appendChild(avatar);
           } else {
-            if (indexOf(dropItem) === container.childElementCount - 1) {
-              container.appendChild(avatar)
-            } else {
-              container.insertBefore(avatar, dropItem)
-            }
+            container.insertBefore(avatar, dropItem);
           }
-        }
+        };
       }
-    }
+    };
 
     document.onmouseup = () => {
       setTimeout(() => {
-        finishDrag()
-      }, 100)
-    }
+        finishDrag();
+      }, 100);
+    };
   }
 
   setItems() {
-    this.items = Object.keys(this.json).map((key: string): ITodoItem => {
-      const o: ITodoItem = {
-        id: key,
-        date: now(key).date,
-        text: this.json[key].text,
-        order: this.json[key].order
-      }
-      return o
-    }).sort(sortByOrder)
+    this.items = Object.keys(this.json)
+      .map((key: string): ITodoItem => {
+        const o: ITodoItem = {
+          id: key,
+          date: now(key).date,
+          text: this.json[key].text,
+          order: this.json[key].order,
+        };
+        return o;
+      })
+      .sort(sortByOrder);
   }
 
   setOrder() {
-    this.order = this.items.map(item => item.id)
+    this.order = this.items.map(item => item.id);
   }
 
   reorder() {
-    const result: ITodoOrder = {}
-    const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]')
+    const result: ITodoOrder = {};
+    const elems: NodeListOf<HTMLElement> = document.querySelectorAll('[data-id]');
     if (!elems.length) {
-      return
+      return;
     }
     elems.forEach((el: HTMLElement, index: number) => {
-      const id = el.dataset.id
+      const id = el.dataset.id;
       if (id) {
-        result[id] = index + 1
-        const item = this.items.find((o: ITodoItem) => o.id === id)
-        item && (item.order = index + 1)
+        result[id] = index + 1;
+        const item = this.items.find((o: ITodoItem) => o.id === id);
+        if (item) {
+          item.order = index + 1;
+        }
       }
-    })
-    if (isEqual(this.order, Object.entries(result).map(el => el[0]))) {
-      return
+    });
+    if (
+      isEqual(
+        this.order,
+        Object.entries(result).map(el => el[0])
+      )
+    ) {
+      return;
     }
-    this.items = [...this.items.sort(sortByOrder)]
-    this.setOrder()
-    this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result))
+    this.items = [...this.items.sort(sortByOrder)];
+    this.setOrder();
+    this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result));
   }
 
   edit(id: string) {
     if (this.isDrag) {
-      return
+      return;
     }
-    document.onmousemove = null
-    document.onmouseup = null
-    const o = this.items.find((item: ITodoItem) => item.id === id)
-    this.itemSelected = o ? cloneDeep(o) : null
+    document.onmousemove = null;
+    document.onmouseup = null;
+    const o = this.items.find((item: ITodoItem) => item.id === id);
+    this.itemSelected = o ? cloneDeep(o) : null;
     if (this.itemSelected) {
-      this.isPopupShow = true
+      this.isPopupShow = true;
       this.$nextTick(() => {
-        const textarea = this.$refs.textarea as HTMLElement
-        textarea.focus()
+        const textarea = this.$refs.textarea as HTMLElement;
+        textarea.focus();
         textarea.addEventListener('keydown', (e: KeyboardEvent) => {
           if ((e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
-            e.preventDefault()
-            this.save()
+            e.preventDefault();
+            this.save();
           }
-        })
-      })
+        });
+      });
     }
   }
 
   save() {
     if (this.itemSelected) {
-      const id = this.itemSelected.id
-      const o: ITodoItem | null = this.items.find((item: ITodoItem) => item.id === id) ?? null
+      const id = this.itemSelected.id;
+      const o: ITodoItem | null = this.items.find((item: ITodoItem) => item.id === id) ?? null;
       if (o) {
-        o.text = this.itemSelected.text
-        this.items = [...this.items]
-        this.cancel()
-        this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
+        o.text = this.itemSelected.text;
+        this.items = [...this.items];
+        this.cancel();
+        this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o));
       }
     }
   }
 
   cancel() {
-    this.isPopupShow = false
-    this.itemSelected = null
+    this.isPopupShow = false;
+    this.itemSelected = null;
   }
 
   async remove() {
     if (this.itemSelected) {
-      const id = this.itemSelected.id
-      this.items = this.items.filter((item: ITodoItem) => item.id !== id)
-      this.cancel()
-      await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id))
-      this.reorder()
+      const id = this.itemSelected.id;
+      this.items = this.items.filter((item: ITodoItem) => item.id !== id);
+      this.cancel();
+      await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id));
+      this.reorder();
     }
   }
 
   addTodo() {
-    const { date, stamp } = now()
-    let sstamp: number = +stamp
+    const { date, stamp } = now();
+    let sstamp = Number(stamp);
     while (this.keys.includes(sstamp.toString())) {
-      sstamp += 1
+      sstamp += 1;
     }
     const o: ITodoItem = {
       id: sstamp.toString(),
       date,
       text: '',
-      order: this.keys.length + 1
-    }
-    this.items.push(o)
-    this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o))
+      order: this.keys.length + 1,
+    };
+    this.items.push(o);
+    this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o));
   }
 
   getText(text: string) {
-    const split = text.split('\n').map(s => `<p>${s.replace(/[  ]+/g, ' ').trim()}</p>`)
-    return split.join('')
+    const split = text.split('\n').map(s => `<p>${s.replace(/[  ]+/g, ' ').trim()}</p>`);
+    return split.join('');
   }
 
   get keys(): Array<string> {
-    return this.items.map((item: ITodoItem) => item.id)
+    return this.items.map((item: ITodoItem) => item.id);
   }
 
   get isEmpty() {
-    return !this.loading && !this.items?.length
+    return !this.loading && !this.items?.length;
   }
 }

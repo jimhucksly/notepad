@@ -1,18 +1,12 @@
-import { ILibraryState } from '../models'
+import { ILibraryState } from '../models';
 
-export const stateKeys: string[] = [
-  'libraryData',
-  'libraryFiles',
-  'libraryFileId',
-  'libraryTree'
-]
+export const stateKeys: string[] = ['libraryData', 'libraryFiles', 'libraryFileId', 'libraryTree'];
 
 const state: ILibraryState = {
   libraryData: '',
   libraryFiles: null,
   libraryFileId: null,
-  libraryTree: []
-}
+  libraryTree: [],
+};
 
-export default state
-
+export default state;

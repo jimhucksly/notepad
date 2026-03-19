@@ -1,17 +1,12 @@
-import { IProjectsState } from '../models'
+import { IProjectsState } from '../models';
 
-export const stateKeys: string[] = [
-  'projects',
-  'archives',
-  'filter',
-  'selectedProjectKey'
-]
+export const stateKeys: string[] = ['projects', 'archives', 'filter', 'selectedProjectKey'];
 
 const state: IProjectsState = {
   projects: null,
   archives: [],
   filter: {},
-  selectedProjectKey: ''
-}
+  selectedProjectKey: '',
+};
 
-export default state
+export default state;

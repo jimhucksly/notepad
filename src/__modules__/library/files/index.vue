@@ -1,12 +1,9 @@
 <template>
-  <div
-    class="library_files"
-    :class="{ expanded }"
-  >
+  <div class="library_files" :class="{ expanded }">
     <div class="library_files_title">Library: Files</div>
     <div class="library_files_inner">
       <ul v-if="libraryFiles">
-        <li v-for="file in libraryFiles" :class="{ active: file.id === currentId }">
+        <li v-for="file in libraryFiles" :key="file.id" :class="{ active: file.id === currentId }">
           <span>{{ file.name }}</span>
           <div>
             <i class="icon icon-read" @click="openFile(file)">

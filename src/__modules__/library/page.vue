@@ -1,5 +1,5 @@
 <template>
-  <div class="editor_wrapper" ref="editor_wrapper">
+  <div ref="editor_wrapper" class="editor_wrapper">
     <b-tabs v-model="isPreview">
       <template #default="props">
         <b-tab :value="true" v-bind="props">Preview</b-tab>
@@ -9,10 +9,11 @@
     <button class="editor_save" @click="save">
       <span class="fa fa-save"></span>
     </button>
-    <div class="editor_content" v-if="isPreview" v-html="template"></div>
+    <div v-if="isPreview" class="editor_content" v-html="template"></div>
     <template v-if="ready">
       <md-editor
         v-show="!isPreview"
+        ref="editor"
         v-model="value"
         :preview="false"
         :footers="[]"
@@ -20,7 +21,6 @@
         no-mermaid
         no-katex
         language="ru-RU"
-        ref="editor"
         class="d-flex"
         style="height: 100% !important"
       />

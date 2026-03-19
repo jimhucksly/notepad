@@ -4,9 +4,7 @@ const bindings = {
   LibraryFileQuery: Symbol.for('LibraryFileQuery'),
   AddLibraryFileCommand: Symbol.for('AddLibraryFileCommand'),
   UpdateLibraryCommand: Symbol.for('UpdateLibraryCommand'),
-  DeleteLibraryFileCommand: Symbol.for('DeleteLibraryFileCommand')
-}
+  DeleteLibraryFileCommand: Symbol.for('DeleteLibraryFileCommand'),
+};
 
-export {
-  bindings
-}
+export { bindings };

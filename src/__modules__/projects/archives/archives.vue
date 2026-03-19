@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="projects_archives"
-    :class="{ expanded: expanded }"
-  >
+  <div class="projects_archives" :class="{ expanded: expanded }">
     <div class="projects_archives_title">Projects: Archives</div>
     <div class="projects_archives_inner">
       <ul>

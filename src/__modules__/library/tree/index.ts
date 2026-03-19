@@ -1,35 +1,35 @@
-import { Options, Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
-import { Plugins } from '~/core'
-import { ITreeItem } from '../models'
+import { Options, Vue } from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
+import { Plugins } from '~/core';
+import { ITreeItem } from '../models';
 
 @Options({
-  name: 'Tree'
+  name: 'Tree',
 })
 export default class LibraryTreeComponent extends Vue {
-  @Prop() tree: Array<ITreeItem>
-  @Prop({ default: 1 }) level: number
+  @Prop() tree: Array<ITreeItem>;
+  @Prop({ default: 1 }) level: number;
 
   selectNode(item: ITreeItem) {
-    Plugins.Hub.$emit('codemirror-link-click', item)
-    const editor = document.querySelector('.editor_content')
-    const node = this.$el.querySelector(`[data-ref="${item.id}"]`)
+    Plugins.Hub.$emit('codemirror-link-click', item);
+    const editor = document.querySelector('.editor_content');
+    const node = this.$el.querySelector(`[data-ref="${item.id}"]`);
     if (node) {
       if (!node.classList.contains('tree_item_node')) {
-        const isExpanded = node.classList.contains('expanded')
-        node.classList[isExpanded ? 'remove' : 'add']('expanded')
-        node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus')
-        node.classList[isExpanded ? 'add' : 'remove']('tree_item_plus')
-        const ul = node.nextElementSibling
+        const isExpanded = node.classList.contains('expanded');
+        node.classList[isExpanded ? 'remove' : 'add']('expanded');
+        node.classList[isExpanded ? 'remove' : 'add']('tree_item_minus');
+        node.classList[isExpanded ? 'add' : 'remove']('tree_item_plus');
+        const ul = node.nextElementSibling;
         if (ul) {
-          this[isExpanded ? '$slideUp' : '$slideDown'](ul, 200)
+          this[isExpanded ? '$slideUp' : '$slideDown'](ul, 200);
         }
       }
     }
     if (editor) {
-      const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug)
-      const rect = elem.getBoundingClientRect()
-      editor.scrollTo(0, editor.scrollTop + rect.top - 54 - 30)
+      const elem: HTMLAnchorElement | null = editor.querySelector('#' + item.slug);
+      const rect = elem.getBoundingClientRect();
+      editor.scrollTo(0, editor.scrollTop + rect.top - 54 - 30);
     }
   }
 }

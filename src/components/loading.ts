@@ -1,4 +1,4 @@
-import { Options, Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component';
 
 @Options({
   template: `
@@ -8,7 +8,7 @@ import { Options, Vue } from 'vue-class-component'
       </div>
       <div class="loading"></div>
     </div>
-  `
+  `,
 })
 export default class Loading extends Vue {
   //

@@ -5,7 +5,7 @@
       class="switcher"
       :class="{
         'switcher--expanded': isExpand,
-        'switcher--not-clickable': isNotClickable
+        'switcher--not-clickable': isNotClickable,
       }"
     >
       <span class="switcher__legend" @click="toggle">
@@ -26,7 +26,7 @@
       </div>
     </div>
     <template v-for="item in components">
-      <component :is="item.name" v-if="item.fsmState === mainSection" />
+      <component :is="item.name" v-if="item.fsmState === mainSection" :key="item.name" />
     </template>
   </aside>
 </template>

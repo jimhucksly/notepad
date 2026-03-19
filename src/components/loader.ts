@@ -1,5 +1,5 @@
-import { Prop } from 'vue-property-decorator'
-import { Options, Vue } from 'vue-class-component'
+import { Prop } from 'vue-property-decorator';
+import { Options, Vue } from 'vue-class-component';
 
 @Options({
   template: `
@@ -10,9 +10,9 @@ import { Options, Vue } from 'vue-class-component'
         :height="small ? '18px' : '30px'"
       />
     </div>
-  `
+  `,
 })
 export default class LoaderComponent extends Vue {
-  @Prop({ type: Boolean, default: false }) small: boolean
-  @Prop({ type: Boolean, default: true }) full: boolean
+  @Prop({ type: Boolean, default: false }) small: boolean;
+  @Prop({ type: Boolean, default: true }) full: boolean;
 }

@@ -1,4 +1,4 @@
-import { Options, Vue } from 'vue-class-component'
+import { Options, Vue } from 'vue-class-component';
 
 @Options({
   template: `
@@ -7,7 +7,7 @@ import { Options, Vue } from 'vue-class-component'
         Connection is lost.
       </div>
     </div>
-  `
+  `,
 })
 export default class Error extends Vue {
   //

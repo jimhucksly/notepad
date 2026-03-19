@@ -196,6 +196,8 @@ module.exports = {
       },
     ],
     'vue/html-self-closing': 'off',
+    'vue/no-v-html': 'off',
+    'vue/no-multiple-template-root': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/typedef': [
       'error',

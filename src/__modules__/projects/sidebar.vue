@@ -1,5 +1,5 @@
 <template>
-  <div class="projects" ref="projects">
+  <div ref="projects" class="projects">
     <div class="projects_inner">
       <div
         v-for="item in json"
@@ -10,19 +10,14 @@
         :class="{
           lock: item.lock,
           active: filter[item.key],
-          checked: item.key === selected
+          checked: item.key === selected,
         }"
         @click="toggleFilter($event, item.key)"
       >
         <div>
           <span class="projects_item_check">
             <label>
-              <input
-                type="checkbox"
-                :data-stamp="item.key"
-                :checked="item.key === selected"
-                @change="toggleCheck"
-              >
+              <input type="checkbox" :data-stamp="item.key" :checked="item.key === selected" @change="toggleCheck" />
             </label>
           </span>
           <label>{{ item.name || item.key }}</label>
@@ -35,7 +30,7 @@
     <div
       class="projects_archive_btn"
       :class="{
-        active: isArchivesExpaned
+        active: isArchivesExpaned,
       }"
       @click="toggleArchives"
     >
@@ -92,7 +87,7 @@
       z-index: 10;
     }
 
-    input[type="text"] {
+    input[type='text'] {
       display: none;
       position: relative;
       border: 1px solid var(--blue-gray_light);
@@ -134,7 +129,7 @@
       cursor: pointer;
       transition: 0.2s;
 
-      input[type="checkbox"] {
+      input[type='checkbox'] {
         display: none;
       }
 

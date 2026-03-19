@@ -1,11 +1,9 @@
-import { ILinksState } from '../models'
+import { ILinksState } from '../models';
 
-export const stateKeys: string[] = [
-  'links'
-]
+export const stateKeys: string[] = ['links'];
 
 const state: ILinksState = {
-  links: null
-}
+  links: null,
+};
 
-export default state
+export default state;

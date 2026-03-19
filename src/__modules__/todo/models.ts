@@ -1,23 +1,22 @@
 export interface ITodo {
   [key: string]: {
-    date: string
-    text: string
-    order: number
-  }
+    date: string;
+    text: string;
+    order: number;
+  };
 }
 
 export interface ITodoItem {
-  id: string
-  date: string
-  text: string
-  order: number
+  id: string;
+  date: string;
+  text: string;
+  order: number;
 }
 
 export interface ITodoOrder {
-  [id: string]: number
+  [id: string]: number;
 }
 
 export interface ITodoState {
-  todo: ITodo
+  todo: ITodo;
 }
-

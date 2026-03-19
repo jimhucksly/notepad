@@ -7,9 +7,7 @@ const bindings = {
   ReadCommand: Symbol.for('ReadCommand'),
   ArchiveRestoreCommand: Symbol.for('ArchiveRestoreCommand'),
   ArchiveRemoveCommand: Symbol.for('ArchiveRemoveCommand'),
-  ArchivingCommand: Symbol.for('ArchivingCommand')
-}
+  ArchivingCommand: Symbol.for('ArchivingCommand'),
+};
 
-export {
-  bindings
-}
+export { bindings };

@@ -1,9 +1,7 @@
 <template>
   <div class="links_cont">
-    <div v-if="isEmpty" class="empty_cont">
-      No elements found
-    </div>
-    <div class="links_area" v-if="links">
+    <div v-if="isEmpty" class="empty_cont">No elements found</div>
+    <div v-if="links" class="links_area">
       <ul>
         <li v-for="(item, index) in links" :key="index">
           <a href="/" @click.prevent="open(item.url)">{{ getName(item, index) }}</a>
@@ -32,7 +30,7 @@
 
   .links_area {
     font-family: var(--font-gotham);
-    color: rgb(0,0,0);
+    color: rgb(0, 0, 0);
     flex-basis: 100%;
     background-color: #fff;
     border: 1px solid var(--blue-gray_light);

@@ -1,4 +1,4 @@
-import { ITodoItem, ITodoOrder } from '../models'
+import { ITodoItem, ITodoOrder } from '../models';
 
 export class TodoOrderCommand {
   constructor(public result: ITodoOrder) {}

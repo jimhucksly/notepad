@@ -1,8 +1,8 @@
-import { Container, inject, injectable } from 'inversify'
-import { ICommandBus, ICommandHandler } from '~/domain/interfaces'
-import { bindings } from '~/domain/types'
-import { Store } from 'vuex'
-import { IRootState } from '~/domain/models'
+import { Container, inject, injectable } from 'inversify';
+import { ICommandBus, ICommandHandler } from '~/domain/interfaces';
+import { bindings } from '~/domain/types';
+import { Store } from 'vuex';
+import { IRootState } from '~/domain/models';
 
 @injectable()
 class CommandBus implements ICommandBus {
@@ -16,15 +16,15 @@ class CommandBus implements ICommandBus {
    * R - Result
    */
   do<T, R>(command: T) {
-    const actionName = Reflect.getMetadata(Symbol.for(command.constructor.name), CommandBus)
+    const actionName = Reflect.getMetadata(Symbol.for(command.constructor.name), CommandBus);
     if (actionName) {
-      return this._store.dispatch(actionName, command)
+      return this._store.dispatch(actionName, command);
     }
-    const handler: ICommandHandler<T, R> = this._container.get(Symbol.for(command.constructor.name))
+    const handler: ICommandHandler<T, R> = this._container.get(Symbol.for(command.constructor.name));
     if (handler) {
-      return handler.do(command)
+      return handler.do(command);
     }
-    return Promise.reject(`Command handler is not found: ${command.constructor.name}`)
+    return Promise.reject(new Error(`Command handler is not found: ${command.constructor.name}`));
   }
 }
 
@@ -35,15 +35,12 @@ class CommandBus implements ICommandBus {
  * @param {Constructor} [command] symbol
  * @returns
  */
-export function Commandable(
-  command: symbol,
-  namespace?: string
-) {
+export function Commandable(command: symbol, namespace?: string) {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    const value = namespace ? `${namespace}/${propertyKey}` : propertyKey
-    Reflect.defineMetadata(command, value, CommandBus)
-  }
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    const value = namespace ? `${namespace}/${propertyKey}` : propertyKey;
+    Reflect.defineMetadata(command, value, CommandBus);
+  };
 }
 
-export default CommandBus
+export default CommandBus;

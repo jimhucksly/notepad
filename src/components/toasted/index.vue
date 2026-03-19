@@ -2,7 +2,7 @@
   <div
     class="toasted-wrapper"
     :style="{
-      'height': toasts.length ? 'auto': '0px'
+      height: toasts.length ? 'auto' : '0px',
     }"
   >
     <div
@@ -11,7 +11,7 @@
       class="toasted-item"
       :class="{
         'toasted-item--success': isSuccessType(item),
-        'toasted-item--error': isErrorType(item)
+        'toasted-item--error': isErrorType(item),
       }"
     >
       <span>{{ item.subject }}</span>
@@ -20,4 +20,3 @@
   </div>
 </template>
 <script src="./index.ts" lang="ts"></script>
-

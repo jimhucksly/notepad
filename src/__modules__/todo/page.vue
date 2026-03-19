@@ -1,8 +1,6 @@
 <template>
   <div class="todo_cont">
-    <div v-if="isEmpty" class="empty_cont">
-      No elements found
-    </div>
+    <div v-if="isEmpty" class="empty_cont">No elements found</div>
     <template v-if="items">
       <div
         v-for="item in items"
@@ -18,17 +16,17 @@
       </div>
     </template>
     <template v-if="isPopupShow">
-      <div class="todo_popup_overlay" ref="overlay"></div>
-      <div class="todo_popup" ref="popup">
+      <div ref="overlay" class="todo_popup_overlay"></div>
+      <div ref="popup" class="todo_popup">
         <div class="todo_popup-header">{{ itemSelected.date }}</div>
         <div class="todo_popup-content">
-          <textarea v-model="itemSelected.text" placeholder="New record" ref="textarea"></textarea>
+          <textarea ref="textarea" v-model="itemSelected.text" placeholder="New record"></textarea>
         </div>
         <div class="todo_popup-footer">
-          <button class="btn btn-danger" @click="remove" ref="btn-remove">Remove</button>
+          <button ref="btn-remove" class="btn btn-danger" @click="remove">Remove</button>
           <div>
-            <button class="btn btn-primary" @click="save" ref="btn-save">Save</button>
-            <button class="btn btn-default m-l-15" @click="cancel" ref="btn-cancel">Cancel</button>
+            <button ref="btn-save" class="btn btn-primary" @click="save">Save</button>
+            <button ref="btn-cancel" class="btn btn-default m-l-15" @click="cancel">Cancel</button>
           </div>
         </div>
       </div>
@@ -97,7 +95,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 99;
   }
 
@@ -141,4 +139,3 @@
   }
 }
 </style>
-

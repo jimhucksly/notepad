@@ -7,5 +7,8 @@ export class DeleteLibraryFileCommand {
 }
 
 export class UpdateLibraryCommand {
-  constructor(public id: string | number, public value: string) {}
+  constructor(
+    public id: string | number,
+    public value: string
+  ) {}
 }

@@ -1,5 +1,5 @@
-import { Options, Vue } from 'vue-class-component'
-import { Prop } from 'vue-property-decorator'
+import { Options, Vue } from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
 
 @Options({
   template: `
@@ -17,10 +17,10 @@ import { Prop } from 'vue-property-decorator'
         <span>{{ label }}</span>
       </template>
     </button>
-  `
+  `,
 })
 export default class BBtnComponent extends Vue {
-  @Prop() primary: boolean
-  @Prop() processing: boolean
-  @Prop({ type: String, default: 'Submit' }) label: string
+  @Prop() primary: boolean;
+  @Prop() processing: boolean;
+  @Prop({ type: String, default: 'Submit' }) label: string;
 }

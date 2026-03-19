@@ -2,7 +2,7 @@
   <div
     class="projects_editor"
     :class="{
-      expanded: expanded
+      expanded: expanded,
     }"
   >
     <div class="projects_editor_title">Projects: Item properties</div>
@@ -12,7 +12,7 @@
           <label class="-m-t-10">Name</label>
           <div>
             <form>
-              <input type="text" v-model="name" @keydown.enter.prevent="save">
+              <input v-model="name" type="text" @keydown.enter.prevent="save" />
             </form>
           </div>
         </div>
@@ -41,18 +41,8 @@
       </div>
     </div>
     <div class="projects_editor_footer">
-      <button
-        class="btn btn-transparency m-r-15"
-        @click="emitHide"
-      >
-        Cancel
-      </button>
-      <b-btn
-        primary
-        label="Save"
-        @click="save"
-        :processing="savingProcess"
-      />
+      <button class="btn btn-transparency m-r-15" @click="emitHide">Cancel</button>
+      <b-btn primary label="Save" :processing="savingProcess" @click="save" />
     </div>
   </div>
 </template>
@@ -119,7 +109,7 @@
   }
 
   form {
-    input[type="text"] {
+    input[type='text'] {
       height: 20px;
       font-size: 13px;
     }

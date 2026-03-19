@@ -1,124 +1,124 @@
-import { cloneDeep, unset } from 'lodash'
-import { Vue } from 'vue-class-component'
-import { Emit, Prop, Watch } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
-import { Queries, Types } from '~/core'
-import { IArchive, IFilters, IProject, IProjects } from '../models'
-import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands'
-import { ArchivesQuery } from '../queries/queries'
+import { cloneDeep, unset } from 'lodash';
+import { Vue } from 'vue-class-component';
+import { Emit, Prop, Watch } from 'vue-property-decorator';
+import { Getter, Mutation } from 'vuex-class';
+import { Queries, Types } from '~/core';
+import { IArchive, IFilters, IProject, IProjects } from '../models';
+import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands';
+import { ArchivesQuery } from '../queries/queries';
 
 export default class ProjectsEditor extends Vue {
-  @Prop() expanded: boolean
+  @Prop() expanded: boolean;
 
-  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void
-  @Mutation('Projects/setJson') setJson: (value: IProjects) => void
-  @Mutation('Projects/setSelectedProjectKey') setSelectedProject: (value: string) => void
+  @Mutation('Projects/setFilter') setFilter: (value: IFilters) => void;
+  @Mutation('Projects/setJson') setJson: (value: IProjects) => void;
+  @Mutation('Projects/setSelectedProjectKey') setSelectedProject: (value: string) => void;
 
-  @Getter('Projects/getProjects') json: IProjects
-  @Getter('Projects/getFilter') filter: IFilters
-  @Getter('Projects/getSelectedProjectKey') selected: string
+  @Getter('Projects/getProjects') json: IProjects;
+  @Getter('Projects/getFilter') filter: IFilters;
+  @Getter('Projects/getSelectedProjectKey') selected: string;
 
-  name = ''
-  isLock = false
-  isDialog = false
-  savingProcess = false
+  name = '';
+  isLock = false;
+  isDialog = false;
+  savingProcess = false;
 
   @Emit('on-hide') emitHide() {
-    return true
+    return true;
   }
 
   @Watch('expanded') onExpandedChanged() {
     if (!this.expanded) {
-      this.setSelectedProject('')
+      this.setSelectedProject('');
     }
   }
 
   @Watch('item') onItemChanged(o: IProject) {
     if (o) {
-      this.name = o.name
-      this.isLock = o.lock
+      this.name = o.name;
+      this.isLock = o.lock;
     } else {
-      this.name = ''
-      this.isLock = false
+      this.name = '';
+      this.isLock = false;
     }
   }
 
   async toggleLock(): Promise<void> {
     if (!this.item) {
-      return
+      return;
     }
-    const isLocked = this.item.lock
+    const isLocked = this.item.lock;
     const updateJson = () => {
       const o: IProjects = {
         [this.item.key]: {
           ...this.item,
-          lock: !isLocked
-        }
-      }
-      this.setJson({ ...this.json, ...o })
-      this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
-    }
+          lock: !isLocked,
+        },
+      };
+      this.setJson({ ...this.json, ...o });
+      this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o));
+    };
     if (isLocked) {
-      const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(new Queries.ConfirmWindowQuery(
-        'Do you want to unlock this project?'
-      ))
+      const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(
+        new Queries.ConfirmWindowQuery('Do you want to unlock this project?')
+      );
       if (!isConfirm) {
-        this.isLock = !this.isLock
-        return
+        this.isLock = !this.isLock;
+        return;
       }
-      updateJson()
+      updateJson();
     }
   }
 
   async archive() {
-    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected))
-    this.removeHandler()
-    this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery())
-    this.$app.goBack()
+    await this.$app.$commandBus.do<ArchivingCommand, void>(new ArchivingCommand(this.selected));
+    this.removeHandler();
+    this.$app.$queryBus.exec<ArchivesQuery, Array<IArchive>>(new ArchivesQuery());
+    this.$app.goBack();
   }
 
   async remove() {
-    const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(new Queries.ConfirmWindowQuery(
-      'Do you want to remove this project?'
-    ))
+    const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(
+      new Queries.ConfirmWindowQuery('Do you want to remove this project?')
+    );
     if (!isConfirm) {
-      return
+      return;
     }
-    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected))
-    this.removeHandler()
+    await this.$app.$commandBus.do<DeleteProjectCommand, void>(new DeleteProjectCommand(this.selected));
+    this.removeHandler();
   }
 
   removeHandler() {
-    const buffJson = cloneDeep(this.json)
-    const buffFilter = cloneDeep(this.filter)
-    unset(buffJson, this.selected)
-    unset(buffFilter, this.selected)
-    this.setFilter(buffFilter)
-    this.setJson(buffJson)
-    this.emitHide()
+    const buffJson = cloneDeep(this.json);
+    const buffFilter = cloneDeep(this.filter);
+    unset(buffJson, this.selected);
+    unset(buffFilter, this.selected);
+    this.setFilter(buffFilter);
+    this.setJson(buffJson);
+    this.emitHide();
   }
 
   async save() {
-    this.savingProcess = true
+    this.savingProcess = true;
     const o: IProjects = {
       [this.selected]: {
         key: this.selected,
         date: this.item.date,
         name: this.name,
         lock: this.isLock,
-        message: this.item.message
-      }
-    }
-    this.setJson({ ...this.json, ...o })
-    await this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o))
-    this.savingProcess = false
-    this.emitHide()
+        message: this.item.message,
+      },
+    };
+    this.setJson({ ...this.json, ...o });
+    await this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o));
+    this.savingProcess = false;
+    this.emitHide();
   }
 
   get item(): IProject {
     if (!this.json) {
-      return null
+      return null;
     }
-    return this.json[this.selected]
+    return this.json[this.selected];
   }
 }

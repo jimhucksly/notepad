@@ -1,21 +1,21 @@
-import { MutationTree } from 'vuex'
-import { upperFirst } from '~/helpers'
-import { stateKeys } from './state'
-import { ILinksState } from '../models'
+import { MutationTree } from 'vuex';
+import { upperFirst } from '~/helpers';
+import { stateKeys } from './state';
+import { ILinksState } from '../models';
 
-const _mutations: MutationTree<ILinksState> = {}
+const _mutations: MutationTree<ILinksState> = {};
 
 stateKeys.forEach(key => {
-  const commitKey = 'set' + upperFirst(key)
+  const commitKey = 'set' + upperFirst(key);
   if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, payload) => {
-      state[key as keyof ILinksState] = payload
-    }
+      state[key as keyof ILinksState] = payload;
+    };
   }
-})
+});
 
 const mutations: MutationTree<ILinksState> = {
-  ..._mutations
-}
+  ..._mutations,
+};
 
-export default mutations
+export default mutations;

@@ -1,4 +1,4 @@
-import { ILink } from '../models'
+import { ILink } from '../models';
 
 export class UpdateLinksCommand {
   constructor(public link: ILink) {}

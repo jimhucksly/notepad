@@ -1,91 +1,91 @@
-import { EditorView } from '@codemirror/view'
-import cloneDeep from 'lodash/cloneDeep'
-import MarkdownIt from 'markdown-it'
-import MarkdownItAnchor from 'markdown-it-anchor'
-import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3'
-import { Options, Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
-import { delay, translit, uniqueid } from '~/helpers'
-import { Plugins } from '~/core'
-import { UpdateLibraryCommand } from './commands/commands'
-import { ILibraryFile, ITreeItem } from './models'
-import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries'
+import { EditorView } from '@codemirror/view';
+import cloneDeep from 'lodash/cloneDeep';
+import MarkdownIt from 'markdown-it';
+import MarkdownItAnchor from 'markdown-it-anchor';
+import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3';
+import { Options, Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { Getter, Mutation } from 'vuex-class';
+import { delay, translit, uniqueid } from '~/helpers';
+import { Plugins } from '~/core';
+import { UpdateLibraryCommand } from './commands/commands';
+import { ILibraryFile, ITreeItem } from './models';
+import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries';
 
 @Options({
   components: {
-    'md-editor': MdEditor
-  }
+    'md-editor': MdEditor,
+  },
 })
 export default class LibraryPage extends Vue {
-  @Mutation('Library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void
-  @Mutation('Library/setLibraryData') setLibraryData: (body: string) => void
-  @Mutation('Library/setLibraryFileId') setFileId: (id: string | number) => void
+  @Mutation('Library/setLibraryTree') setLibraryTree: (value: Array<ITreeItem>) => void;
+  @Mutation('Library/setLibraryData') setLibraryData: (body: string) => void;
+  @Mutation('Library/setLibraryFileId') setFileId: (id: string | number) => void;
 
-  @Getter('Library/getLibraryData') initialValue: string
-  @Getter('Library/getLibraryFileId') currentId: string
+  @Getter('Library/getLibraryData') initialValue: string;
+  @Getter('Library/getLibraryFileId') currentId: string;
 
-  isNewFile = false
-  isPreview = true
-  ready = false
-  template = ''
-  value = ''
+  isNewFile = false;
+  isPreview = true;
+  ready = false;
+  template = '';
+  value = '';
 
-  static nodes: ITreeItem[] = []
-  static md: MarkdownIt = null
+  static nodes: ITreeItem[] = [];
+  static md: MarkdownIt = null;
 
-  linkClickHandler: (name: string) => void
+  linkClickHandler: (name: string) => void;
 
   @Watch('currentId') async onCurrentIdChanged(id: string | number) {
     try {
-      await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id))
-      this.value = this.initialValue
+      await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id));
+      this.value = this.initialValue;
       if (this.isPreview) {
-        this.previewRender()
+        this.previewRender();
       } else {
-        this.toggle(true)
+        this.toggle(true);
       }
     } catch (e) {
       /* eslint-disable no-console */
-      console.error(e)
+      console.error(e);
     }
   }
 
   created() {
-    this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery())
+    this.$app.$queryBus.exec<LibraryFilesQuery, Array<ILibraryFile>>(new LibraryFilesQuery());
   }
 
   async mounted() {
-    this.linkClickHandler = this.linkClick.bind(this)
-    Plugins.Hub.$on('codemirror-link-click', this.linkClickHandler)
-    await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery())
-    this.buildEditor()
+    this.linkClickHandler = this.linkClick.bind(this);
+    Plugins.Hub.$on('codemirror-link-click', this.linkClickHandler);
+    await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery());
+    this.buildEditor();
 
-    LibraryPage.md = new MarkdownIt()
+    LibraryPage.md = new MarkdownIt();
 
     LibraryPage.md.use(MarkdownItAnchor, {
       slugify: (s: string) => {
-        const slug = '_' + translit(s)
+        const slug = '_' + translit(s);
         LibraryPage.nodes.push({
           name: s || '',
           slug: slug || '',
           id: uniqueid(8) as string,
-          children: []
-        })
-        return slug
+          children: [],
+        });
+        return slug;
       },
       level: [1, 2, 3],
       permalink: true,
       permalinkClass: 'md-anchor',
-      permalinkBefore: false
-    })
-    this.value = this.initialValue
-    this.previewRender()
+      permalinkBefore: false,
+    });
+    this.value = this.initialValue;
+    this.previewRender();
   }
 
   beforeUnmount() {
-    this.setFileId(0)
-    Plugins.Hub.$off('codemirror-link-click', this.linkClickHandler)
+    this.setFileId(0);
+    Plugins.Hub.$off('codemirror-link-click', this.linkClickHandler);
   }
 
   buildEditor() {
@@ -93,110 +93,109 @@ export default class LibraryPage extends Vue {
       editorConfig: {
         languageUserDefined: {
           /* eslint-disable-next-line @typescript-eslint/naming-convention */
-          'ru-RU': this.ru_RU
-        }
-      }
-    })
+          'ru-RU': this.ru_RU,
+        },
+      },
+    });
 
-    this.ready = true
+    this.ready = true;
     this.$nextTick(() => {
-      const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view
-      const lines: Array<string> = []
-      const children = editor.state.doc.children
+      const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view;
+      const lines: Array<string> = [];
+      const children = editor.state.doc.children;
       for (const el of children) {
-        lines.push(...(el as unknown as { text: Array<string> }).text)
+        lines.push(...(el as unknown as { text: Array<string> }).text);
       }
-    })
+    });
   }
 
   buildTree(nodes?: ITreeItem[]) {
-    const tree: Array<ITreeItem> = []
-    let index = -1
-    const items = nodes || LibraryPage.nodes
+    const tree: Array<ITreeItem> = [];
+    let index = -1;
+    const items = nodes || LibraryPage.nodes;
     items.forEach(item => {
-      const node = document.querySelector('#' + item.slug)
+      const node = document.querySelector('#' + item.slug);
       if (node) {
-        const level = +node.tagName.slice(-1)
+        const level = Number(node.tagName.slice(-1));
         switch (level) {
           case 1:
-            tree.push(item)
-            index++
-            break
+            tree.push(item);
+            index++;
+            break;
           case 2:
-            tree[index] && tree[index].children && tree[index].children.push(item)
-            break
+            if (tree[index] && tree[index].children) {
+              tree[index].children.push(item);
+            }
+            break;
           case 3:
-            const lastIndex = tree[index].children.length - 1
-            tree[index] && tree[index].children && tree[index].children[lastIndex].children.push(item)
+            const lastIndex = tree[index].children.length - 1;
+            if (tree[index] && tree[index].children) {
+              tree[index].children[lastIndex].children.push(item);
+            }
         }
       }
-    })
-    this.setLibraryTree([...cloneDeep(tree)])
+    });
+    this.setLibraryTree([...cloneDeep(tree)]);
   }
 
   save() {
-    const id = this.currentId
-    const body = this.value
-    const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(
-      new UpdateLibraryCommand(id, body)
-    )
-    Promise
-      .all([promise])
+    const id = this.currentId;
+    const body = this.value;
+    const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, body));
+    Promise.all([promise])
       .then(() => {
-        this.setFileId(id)
+        this.setFileId(id);
       })
       .catch(e => {
         /* eslint-disable no-console */
-        console.error(e)
-      })
+        console.error(e);
+      });
   }
 
   toggle(state: boolean) {
     if (state === this.isPreview) {
-      return
+      return;
     }
-    this.isPreview = state
+    this.isPreview = state;
     if (this.isPreview) {
-      this.previewRender()
+      this.previewRender();
     }
   }
 
   previewRender() {
-    LibraryPage.nodes = []
-    this.template = LibraryPage.md.render(this.value)
+    LibraryPage.nodes = [];
+    this.template = LibraryPage.md.render(this.value);
     this.$nextTick(() => {
-      this.buildTree()
-    })
+      this.buildTree();
+    });
   }
 
   async linkClick(item: ITreeItem) {
     if (this.isPreview) {
-      return
+      return;
     }
     const contains = (selector: string, text: string): Array<HTMLElement> => {
-      const editor = this.$el.querySelector('.cm-editor')
-      const elements = editor.querySelectorAll(selector)
-      return Array.prototype.filter.call(elements, function(element: HTMLElement) {
-        return element.textContent.indexOf(text) > -1
-      })
-    }
-    const scroller = this.$el.querySelector('.cm-scroller') as HTMLElement
+      const editor = this.$el.querySelector('.cm-editor');
+      const elements = editor.querySelectorAll(selector);
+      return Array.prototype.filter.call(elements, (element: HTMLElement) => element.textContent.indexOf(text) > -1);
+    };
+    const scroller = this.$el.querySelector('.cm-scroller') as HTMLElement;
     if (scroller) {
-      scroller.scrollTo(0, 0)
-      await delay(10)
-      let needSearch = true
-      let scrollY = 0
-      const scrollH = scroller.scrollHeight
+      scroller.scrollTo(0, 0);
+      await delay(10);
+      let needSearch = true;
+      let scrollY = 0;
+      const scrollH = scroller.scrollHeight;
       while (needSearch) {
-        const span = contains('span', item.name)
+        const span = contains('span', item.name);
         if (span.length > 0 || scrollY > scrollH) {
-          needSearch = false
-          scroller.scrollTo(0, scrollY + 300)
+          needSearch = false;
+          scroller.scrollTo(0, scrollY + 300);
         }
         if (needSearch) {
-          scrollY += 300
-          scroller.scrollTo(0, scrollY)
-          await delay(10)
+          scrollY += 300;
+          scroller.scrollTo(0, scrollY);
+          await delay(10);
         }
       }
     }
@@ -217,11 +216,11 @@ export default class LibraryPage extends Vue {
       'orderedList',
       '-',
       'codeRow',
-      'code'
-    ]
+      'code',
+    ];
   }
 
-  /* eslint-disable-next-line camelcase */
+  /* eslint-disable-next-line camelcase, @typescript-eslint/naming-convention */
   get ru_RU(): StaticTextDefaultValue {
     return {
       toolbarTips: {
@@ -252,7 +251,7 @@ export default class LibraryPage extends Vue {
         preview: 'Превью',
         htmlPreview: 'html preview',
         catalog: 'catalog',
-        github: 'source code'
+        github: 'source code',
       },
       titleItem: {
         h1: 'Lv1 Heading',
@@ -260,8 +259,8 @@ export default class LibraryPage extends Vue {
         h3: 'Lv3 Heading',
         h4: 'Lv4 Heading',
         h5: 'Lv5 Heading',
-        h6: 'Lv6 Heading'
-      }
-    }
+        h6: 'Lv6 Heading',
+      },
+    };
   }
 }

@@ -1,20 +1,20 @@
 <template>
   <div class="g-column">
-    <div class="notepad_cont" ref="notepad_cont">
+    <div ref="notepad_cont" class="notepad_cont">
       <template v-for="(item, stamp) in json">
         <item
-          :key="stamp"
           v-if="!hasFilter || `${stamp}` in filter"
+          :key="stamp"
+          ref="notepad_item"
           :item="json[stamp]"
           :is-last="stamp === lastStamp"
-          ref="notepad_item"
           @on-remove="onRemove"
           @on-last-rendered="isRendered = true"
         />
       </template>
     </div>
-    <div class="notepad_textarea" ref="notepad_textarea">
-      <textarea placeholder="New record" v-model="message" @keydown.enter.ctrl="send"></textarea>
+    <div ref="notepad_textarea" class="notepad_textarea">
+      <textarea v-model="message" placeholder="New record" @keydown.enter.ctrl="send"></textarea>
       <div class="notepad_btns">
         <button @click.prevent="send">
           <div>
