@@ -1,11 +1,9 @@
-import { IFilesState } from '../models'
+import { IFilesState } from '../models';
 
-export const stateKeys: string[] = [
-  'files'
-]
+export const stateKeys: string[] = ['files'];
 
 const state: IFilesState = {
-  files: null
-}
+  files: null,
+};
 
-export default state
+export default state;

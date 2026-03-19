@@ -1,4 +1,4 @@
-import { IEvent } from '../models'
+import { IEvent } from '../models';
 
 export class UpdateEventCommand {
   constructor(public event: IEvent) {}

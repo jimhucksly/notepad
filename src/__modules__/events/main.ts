@@ -1,41 +1,41 @@
-import { debounce } from 'lodash'
-import { Options, Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { IEvent, IEvents } from './models'
-import { DeleteEventCommand, UpdateEventCommand } from './commands/commands'
-import { EventsQuery } from './queries/queries'
-import BCalendarComponent, { IBCalendar } from './calendar'
+import { debounce } from 'lodash';
+import { Options, Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
+import { IEvent, IEvents } from './models';
+import { DeleteEventCommand, UpdateEventCommand } from './commands/commands';
+import { EventsQuery } from './queries/queries';
+import BCalendarComponent, { IBCalendar } from './calendar';
 
 interface IBCalendarOptions {
-  eventsMode: boolean
-  items: IEvent | null
-  disableDaysBefore: boolean
-  setDate?: string
+  eventsMode: boolean;
+  items: IEvent | null;
+  disableDaysBefore: boolean;
+  setDate?: string;
   modelType?: {
-    date: string
-    title: string
-    content: string
-  }
+    date: string;
+    title: string;
+    content: string;
+  };
 }
 
 interface ISelected {
-  key: string
-  title: string
+  key: string;
+  title: string;
 }
 
 interface IFilteredItem {
-  key: string
-  title: string
+  key: string;
+  title: string;
 }
 
 @Options({
   components: {
-    'b-calendar': BCalendarComponent
-  }
+    'b-calendar': BCalendarComponent,
+  },
 })
 export default class Events extends Vue {
-  @Getter('Events/getEvents') items: IEvents
+  @Getter('Events/getEvents') items: IEvents;
 
   bCalendarOptions: IBCalendarOptions = {
     eventsMode: true,
@@ -44,128 +44,128 @@ export default class Events extends Vue {
     modelType: {
       date: 'date',
       title: 'title',
-      content: 'content'
-    }
-  }
-  bCalendarFormShow = false
+      content: 'content',
+    },
+  };
+  bCalendarFormShow = false;
 
-  headerText = ''
-  search = ''
-  itemsFiltered: Array<IFilteredItem> = []
+  headerText = '';
+  search = '';
+  itemsFiltered: Array<IFilteredItem> = [];
 
   @Watch('items') onItemsReceived(o: IEvent) {
     this.bCalendarOptions = {
       ...this.bCalendarOptions,
-      items: o
-    }
-    const elems: NodeListOf<Element> = document.querySelectorAll('.processing[data-current]')
+      items: o,
+    };
+    const elems: NodeListOf<Element> = document.querySelectorAll('.processing[data-current]');
     if (elems && elems.length) {
       elems.forEach(el => {
-        el.classList.remove('processing')
-      })
+        el.classList.remove('processing');
+      });
     }
   }
 
   private readonly debounced = debounce((v: string, context: Events): void => {
-    context.itemsFiltered = []
+    context.itemsFiltered = [];
     if (!v) {
-      return
+      return;
     }
     if (!context?.items) {
       context.itemsFiltered.push({
         key: '0',
-        title: 'Nothing to show'
-      })
-      return
+        title: 'Nothing to show',
+      });
+      return;
     }
     Object.keys(context.items).forEach((key: string) => {
-      const title = context.items[key].title.toLowerCase()
-      const content = context.items[key].content.toLowerCase()
+      const title = context.items[key].title.toLowerCase();
+      const content = context.items[key].content.toLowerCase();
       if (title.indexOf(v) > -1 || content.indexOf(v) > -1) {
         context.itemsFiltered.push({
           key,
-          title: context.items[key].title
-        })
+          title: context.items[key].title,
+        });
       }
-    })
+    });
     if (context.itemsFiltered.length === 0) {
       context.itemsFiltered.push({
         key: '0',
-        title: 'Nothing to show'
-      })
+        title: 'Nothing to show',
+      });
     }
-    document.onkeydown = (e) => {
+    document.onkeydown = e => {
       if (e.code === 'Escape') {
-        context.itemsFiltered = []
-        context.search = ''
-        document.onclick = null
-        document.onkeydown = null
+        context.itemsFiltered = [];
+        context.search = '';
+        document.onclick = null;
+        document.onkeydown = null;
       }
-    }
-    document.onclick = (e) => {
-      e.preventDefault()
-      const el = e.target as HTMLElement
+    };
+    document.onclick = e => {
+      e.preventDefault();
+      const el = e.target as HTMLElement;
       if (el.closest('.events__search > form') === null) {
-        context.itemsFiltered = []
-        context.search = ''
+        context.itemsFiltered = [];
+        context.search = '';
       }
-    }
-  }, 600)
+    };
+  }, 600);
 
   @Watch('search') onSearchChanged(val: string) {
     if (!val) {
-      return
+      return;
     }
-    this.debounced(val.toLowerCase(), this)
+    this.debounced(val.toLowerCase(), this);
   }
 
   prev() {
-    const elem = this.$refs.calendar as IBCalendar
-    elem.prevMonth()
+    const elem = this.$refs.calendar as IBCalendar;
+    elem.prevMonth();
   }
   next() {
-    const elem = this.$refs.calendar as IBCalendar
-    elem.nextMonth()
+    const elem = this.$refs.calendar as IBCalendar;
+    elem.nextMonth();
   }
   today() {
-    const elem = this.$refs.calendar as IBCalendar
-    elem.setToday()
+    const elem = this.$refs.calendar as IBCalendar;
+    elem.setToday();
   }
 
   setHeader(v: string) {
-    this.headerText = v
+    this.headerText = v;
   }
 
   async save(event: IEvent) {
-    const elem = document.querySelector('[data-current="' + event.date + '"]')
+    const elem = document.querySelector('[data-current="' + event.date + '"]');
     if (elem) {
-      elem.classList.add('processing')
+      elem.classList.add('processing');
     }
-    await this.$app.$commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event))
+    await this.$app.$commandBus.do<UpdateEventCommand, void>(new UpdateEventCommand(event));
   }
 
   async remove(date: string) {
-    const elem = document.querySelector('[data-current="' + date + '"]')
+    const elem = document.querySelector('[data-current="' + date + '"]');
     if (elem) {
-      elem.classList.add('processing')
+      elem.classList.add('processing');
     }
-    await this.$app.$commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date))
+    await this.$app.$commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date));
   }
 
   itemSelected(item: ISelected): void {
     if (item.key === '0') {
-      return
+      //
     } else {
       this.bCalendarOptions = {
         ...this.bCalendarOptions,
-        setDate: item.key
-      }
-      this.itemsFiltered = []
-      this.search = ''
+        setDate: item.key,
+      };
+      this.itemsFiltered = [];
+      this.search = '';
     }
   }
 
   mounted() {
-    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery())
+    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery());
   }
 }

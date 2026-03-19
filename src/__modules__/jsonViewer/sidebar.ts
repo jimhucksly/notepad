@@ -1,58 +1,61 @@
-import { Vue } from 'vue-class-component'
-import { Plugins } from '~/core'
-import Electron from 'electron'
+import { Vue } from 'vue-class-component';
+import { Plugins } from '~/core';
+import Electron from 'electron';
 
 export default class JsonViewerBtns extends Vue {
   open() {
     const openFile = () => {
-      const element = document.createElement('input')
-      element.type = 'file'
-      element.accept = '.txt, .json'
-      element.onchange = function() {
-        readText(this as HTMLInputElement)
-        document.body.removeChild(element)
-      }
+      const element = document.createElement('input');
+      element.type = 'file';
+      element.accept = '.txt, .json';
+      element.onchange = function () {
+        readText(this as HTMLInputElement);
+        document.body.removeChild(element);
+      };
 
-      element.style.display = 'none'
-      document.body.appendChild(element)
-      element.click()
-    }
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+    };
 
     const readText = (filePath: HTMLInputElement) => {
-      let reader = null
+      let reader = null;
       if (window.File && window.FileReader && window.FileList && window.Blob) {
-        reader = new FileReader()
+        reader = new FileReader();
       } else {
-        alert('The File APIs are not fully supported by your browser. Fallback required.')
-        return false
+        /* eslint-disable-next-line no-alert */
+        alert('The File APIs are not fully supported by your browser. Fallback required.');
+        return false;
       }
-      let output = ''
+      let output = '';
       if (filePath.files && filePath.files[0]) {
         reader.onload = (e: ProgressEvent<FileReader>) => {
-          output = e.target.result as string
-          Plugins.Hub.$emit('json-viewer-set', output)
-        }
-        reader.readAsText(filePath.files[0])
-      } else return false
-      return true
-    }
+          output = e.target.result as string;
+          Plugins.Hub.$emit('json-viewer-set', output);
+        };
+        reader.readAsText(filePath.files[0]);
+      } else {
+        return false;
+      }
+      return true;
+    };
 
-    openFile()
+    openFile();
   }
 
   save() {
-    this.$electron.ipcRenderer.send('save-file-dialog', {})
+    this.$electron.ipcRenderer.send('save-file-dialog', {});
     this.$electron.ipcRenderer.on(
       'save-dialog-file-selected',
       (e: Electron.IpcRendererEvent, file: { filePath: string }) => {
         if (file && file.filePath) {
-          Plugins.Hub.$emit('json-viewer-save', file.filePath)
+          Plugins.Hub.$emit('json-viewer-save', file.filePath);
         }
       }
-    )
+    );
   }
 
   clear() {
-    Plugins.Hub.$emit('json-viewer-clear')
+    Plugins.Hub.$emit('json-viewer-clear');
   }
 }

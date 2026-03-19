@@ -11,12 +11,12 @@
       @on-select="onSelect"
       @on-check="onCheck"
     />
-    <div id="upload-download-popup" v-if="uploading">
+    <div v-if="uploading" id="upload-download-popup">
       <div class="label">
         <span>Uploading file...</span>
-        <span class="percentage" ref="text"></span>
+        <span ref="text" class="percentage"></span>
       </div>
-      <div class="progress" ref="progress"></div>
+      <div ref="progress" class="progress"></div>
     </div>
   </div>
 </template>

@@ -119,7 +119,7 @@
     }
 
     .json-formatter-bracket {
-      color:var(--white);
+      color: var(--white);
     }
 
     .json-formatter-number {
@@ -140,5 +140,4 @@
     }
   }
 }
-
 </style>

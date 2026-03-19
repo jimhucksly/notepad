@@ -2,26 +2,22 @@
   <div id="events_cont" class="events">
     <div class="events__top">
       <div class="events__btns">
-        <button class="btn btn-primary events__btn-left" ref="button-prev" @click="prev">
+        <button ref="button-prev" class="btn btn-primary events__btn-left" @click="prev">
           <span></span>
         </button>
-        <div class="events__header" ref="header">{{ headerText }}</div>
-        <button class="btn btn-primary events__btn-right" ref="button-next" @click="next">
+        <div ref="header" class="events__header">{{ headerText }}</div>
+        <button ref="button-next" class="btn btn-primary events__btn-right" @click="next">
           <span></span>
         </button>
-        <button class="btn btn-primary m-l-15" ref="button-today" @click="today">Today</button>
+        <button ref="button-today" class="btn btn-primary m-l-15" @click="today">Today</button>
       </div>
       <div class="events__search">
         <form ref="search-form">
           <div class="items-center blue--text">
             <svg-icon icon="searchIcon" width="28" height="20" />
-            <input
-              type="text"
-              v-model="search"
-              :readonly="bCalendarFormShow"
-            >
+            <input v-model="search" type="text" :readonly="bCalendarFormShow" />
           </div>
-          <div class="events__search-dropdown" ref="search-results" v-if="itemsFiltered.length">
+          <div v-if="itemsFiltered.length" ref="search-results" class="events__search-dropdown">
             <ul>
               <li
                 v-for="item in itemsFiltered"

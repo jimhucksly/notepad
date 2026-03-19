@@ -1,9 +1,7 @@
 const bindings = {
   FilesQuery: Symbol.for('FilesQuery'),
   DeleteFileCommand: Symbol.for('DeleteFileCommand'),
-  UploadFileCommand: Symbol.for('UploadFileCommand')
-}
+  UploadFileCommand: Symbol.for('UploadFileCommand'),
+};
 
-export {
-  bindings
-}
+export { bindings };

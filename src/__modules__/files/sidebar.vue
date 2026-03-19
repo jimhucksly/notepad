@@ -3,15 +3,15 @@
     <div class="g-row m-b-35">
       <label class="button">
         <svg-icon icon="btnAdd" width="32" height="23" />
-        <input type="file" @change="onFileChange">
+        <input type="file" @change="onFileChange" />
       </label>
-      <button @click="onFileDownload" class="m-l-5">
+      <button class="m-l-5" @click="onFileDownload">
         <svg-icon icon="btnOpen" width="32" height="23" />
       </button>
-      <button @click="onFileCheck" class="m-l-5">
+      <button class="m-l-5" @click="onFileCheck">
         <svg-icon icon="btnCheck" width="32" height="23" />
       </button>
-      <button @click="onFileRemove" class="m-l-35">
+      <button class="m-l-35" @click="onFileRemove">
         <svg-icon icon="btnClear" width="32" height="23" />
       </button>
     </div>

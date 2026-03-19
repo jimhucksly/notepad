@@ -1,11 +1,9 @@
-import { IEventsState } from '../models'
+import { IEventsState } from '../models';
 
-export const stateKeys: string[] = [
-  'events'
-]
+export const stateKeys: string[] = ['events'];
 
 const state: IEventsState = {
-  events: null
-}
+  events: null,
+};
 
-export default state
+export default state;

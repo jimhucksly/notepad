@@ -6,7 +6,7 @@
     <button @click="save">
       <svg-icon icon="btnSave" width="32" height="23" />
     </button>
-    <button @click="clear" class="m-l-35">
+    <button class="m-l-35" @click="clear">
       <svg-icon icon="btnClear" width="32" height="23" />
     </button>
   </div>
@@ -38,4 +38,3 @@
   }
 }
 </style>
-

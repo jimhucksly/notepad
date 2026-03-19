@@ -4,13 +4,13 @@
     :class="{
       selected,
       checking,
-      checked
+      checked,
     }"
     @click="onSelect"
   >
     <div class="file_icon">
       <i class="icon">
-        <img :src="`assets/images/file_types_icons/${type}.svg`">
+        <img :src="`assets/images/file_types_icons/${type}.svg`" />
       </i>
     </div>
     <div class="file_name">
@@ -18,7 +18,7 @@
     </div>
     <div class="file_check">
       <label>
-        <input type="checkbox" v-model="isChecked">
+        <input v-model="isChecked" type="checkbox" />
         <span>
           <svg-icon icon="checkIcon" width="14" height="10" style="color: var(--editor_green_darken-10)" />
         </span>
@@ -47,7 +47,8 @@
     background-color: var(--blue_light-op-02);
   }
   &.checking {
-    .file_icon, .file_name {
+    .file_icon,
+    .file_name {
       opacity: 0.6;
     }
     .file_check {
@@ -56,7 +57,8 @@
   }
 
   &.checked {
-    .file_icon, .file_name {
+    .file_icon,
+    .file_name {
       opacity: 0.8;
     }
     .file_check {
@@ -135,7 +137,7 @@
     cursor: pointer;
     z-index: 10;
 
-    input[type=checkbox] {
+    input[type='checkbox'] {
       display: none;
     }
 
