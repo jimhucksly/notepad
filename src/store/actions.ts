@@ -1,18 +1,14 @@
-import {
-  IRootState,
-  IResponse,
-  IUser
-} from '~/domain/models'
-import { bindings } from '~/domain/types'
-import { Queryable } from '~/domain/queries/query.bus'
-import { Commandable } from '~/domain/commands/command.bus'
+import { IRootState, IResponse, IUser } from '~/domain/models';
+import { bindings } from '~/domain/types';
+import { Queryable } from '~/domain/queries/query.bus';
+import { Commandable } from '~/domain/commands/command.bus';
 import {
   AuthQuery,
   RefreshYandexTokenQuery,
   SessionQuery,
   YandexDiskResourceLinkQuery,
-  YandexTokenQuery
-} from '~/domain/queries'
+  YandexTokenQuery,
+} from '~/domain/queries';
 import {
   AuthCommand,
   RegistrationCommand,
@@ -20,18 +16,18 @@ import {
   ResetPasswordCommand,
   RevokeYandexTokenCommand,
   UpdatePasswordCommand,
-  VerifyCommand
-} from '~/domain/commands'
-import { ActionTree, ActionContext } from 'vuex'
-import { Hub } from '~/plugins/hub'
-import { toActionTree } from '~/helpers'
-import $http from '~/http'
+  VerifyCommand,
+} from '~/domain/commands';
+import { ActionTree, ActionContext } from 'vuex';
+import { Hub } from '~/plugins/hub';
+import { toActionTree } from '~/helpers';
+import $http from '~/http';
 
-type TStore = ActionContext<IRootState, IRootState>
+type TStore = ActionContext<IRootState, IRootState>;
 
 class Actions implements ActionTree<IRootState, IRootState> {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key: string]: (injectee: TStore, payload: any) => any
+  [key: string]: (injectee: TStore, payload: any) => any;
 
   /**
    * Registration
@@ -41,18 +37,18 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.RegistrationCommand)
   async actionReg(store: TStore, command: RegistrationCommand): Promise<IResponse<boolean>> {
     try {
-      setProcess(store, 'registration...')
-      return await $http.post<RegistrationCommand, boolean>('/signup', command)
+      setProcess(store, 'registration...');
+      return await $http.post<RegistrationCommand, boolean>('/signup', command);
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
   @Commandable(bindings.AuthCommand)
   auth(store: TStore, command: AuthCommand) {
-    store.commit('setIsAuth', command.flag)
+    store.commit('setIsAuth', command.flag);
   }
 
   /**
@@ -63,15 +59,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(bindings.AuthQuery)
   async actionAuth(store: TStore, query: AuthQuery): Promise<IResponse<void>> {
     try {
-      setProcess(store, 'authentication...')
+      setProcess(store, 'authentication...');
       return await $http.post<AuthQuery, void>('/auth', {
         login: query.login,
-        password: query.password
-      })
+        password: query.password,
+      });
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -83,16 +79,16 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.VerifyCommand)
   async actionVerify(store: TStore, command: VerifyCommand): Promise<IResponse<boolean>> {
     try {
-      setProcess(store, 'verifying...')
-      const user = store.getters.getCurrentUser
+      setProcess(store, 'verifying...');
+      const user = store.getters.getCurrentUser;
       return await $http.post<VerifyCommand & { userId: number }, boolean>('/verify', {
         userId: user.id,
-        code: command.code
-      })
+        code: command.code,
+      });
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -104,15 +100,15 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.ResendCodeCommand)
   async actionResend(store: TStore, command: ResendCodeCommand): Promise<IResponse<void>> {
     try {
-      setProcess(store, 'resend code...')
-      const user = store.getters.getCurrentUser
+      setProcess(store, 'resend code...');
+      const user = store.getters.getCurrentUser;
       return await $http.post<ResendCodeCommand, void>('/resend', {
-        userId: user.id
-      })
+        userId: user.id,
+      });
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -124,12 +120,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.ResetPasswordCommand)
   async actionResetPass(store: TStore, command: ResetPasswordCommand): Promise<IResponse<IUser>> {
     try {
-      setProcess(store, 'reset password...')
-      return await $http.post<ResetPasswordCommand, IUser>('/reset', command)
+      setProcess(store, 'reset password...');
+      return await $http.post<ResetPasswordCommand, IUser>('/reset', command);
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -141,12 +137,12 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.UpdatePasswordCommand)
   async actionUpdatePass(store: TStore, command: UpdatePasswordCommand): Promise<IResponse<boolean>> {
     try {
-      setProcess(store, 'update password...')
-      return await $http.post<UpdatePasswordCommand, boolean>('/update', command)
+      setProcess(store, 'update password...');
+      return await $http.post<UpdatePasswordCommand, boolean>('/update', command);
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -158,14 +154,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(bindings.SessionQuery)
   async actionSession(store: TStore, query: SessionQuery): Promise<IUser> {
     try {
-      setProcess(store, 'get session...')
-      const { data } = await $http.get<IUser>('/session')
-      store.commit('setCurrentUser', data)
-      return data
+      setProcess(store, 'get session...');
+      const { data } = await $http.get<IUser>('/session');
+      store.commit('setCurrentUser', data);
+      return data;
     } catch (e) {
-      return Promise.reject(e)
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -183,13 +179,13 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(bindings.YandexTokenQuery)
   async actionFetchYadexToken(store: TStore, query: YandexTokenQuery): Promise<IResponse<string>> {
     try {
-      setProcess(store, 'creating yandex disk token...')
-      return await $http.post<YandexTokenQuery, string>('/ydtoken', query)
+      setProcess(store, 'creating yandex disk token...');
+      return await $http.post<YandexTokenQuery, string>('/ydtoken', query);
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token not received')
-      return Promise.reject(e)
+      Hub.$emit('on-toasted-error', 'Error: Access token not received');
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -201,14 +197,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Queryable(bindings.RefreshYandexTokenQuery)
   async actionRefreshYadexToken(store: TStore, query: RefreshYandexTokenQuery): Promise<boolean> {
     try {
-      setProcess(store, 'updating yandex disk token...')
-      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/refresh', query)
-      return true
+      setProcess(store, 'updating yandex disk token...');
+      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/refresh', query);
+      return true;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token refresh failed')
-      return Promise.reject(e)
+      Hub.$emit('on-toasted-error', 'Error: Access token refresh failed');
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -220,14 +216,14 @@ class Actions implements ActionTree<IRootState, IRootState> {
   @Commandable(bindings.RevokeYandexTokenCommand)
   async actionRevokeYandexToken(store: TStore, command: RevokeYandexTokenCommand): Promise<boolean> {
     try {
-      setProcess(store, 'revoke yandex disk token...')
-      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/revoke', command)
-      return true
+      setProcess(store, 'revoke yandex disk token...');
+      await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/revoke', command);
+      return true;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token revoke failed')
-      return Promise.reject(e)
+      Hub.$emit('on-toasted-error', 'Error: Access token revoke failed');
+      return Promise.reject(e);
     } finally {
-      setProcess(store, null)
+      setProcess(store, null);
     }
   }
 
@@ -237,26 +233,24 @@ class Actions implements ActionTree<IRootState, IRootState> {
    * @param {YandexDiskResourceLinkQuery} query
    */
   @Queryable(bindings.YandexDiskResourceLinkQuery)
-  async fetchResourceLink(
-    store: TStore, query: YandexDiskResourceLinkQuery
-  ): Promise<string> {
+  async fetchResourceLink(store: TStore, query: YandexDiskResourceLinkQuery): Promise<string> {
     try {
-      const resp = await $http.get<{ link: string }>(`/yandexapi/resource?filename=${query.filename}`)
+      const resp = await $http.get<{ link: string }>(`/yandexapi/resource?filename=${query.filename}`);
       if (!resp || !resp.data) {
-        return Promise.reject(resp)
+        return Promise.reject(resp);
       }
-      return resp.data.link
+      return resp.data.link;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed')
-      return Promise.reject(e)
+      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed');
+      return Promise.reject(e);
     }
   }
 }
 
 function setProcess(store: TStore, process: string | null) {
-  store.commit('setProcess', process ? { name: process } : null)
+  store.commit('setProcess', process ? { name: process } : null);
 }
 
-const actions = toActionTree(new Actions())
+const actions = toActionTree(new Actions());
 
-export default actions
+export default actions;

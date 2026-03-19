@@ -21,9 +21,7 @@ const bindings = {
   /* --------- interactive --------- */
   InfoWindowQuery: Symbol.for('InfoWindowQuery'),
   ConfirmWindowQuery: Symbol.for('ConfirmWindowQuery'),
-  CreateEditQuery: Symbol.for('CreateEditQuery')
-}
+  CreateEditQuery: Symbol.for('CreateEditQuery'),
+};
 
-export {
-  bindings
-}
+export { bindings };

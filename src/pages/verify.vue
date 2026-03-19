@@ -12,8 +12,8 @@
           </div>
         </div>
         <div>
-          <input type="submit" style="display: none">
-          <button class="btn btn-primary" @click.prevent="submit" ref="button">Send</button>
+          <input type="submit" style="display: none" />
+          <button ref="button" class="btn btn-primary" @click.prevent="submit">Send</button>
         </div>
         <div class="flex-center p-y-10">
           <span class="signup" @click="resend">Resend code</span>

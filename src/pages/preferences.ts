@@ -1,64 +1,66 @@
-import AutoLaunch from 'auto-launch'
-import { Vue } from 'vue-class-component'
-import { Watch } from 'vue-property-decorator'
-import { Getter, Mutation } from 'vuex-class'
-import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands'
-import { IResponse, IUser, IValidate } from '~/domain/models'
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query'
-import pkg from '../../package.json'
+import AutoLaunch from 'auto-launch';
+import { Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
+import { Getter, Mutation } from 'vuex-class';
+import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands';
+import { IResponse, IUser, IValidate } from '~/domain/models';
+import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query';
+import pkg from '../../package.json';
 
 export default class Preferences extends Vue {
-  @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void
+  @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void;
 
-  @Getter('getUserDataPath') userDataPath: string
-  @Getter('getYandexApiToken') yandexApiToken: string
-  @Getter('getCurrentUser') currentUser: IUser
+  @Getter('getUserDataPath') userDataPath: string;
+  @Getter('getYandexApiToken') yandexApiToken: string;
+  @Getter('getCurrentUser') currentUser: IUser;
 
-  appAutoLauncher: AutoLaunch = null
-  isAutoLaunchEnabled = false
-  yandexDiskResponseCode = ''
-  createYandexDiskStepTwo = false
+  appAutoLauncher: AutoLaunch = null;
+  isAutoLaunchEnabled = false;
+  yandexDiskResponseCode = '';
+  createYandexDiskStepTwo = false;
 
-  isResetPasswordMode = false
-  oldPass = ''
-  errorMessage = ''
-  newPass = ''
-  repeatNewPass = ''
+  isResetPasswordMode = false;
+  oldPass = '';
+  errorMessage = '';
+  newPass = '';
+  repeatNewPass = '';
 
-  v: IValidate = {}
-  isSubmitted = false
+  v: IValidate = {};
+  isSubmitted = false;
 
   @Watch('isResetPasswordMode') onIsResetPasswordModeChanged() {
     if (this.isResetPasswordMode) {
       this.$nextTick(() => {
-        this.$validate(this)
-      })
+        this.$validate(this);
+      });
     }
   }
 
   @Watch('oldPass') onOldPassChanged() {
-    this.errorMessage = ''
+    this.errorMessage = '';
   }
 
   mounted() {
     const appAutoLauncher = new AutoLaunch({
-      name: pkg.build.productName.replace(/ /g, '')
-    })
+      name: pkg.build.productName.replace(/ /g, ''),
+    });
 
-    this.appAutoLauncher = appAutoLauncher
+    this.appAutoLauncher = appAutoLauncher;
 
-    appAutoLauncher.isEnabled()
+    appAutoLauncher
+      .isEnabled()
       .then((isEnabled: boolean) => {
-        this.isAutoLaunchEnabled = isEnabled
-      }).catch(e => {
-        /* eslint-disable no-console */
-        console.error(e)
+        this.isAutoLaunchEnabled = isEnabled;
       })
+      .catch(e => {
+        /* eslint-disable no-console */
+        console.error(e);
+      });
   }
 
   async validate(): Promise<boolean> {
-    await this.v.touch()
-    return this.v.valid()
+    await this.v.touch();
+    return this.v.valid();
   }
 
   async save() {
@@ -67,45 +69,43 @@ export default class Preferences extends Vue {
     // })
     // this.setDownloadsTargetPath(this.preferences.downloadsTargetPath)
 
-    const isAutoLauncherEnabled = await this.appAutoLauncher.isEnabled()
+    const isAutoLauncherEnabled = await this.appAutoLauncher.isEnabled();
 
     if (this.isAutoLaunchEnabled) {
       if (!isAutoLauncherEnabled) {
-        this.appAutoLauncher.enable()
+        this.appAutoLauncher.enable();
       }
-    } else {
-      if (isAutoLauncherEnabled) {
-        this.appAutoLauncher.disable()
-      }
+    } else if (isAutoLauncherEnabled) {
+      this.appAutoLauncher.disable();
     }
 
     if (this.isResetPasswordMode) {
-      this.isSubmitted = true
+      this.isSubmitted = true;
       if (!(await this.validate())) {
-        return
+        return;
       }
       try {
-        await this.$app.$commandBus.do(new UpdatePasswordCommand(this.oldPass, this.newPass))
-        this.$toasted.success('Your password is updated')
-        this.$app.logout()
+        await this.$app.$commandBus.do(new UpdatePasswordCommand(this.oldPass, this.newPass));
+        this.$toasted.success('Your password is updated');
+        this.$app.logout();
       } catch (e) {
-        this.$app.loading(false)
-        this.handleError(e)
+        this.$app.loading(false);
+        this.handleError(e);
       }
-      return
+      return;
     }
-    this.$app.goBack()
+    this.$app.goBack();
   }
 
   handleError(e: IResponse<{ message: string }>) {
     if (e?.data?.message === 'Password is incorrect') {
-      (this.v as { oldPass: { isInvalid: boolean } }).oldPass.isInvalid = true
-      this.errorMessage = 'Password is incorrect'
+      (this.v as { oldPass: { isInvalid: boolean } }).oldPass.isInvalid = true;
+      this.errorMessage = 'Password is incorrect';
     }
   }
 
   cancel() {
-    this.$app.goBack()
+    this.$app.goBack();
   }
 
   // openFolderDialog() {
@@ -128,19 +128,19 @@ export default class Preferences extends Vue {
   async revoke() {
     const isConfirm = await this.$app.$queryBus.exec(
       new ConfirmWindowQuery('Do you want to revoke the Yandex.Disk connection?')
-    )
+    );
     if (!isConfirm) {
-      return
+      return;
     }
     try {
-      await this.$app.$commandBus.do(new RevokeYandexTokenCommand())
-      location.reload()
+      await this.$app.$commandBus.do(new RevokeYandexTokenCommand());
+      location.reload();
     } catch (e) {
       //
     }
   }
 
   get isYandexApiTokenExist() {
-    return Boolean(this.currentUser.yandexDiskAccessToken)
+    return Boolean(this.currentUser.yandexDiskAccessToken);
   }
 }

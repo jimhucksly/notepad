@@ -1,31 +1,31 @@
-import { stateKeys } from './state'
-import { upperFirst } from '~/helpers'
-import { IRootState } from '~/domain/models'
-import { FsmStates } from '~/application/app'
+import { stateKeys } from './state';
+import { upperFirst } from '~/helpers';
+import { IRootState } from '~/domain/models';
+import { FsmStates } from '~/application/app';
 
 interface IMutations {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  [key: string]: (state: IRootState, data: any) => void
+  [key: string]: (state: IRootState, data: any) => void;
 }
 
 const _mutations: IMutations = {
   setHistory(state: IRootState, history: Array<keyof typeof FsmStates>) {
-    state.history = []
-    state.history = history
-  }
-}
+    state.history = [];
+    state.history = history;
+  },
+};
 
 stateKeys.forEach(key => {
-  const commitKey = 'set' + upperFirst(key)
+  const commitKey = 'set' + upperFirst(key);
   if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, payload) => {
-      (state as unknown as Record<string, unknown>)[key] = payload
-    }
+      (state as unknown as Record<string, unknown>)[key] = payload;
+    };
   }
-})
+});
 
 const mutations: IMutations = {
-  ..._mutations
-}
+  ..._mutations,
+};
 
-export default mutations
+export default mutations;

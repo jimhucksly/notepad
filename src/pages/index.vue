@@ -12,7 +12,7 @@
           <verify v-if="isVerifyWindow" id="verify" />
         </template>
         <yandex v-if="isYandexWindow" id="yandex" />
-        <component v-else-if="isComponent" :is="component" />
+        <component :is="component" v-else-if="isComponent" />
       </template>
       <error v-if="isError" />
     </section>

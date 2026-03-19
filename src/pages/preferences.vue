@@ -34,13 +34,13 @@
           <b-checkbox v-model="isAutoLaunchEnabled" />
         </div>
       </div>
-      <div class="form-group" v-if="isYandexApiTokenExist">
+      <div v-if="isYandexApiTokenExist" class="form-group">
         <div class="form-group-inner flex-between items-center">
           <label class="m-b-5">Yandex.Disk Api Token received</label>
           <button class="btn btn-default" @click.prevent="revoke">Revoke</button>
         </div>
       </div>
-      <div class="form-group" v-if="!isResetPasswordMode">
+      <div v-if="!isResetPasswordMode" class="form-group">
         <div class="form-group-inner flex-between items-center">
           <label class="m-b-5">Reset password</label>
           <button class="btn btn-default" @click.prevent="isResetPasswordMode = true">Reset</button>
@@ -54,13 +54,13 @@
             </div>
             <div class="col">
               <input
-                type="password"
                 v-model="oldPass"
+                type="password"
                 name="oldPass"
                 required
                 :class="{ error: v?.oldPass?.isInvalid }"
-              >
-              <span class="form-label-error" v-show="isSubmitted && v?.oldPass?.isInvalid">
+              />
+              <span v-show="isSubmitted && v?.oldPass?.isInvalid" class="form-label-error">
                 {{ errorMessage || 'This field is required' }}
               </span>
             </div>
@@ -73,13 +73,13 @@
             </div>
             <div class="col">
               <input
-                type="password"
                 v-model="newPass"
+                type="password"
                 name="newPass"
                 required
                 :class="{ error: v?.newPass?.isInvalid }"
-              >
-              <span class="form-label-error" v-show="isSubmitted && v?.newPass?.isInvalid">
+              />
+              <span v-show="isSubmitted && v?.newPass?.isInvalid" class="form-label-error">
                 This field is required
               </span>
             </div>
@@ -92,14 +92,14 @@
             </div>
             <div class="col">
               <input
-                type="password"
                 v-model="repeatNewPass"
+                type="password"
                 name="repeatNewPass"
                 data-rule-target="newPass"
                 required
                 :class="{ error: v?.repeatNewPass?.isInvalid }"
-              >
-              <span class="form-label-error" v-show="isSubmitted && v?.repeatNewPass?.isInvalid">
+              />
+              <span v-show="isSubmitted && v?.repeatNewPass?.isInvalid" class="form-label-error">
                 This field is required
               </span>
             </div>

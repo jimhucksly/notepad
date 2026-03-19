@@ -1,4 +1,4 @@
-import { IRootState } from '~/domain/models'
+import { IRootState } from '~/domain/models';
 
 export const stateKeys: string[] = [
   'manifest',
@@ -19,8 +19,8 @@ export const stateKeys: string[] = [
   'history',
   'currentUser',
   'process',
-  'session'
-]
+  'session',
+];
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const _state: any = {
@@ -28,17 +28,17 @@ const _state: any = {
   userDataPath: '',
   downloadsTargetPath: '',
   history: [],
-  sections: {}
-}
+  sections: {},
+};
 
 stateKeys.forEach(key => {
   if (_state[key] === undefined) {
-    _state[key] = null
+    _state[key] = null;
   }
-})
+});
 
 const state: IRootState = {
-  ..._state
-}
+  ..._state,
+};
 
-export default state
+export default state;

@@ -1,55 +1,57 @@
-import { Vue } from 'vue-class-component'
-import { Getter } from 'vuex-class'
-import { RegistrationCommand } from '~/domain/commands'
-import { IUser, IValidate } from '~/domain/models'
+import { Vue } from 'vue-class-component';
+import { Getter } from 'vuex-class';
+import { RegistrationCommand } from '~/domain/commands';
+import { IUser, IValidate } from '~/domain/models';
 
 export default class Reg extends Vue {
-  login = ''
-  pass = ''
-  passRepeat = ''
-  name = ''
-  email = ''
+  login = '';
+  pass = '';
+  passRepeat = '';
+  name = '';
+  email = '';
 
-  v: IValidate = {}
+  v: IValidate = {};
 
-  isSubmitted = false
+  isSubmitted = false;
 
-  @Getter('getCurrentUser') currentUser: IUser
+  @Getter('getCurrentUser') currentUser: IUser;
 
   mounted() {
     if (this.currentUser) {
-      this.login = this.currentUser.login
-      this.name = this.currentUser.displayName
-      this.email = this.currentUser.email
+      this.login = this.currentUser.login;
+      this.name = this.currentUser.displayName;
+      this.email = this.currentUser.email;
     }
-    this.$validate(this)
+    this.$validate(this);
   }
 
   async validate(): Promise<boolean> {
-    await this.v.touch()
-    return this.v.valid()
+    await this.v.touch();
+    return this.v.valid();
   }
 
   async submit() {
-    this.isSubmitted = true
+    this.isSubmitted = true;
     if (!(await this.validate())) {
-      return
+      return;
     }
     try {
-      const user = await this.$app.$commandBus.do<RegistrationCommand, IUser>(new RegistrationCommand({
-        login: this.login,
-        password: this.pass,
-        name: this.name,
-        email: this.email
-      }))
-      this.$app.user(user)
-      this.$app.goto(this.$app.states.Verify)
+      const user = await this.$app.$commandBus.do<RegistrationCommand, IUser>(
+        new RegistrationCommand({
+          login: this.login,
+          password: this.pass,
+          name: this.name,
+          email: this.email,
+        })
+      );
+      this.$app.user(user);
+      this.$app.goto(this.$app.states.Verify);
     } catch (e) {
-      this.$toasted.error(e?.message || 'submit error')
+      this.$toasted.error(e?.message || 'submit error');
     }
   }
 
   goBack() {
-    this.$app.goto(this.$app.states.Auth)
+    this.$app.goto(this.$app.states.Auth);
   }
 }

@@ -1,53 +1,62 @@
-import { App, defineComponent } from 'vue'
-import { IModule, IModuleMaifest } from './domain/interfaces'
-import { IRootState } from './domain/models'
-import { ModuleTree } from 'vuex'
+import { App, defineComponent } from 'vue';
+import { IModule, IModuleMaifest } from './domain/interfaces';
+import { IRootState } from './domain/models';
+import { ModuleTree } from 'vuex';
 
-function registerModule(_module: IModule, _manifest: IModuleMaifest, app: App): {
-  storeModule: ModuleTree<IRootState>
-  namespace: string
+function registerModule(
+  _module: IModule,
+  _manifest: IModuleMaifest,
+  app: App
+): {
+  storeModule: ModuleTree<IRootState>;
+  namespace: string;
 } {
-  let storeModule: Record<string, ModuleTree<IRootState>> = null
-  const moduleName = _module.name
-  const modulePath = _module.path + '/'
+  let storeModule: Record<string, ModuleTree<IRootState>> = null;
+  const moduleName = _module.name;
+  const modulePath = _module.path + '/';
   if (_manifest && _manifest.components) {
     for (const key in _manifest.components) {
       switch (key) {
         case 'main':
           if (typeof _manifest.components['main'] === 'string') {
-            const m = require('~/__modules__/' + modulePath + _manifest.components['main'])
-            app.component(moduleName, defineComponent(m.default))
+            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            const m = require('~/__modules__/' + modulePath + _manifest.components['main']);
+            app.component(moduleName, defineComponent(m.default));
           }
-          break
+          break;
         case 'aside':
-          const name = moduleName + '-Sidebar'
+          const name = moduleName + '-Sidebar';
           if (typeof _manifest.components['aside'] === 'string' && _manifest.components['aside']) {
-            const m = require('~/__modules__/' + modulePath + _manifest.components['aside'])
-            app.component(name, defineComponent(m.default))
+            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            const m = require('~/__modules__/' + modulePath + _manifest.components['aside']);
+            app.component(name, defineComponent(m.default));
           } else {
-            app.component(name, defineComponent({
-              template: '<div></div>'
-            }))
+            app.component(
+              name,
+              defineComponent({
+                template: '<div></div>',
+              })
+            );
           }
-          break
+          break;
         case 'modals':
-          for (const item of (_manifest.components['modals'] || [])) {
-            const m = require('~/__modules__/' + modulePath + 'modals/' + item)
-            app.component(moduleName + '-Modal-' + item, defineComponent(m.default))
+          for (const item of _manifest.components['modals'] || []) {
+            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            const m = require('~/__modules__/' + modulePath + 'modals/' + item);
+            app.component(moduleName + '-Modal-' + item, defineComponent(m.default));
           }
-          break
+          break;
       }
     }
   }
   if (_manifest && _manifest.store) {
     storeModule = {
-      [moduleName]: (require('~/__modules__/' + modulePath + _manifest.store)).default
-    }
+      /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+      [moduleName]: require('~/__modules__/' + modulePath + _manifest.store).default,
+    };
   }
 
-  return { storeModule: storeModule ? storeModule[moduleName] : null, namespace: moduleName }
+  return { storeModule: storeModule ? storeModule[moduleName] : null, namespace: moduleName };
 }
 
-export {
-  registerModule
-}
+export { registerModule };

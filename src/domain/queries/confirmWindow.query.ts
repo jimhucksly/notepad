@@ -1,19 +1,19 @@
-import { IQueryHandler } from '../interfaces'
-import { injectable } from 'inversify'
-import { FsmStates } from '~/application/app'
-import { IPopupWindowQuery } from '../models'
-import { Hub } from '~/plugins/hub'
+import { IQueryHandler } from '../interfaces';
+import { injectable } from 'inversify';
+import { FsmStates } from '~/application/app';
+import { IPopupWindowQuery } from '../models';
+import { Hub } from '~/plugins/hub';
 
 export class ConfirmWindowQuery implements IPopupWindowQuery<boolean> {
-  component: string = null
-  componentProps: IPopupWindowQuery<boolean>['componentProps'] = {}
+  component: string = null;
+  componentProps: IPopupWindowQuery<boolean>['componentProps'] = {};
   modal: IPopupWindowQuery<boolean>['modal'] = {
     title: 'Confirmation!',
-    width: '35%'
-  }
-  fsmState = FsmStates.ConfirmWindow
+    width: '35%',
+  };
+  fsmState = FsmStates.ConfirmWindow;
   constructor(question: string) {
-    this.componentProps.question = question
+    this.componentProps.question = question;
   }
 }
 
@@ -22,9 +22,9 @@ export class ConfirmWindowQueryHandler implements IQueryHandler<ConfirmWindowQue
   async exec(query: ConfirmWindowQuery): Promise<boolean> {
     return new Promise(resolve => {
       setTimeout(() => {
-        query.modal.resolveFunction = resolve as (value: unknown) => Promise<boolean>
-        Hub.$emit('open-dialog', query)
-      }, 100)
-    })
+        query.modal.resolveFunction = resolve as (value: unknown) => Promise<boolean>;
+        Hub.$emit('open-dialog', query);
+      }, 100);
+    });
   }
 }

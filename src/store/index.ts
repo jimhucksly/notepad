@@ -1,9 +1,9 @@
-import { ModuleTree, createStore } from 'vuex'
-import actions from './actions'
-import getters from './getters'
-import mutations from './mutations'
-import state from './state'
-import { IRootState } from '~/domain/models'
+import { ModuleTree, createStore } from 'vuex';
+import actions from './actions';
+import getters from './getters';
+import mutations from './mutations';
+import state from './state';
+import { IRootState } from '~/domain/models';
 
 function buildStore(modules: ModuleTree<IRootState>) {
   const store = createStore<IRootState>({
@@ -13,12 +13,10 @@ function buildStore(modules: ModuleTree<IRootState>) {
     mutations,
     state,
     modules: {
-      ...modules
-    }
-  })
-  return store
+      ...modules,
+    },
+  });
+  return store;
 }
 
-export {
-  buildStore
-}
+export { buildStore };

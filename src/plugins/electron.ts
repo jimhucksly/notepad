@@ -1,8 +1,9 @@
-import { App } from 'vue'
+import { App } from 'vue';
 
 export default {
   install: (vue: App) => {
-    const electron = require('electron')
-    vue.config.globalProperties.$electron = electron
-  }
-}
+    /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+    const electron = require('electron');
+    vue.config.globalProperties.$electron = electron;
+  },
+};

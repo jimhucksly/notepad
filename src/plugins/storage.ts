@@ -1,123 +1,123 @@
-import fs from 'fs'
-import path from 'path'
-import { isDefined, isJSON } from '~/helpers'
+import fs from 'fs';
+import path from 'path';
+import { isDefined, isJSON } from '~/helpers';
 
 export default class Storage {
   static isPathExists(_path: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        fs.statSync(_path)
-        return resolve(true)
+        fs.statSync(_path);
+        return resolve(true);
       } catch (e) {
-        return reject(false)
+        return reject(new Error());
       }
-    })
+    });
   }
 
   static isFileExists(_path: string, _file?: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let filePath = _path
+      let filePath = _path;
       if (_file !== undefined) {
-        filePath = path.resolve(_path, _file)
+        filePath = path.resolve(_path, _file);
       }
       try {
-        fs.statSync(filePath)
-        return resolve(true)
+        fs.statSync(filePath);
+        return resolve(true);
       } catch (e) {
-        return reject(false)
+        return reject(new Error());
       }
-    })
+    });
   }
 
   static append<T>(_path: string, fileName: string, json: T): Promise<void> {
     return new Promise((resolve, reject) => {
-      const fullPath = path.resolve(_path, fileName)
+      const fullPath = path.resolve(_path, fileName);
       this.isFileExists(fullPath)
         .then(() => {
-          const oldVal: string = fs.readFileSync(fullPath, 'utf8')
-          let oldJson: T | Record<string, unknown>
+          const oldVal: string = fs.readFileSync(fullPath, 'utf8');
+          let oldJson: T | Record<string, unknown>;
           try {
-            oldJson = JSON.parse(oldVal)
+            oldJson = JSON.parse(oldVal);
           } catch (e) {
-            oldJson = {}
+            oldJson = {};
           }
-          const data = { ...oldJson, ...json }
-          this.set(_path, fileName, data)
+          const data = { ...oldJson, ...json };
+          this.set(_path, fileName, data);
         })
         .catch(() => {
-          this.set<T>(_path, fileName, json)
-        })
-    })
+          this.set<T>(_path, fileName, json);
+        });
+    });
   }
 
-  static set<T>(_path: string, fileName: string, json: T): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      let data
+  static async set<T>(_path: string, fileName: string, json: T): Promise<void> {
+    try {
+      let data;
       try {
-        data = isJSON(json) ? JSON.stringify(json) : ''
+        data = isJSON(json) ? JSON.stringify(json) : '';
       } catch (e) {
-        data = ''
+        data = '';
       }
-      const fullPath = path.resolve(_path, fileName)
-      const sResponse = await this.isFileExists(fullPath)
+      const fullPath = path.resolve(_path, fileName);
+      const sResponse = await this.isFileExists(fullPath);
       if (!sResponse) {
-        reject(null)
+        throw new Error();
       }
-      try {
-        fs.writeFileSync(fullPath, data)
-        resolve(void 0)
-      } catch (err) {
-        reject(err)
-      }
-    })
+      fs.writeFileSync(fullPath, data);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 
-  static get<T>(_path: string, _file: string, key?: string): Promise<T> {
-    return new Promise(async (resolve, reject) => {
-      let fullPath = _path
-      if (_file !== undefined) fullPath = path.resolve(_path, _file)
-      try {
-        const sResponse = await this.isFileExists(fullPath)
-        if (!sResponse) {
-          return reject(null)
-        }
-        const data = fs.readFileSync(fullPath, 'utf8')
-        let json
-        try {
-          json = JSON.parse(data)
-        } catch (e) {
-          json = {}
-        }
-        if (!key) {
-          resolve(json)
-        }
-        if (key && key in json) {
-          resolve(isDefined(json[key]) ? json[key] : json)
-        }
-        if (key && !(key in json)) {
-          reject(null)
-        }
-      } catch (err) {
-        reject(null)
+  static async get<T>(_path: string, _file: string, key?: string): Promise<T> {
+    try {
+      let fullPath = _path;
+      if (_file !== undefined) {
+        fullPath = path.resolve(_path, _file);
       }
-    })
-  }
-
-  static createFile(_path: string, _file: string) {
-    return new Promise(async (resolve, reject) => {
-      let fullPath = _path
-      if (_file !== undefined) fullPath = path.resolve(_path, _file)
+      const sResponse = await this.isFileExists(fullPath);
+      if (!sResponse) {
+        throw new Error();
+      }
+      const data = fs.readFileSync(fullPath, 'utf8');
+      let json;
       try {
-        await this.isFileExists(fullPath)
-        resolve(void 0)
+        json = JSON.parse(data);
       } catch (e) {
-        fs.writeFile(fullPath, '{}', (err) => {
-          if (err) {
-            reject(new Error(`file ${fullPath} not found`))
-          }
-          resolve(void 0)
-        })
+        json = {};
       }
-    })
+      if (!key) {
+        return json;
+      }
+      if (key && key in json) {
+        return isDefined(json[key]) ? json[key] : json;
+      }
+      if (key && !(key in json)) {
+        throw new Error();
+      }
+      return json;
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }
+
+  static async createFile(_path: string, _file: string): Promise<void> {
+    try {
+      let fullPath = _path;
+      if (_file !== undefined) {
+        fullPath = path.resolve(_path, _file);
+      }
+      try {
+        await this.isFileExists(fullPath);
+      } catch (e) {
+        fs.writeFile(fullPath, '{}', err => {
+          if (err) {
+            throw new Error(`file ${fullPath} not found`);
+          }
+        });
+      }
+    } catch (e) {
+      return Promise.reject(e);
+    }
   }
 }

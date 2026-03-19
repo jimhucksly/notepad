@@ -1,11 +1,17 @@
 export class AuthQuery {
-  constructor(public login: string, public password: string) {}
+  constructor(
+    public login: string,
+    public password: string
+  ) {}
 }
 
 export class SessionQuery {}
 
 export class YandexTokenQuery {
-  constructor(public code: number, public userId: number) {}
+  constructor(
+    public code: number,
+    public userId: number
+  ) {}
 }
 
 export class RefreshYandexTokenQuery {}

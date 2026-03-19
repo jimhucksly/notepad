@@ -1,5 +1,3 @@
-'use strict'
-
 process.env.BABEL_ENV = 'renderer'
 
 const path = require('path')
@@ -11,6 +9,7 @@ const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const { minimizer } = require('./minimizer.js');
 const { endpoint, port } = require('./endpoint.json')
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -143,7 +142,6 @@ let rendererConfig = {
         "$PORT": `"${port}"`
       }
     ),
-    new webpack.HotModuleReplacementPlugin(),
   ],
   output: {
     filename: '[name].js',
@@ -159,53 +157,8 @@ let rendererConfig = {
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        parallel: true,
-        terserOptions: {
-          warnings: false,
-          mangle: true,
-          output: {
-            comments: false,
-            beautify: false,
-          },
-          toplevel: true,
-          nameCache: null,
-          ie8: false,
-          keep_classnames: true,
-          keep_fnames: true,
-          safari10: false,
-          unsafe: true,
-          inline: true,
-          passes: 2,
-          keep_fargs: false,
-          compress: {
-            arrows: false,
-            collapse_vars: false,
-            comparisons: false,
-            computed_props: false,
-            hoist_funs: false,
-            hoist_props: false,
-            hoist_vars: false,
-            inline: false,
-            loops: false,
-            negate_iife: false,
-            properties: false,
-            reduce_funcs: false,
-            reduce_vars: false,
-            switches: false,
-            toplevel: false,
-            typeofs: false,
-            booleans: true,
-            if_return: true,
-            sequences: true,
-            unused: true,
-            conditionals: true,
-            dead_code: true,
-            evaluate: true
-          }
-        }
-      })
-    ]
+      minimizer
+    ],
   },
   target: 'electron-renderer'
 }
