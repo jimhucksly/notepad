@@ -22,13 +22,13 @@
     height: 34px;
     padding: 0 8px;
     background-color: var(--grey);
-    color: var(--blue-gray);
+    color: var(--primary-l-4);
     cursor: pointer;
     z-index: 2;
 
     &.--active {
       background-color: var(--white);
-      color: var(--dark);
+      color: var(--grey-d-6);
     }
 
     &:first-child {

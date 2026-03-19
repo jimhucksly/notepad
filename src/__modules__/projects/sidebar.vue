@@ -48,7 +48,7 @@
   flex-grow: 1;
   padding-top: 5px;
   padding-bottom: 54px;
-  background-color: var(--dark);
+  background-color: var(--grey-d-6);
   overflow: hidden;
   z-index: 9;
 

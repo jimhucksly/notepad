@@ -16,7 +16,7 @@
   justify-content: center;
   font-family: var(--font-regular);
   border-radius: 8px;
-  color: #fff;
+  color: var(--white);
   padding: 12px 37px 12px 12px;
   margin-bottom: 8px;
   max-width: 100%;
@@ -50,7 +50,7 @@
     left: 2px;
     width: 15px;
     height: 1px;
-    background-color: #fff;
+    background-color: var(--white);
   }
 
   &:before {
@@ -63,7 +63,7 @@
   &:hover {
     &:before,
     &:after {
-      background-color: #fff;
+      background-color: var(--white);
     }
   }
 }

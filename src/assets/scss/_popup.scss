@@ -14,8 +14,8 @@
 .popup-window {
   display: flex;
   flex-direction: column;
-  background-color: #fff;
-  border: 1px solid var(--blue-gray);
+  background-color: var(--white);
+  border: 1px solid var(--primary-l-4);
   box-shadow: 0px 0px 5px 1px rgba(0,0,0,0.1);
 }
 
@@ -28,7 +28,7 @@
   flex-shrink: 0;
   width: 100%;
   background-color: var(--black);
-  color: #fff;
+  color: var(--white);
   font-size: 1rem;
 }
 
@@ -48,7 +48,7 @@
     left: 15px;
     width: 15px;
     height: 1px;
-    background-color: var(--blue-gray);
+    background-color: var(--primary-l-4);
   }
 
   &:before {
@@ -63,7 +63,7 @@
 
     &:before,
     &:after {
-      background-color: #fff;
+      background-color: var(--white);
     }
   }
 }

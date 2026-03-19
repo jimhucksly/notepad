@@ -100,11 +100,16 @@ export default class LibraryPage extends Vue {
 
     this.ready = true;
     this.$nextTick(() => {
-      const editor = (document.querySelector('.cm-content') as unknown as { cmView: { view: EditorView } }).cmView.view;
-      const lines: Array<string> = [];
-      const children = editor.state.doc.children;
-      for (const el of children) {
-        lines.push(...(el as unknown as { text: Array<string> }).text);
+      const content = document.querySelector('.cm-content');
+      if (content) {
+        const editor = (content as unknown as { cmView: { view: EditorView } })?.cmView?.view;
+        if (editor) {
+          const lines: Array<string> = [];
+          const children = editor.state.doc.children;
+          for (const el of children) {
+            lines.push(...(el as unknown as { text: Array<string> }).text);
+          }
+        }
       }
     });
   }

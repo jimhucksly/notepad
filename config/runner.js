@@ -121,8 +121,6 @@ function electronLog (data, color) {
 }
 
 function init () {
-  console.log(chalk.white('initializing app...') + '\n')
-
   Promise
     .all([startRenderer(), startMain()])
     .then(() => {
