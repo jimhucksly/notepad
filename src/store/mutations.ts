@@ -1,5 +1,5 @@
 import { stateKeys } from './state';
-import { upperFirst } from '~/helpers';
+import { strings } from '@dn-web/core';
 import { IRootState } from '~/domain/models';
 import { FsmStates } from '~/application/app';
 
@@ -16,7 +16,7 @@ const _mutations: IMutations = {
 };
 
 stateKeys.forEach(key => {
-  const commitKey = 'set' + upperFirst(key);
+  const commitKey = 'set' + strings.upperFirst(key);
   if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, payload) => {
       (state as unknown as Record<string, unknown>)[key] = payload;

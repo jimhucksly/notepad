@@ -1,4 +1,5 @@
-import { htmlToText, checkLinks, now, isJSON, translit, indexOf, isDefined, upperFirst, lowerFirst } from './index';
+import { htmlToText, checkLinks, now, translit, indexOf } from './index';
+import { isJSON } from '@dn-web/core';
 
 const html = 'My site <br><a href=\\"http:\\/\\/dn-web.ru\\" target=\\"_blank\\">http:\\/\\/dn-web.ru<\\/a>';
 const text = 'My site \nhttp://dn-web.ru';
@@ -44,22 +45,5 @@ describe('Helpers', () => {
     div.innerHTML = content;
     const li: HTMLElement = div.querySelector('.a');
     expect(indexOf(li)).toEqual(0);
-  });
-
-  it('upperFirst', () => {
-    expect(upperFirst('lorem')).toEqual('Lorem');
-  });
-
-  it('lowerFirst', () => {
-    expect(lowerFirst('LoremIpsum')).toEqual('loremIpsum');
-  });
-
-  it('isDefined', () => {
-    expect(isDefined(null)).toBeFalsy();
-    expect(isDefined(undefined)).toBeFalsy();
-    expect(isDefined(0)).toBeTruthy();
-    expect(isDefined('')).toBeTruthy();
-    expect(isDefined(Number('a555'))).toBeFalsy();
-    expect(isDefined(Number('555'))).toBeTruthy();
   });
 });

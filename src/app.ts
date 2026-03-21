@@ -1,5 +1,5 @@
 import { Options, Vue } from 'vue-class-component';
-import { generatePalette, IColor } from 'dn-core';
+import { generatePalette, IColor } from '@dn-web/core';
 
 @Options({
   template: `

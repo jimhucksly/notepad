@@ -1,5 +1,5 @@
 import { IRootState } from '~/domain/models';
-import { upperFirst } from '~/helpers';
+import { strings } from '@dn-web/core';
 import { stateKeys } from './state';
 
 interface IGetters {
@@ -19,7 +19,7 @@ const getters: IGetters = {
 };
 
 stateKeys.forEach(key => {
-  const getterKey = 'get' + upperFirst(key);
+  const getterKey = 'get' + strings.upperFirst(key);
   if (getters[getterKey] === undefined) {
     getters[getterKey] = state => state[key as keyof IRootState];
   }

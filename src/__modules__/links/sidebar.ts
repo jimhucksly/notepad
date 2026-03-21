@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component';
 import { Queries, Types } from '~/core';
-import { uniqueid } from '~/helpers';
+import { uniqueID } from '@dn-web/core';
 import { LinksQuery } from './queries/queries';
 import { ILink } from './models';
 import { UpdateLinksCommand } from './commands/commands';
@@ -19,7 +19,7 @@ export default class LinksSidebar extends Vue {
       return;
     }
     if (!result.id) {
-      result.id = uniqueid(6) as string;
+      result.id = uniqueID(6) as string;
     }
     await this.$app.$commandBus.do(new UpdateLinksCommand(result));
     await this.$app.$queryBus.exec(new LinksQuery());

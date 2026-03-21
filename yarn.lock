@@ -1873,6 +1873,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dn-web/core@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@dn-web/core@npm:1.0.1"
+  checksum: 10/4c1e06f63ddb150b318e9bd7244121a5b10481a0f09fecf2c38ff310b990fcfddd4ee0750ecc0d0f82f83b40c1534cfc26f759c68452e4ec60f87059d77b6306
+  languageName: node
+  linkType: hard
+
 "@electron/get@npm:^1.0.1":
   version: 1.14.1
   resolution: "@electron/get@npm:1.14.1"
@@ -8380,13 +8387,6 @@ __metadata:
   bin:
     dmg-license: bin/dmg-license.js
   conditions: os=darwin
-  languageName: node
-  linkType: hard
-
-"dn-core@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "dn-core@npm:1.0.5"
-  checksum: 10/609d87583c342e3d089a4d05e0117c5867baa04dd5c3840bbf42dc9ae031cc2dccebe77e3c28bb0f6a96de79836bead0fe3ed5acb456bf0f249ff85f7516b221
   languageName: node
   linkType: hard
 
@@ -16021,6 +16021,7 @@ __metadata:
     "@babel/preset-env": "npm:7.20.2"
     "@babel/preset-typescript": "npm:7.21.0"
     "@babel/runtime": "npm:7.8.4"
+    "@dn-web/core": "npm:1.0.1"
     "@ljharb/eslint-config": "npm:17.2.0"
     "@types/auto-launch": "npm:5.0.1"
     "@types/body-parser": "npm:1.19.2"
@@ -16055,7 +16056,6 @@ __metadata:
     cross-env: "npm:5.2.1"
     css-loader: "npm:6.7.1"
     del: "npm:3.0.0"
-    dn-core: "npm:^1.0.5"
     electron: "npm:29.4.0"
     electron-builder: "npm:23.6.0"
     eslint: "npm:8.56.0"

@@ -6,11 +6,12 @@ import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { delay, translit, uniqueid } from '~/helpers';
+import { translit } from '~/helpers';
 import { Plugins } from '~/core';
 import { UpdateLibraryCommand } from './commands/commands';
 import { ILibraryFile, ITreeItem } from './models';
 import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries';
+import { uniqueID, delay } from '@dn-web/core';
 
 @Options({
   components: {
@@ -69,7 +70,7 @@ export default class LibraryPage extends Vue {
         LibraryPage.nodes.push({
           name: s || '',
           slug: slug || '',
-          id: uniqueid(8) as string,
+          id: uniqueID(8) as string,
           children: [],
         });
         return slug;

@@ -97,29 +97,6 @@ export const now = (stamp?: string): { date: string; stamp: string } => {
   };
 };
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const isJSON = (value: any): boolean => {
-  let json: Record<string, unknown>;
-  if (typeof value === 'string') {
-    try {
-      json = JSON.parse(value);
-      return true;
-    } catch (e) {
-      //
-    }
-  } else {
-    try {
-      json = JSON.parse(JSON.stringify(value));
-      if (json && typeof json === 'object' && json !== null) {
-        return true;
-      }
-    } catch (e) {
-      //
-    }
-  }
-  return false;
-};
-
 export function dragAndDropLoader(
   DOMElementId: string,
   CSSClassHighlight: string,
@@ -296,58 +273,6 @@ export const translit = (val: string) => {
   return result.trim();
 };
 
-export const uniqueid = (len: number = 16, format?: string): string | number => {
-  let result = '';
-  let dic = '';
-  switch (format) {
-    case 'a-z':
-      dic = 'abcdefghijklmnopqrstuvwxyz';
-      break;
-    case 'A-Z':
-      dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ';
-      break;
-    case '0-9':
-      dic = '1234567890';
-      break;
-    case 'a-zA-Z':
-      dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ';
-      break;
-    case 'a-z0-9':
-      dic = 'abcdefghijklmnopqrstuvwxyz1234567890';
-      break;
-    case 'A-Z0-9':
-      dic = 'ABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890';
-      break;
-    default:
-      dic = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ1234567890';
-  }
-
-  for (let i = 0; i < len; i++) {
-    result += dic.charAt(Math.floor(Math.random() * dic.length));
-  }
-
-  if (format === '0-9') {
-    return Number(result);
-  }
-  return result;
-};
-
-export const upperFirst = (s: string) => {
-  s = s.toString();
-  if (!s.length) {
-    return '';
-  }
-  return s.charAt(0).toUpperCase() + s.slice((s.length - 1) * -1);
-};
-
-export const lowerFirst = (s: string) => {
-  s = s.toString();
-  if (!s.length) {
-    return '';
-  }
-  return s.charAt(0).toLowerCase() + s.slice((s.length - 1) * -1);
-};
-
 export const indexOf = (DOMElement: HTMLElement): number => {
   let result = -1;
   if (!DOMElement) {
@@ -385,17 +310,6 @@ export const indexOf = (DOMElement: HTMLElement): number => {
   return result;
 };
 
-export async function delay(timeout: number) {
-  let resolveFunc: (value: unknown) => void = null;
-  const promise = new Promise(resolve => {
-    resolveFunc = resolve;
-  });
-  setTimeout(() => {
-    resolveFunc(void 0);
-  }, timeout);
-  await promise;
-}
-
 export function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
   const arr = Object.getOwnPropertyNames(Object.getPrototypeOf(obj));
   const result: ActionTree<S, R> = {};
@@ -405,10 +319,4 @@ export function toActionTree<S, R>(obj: ActionTree<S, R>): ActionTree<S, R> {
     }
   });
   return result;
-}
-
-export function isDefined(value: unknown): boolean {
-  /* eslint-disable no-undefined */
-  const isNaNValue = typeof value === 'number' && isNaN(value);
-  return value !== null && value !== undefined && !isNaNValue;
 }

@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component';
 import { Hub } from '~/plugins/hub';
-import { uniqueid } from '~/helpers';
+import { uniqueID } from '@dn-web/core';
 
 enum ToastType {
   Success = 1,
@@ -33,7 +33,7 @@ export default class Toasted extends Vue {
   }
 
   toastedSuccess(subject: string) {
-    const id = Number(uniqueid(6, '0-9'));
+    const id = Number(uniqueID(6, '0-9'));
     this.toasts.push({
       id,
       subject,
@@ -45,7 +45,7 @@ export default class Toasted extends Vue {
   }
 
   toastedError(subject: string) {
-    const id = Number(uniqueid(6, '0-9'));
+    const id = Number(uniqueID(6, '0-9'));
     this.toasts.push({
       id,
       subject,

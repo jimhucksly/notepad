@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex';
-import { upperFirst } from '~/helpers';
+import { strings } from '@dn-web/core';
 import { stateKeys } from './state';
 import { IProjectsState, IFilters, IProjects } from '../models';
 
@@ -13,7 +13,7 @@ const _mutations: MutationTree<IProjectsState> = {
 };
 
 stateKeys.forEach(key => {
-  const commitKey = 'set' + upperFirst(key);
+  const commitKey = 'set' + strings.upperFirst(key);
   if (_mutations[commitKey] === undefined) {
     _mutations[commitKey] = (state, payload) => {
       state[key as keyof IProjectsState] = payload;
