@@ -1,7 +1,8 @@
 import { mount, VueWrapper, flushPromises } from '@vue/test-utils';
-import BCalendar, { getNativeDate, isDate } from './index';
+import BCalendar from './index';
 import { Options, Vue } from 'vue-class-component';
 import { defineComponent } from 'vue';
+import { getNativeDate, isDate } from './utils';
 
 @Options({
   template: `

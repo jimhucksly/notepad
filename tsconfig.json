@@ -1,31 +1,31 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "target": "esnext",
-    "baseUrl": "src",
-    "paths": {
-      "~/*": ["*"],
-    },
     "types": ["reflect-metadata", "node", "jest"],
-    "outDir": "./dist",
-    "newLine": "LF",
-    "preserveConstEnums": true,
+    "rootDir": "./",
+    "module": "nodenext",
+    "target": "esnext",
+    "moduleResolution": "node",
+    "strict": false,
+    "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": false,
-    "noUnusedLocals": false,
-    "sourceMap": true,
-    "strictNullChecks": false,
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "strictNullChecks": false,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
+    "noUncheckedIndexedAccess": true,
+    "preserveConstEnums": true,
+    "noImplicitThis": false,
+    "strictPropertyInitialization": false,
     "allowJs": false,
-    "strictPropertyInitialization": false
+    "useUnknownInCatchVariables": false,
+    "moduleDetection": "force",
+    "paths": {
+      "~/*": ["./src/*"],
+    }
   },
   "exclude": [
     "node_modules"
@@ -35,5 +35,5 @@
     "api/**/*",
     "typings/**/*",
     "node_modules/@types/**/*"
-  ],
+  ]
 }

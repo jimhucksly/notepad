@@ -1,7 +1,8 @@
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import { IDay, IOptions } from './calendar.model';
-import { defaults, getNativeDate, isDate } from './index';
+import { defaults } from './index';
+import { getNativeDate, isDate } from './utils';
 
 interface IWeek {
   days: Array<IDay>;

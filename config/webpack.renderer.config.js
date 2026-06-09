@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
+const { VuetifyPlugin } = require('webpack-plugin-vuetify')
 const { minimizer } = require('./minimizer.js');
 const { endpoint, port } = require('./endpoint.json')
 
@@ -15,6 +16,9 @@ const isProduction = process.env.NODE_ENV === 'production'
 const isDevelopment = !isProduction
 
 let rendererConfig = {
+  ignoreWarnings: [
+    /export .*was not found/
+  ],
   devtool: 'eval-cheap-module-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/main.ts')
@@ -40,21 +44,53 @@ let rendererConfig = {
       },
       {
         test: /\.ts$/,
-        exclude: /node_modules/,
-        loader: 'ts-loader',
-        options: {
-          appendTsSuffixTo: ['\\.vue$'],
-          transpileOnly: isDevelopment,
-          happyPackMode: isDevelopment,
-          compilerOptions: {
-            noImplicitAny: isDevelopment,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            appendTsSuffixTo: [/\.vue$/],
+            happyPackMode: true,
           }
         }
       },
       {
+        test: /\.sass$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+              sassOptions: {
+                indentedSyntax: true
+              },
+            }
+          }
+        ]
+      },
+      {
         test: /\.scss$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader', 'sass-loader']
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            }
+          },
+          'postcss-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
@@ -96,10 +132,7 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
-    new ESLintPlugin({
-      extensions: ['vue', 'js', 'ts'],
-      formatter: require('eslint-formatter-friendly')
-    }),
+    new ESLintPlugin(),
     new ForkTsCheckerWebpackPlugin({
       typescript: {
         memoryLimit: 4096,
@@ -111,6 +144,9 @@ let rendererConfig = {
           global: false
         }
       },
+    }),
+    new VuetifyPlugin({
+      styles: 'sass',
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -132,15 +168,13 @@ let rendererConfig = {
         }
       ]
     }),
-    new webpack.DefinePlugin(
-      {
-        '__VUE_OPTIONS_API__': true,
-        '__VUE_PROD_DEVTOOLS__': false,
-        "$DEV": isDevelopment,
-        '$ENDPOINT': `"${endpoint}"`,
-        "$PORT": `"${port}"`
-      }
-    ),
+    new webpack.DefinePlugin({
+      '__VUE_OPTIONS_API__': true,
+      '__VUE_PROD_DEVTOOLS__': false,
+      "$DEV": isDevelopment,
+      '$ENDPOINT': `"${endpoint}"`,
+      "$PORT": `"${port}"`
+    }),
   ],
   output: {
     filename: '[name].js',

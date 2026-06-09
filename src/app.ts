@@ -1,5 +1,6 @@
+import { generatePalette } from '@dn-web/core';
+import { IPaletteSchemeUnit } from '@dn-web/core/dist/types/palette';
 import { Options, Vue } from 'vue-class-component';
-import { generatePalette, IColor } from '@dn-web/core';
 
 @Options({
   template: `
@@ -28,7 +29,7 @@ export default class AppComponent extends Vue {
     link.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css';
     document.getElementsByTagName('head')[0].appendChild(link);
 
-    const colorsDefaults: Array<IColor> = [
+    const colorsDefaults: Array<IPaletteSchemeUnit> = [
       {
         name: 'primary',
         lighten: {

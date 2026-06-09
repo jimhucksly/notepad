@@ -1,4 +1,4 @@
-{
+module.exports = {
   "comments": false,
   "env": {
     "test": {

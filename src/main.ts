@@ -1,39 +1,36 @@
 import 'reflect-metadata';
 import '~/assets/scss/main.scss';
 import '~/assets/css/md-editor.css';
-
 import { createApp, defineComponent } from 'vue';
-
-import router from './router';
-import { buildStore } from './store';
-import { buildContainer } from './domain/container';
-import root from './app';
-
+import { ModuleTree, Store } from 'vuex';
 import Titlebar from '~/components/titlebar';
-import Popup from '~/components/popup';
-import Toasted from '~/components/toasted';
-import BCheckbox from '~/components/bcheckbox';
-import BBtn from '~/components/bbtn';
-import BTabs, { BTab } from '~/components/btabs';
-import SvgIcon from '~/components/svgIcon';
-import Loader from '~/components/loader';
-import AboutPopup from '~/components/popup/about';
-import CodeInput from '~/components/codeInput';
-import BSplitter from '~/components/bsplitter';
-
+// import Popup from '~/components/popup';
+// import Toasted from '~/components/toasted';
+// import BCheckbox from '~/components/bcheckbox';
+// import BBtn from '~/components/bbtn';
+// import BTabs, { BTab } from '~/components/btabs';
+// import SvgIcon from '~/components/svgIcon';
+// import Loader from '~/components/loader';
+// import AboutPopup from '~/components/popup/about';
+// import CodeInput from '~/components/codeInput';
+// import BSplitter from '~/components/bsplitter';
 import AnimePlugin from '~/plugins/anime';
-import ToastedPlugin from '~/plugins/toasted';
+// import ToastedPlugin from '~/plugins/toasted';
 import AppPlugin from '~/plugins/app';
 import ElectronPlugin from '~/plugins/electron';
 import SocketPlugin from '~/plugins/socket';
 import Validate from '~/plugins/validate';
+import root from './app';
+import Application from './application/app';
+import { buildContainer } from './domain/container';
 import { IManifest, IModuleMaifest } from './domain/interfaces';
-import { ModuleTree, Store } from 'vuex';
 import { IRootState } from './domain/models';
 import { bindings } from './domain/types';
-import Application from './application/app';
 import { createInterceptors } from './http';
 import { registerModule } from './registerModule';
+import router from './router';
+import { buildStore } from './store';
+import vuetify from './vuetify.setup';
 
 async function init() {
   try {
@@ -52,7 +49,8 @@ async function init() {
 
     for (const _module of manifest.main) {
       const path = _module.path + '/';
-      /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+
+      /* eslint-disable-next-line @typescript-eslint/no-require-imports */
       const _manifest: IModuleMaifest = require('~/__modules__/' + path + 'manifest.json');
       if (_manifest) {
         const data = registerModule(_module, _manifest, app);
@@ -70,26 +68,26 @@ async function init() {
     container.bind<Store<IRootState>>(bindings.Store).toConstantValue(store);
 
     app.component('Titlebar', Titlebar);
-    app.component('Popup', Popup);
-    app.component('Toasted', Toasted);
-    app.component('SvgIcon', SvgIcon);
-    app.component('Loader', Loader);
-    app.component('BCheckbox', BCheckbox);
-    app.component('BBtn', BBtn);
-    app.component('BTabs', BTabs);
-    app.component('BTab', BTab);
-    app.component('AboutPopup', AboutPopup);
-    app.component('CodeInput', CodeInput);
-    app.component('BSplitter', BSplitter);
+    // app.component('Popup', Popup);
+    // app.component('Toasted', Toasted);
+    // app.component('SvgIcon', SvgIcon);
+    // app.component('Loader', Loader);
+    // app.component('BCheckbox', BCheckbox);
+    // app.component('BBtn', BBtn);
+    // app.component('BTabs', BTabs);
+    // app.component('BTab', BTab);
+    // app.component('AboutPopup', AboutPopup);
+    // app.component('CodeInput', CodeInput);
+    // app.component('BSplitter', BSplitter);
 
     const $app: Application = container.get(bindings.Application);
 
     app.use(store);
     app.use(router);
+    app.use(vuetify);
     app.use(AppPlugin, { app: $app });
     app.use(ElectronPlugin);
     app.use(AnimePlugin);
-    app.use(ToastedPlugin);
     app.use(SocketPlugin, { store });
     app.use(Validate);
 
@@ -128,8 +126,8 @@ async function init() {
       `,
     });
     const app = createApp(error);
-    app.component('SvgIcon', SvgIcon);
-    app.component('Loader', Loader);
+    // app.component('SvgIcon', SvgIcon);
+    // app.component('Loader', Loader);
     app.mount('#app');
   }
 }
