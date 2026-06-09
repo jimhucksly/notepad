@@ -1,6 +1,6 @@
+import { isDefined, isJSON } from '@dn-web/core';
 import fs from 'fs';
 import path from 'path';
-import { isDefined, isJSON } from '@dn-web/core';
 
 export default class Storage {
   static isPathExists(_path: string): Promise<boolean> {

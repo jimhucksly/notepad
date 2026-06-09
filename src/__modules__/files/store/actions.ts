@@ -1,10 +1,10 @@
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Queryable, Plugins, Types } from '~/core';
+import { Commandable, Plugins, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteFileCommand, UploadFileCommand } from '../commands/commands';
-import { bindings } from './bindings';
 import { IFile, IFilesState } from '../models';
+import { bindings } from './bindings';
 
 type TStore = ActionContext<IFilesState, Types.IRootState>;
 

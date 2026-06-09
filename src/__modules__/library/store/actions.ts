@@ -1,11 +1,11 @@
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Queryable, Types, Plugins } from '~/core';
+import { Commandable, Plugins, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
-import { bindings } from './bindings';
-import { LibraryFileQuery } from '../queries/queries';
 import { AddLibraryFileCommand, DeleteLibraryFileCommand, UpdateLibraryCommand } from '../commands/commands';
 import { ILibraryFile, ILibraryState } from '../models';
+import { LibraryFileQuery } from '../queries/queries';
+import { bindings } from './bindings';
 
 type TStore = ActionContext<ILibraryState, Types.IRootState>;
 

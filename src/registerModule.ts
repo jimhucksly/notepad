@@ -1,7 +1,7 @@
 import { App, defineComponent } from 'vue';
+import { ModuleTree } from 'vuex';
 import { IModule, IModuleMaifest } from './domain/interfaces';
 import { IRootState } from './domain/models';
-import { ModuleTree } from 'vuex';
 
 function registerModule(
   _module: IModule,
@@ -19,7 +19,7 @@ function registerModule(
       switch (key) {
         case 'main':
           if (typeof _manifest.components['main'] === 'string') {
-            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            /* eslint-disable-next-line @typescript-eslint/no-require-imports */
             const m = require('~/__modules__/' + modulePath + _manifest.components['main']);
             app.component(moduleName, defineComponent(m.default));
           }
@@ -27,7 +27,7 @@ function registerModule(
         case 'aside':
           const name = moduleName + '-Sidebar';
           if (typeof _manifest.components['aside'] === 'string' && _manifest.components['aside']) {
-            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            /* eslint-disable-next-line @typescript-eslint/no-require-imports */
             const m = require('~/__modules__/' + modulePath + _manifest.components['aside']);
             app.component(name, defineComponent(m.default));
           } else {
@@ -41,7 +41,7 @@ function registerModule(
           break;
         case 'modals':
           for (const item of _manifest.components['modals'] || []) {
-            /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+            /* eslint-disable-next-line @typescript-eslint/no-require-imports */
             const m = require('~/__modules__/' + modulePath + 'modals/' + item);
             app.component(moduleName + '-Modal-' + item, defineComponent(m.default));
           }
@@ -51,7 +51,7 @@ function registerModule(
   }
   if (_manifest && _manifest.store) {
     storeModule = {
-      /* eslint-disable-next-line @typescript-eslint/no-var-requires */
+      /* eslint-disable-next-line @typescript-eslint/no-require-imports */
       [moduleName]: require('~/__modules__/' + modulePath + _manifest.store).default,
     };
   }

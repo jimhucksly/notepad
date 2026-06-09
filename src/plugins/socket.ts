@@ -1,8 +1,8 @@
-import { App } from 'vue';
 import { io, Socket } from 'socket.io-client';
-import { ClientToServerEvents, ServerToClientEvents } from '~/domain/models/socket.io';
-import { IRootState } from '~/domain/models';
+import { App } from 'vue';
 import { Store } from 'vuex';
+import { IRootState } from '~/domain/models';
+import { ClientToServerEvents, ServerToClientEvents } from '~/domain/models/socket.io';
 
 export default {
   install: (vue: App, { store }: { store: Store<IRootState> }) => {

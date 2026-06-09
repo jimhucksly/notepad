@@ -1,12 +1,14 @@
-/* eslint-disable no-useless-escape, @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import { ActionTree } from 'vuex';
 
-const REGEXP_URL = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-export const REGEXP_LOGIN = /^[a-zA-Z\d\_]{1,}$/g;
+const REGEXP_URL = /(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:\d+)?(\/|\/([\w#:.?+=&%@!\-\/]))?/;
+export const REGEXP_LOGIN = /^[a-zA-Z\d\_]+$/g;
 export const REGEXP_EMAIL = /.+@.+\..+/i;
-export const REGEXP_PASS = /^[a-zA-Z\d\_\*\?\!\.\,\(\)\=\+\\)]{1,}$/g;
-export const REGEXP_NAME = /^[a-zA-Zа-яА-ЯёЁ\D \-]{1,}$/g;
+/* eslint-disable-next-line sonarjs/duplicates-in-character-class */
+export const REGEXP_PASS = /^[a-zA-Z\d\_\*\?\!\.\,\(\)\=\+\\)]+$/g;
+/* eslint-disable-next-line sonarjs/duplicates-in-character-class */
+export const REGEXP_NAME = /^[a-zA-Zа-яА-ЯёЁ\D \-]+$/g;
 
 export const htmlToText = (html: string): string => {
   if (!html) {
@@ -183,7 +185,7 @@ export const uploadDownloadFile = (received: number, total: number) => {
  */
 export const translit = (val: string) => {
   const space = '_';
-  /* eslint-disable object-property-newline */
+
   const transl = {
     а: 'a',
     б: 'b',
@@ -253,7 +255,7 @@ export const translit = (val: string) => {
     '>': space,
     '№': space,
   };
-  /* eslint-enable object-property-newline */
+
   let result = '';
   let curentSim = '';
   const text = val.toLowerCase();

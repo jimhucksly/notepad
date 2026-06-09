@@ -3,8 +3,8 @@ import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { Queries, Types } from '~/core';
-import { IArchive, IFilters, IProject, IProjects } from '../models';
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands';
+import { IArchive, IFilters, IProject, IProjects } from '../models';
 import { ArchivesQuery } from '../queries/queries';
 
 export default class ProjectsEditor extends Vue {

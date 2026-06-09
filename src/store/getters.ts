@@ -1,5 +1,5 @@
-import { IRootState } from '~/domain/models';
 import { strings } from '@dn-web/core';
+import { IRootState } from '~/domain/models';
 import { stateKeys } from './state';
 
 interface IGetters {

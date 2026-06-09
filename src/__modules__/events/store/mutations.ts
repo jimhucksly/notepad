@@ -1,7 +1,7 @@
-import { MutationTree } from 'vuex';
 import { strings } from '@dn-web/core';
+import { MutationTree } from 'vuex';
+import { IEvents, IEventsState } from '../models';
 import { stateKeys } from './state';
-import { IEventsState, IEvents } from '../models';
 
 const _mutations: MutationTree<IEventsState> = {
   setEvents(state: IEventsState, events: IEvents) {

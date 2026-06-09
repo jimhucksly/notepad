@@ -33,11 +33,11 @@ export default class CodeInput extends Vue {
 
   onInput(e: KeyboardEvent, index: number) {
     const value = (e.target as HTMLInputElement).value.trim();
-    if (/[\D]/.test(value)) {
-      this.values[index] = value.replace(/[\D]/g, '');
+    if (/\D/.test(value)) {
+      this.values[index] = value.replace(/\D/g, '');
       return false;
     }
-    if (index === 1 && value.length > 1 && /^[\d]{1,}$/.test(value)) {
+    if (index === 1 && value.length > 1 && /^\d+$/.test(value)) {
       this.values[index] = value.slice(0, 1);
       for (let i = 2; i <= value.length; i++) {
         this.setFocus(index + i - 1, value.slice(i - 1, i));
@@ -51,7 +51,6 @@ export default class CodeInput extends Vue {
       this.values[index] = value.slice(0, 1);
       this.setFocus(index + 1, value.slice(1));
     }
-    return false;
   }
 
   onKeydown(e: KeyboardEvent, index: number) {

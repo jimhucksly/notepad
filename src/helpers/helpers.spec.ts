@@ -1,5 +1,5 @@
-import { htmlToText, checkLinks, now, translit, indexOf } from './index';
 import { isJSON } from '@dn-web/core';
+import { checkLinks, htmlToText, indexOf, now, translit } from './index';
 
 const html = 'My site <br><a href=\\"http:\\/\\/dn-web.ru\\" target=\\"_blank\\">http:\\/\\/dn-web.ru<\\/a>';
 const text = 'My site \nhttp://dn-web.ru';

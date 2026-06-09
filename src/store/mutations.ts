@@ -1,7 +1,7 @@
-import { stateKeys } from './state';
 import { strings } from '@dn-web/core';
-import { IRootState } from '~/domain/models';
 import { FsmStates } from '~/application/app';
+import { IRootState } from '~/domain/models';
+import { stateKeys } from './state';
 
 interface IMutations {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

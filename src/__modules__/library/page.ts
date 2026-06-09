@@ -1,17 +1,17 @@
 import { EditorView } from '@codemirror/view';
+import { delay, uniqueID } from '@dn-web/core';
 import cloneDeep from 'lodash/cloneDeep';
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
-import { MdEditor, StaticTextDefaultValue, config } from 'md-editor-v3';
+import { config, MdEditor, StaticTextDefaultValue } from 'md-editor-v3';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { translit } from '~/helpers';
 import { Plugins } from '~/core';
+import { translit } from '~/helpers';
 import { UpdateLibraryCommand } from './commands/commands';
 import { ILibraryFile, ITreeItem } from './models';
 import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries';
-import { uniqueID, delay } from '@dn-web/core';
 
 @Options({
   components: {
@@ -32,7 +32,9 @@ export default class LibraryPage extends Vue {
   template = '';
   value = '';
 
+  /* eslint-disable-next-line sonarjs/public-static-readonly */
   static nodes: ITreeItem[] = [];
+  /* eslint-disable-next-line sonarjs/public-static-readonly */
   static md: MarkdownIt = null;
 
   linkClickHandler: (name: string) => void;
@@ -93,7 +95,6 @@ export default class LibraryPage extends Vue {
     config({
       editorConfig: {
         languageUserDefined: {
-          /* eslint-disable-next-line @typescript-eslint/naming-convention */
           'ru-RU': this.ru_RU,
         },
       },
@@ -105,11 +106,11 @@ export default class LibraryPage extends Vue {
       if (content) {
         const editor = (content as unknown as { cmView: { view: EditorView } })?.cmView?.view;
         if (editor) {
-          const lines: Array<string> = [];
-          const children = editor.state.doc.children;
-          for (const el of children) {
-            lines.push(...(el as unknown as { text: Array<string> }).text);
-          }
+          // const lines: Array<string> = [];
+          // const children = editor.state.doc.children;
+          // for (const el of children) {
+          //   lines.push(...(el as unknown as { text: Array<string> }).text);
+          // }
         }
       }
     });
@@ -226,7 +227,7 @@ export default class LibraryPage extends Vue {
     ];
   }
 
-  /* eslint-disable-next-line camelcase, @typescript-eslint/naming-convention */
+  /* eslint-disable-next-line @typescript-eslint/naming-convention */
   get ru_RU(): StaticTextDefaultValue {
     return {
       toolbarTips: {

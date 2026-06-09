@@ -1,8 +1,8 @@
-import { Prop, Watch } from 'vue-property-decorator';
-import { Options, Vue } from 'vue-class-component';
-import CalendarInstance from './instance';
-import { IOptions } from './calendar.model';
 import './calendar.scss';
+import { Options, Vue } from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import { IOptions } from './calendar.model';
+import CalendarInstance from './instance';
 import { getNativeDate, isDate } from './utils';
 
 export const defaults: IOptions = {
@@ -191,21 +191,6 @@ export default class BCalendarComponent extends Vue {
     if (date) {
       date.setDate(1);
       this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString();
-    }
-  }
-
-  nextRangeMonth() {
-    const date = getNativeDate(this.date1.toString());
-    if (date) {
-      date.setDate(1);
-      this.op.setDate = new Date(date.setMonth(date.getMonth() + 1)).toString();
-    }
-  }
-
-  prevRangeMonth() {
-    const date = getNativeDate(this.date1.toString());
-    if (date) {
-      this.op.setDate = new Date(date.setMonth(date.getMonth() - 1)).toString();
     }
   }
 

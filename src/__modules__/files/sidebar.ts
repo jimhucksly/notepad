@@ -1,6 +1,6 @@
 import { Vue } from 'vue-class-component';
-import { IFile } from './models';
 import { Plugins } from '~/core';
+import { IFile } from './models';
 
 export default class FilesSidebar extends Vue {
   fileSelected: IFile = null;

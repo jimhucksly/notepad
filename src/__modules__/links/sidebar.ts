@@ -1,9 +1,9 @@
+import { uniqueID } from '@dn-web/core';
 import { Vue } from 'vue-class-component';
 import { Queries, Types } from '~/core';
-import { uniqueID } from '@dn-web/core';
-import { LinksQuery } from './queries/queries';
-import { ILink } from './models';
 import { UpdateLinksCommand } from './commands/commands';
+import { ILink } from './models';
+import { LinksQuery } from './queries/queries';
 
 export default class LinksSidebar extends Vue {
   async addLink() {

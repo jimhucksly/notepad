@@ -1,14 +1,4 @@
-import { IRootState, IResponse, IUser } from '~/domain/models';
-import { bindings } from '~/domain/types';
-import { Queryable } from '~/domain/queries/query.bus';
-import { Commandable } from '~/domain/commands/command.bus';
-import {
-  AuthQuery,
-  RefreshYandexTokenQuery,
-  SessionQuery,
-  YandexDiskResourceLinkQuery,
-  YandexTokenQuery,
-} from '~/domain/queries';
+import { ActionContext, ActionTree } from 'vuex';
 import {
   AuthCommand,
   RegistrationCommand,
@@ -18,10 +8,20 @@ import {
   UpdatePasswordCommand,
   VerifyCommand,
 } from '~/domain/commands';
-import { ActionTree, ActionContext } from 'vuex';
-import { Hub } from '~/plugins/hub';
+import { Commandable } from '~/domain/commands/command.bus';
+import { IResponse, IRootState, IUser } from '~/domain/models';
+import {
+  AuthQuery,
+  RefreshYandexTokenQuery,
+  SessionQuery,
+  YandexDiskResourceLinkQuery,
+  YandexTokenQuery,
+} from '~/domain/queries';
+import { Queryable } from '~/domain/queries/query.bus';
+import { bindings } from '~/domain/types';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
+import { Hub } from '~/plugins/hub';
 
 type TStore = ActionContext<IRootState, IRootState>;
 

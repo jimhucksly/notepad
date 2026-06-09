@@ -1,13 +1,13 @@
-import { Options, Vue } from 'vue-class-component';
 import { debounce } from 'lodash';
-import { Types, Libs, Plugins } from '~/core';
+import { Options, Vue } from 'vue-class-component';
+import { Libs, Plugins, Types } from '~/core';
 
+/* eslint-disable @typescript-eslint/no-require-imports */
 require('brace/mode/javascript');
 require('brace/theme/twilight');
 
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
 const JSONFormatter = require('json-formatter-js');
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
+
 const fs = require('fs');
 
 @Options({

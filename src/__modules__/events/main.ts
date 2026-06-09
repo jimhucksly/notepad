@@ -2,10 +2,10 @@ import { debounce } from 'lodash';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
-import { IEvent, IEvents } from './models';
-import { DeleteEventCommand, UpdateEventCommand } from './commands/commands';
-import { EventsQuery } from './queries/queries';
 import BCalendarComponent, { IBCalendar } from './calendar';
+import { DeleteEventCommand, UpdateEventCommand } from './commands/commands';
+import { IEvent, IEvents } from './models';
+import { EventsQuery } from './queries/queries';
 
 interface IBCalendarOptions {
   eventsMode: boolean;

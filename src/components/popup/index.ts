@@ -1,5 +1,5 @@
-import { Watch } from 'vue-property-decorator';
 import { Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { IPopupComponent, IPopupWindowQuery } from '~/domain/models';
 import { Hub } from '~/plugins/hub';

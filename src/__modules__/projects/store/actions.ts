@@ -1,9 +1,8 @@
+import cloneDeep from 'lodash/cloneDeep';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Queryable, Types, Plugins } from '~/core';
+import { Commandable, Plugins, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
-import { IArchive, IProjects, IProjectsState } from '../models';
-import { bindings } from './bindings';
 import {
   ArchiveRemoveCommand,
   ArchiveRestoreCommand,
@@ -13,7 +12,8 @@ import {
   EditProjectCommand,
   ReadCommand,
 } from '../commands/commands';
-import cloneDeep from 'lodash/cloneDeep';
+import { IArchive, IProjects, IProjectsState } from '../models';
+import { bindings } from './bindings';
 
 type TStore = ActionContext<IProjectsState, Types.IRootState>;
 

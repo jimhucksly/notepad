@@ -2,9 +2,9 @@ import { Vue } from 'vue-class-component';
 import { Emit, Prop } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { now } from '~/helpers';
+import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '../commands/commands';
 import { IArchive, IProjects } from '../models';
 import { ArchivesQuery, ProjectsQuery } from '../queries/queries';
-import { ArchiveRemoveCommand, ArchiveRestoreCommand } from '../commands/commands';
 
 export default class ProjectsArchives extends Vue {
   @Mutation('Projects/setArchives') setArchives: (value: Array<IArchive>) => void;

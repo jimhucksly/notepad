@@ -1,7 +1,5 @@
+import { animate } from 'animejs';
 import { App } from 'vue';
-
-/* eslint-disable-next-line @typescript-eslint/no-var-requires */
-const anime = require('animejs').default;
 
 export default {
   install: (vue: App) => {
@@ -12,12 +10,11 @@ export default {
       el.style.visibility = 'hidden';
       el.style.height = '0px';
       el.style.visibility = 'visible';
-      anime({
-        targets: el,
+      animate(el, {
         height: h,
         easing: 'linear',
         duration,
-        complete() {
+        onComplete() {
           el.attributes.removeNamedItem('style');
         },
       });
@@ -25,12 +22,11 @@ export default {
 
     const slideUp = (el: HTMLElement, duration = 300) => {
       el.style.overflow = 'hidden';
-      anime({
-        targets: el,
+      animate(el, {
         height: 0,
         easing: 'linear',
         duration,
-        complete() {
+        onComplete() {
           el.attributes.removeNamedItem('style');
           el.style.display = 'none';
         },

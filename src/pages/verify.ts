@@ -6,7 +6,7 @@ export default class Verify extends Vue {
   isError = false;
 
   async submit() {
-    if (this.code.length === 6 && /^[\d]{6}$/.test(this.code)) {
+    if (this.code.length === 6 && /^\d{6}$/.test(this.code)) {
       try {
         const res = await this.$app.$commandBus.do<VerifyCommand, { status: 'sucess' | 'error' }>(
           new VerifyCommand(this.code)

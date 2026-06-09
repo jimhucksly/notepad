@@ -1,8 +1,7 @@
 import { mount, VueWrapper } from '@vue/test-utils';
+import { defineComponent } from 'vue';
 import { Options, Vue } from 'vue-property-decorator';
 import { createRouter, createWebHistory } from 'vue-router';
-
-import { defineComponent } from 'vue';
 
 let wrapper: VueWrapper<Vue> = null;
 let component: Vue = null;

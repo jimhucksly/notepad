@@ -1,8 +1,8 @@
-import { Types } from '~/core';
-import { stateKeys } from './state';
 import { strings } from '@dn-web/core';
 import { GetterTree } from 'vuex';
+import { Types } from '~/core';
 import { IProjectsState } from '../models';
+import { stateKeys } from './state';
 
 const getters: GetterTree<IProjectsState, Types.IRootState> = {};
 

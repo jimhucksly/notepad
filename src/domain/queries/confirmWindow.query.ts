@@ -1,8 +1,8 @@
-import { IQueryHandler } from '../interfaces';
 import { injectable } from 'inversify';
 import { FsmStates } from '~/application/app';
-import { IPopupWindowQuery } from '../models';
 import { Hub } from '~/plugins/hub';
+import { IQueryHandler } from '../interfaces';
+import { IPopupWindowQuery } from '../models';
 
 export class ConfirmWindowQuery implements IPopupWindowQuery<boolean> {
   component: string = null;

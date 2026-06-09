@@ -1,6 +1,6 @@
 import { App, ComponentPublicInstance } from 'vue';
 import { IValidate } from '~/domain/models';
-import { REGEXP_LOGIN, REGEXP_EMAIL, REGEXP_PASS, REGEXP_NAME } from '~/helpers';
+import { REGEXP_EMAIL, REGEXP_LOGIN, REGEXP_NAME, REGEXP_PASS } from '~/helpers';
 
 export default {
   install: (vue: App) => {

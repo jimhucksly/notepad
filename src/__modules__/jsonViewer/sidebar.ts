@@ -1,6 +1,6 @@
+import Electron from 'electron';
 import { Vue } from 'vue-class-component';
 import { Plugins } from '~/core';
-import Electron from 'electron';
 
 export default class JsonViewerBtns extends Vue {
   open() {

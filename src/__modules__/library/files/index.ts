@@ -2,8 +2,8 @@ import { Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { Queries, Types } from '~/core';
-import { ILibraryFile } from '../models';
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '../commands/commands';
+import { ILibraryFile } from '../models';
 import { LibraryFilesQuery } from '../queries/queries';
 
 export default class LibraryFiles extends Vue {

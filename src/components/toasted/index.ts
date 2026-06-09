@@ -1,6 +1,6 @@
+import { uniqueID } from '@dn-web/core';
 import { Vue } from 'vue-class-component';
 import { Hub } from '~/plugins/hub';
-import { uniqueID } from '@dn-web/core';
 
 enum ToastType {
   Success = 1,

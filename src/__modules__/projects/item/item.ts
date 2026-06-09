@@ -2,8 +2,8 @@ import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { Queries, Types } from '~/core';
-import { IFilters, IProject, IProjects } from '../models';
 import { EditProjectCommand } from '../commands/commands';
+import { IFilters, IProject, IProjects } from '../models';
 
 export default class NotepadItem extends Vue {
   @Prop() item: IProject;

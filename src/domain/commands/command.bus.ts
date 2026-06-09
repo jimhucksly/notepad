@@ -1,8 +1,8 @@
 import { Container, inject, injectable } from 'inversify';
-import { ICommandBus, ICommandHandler } from '~/domain/interfaces';
-import { bindings } from '~/domain/types';
 import { Store } from 'vuex';
+import { ICommandBus, ICommandHandler } from '~/domain/interfaces';
 import { IRootState } from '~/domain/models';
+import { bindings } from '~/domain/types';
 
 @injectable()
 class CommandBus implements ICommandBus {

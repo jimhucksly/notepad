@@ -2,10 +2,10 @@ import { cloneDeep, isEqual } from 'lodash';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
-import { indexOf, now } from '~/helpers';
 import { Plugins } from '~/core';
-import { ITodo, ITodoItem, ITodoOrder } from './models';
+import { indexOf, now } from '~/helpers';
 import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from './commands/commands';
+import { ITodo, ITodoItem, ITodoOrder } from './models';
 import { TodoQuery } from './queries/queries';
 
 const sortByOrder = (a: ITodoItem, b: ITodoItem) => (a.order < b.order ? -1 : 1);
@@ -244,7 +244,7 @@ export default class Todo extends Vue {
     ) {
       return;
     }
-    this.items = [...this.items.sort(sortByOrder)];
+    this.items = [...this.items.toSorted(sortByOrder)];
     this.setOrder();
     this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result));
   }
@@ -317,7 +317,7 @@ export default class Todo extends Vue {
   }
 
   getText(text: string) {
-    const split = text.split('\n').map(s => `<p>${s.replace(/[  ]+/g, ' ').trim()}</p>`);
+    const split = text.split('\n').map(s => `<p>${s.replace(/\s/g, ' ').trim()}</p>`);
     return split.join('');
   }
 

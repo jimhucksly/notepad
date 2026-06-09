@@ -1,10 +1,10 @@
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Queryable, Types, Plugins } from '~/core';
+import { Commandable, Plugins, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
-import { bindings } from './bindings';
-import { ILink, ILinksState } from '../models';
 import { DeleteLinkCommand, UpdateLinksCommand } from '../commands/commands';
+import { ILink, ILinksState } from '../models';
+import { bindings } from './bindings';
 
 type TStore = ActionContext<ILinksState, Types.IRootState>;
 

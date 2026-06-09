@@ -1,9 +1,9 @@
 import { Vue } from 'vue-class-component';
 import { Getter } from 'vuex-class';
 import { Queries, Types } from '~/core';
-import { LinksQuery } from './queries/queries';
-import { ILink } from './models';
 import { DeleteLinkCommand, UpdateLinksCommand } from './commands/commands';
+import { ILink } from './models';
+import { LinksQuery } from './queries/queries';
 
 export default class LinksPage extends Vue {
   @Getter('Links/getLinks') links: Array<ILink>;

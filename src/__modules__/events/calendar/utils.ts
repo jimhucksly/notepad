@@ -12,8 +12,7 @@ export function getNativeDate(d: string): Date | null {
     return new Date(d.replace(/^(\d+)\.(\d+)\.(\d+)$/, '$2/$1/$3'));
   }
   try {
-    const date = new Date(d);
-    return date;
+    return new Date(d);
   } catch (e) {
     /* eslint-disable no-console */
     console.error(e);

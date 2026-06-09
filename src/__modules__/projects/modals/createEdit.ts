@@ -1,5 +1,5 @@
-import { Prop, Vue } from 'vue-property-decorator';
 import { EditorView } from '@codemirror/view';
+import { Prop, Vue } from 'vue-property-decorator';
 import { checkLinks, htmlToText } from '~/helpers';
 import { IProject } from '../models';
 

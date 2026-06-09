@@ -1,12 +1,12 @@
 import { Options, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
-import File from './file';
 import { Queries } from '~/core';
 import { dragAndDropLoader } from '~/helpers';
 import { Hub } from '~/plugins/hub';
+import { DeleteFileCommand, UploadFileCommand } from './commands/commands';
+import File from './file';
 import { IFile } from './models';
 import { FilesQuery } from './queries/queries';
-import { DeleteFileCommand, UploadFileCommand } from './commands/commands';
 
 @Options({
   components: {

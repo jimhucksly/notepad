@@ -20,7 +20,7 @@ interface IStates {
   [key: string]: symbol;
 }
 
-/*  eslint-disable-next-line @typescript-eslint/no-var-requires */
+/* eslint-disable-next-line @typescript-eslint/no-require-imports */
 const StateMachine = require('javascript-state-machine');
 
 let _fsm: typeof StateMachine = null;

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosProgressEvent } from 'axios';
+import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { Store } from 'vuex';
 import { IResponse, IRootState } from '~/domain/models';
 import { uploadDownloadFile } from '~/helpers';

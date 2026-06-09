@@ -1,10 +1,10 @@
 import { Options, Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { FsmStates } from '~/application/app';
-import Tree from './tree';
 import Files from './files';
-import { Watch } from 'vue-property-decorator';
 import { ITreeItem } from './models';
+import Tree from './tree';
 
 @Options({
   components: {

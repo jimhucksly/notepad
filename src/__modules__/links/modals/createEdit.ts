@@ -1,5 +1,5 @@
-import { Prop } from 'vue-property-decorator';
 import { Vue } from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
 import { Types } from '~/core';
 import { ILink } from '../models';
 

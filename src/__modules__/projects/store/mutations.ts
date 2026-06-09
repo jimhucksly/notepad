@@ -1,7 +1,7 @@
-import { MutationTree } from 'vuex';
 import { strings } from '@dn-web/core';
+import { MutationTree } from 'vuex';
+import { IFilters, IProjects, IProjectsState } from '../models';
 import { stateKeys } from './state';
-import { IProjectsState, IFilters, IProjects } from '../models';
 
 const _mutations: MutationTree<IProjectsState> = {
   setJson(state: IProjectsState, payload: IProjects) {

@@ -1,7 +1,7 @@
-import { MutationTree } from 'vuex';
 import { strings } from '@dn-web/core';
-import { stateKeys } from './state';
+import { MutationTree } from 'vuex';
 import { IFilesState } from '../models';
+import { stateKeys } from './state';
 
 const _mutations: MutationTree<IFilesState> = {};
 

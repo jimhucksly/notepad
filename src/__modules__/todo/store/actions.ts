@@ -1,10 +1,10 @@
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Queryable, Types, Plugins } from '~/core';
+import { Commandable, Plugins, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
+import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '../commands/commands';
 import { ITodo, ITodoState } from '../models';
 import { bindings } from './bindings';
-import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '../commands/commands';
 
 type TStore = ActionContext<ITodoState, Types.IRootState>;
 
@@ -19,7 +19,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
   static readonly namespace = 'Todo';
 
   /**
-   * Get Todo
+   * Get
    * @param store Store
    */
   @Queryable(bindings.TodoQuery, Actions.namespace)
@@ -38,7 +38,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
   }
 
   /**
-   * Update Todo
+   * Update
    * @param store Store
    * @param {UpdateTodoCommand} command
    */
@@ -57,7 +57,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
   }
 
   /**
-   * Remove Todo
+   * Remove
    * @param store Store
    * @param {DeleteTodoCommand} command
    */
@@ -76,7 +76,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
   }
 
   /**
-   * Todo Order
+   * Order
    * @param store Store
    * @param {TodoOrderCommand} command
    */
