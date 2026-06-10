@@ -6,13 +6,8 @@
 @use './titlebar';
 @use './aside';
 @use './popup';
-@use './toasted';
 @use './loader';
-@use './bcheckbox';
-@use './bbtn';
-@use './btabs';
 @use './editor';
-@use './splitter';
 
 html {
   font-family: var(--font-regular);
@@ -127,14 +122,14 @@ main {
     &:hover {
       &:before,
       &:after {
-        background-color:var(--editor_red);
+        background-color:var(--error);
       }
     }
   }
 
   &:not(.remove-button) {
     &:hover {
-      background-color: var(--red_light);
+      background-color:var(--error);
 
       &:before,
       &:after {

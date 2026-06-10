@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import '~/assets/scss/main.scss';
 import '~/assets/css/md-editor.css';
+import ui from '@dn-web/ui';
 import { createApp, defineComponent } from 'vue';
 import { ModuleTree, Store } from 'vuex';
 import Titlebar from '~/components/titlebar';
@@ -85,6 +86,7 @@ async function init() {
     app.use(store);
     app.use(router);
     app.use(vuetify);
+    app.use(ui);
     app.use(AppPlugin, { app: $app });
     app.use(ElectronPlugin);
     app.use(AnimePlugin);
