@@ -1,1 +1,1 @@
-declare module 'express-fileupload'
+declare module 'express-fileupload';

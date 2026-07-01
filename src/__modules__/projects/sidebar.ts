@@ -68,12 +68,16 @@ export default class Projects extends Vue {
     }
   }
 
-  toggleCheck(e: InputEvent) {
-    const target = e.target as HTMLInputElement;
-    this.isPropertiesExpanded = target.checked;
+  toggleCheck(e: InputEvent, key: string) {
+    const flag = (e.target as HTMLInputElement).checked;
+    this.isPropertiesExpanded = flag;
     this.isArchivesExpaned = false;
-    this.selected = target.checked ? (target.dataset?.stamp ?? '') : '';
-    this.setSelectedProject(this.selected);
+    if (flag) {
+      this.selected = key;
+      this.setSelectedProject(this.selected);
+    } else {
+      this.selected = null;
+    }
   }
 
   toggleArchives() {

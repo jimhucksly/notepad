@@ -28,7 +28,7 @@
   width: 100%;
   height: 100%;
   padding-left: 15px;
-  background-color: var(--dark_darken-2);
+  background-color: var(--grey-d-5);
   z-index: 8;
   transition: 0.3s;
 

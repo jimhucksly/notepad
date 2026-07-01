@@ -6,3 +6,4 @@ declare module '*.vue' {
 
 declare module '*.scss';
 declare module '*.css';
+declare module '@dn-web/ui/dist/scss';

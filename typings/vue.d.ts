@@ -1,7 +1,7 @@
 import { Vue } from 'vue-property-decorator';
 import * as Vuex from 'vuex';
-import { IRootState } from '../src/domain/models';
 import Application from '../src/application/app';
+import { IRootState } from '../src/domain/models';
 
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {

@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import '~/assets/scss/main.scss';
+import '@dn-web/ui/dist/scss/index.scss';
+import '~/scss/main.scss';
 import '~/assets/css/md-editor.css';
 import ui from '@dn-web/ui';
 import { createApp, defineComponent } from 'vue';
@@ -86,7 +87,11 @@ async function init() {
     app.use(store);
     app.use(router);
     app.use(vuetify);
-    app.use(ui);
+    app.use(ui, {
+      BIcon: {
+        path: 'assets/images/icons',
+      },
+    });
     app.use(AppPlugin, { app: $app });
     app.use(ElectronPlugin);
     app.use(AnimePlugin);
