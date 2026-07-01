@@ -1,7 +1,6 @@
 @use "sass:color";
 
 // fonts
-$regular: 'Roboto-Regular';
 $thin: 'Roboto-Thin';
 $gotham: 'gothampro';
 $monaco: 'Monaco';
@@ -53,11 +52,9 @@ $black: #0b0b0b;
 // $editor_red_light: color.adjust($editor_red, $lightness: 3%);
 
 :root {
-  --font-regular: #{$regular};
-  --font-thin: #{$thin};
+  --thin: #{$thin};
   --font-gotham: #{$gotham};
   --font-menlo: #{$menlo};
-  --input-height: #{$input-height};
   --white: #{$white};
   --black: #{$black};
   // --black_light: #{$black_light};

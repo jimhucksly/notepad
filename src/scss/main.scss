@@ -10,7 +10,8 @@
 @use './editor';
 
 html {
-  font-family: var(--font-regular);
+  font-family: var(--regular);
+  overflow: hidden;
 }
 
 #app, #content {
@@ -93,7 +94,7 @@ main {
 .close-button {
   -webkit-app-region: no-drag;
   position: relative;
-  background-color: var(--black);
+  background-color: var(--grey-d-6);
   width: 45px;
   height: 100%;
   cursor: default;

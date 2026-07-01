@@ -5,8 +5,7 @@ aside {
   flex-grow: 0;
   flex-basis: 280px;
   color: var(--white);
-  background-color: var(--shade);
-  border-right: 1px solid var(--primary-l-4);
+  background-color: var(--grey-d-5);
 
   .switcher {
     position: relative;
@@ -14,8 +13,8 @@ aside {
     flex-shrink: 0;
     flex-basis: 54px;
     cursor: pointer;
-    background-color: var(--grey-d-6);
-    border-bottom: 1px solid var(--grey-d-5);
+    background-color: var(--grey-d-5);
+    border-bottom: 1px solid var(--primary-l-4);
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
