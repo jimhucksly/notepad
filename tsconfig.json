@@ -27,6 +27,11 @@
       "~/*": ["./src/*"],
     }
   },
+  "ts-node": {
+    "compilerOptions": {
+      "moduleResolution": "nodenext"
+    }
+  },
   "exclude": [
     "node_modules"
   ],

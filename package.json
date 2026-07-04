@@ -7,7 +7,7 @@
   "main": "./dist/main.js",
   "scripts": {
     "dev": "node config/runner.js",
-    "serve": "ts-node-dev api/server.ts",
+    "serve": "node api/server.js",
     "build": "node config/build.js && electron-builder -w && npm run zip",
     "module": "node config/create-module.js",
     "test": "jest --runInBand --no-cache --collect-coverage",
@@ -189,7 +189,7 @@
     "webpack-plugin-vuetify": "3.1.2"
   },
   "volta": {
-    "node": "22.15.0",
+    "node": "22.18.0",
     "yarn": "4.5.3",
     "npm": "11.4.2"
   }

@@ -10,6 +10,8 @@ import { createTransporter } from './mail';
 import { createYandexDiskApi } from './yandex';
 import { IApp } from './model';
 
+type FileUpload = (options: Record<string, boolean>) => NextFunction;
+
 async function startApp() {
   try {
     const app = express();
@@ -22,7 +24,7 @@ async function startApp() {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(fileUpload({ createParentPath: true }));
+    app.use((fileUpload as unknown as FileUpload)({ createParentPath: true }));
 
     app.use((req: Request, res: Response, next: NextFunction) => {
       res.header('Access-Control-Allow-Origin', '*');
