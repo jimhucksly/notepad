@@ -7,7 +7,7 @@
   "main": "./dist/main.js",
   "scripts": {
     "dev": "node config/runner.js",
-    "serve": "node api/server.js",
+    "serve": "ts-node api/server.ts",
     "build": "node config/build.js && electron-builder -w && npm run zip",
     "module": "node config/create-module.js",
     "test": "jest --runInBand --no-cache --collect-coverage",
