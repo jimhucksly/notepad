@@ -88,11 +88,9 @@ export default class Projects extends Vue {
   }
 
   onPropertiesHide() {
-    const inputs = (this.$refs.projects as HTMLElement).querySelectorAll('input');
-    for (const el of inputs) {
-      if (el.dataset.stamp === this.selected) {
-        el.click();
-      }
+    const input: HTMLInputElement = (this.$refs.projects as HTMLElement).querySelector('input[checked]');
+    if (input) {
+      input.click();
     }
   }
 

@@ -1,0 +1,46 @@
+.notepad_cont {
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 6px;
+  background-color: var(--primary-l-4);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.notepad_textarea {
+  display: flex;
+  position: relative;
+  flex-basis: 40%;
+  flex-grow: 0;
+  padding: 6px;
+  background-color: var(--primary-l-4);
+
+  &-wrapper {
+    flex-basis: 100%;
+    flex-grow: 1;
+  }
+
+  .notepad_btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    flex-grow: 2;
+    flex-shrink: 0;
+  }
+
+  .notepad_attachments {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 50%;
+    opacity: 0.3;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

@@ -21,41 +21,6 @@
     overflow-x: hidden;
     overflow-y: auto;
     padding-right: 15px;
-
-    a {
-      display: flex;
-      text-decoration: none;
-      color: #fff;
-      font-size: 13px;
-
-      &.--remove {
-        color: var(--editor_red);
-
-        span {
-          border-color: var(--editor_red);
-        }
-      }
-
-      span {
-        display: block;
-        border-bottom: 1px dashed #fff;
-      }
-    }
-
-    .icon {
-      display: block;
-      width: 15px;
-      height: 15px;
-      margin-right: 6px;
-    }
-  }
-
-  .form-group {
-    .form-group-inner {
-      label {
-        color: #fff;
-      }
-    }
   }
 
   form {
@@ -72,6 +37,7 @@
     flex-basis: 54px;
     flex-shrink: 0;
     padding-right: 15px;
+    gap: 4px;
   }
 }
 .projects_editor_title {
@@ -79,4 +45,10 @@
   align-items: center;
   flex-basis: 54px;
   flex-shrink: 0;
+}
+
+:deep() {
+  .b-label-content {
+    color: var(--white) !important;
+  }
 }

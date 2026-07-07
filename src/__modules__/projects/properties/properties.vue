@@ -9,38 +9,28 @@
     <div class="projects_editor_inner">
       <div class="form-group">
         <div class="form-group-inner">
-          <label class="-m-t-10">Name</label>
-          <div>
-            <b-edit-text v-model="name" @enter="save" />
-          </div>
+          <b-edit-text v-model="name" label="Name" label-on-top @enter="save" />
         </div>
       </div>
       <div class="form-group">
-        <div class="form-group-inner flex-between items-center">
-          <label class="m-b-5">Protected</label>
-          <b-checkbox v-model="isLock" @change="toggleLock" />
-        </div>
+        <b-switch v-model="isLock" @change="toggleLock" label="Protected" reverse></b-switch>
       </div>
       <div class="form-group">
-        <a href="" @click.prevent="archive">
-          <i class="icon">
-            <svg-icon icon="archiveIcon" />
-          </i>
+        <b-button text variant="flat" color="white" @click.prevent="archive">
+          <b-icon>archive-outline</b-icon>
           <span>Archive</span>
-        </a>
+        </b-button>
       </div>
       <div class="form-group">
-        <a href="" class="--remove" @click.prevent="remove">
-          <i class="icon">
-            <svg-icon icon="removeIconSm" />
-          </i>
+        <b-button text variant="flat" color="white" @click.prevent="remove">
+          <b-icon>delete-outline</b-icon>
           <span>Remove</span>
-        </a>
+        </b-button>
       </div>
     </div>
     <div class="projects_editor_footer">
-      <button class="btn btn-transparency m-r-15" @click="emitHide">Cancel</button>
-      <b-btn primary label="Save" :processing="savingProcess" @click="save" />
+      <b-button :loading="savingProcess" @click="save">Save</b-button>
+      <b-button variant="tonal" @click="emitHide">Cancel</b-button>
     </div>
   </div>
 </template>

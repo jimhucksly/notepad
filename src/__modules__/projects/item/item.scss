@@ -1,0 +1,64 @@
+.notepad_item {
+  position: relative;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 15px;
+  background-color: var(--white);
+  margin-bottom: 7px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+
+  &.unread {
+    background-color: var(--blue_light-2);
+  }
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    .notepad_item_btns {
+      display: flex;
+    }
+  }
+}
+
+.notepad_item_date {
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+
+.notepad_item_content {
+  font-family: var(--font-menlo);
+  font-size: 11px;
+  color: var(--primary-d-5);
+  word-wrap: break-word;
+  line-height: 19px;
+}
+
+.notepad_item_btns {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 10px;
+
+  button {
+    display: block;
+    width: 45px;
+    height: 30px;
+    border: none;
+    background: var(--blue-gray_light);
+    opacity: 0.3;
+    border: 1px solid var(--blue-gray);
+
+    svg {
+      max-width: 65%;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

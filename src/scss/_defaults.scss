@@ -1,0 +1,20 @@
+body {
+  .b-textarea {
+    height: 100%;
+    border-radius: 4px;
+
+    & > .v-row {
+      height: 100%;
+
+      & > .v-col {
+        & > div {
+          height: 100%;
+
+          .v-input {
+            height: 100%;
+          }
+        }
+      }
+    }
+  }
+}
