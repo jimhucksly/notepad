@@ -21,7 +21,7 @@
       <loader small :full="false" /> <span class="p-l-5">{{ process.name }}</span>
     </div>
     <div v-if="isAuth && yandexDiskAccessToken" class="menu-button-container button--logout" @click="toAccount">
-      <svg-icon icon="user" width="29" height="29" />
+      <b-icon path="assets/images" width="29" height="29">user</b-icon>
     </div>
     <div class="window-controls-container">
       <button class="minimize-button" @click="$electron.ipcRenderer.send('minimize')"></button>

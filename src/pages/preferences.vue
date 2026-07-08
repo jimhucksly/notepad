@@ -30,20 +30,37 @@
       </div> -->
       <div class="form-group">
         <div class="form-group-inner flex-between items-center">
-          <label class="m-b-5">Run App when Windows startup</label>
-          <b-checkbox v-model="isAutoLaunchEnabled" />
+          <b-switch label="Run App when Windows startup" v-model="isAutoLaunchEnabled"></b-switch>
         </div>
       </div>
       <div v-if="isYandexApiTokenExist" class="form-group">
         <div class="form-group-inner flex-between items-center">
-          <label class="m-b-5">Yandex.Disk Api Token received</label>
-          <button class="btn btn-default" @click.prevent="revoke">Revoke</button>
+          <span class="b-label">
+            <span class="b-label-content font-medium">
+              Yandex.Disk Api Token received
+            </span>
+          </span>
+          <div style="width: 100px">
+            <b-button color="grey" variant="outlined" block @click.prevent="revoke">
+              <b-icon>close-octagon-outline</b-icon>
+              Revoke
+            </b-button>
+          </div>
         </div>
       </div>
       <div v-if="!isResetPasswordMode" class="form-group">
         <div class="form-group-inner flex-between items-center">
-          <label class="m-b-5">Reset password</label>
-          <button class="btn btn-default" @click.prevent="isResetPasswordMode = true">Reset</button>
+          <span class="b-label">
+            <span class="b-label-content font-medium">
+              Reset password
+            </span>
+          </span>
+          <div style="width: 100px">
+            <b-button color="grey" variant="outlined" block @click.prevent="isResetPasswordMode = true">
+              <b-icon>shield-key-outline</b-icon>
+              Reset
+            </b-button>
+          </div>
         </div>
       </div>
       <template v-else>
@@ -107,9 +124,9 @@
         </div>
       </template>
     </form>
-    <div class="btn_wrapper">
-      <button class="btn btn-primary" @click.prevent="save">Save</button>
-      <button class="btn btn-default m-l-15" @click.prevent="cancel">Cancel</button>
+    <div class="btn_wrapper gap-2">
+      <b-button variant="outlined" size="s" @click.prevent="cancel">Cancel</b-button>
+      <b-button size="s" @click.prevent="save">Save</b-button>
     </div>
   </div>
 </template>

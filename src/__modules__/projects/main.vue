@@ -17,7 +17,6 @@
       <div class="notepad_textarea-wrapper">
         <b-textarea v-model="message" placeholder="New record" hide-details @keydown.enter.ctrl="send"></b-textarea>
       </div>
-
       <div class="notepad_btns">
         <b-button icon color="primary">
           <b-icon>send</b-icon>
