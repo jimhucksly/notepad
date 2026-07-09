@@ -3,10 +3,8 @@
 @use './fonts';
 @use './common';
 @use './defaults';
-@use './forms';
 @use './titlebar';
 @use './aside';
-@use './popup';
 @use './loader';
 @use './editor';
 
@@ -178,89 +176,11 @@ main {
   }
 }
 
-.preferences {
-  display: flex;
-  flex-direction: column;
+.page-wrapper {
+  display: grid;
+  grid-template-rows: 54px 1fr 65px;
 
-  .title {
-    display: flex;
-    flex-basis: 54px;
-    flex-shrink: 0;
-    align-items: center;
-    padding-left: 15px;
-  }
-
-  form {
-    flex-basis: 100%;
-    padding: 15px;
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    & > div {
-      max-width: 50%;
-    }
-
-    input {
-      letter-spacing: 1px;
-    }
-  }
-
-  .btn_wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 15px;
-    flex-basis: 65px;
-    flex-grow: 0;
-    border-top: 1px solid var(--primary-l-4);
-  }
-}
-
-.account {
-  display: flex;
-  flex-direction: column;
-
-  .title {
-    display: flex;
-    flex-basis: 54px;
-    flex-shrink: 0;
-    align-items: center;
-    padding-left: 15px;
-  }
-
-  .account-content {
-    max-width: 50%;
-    flex-basis: 100%;
-    padding: 15px;
-  }
-
-  .content-row {
-    display: grid;
-    grid-template-columns: 50% 50%;
-
-    & > label {
-      display: block;
-      color: var(--blue);
-      font-size: 13px;
-      line-height: 30px;
-    }
-
-    & > span {
-      display: flex;
-      justify-content: flex-end;
-      color: var(--black_light);
-      font-size: 13px;
-      line-height: 30px;
-    }
-  }
-
-  .account-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 15px;
-    flex-basis: 65px;
-    flex-grow: 0;
+  & > div:nth-child(3) {
     border-top: 1px solid var(--primary-l-4);
   }
 }
@@ -312,6 +232,18 @@ main {
   position: relative;
 }
 
+.code-fields {
+  display: flex;
+  justify-content: space-around;
+  input {
+    width: 35px;
+    height: 56px;
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 36px;
+  }
+}
+
 #upload-download-popup {
   position: absolute;
   top: 50%;
@@ -337,14 +269,5 @@ main {
     height: 8px;
     border-radius: 4px;
     background-color: var(--blue);
-  }
-}
-
-.button {
-  cursor: pointer;
-
-  &:active {
-    opacity: 0.8;
-    transform: translate(0px, 1px);
   }
 }
