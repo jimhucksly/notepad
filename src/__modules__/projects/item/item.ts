@@ -1,7 +1,7 @@
+import { ConfirmDialog, CreateEditDialog, DialogManager } from '@dn-web/ui';
 import { Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { Queries, Types } from '~/core';
 import { EditProjectCommand } from '../commands/commands';
 import { IFilters, IProject, IProjects } from '../models';
 
@@ -30,18 +30,18 @@ export default class NotepadItem extends Vue {
   }
 
   async edit() {
-    const query = new Queries.CreateEditQuery<IProject>({
-      component: 'Projects-Modal-createEdit',
-      componentProps: {
-        item: this.item,
-      },
-      modal: {
+    const message: string = await DialogManager.exec(
+      new CreateEditDialog({
         title: 'Edit project | ' + (this.item.name || this.item.key),
+        component: 'Projects-Modal-createEdit',
+        componentProps: {
+          model: null,
+          item: this.item,
+        },
         width: '65%',
         height: '95%',
-      },
-    });
-    const message = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<IProject>, string>(query);
+      })
+    );
     if (!message) {
       return;
     }
@@ -61,15 +61,21 @@ export default class NotepadItem extends Vue {
   }
 
   async remove() {
-    let isConfirm = await this.$app.$queryBus.exec(
-      new Queries.ConfirmWindowQuery('Do you realy want to remove this project?')
+    let isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirm',
+        content: 'Do you realy want to remove this project?',
+      })
     );
     if (!isConfirm) {
       return;
     }
     if (this.item.lock) {
-      isConfirm = await this.$app.$queryBus.exec(
-        new Queries.ConfirmWindowQuery('Project is locked. Do you realy want to remove this project?')
+      isConfirm = await await DialogManager.exec(
+        new ConfirmDialog({
+          title: 'Confirm',
+          content: 'Project is locked. Do you realy want to remove this project?',
+        })
       );
     }
     if (!isConfirm) {

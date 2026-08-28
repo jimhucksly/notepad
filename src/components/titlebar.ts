@@ -16,14 +16,12 @@ export default class Titlebar extends Vue {
   }
 
   toAbout() {
-    const query = new InfoWindowQuery({
-      component: 'about-popup',
-      modal: {
+    this.$app.$queryBus.exec(
+      new InfoWindowQuery({
         title: 'About',
-        width: '25%',
-      },
-    });
-    this.$app.$queryBus.exec(query);
+        component: 'PopupAbout',
+      })
+    );
   }
 
   toAccount() {

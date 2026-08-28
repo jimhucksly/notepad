@@ -1,8 +1,8 @@
+import { ConfirmDialog, DialogManager } from '@dn-web/ui';
 import { cloneDeep, unset } from 'lodash';
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { Queries, Types } from '~/core';
 import { ArchivingCommand, DeleteProjectCommand, EditProjectCommand } from '../commands/commands';
 import { IArchive, IFilters, IProject, IProjects } from '../models';
 import { ArchivesQuery } from '../queries/queries';
@@ -59,8 +59,11 @@ export default class ProjectsEditor extends Vue {
       this.$app.$commandBus.do<EditProjectCommand, void>(new EditProjectCommand(o));
     };
     if (isLocked) {
-      const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(
-        new Queries.ConfirmWindowQuery('Do you want to unlock this project?')
+      const isConfirm = await DialogManager.exec(
+        new ConfirmDialog({
+          title: 'Confirm',
+          content: 'Do you want to unlock this project?',
+        })
       );
       if (!isConfirm) {
         this.isLock = !this.isLock;
@@ -78,8 +81,11 @@ export default class ProjectsEditor extends Vue {
   }
 
   async remove() {
-    const isConfirm = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<boolean>, boolean>(
-      new Queries.ConfirmWindowQuery('Do you want to remove this project?')
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirm',
+        content: 'Do you want to remove this project?',
+      })
     );
     if (!isConfirm) {
       return;

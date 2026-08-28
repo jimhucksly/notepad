@@ -1,5 +1,4 @@
 import { flushPromises, mount, VueWrapper } from '@vue/test-utils';
-import { defineComponent } from 'vue';
 import { Options, Vue } from 'vue-class-component';
 import BCalendar from './index';
 import { getNativeDate, isDate } from './utils';
@@ -31,15 +30,7 @@ let component: Vue = null;
 
 async function setupTest() {
   try {
-    wrapper = mount(WrapperComponent, {
-      global: {
-        components: {
-          'svg-icon': defineComponent({
-            template: '<div></div>',
-          }),
-        },
-      },
-    });
+    wrapper = mount(WrapperComponent);
     component = wrapper.vm;
     await component.$nextTick();
     await flushPromises();

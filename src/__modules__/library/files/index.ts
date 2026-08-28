@@ -1,7 +1,7 @@
+import { ConfirmDialog, CreateEditDialog, DialogManager } from '@dn-web/ui';
 import { Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { Queries, Types } from '~/core';
 import { AddLibraryFileCommand, DeleteLibraryFileCommand } from '../commands/commands';
 import { ILibraryFile } from '../models';
 import { LibraryFilesQuery } from '../queries/queries';
@@ -22,14 +22,16 @@ export default class LibraryFiles extends Vue {
   }
 
   async add() {
-    const query = new Queries.CreateEditQuery<ILibraryFile>({
-      component: 'Library-Modal-createEditFile',
-      modal: {
+    const result: ILibraryFile = await DialogManager.exec(
+      new CreateEditDialog({
         title: 'Add library file',
+        component: 'Library-Modal-createEditFile',
+        componentProps: {
+          model: null,
+        },
         width: '30%',
-      },
-    });
-    const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILibraryFile>, ILibraryFile>(query);
+      })
+    );
     if (!result) {
       return;
     }
@@ -37,8 +39,11 @@ export default class LibraryFiles extends Vue {
   }
 
   async removeFile(file: ILibraryFile) {
-    const isConfirm = await this.$app.$queryBus.exec(
-      new Queries.ConfirmWindowQuery('Do you want to remove the library file?')
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirm',
+        content: 'Do you want to remove the library file?',
+      })
     );
     if (!isConfirm) {
       return;

@@ -1,5 +1,5 @@
 import { EditorView } from '@codemirror/view';
-import { delay, uniqueID } from '@dn-web/core';
+import { delay, eventBus, uniqueID } from '@dn-web/core';
 import cloneDeep from 'lodash/cloneDeep';
 import MarkdownIt from 'markdown-it';
 import MarkdownItAnchor from 'markdown-it-anchor';
@@ -7,7 +7,6 @@ import { config, MdEditor, StaticTextDefaultValue } from 'md-editor-v3';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
-import { Plugins } from '~/core';
 import { translit } from '~/helpers';
 import { UpdateLibraryCommand } from './commands/commands';
 import { ILibraryFile, ITreeItem } from './models';
@@ -60,7 +59,7 @@ export default class LibraryPage extends Vue {
 
   async mounted() {
     this.linkClickHandler = this.linkClick.bind(this);
-    Plugins.Hub.$on('codemirror-link-click', this.linkClickHandler);
+    eventBus.$on('codemirror-link-click', this.linkClickHandler);
     await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery());
     this.buildEditor();
 
@@ -88,7 +87,7 @@ export default class LibraryPage extends Vue {
 
   beforeUnmount() {
     this.setFileId(0);
-    Plugins.Hub.$off('codemirror-link-click', this.linkClickHandler);
+    eventBus.$off('codemirror-link-click', this.linkClickHandler);
   }
 
   buildEditor() {

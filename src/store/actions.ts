@@ -1,3 +1,4 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
 import {
   AuthCommand,
@@ -21,7 +22,6 @@ import { Queryable } from '~/domain/queries/query.bus';
 import { bindings } from '~/domain/types';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
-import { Hub } from '~/plugins/hub';
 
 type TStore = ActionContext<IRootState, IRootState>;
 
@@ -182,7 +182,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       setProcess(store, 'creating yandex disk token...');
       return await $http.post<YandexTokenQuery, string>('/ydtoken', query);
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token not received');
+      eventBus.$emit('on-toasted-error', 'Error: Access token not received');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -201,7 +201,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/refresh', query);
       return true;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token refresh failed');
+      eventBus.$emit('on-toasted-error', 'Error: Access token refresh failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -220,7 +220,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       await $http.post<RefreshYandexTokenQuery, boolean>('/ydtoken/revoke', command);
       return true;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Access token revoke failed');
+      eventBus.$emit('on-toasted-error', 'Error: Access token revoke failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -241,7 +241,7 @@ class Actions implements ActionTree<IRootState, IRootState> {
       }
       return resp.data.link;
     } catch (e) {
-      Hub.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed');
+      eventBus.$emit('on-toasted-error', 'Error: Fetch Yandex Disk info failed');
       return Promise.reject(e);
     }
   }

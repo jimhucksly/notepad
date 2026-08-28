@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import {
@@ -14,6 +14,7 @@ import {
 } from '../commands/commands';
 import { IArchive, IProjects, IProjectsState } from '../models';
 import { bindings } from './bindings';
+import { eventBus } from '@dn-web/core';
 
 type TStore = ActionContext<IProjectsState, Types.IRootState>;
 
@@ -39,7 +40,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       store.commit('setProjects', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Projects fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Projects fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -65,7 +66,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       await $http.put<IProjects, boolean>('/project', command.data);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Project creating failed');
+      eventBus.$emit('on-toasted-error', 'Error: Project creating failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -84,7 +85,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       await $http.post<IProjects, boolean>('/project', command.data);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Project edit failed');
+      eventBus.$emit('on-toasted-error', 'Error: Project edit failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -103,7 +104,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       await $http.delete(`/project/?key=${command.stamp}`);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Project delete failed');
+      eventBus.$emit('on-toasted-error', 'Error: Project delete failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -124,7 +125,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       });
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Project archive failed');
+      eventBus.$emit('on-toasted-error', 'Error: Project archive failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -162,7 +163,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       await $http.post('/project/archive/restore', command);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Archive restore failed');
+      eventBus.$emit('on-toasted-error', 'Error: Archive restore failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -181,7 +182,7 @@ class Actions implements ActionTree<IProjectsState, Types.IRootState> {
       await $http.delete(`/project/archive/?id=${command.id}`);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Archive remove failed');
+      eventBus.$emit('on-toasted-error', 'Error: Archive remove failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

@@ -5,19 +5,10 @@ import '~/assets/css/md-editor.css';
 import ui from '@dn-web/ui';
 import { createApp, defineComponent } from 'vue';
 import { ModuleTree, Store } from 'vuex';
+import PopupAbout from '~/components/popup/about.vue';
 import Titlebar from '~/components/titlebar';
-// import Popup from '~/components/popup';
-// import Toasted from '~/components/toasted';
-// import BCheckbox from '~/components/bcheckbox';
-// import BBtn from '~/components/bbtn';
-// import BTabs, { BTab } from '~/components/btabs';
-// import SvgIcon from '~/components/svgIcon';
-// import Loader from '~/components/loader';
-// import AboutPopup from '~/components/popup/about';
 // import CodeInput from '~/components/codeInput';
-// import BSplitter from '~/components/bsplitter';
 import AnimePlugin from '~/plugins/anime';
-// import ToastedPlugin from '~/plugins/toasted';
 import AppPlugin from '~/plugins/app';
 import ElectronPlugin from '~/plugins/electron';
 import SocketPlugin from '~/plugins/socket';
@@ -70,17 +61,8 @@ async function init() {
     container.bind<Store<IRootState>>(bindings.Store).toConstantValue(store);
 
     app.component('Titlebar', Titlebar);
-    // app.component('Popup', Popup);
-    // app.component('Toasted', Toasted);
-    // app.component('SvgIcon', SvgIcon);
-    // app.component('Loader', Loader);
-    // app.component('BCheckbox', BCheckbox);
-    // app.component('BBtn', BBtn);
-    // app.component('BTabs', BTabs);
-    // app.component('BTab', BTab);
-    // app.component('AboutPopup', AboutPopup);
+    app.component('PopupAbout', PopupAbout);
     // app.component('CodeInput', CodeInput);
-    // app.component('BSplitter', BSplitter);
 
     const $app: Application = container.get(bindings.Application);
 

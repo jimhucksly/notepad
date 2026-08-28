@@ -1,5 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { AddLibraryFileCommand, DeleteLibraryFileCommand, UpdateLibraryCommand } from '../commands/commands';
@@ -38,7 +39,7 @@ class Actions implements ActionTree<ILibraryState, Types.IRootState> {
       }
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Library files fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Library files fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -62,7 +63,7 @@ class Actions implements ActionTree<ILibraryState, Types.IRootState> {
       store.commit('setLibraryData', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Library file fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -92,7 +93,7 @@ class Actions implements ActionTree<ILibraryState, Types.IRootState> {
       return true;
     } catch (e) {
       const message = e?.message || 'Library file creating failed';
-      Plugins.Hub.$emit('on-toasted-error', 'Error: ' + message);
+      eventBus.$emit('on-toasted-error', 'Error: ' + message);
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -114,7 +115,7 @@ class Actions implements ActionTree<ILibraryState, Types.IRootState> {
       await $http.post('/library', command);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file edit failed');
+      eventBus.$emit('on-toasted-error', 'Error: Library file edit failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -133,7 +134,7 @@ class Actions implements ActionTree<ILibraryState, Types.IRootState> {
       await $http.delete(`/library/?id=${command.id}`);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Library file delete failed');
+      eventBus.$emit('on-toasted-error', 'Error: Library file delete failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

@@ -1,8 +1,8 @@
+import { eventBus } from '@dn-web/core';
 import { cloneDeep, isEqual } from 'lodash';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
-import { Plugins } from '~/core';
 import { indexOf, now } from '~/helpers';
 import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from './commands/commands';
 import { ITodo, ITodoItem, ITodoOrder } from './models';
@@ -12,7 +12,7 @@ const sortByOrder = (a: ITodoItem, b: ITodoItem) => (a.order < b.order ? -1 : 1)
 
 @Options({
   beforeUnmount() {
-    Plugins.Hub.$off('todo-add', this.addTodoHandler);
+    eventBus.$off('todo-add', this.addTodoHandler);
   },
 })
 export default class Todo extends Vue {
@@ -38,7 +38,7 @@ export default class Todo extends Vue {
       await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery());
       this.loading = false;
       this.addTodoHandler = this.addTodo.bind(this);
-      Plugins.Hub.$on('todo-add', this.addTodoHandler);
+      eventBus.$on('todo-add', this.addTodoHandler);
     } catch (e) {
       /* eslint-disable no-console */
       console.log(e);

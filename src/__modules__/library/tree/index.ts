@@ -1,6 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { Options, Vue } from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
-import { Plugins } from '~/core';
 import { ITreeItem } from '../models';
 
 @Options({
@@ -11,7 +11,7 @@ export default class LibraryTreeComponent extends Vue {
   @Prop({ default: 1 }) level: number;
 
   selectNode(item: ITreeItem) {
-    Plugins.Hub.$emit('codemirror-link-click', item);
+    eventBus.$emit('codemirror-link-click', item);
     const editor = document.querySelector('.editor_content');
     const node = this.$el.querySelector(`[data-ref="${item.id}"]`);
     if (node) {

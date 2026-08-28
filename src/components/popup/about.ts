@@ -1,5 +1,5 @@
 import { Vue } from 'vue-class-component';
-import { AUTHOR, VK } from '~/constants';
+import { AUTHOR } from '~/constants';
 
 export default class AboutPopupComponent extends Vue {
   appName = '';
@@ -13,9 +13,5 @@ export default class AboutPopupComponent extends Vue {
 
   get author() {
     return AUTHOR;
-  }
-
-  get vk() {
-    return VK;
   }
 }

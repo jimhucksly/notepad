@@ -72,19 +72,3 @@ export interface IRootState {
   currentUser: IUser;
   process: { name: string };
 }
-
-export interface IPopupWindowQuery<T> {
-  component: string;
-  modal: {
-    title: string;
-    width?: string;
-    height?: string;
-    resolveFunction?: (value: unknown) => Promise<T>;
-  };
-  componentProps?: Record<string, unknown>;
-  fsmState?: symbol;
-}
-
-export interface IPopupComponent<T> {
-  save: () => T;
-}

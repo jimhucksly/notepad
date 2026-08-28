@@ -18,7 +18,7 @@
       <p>{{ title }}</p>
     </div>
     <div v-if="process" class="menu-button-container process">
-      <loader small :full="false" /> <span class="p-l-5">{{ process.name }}</span>
+      <b-loader small :full="false" /> <span class="p-l-5">{{ process.name }}</span>
     </div>
     <div v-if="isAuth && yandexDiskAccessToken" class="menu-button-container button--logout" @click="toAccount">
       <b-icon path="assets/images" width="29" height="29">user</b-icon>

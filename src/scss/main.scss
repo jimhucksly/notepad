@@ -1,12 +1,11 @@
-@use './variables';
-@use './normalize';
-@use './fonts';
-@use './common';
-@use './defaults';
-@use './titlebar';
-@use './aside';
-@use './loader';
-@use './editor';
+@use 'variables';
+@use 'normalize';
+@use 'fonts';
+@use 'common';
+@use 'defaults';
+@use 'titlebar';
+@use 'aside';
+@use 'editor';
 
 html {
   font-family: var(--regular);

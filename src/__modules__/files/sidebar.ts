@@ -1,5 +1,5 @@
+import { eventBus } from '@dn-web/core';
 import { Vue } from 'vue-class-component';
-import { Plugins } from '~/core';
 import { IFile } from './models';
 
 export default class FilesSidebar extends Vue {
@@ -10,11 +10,11 @@ export default class FilesSidebar extends Vue {
 
   created() {
     this.onFileSelectHandler = this.onFileSelect.bind(this);
-    Plugins.Hub.$on('on-file-select', this.onFileSelectHandler);
+    eventBus.$on('on-file-select', this.onFileSelectHandler);
   }
 
   beforeUnmount() {
-    Plugins.Hub.$off('on-file-select', this.onFileSelectHandler);
+    eventBus.$off('on-file-select', this.onFileSelectHandler);
   }
 
   onFileSelect(file: IFile) {
@@ -22,19 +22,19 @@ export default class FilesSidebar extends Vue {
   }
 
   onFileChange(e: InputEvent) {
-    Plugins.Hub.$emit('on-file-change', e);
+    eventBus.$emit('on-file-change', e);
   }
 
   onFileRemove() {
-    Plugins.Hub.$emit('on-file-remove');
+    eventBus.$emit('on-file-remove');
   }
 
   onFileCheck() {
     this.filesCheck = !this.filesCheck;
-    Plugins.Hub.$emit('on-file-check', this.filesCheck);
+    eventBus.$emit('on-file-check', this.filesCheck);
   }
 
   onFileDownload() {
-    Plugins.Hub.$emit('on-file-download');
+    eventBus.$emit('on-file-download');
   }
 }

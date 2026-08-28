@@ -3,7 +3,7 @@
   <main>
     <sidebar v-if="isSidebar" id="sidebar" />
     <section>
-      <loading v-if="loading" />
+      <b-loader :visible="loading" v-if="loading" />
       <template v-else>
         <template v-if="!isAuth">
           <auth v-if="isAuthWindow" id="auth" />
@@ -17,5 +17,6 @@
       <error v-if="isError" />
     </section>
   </main>
+  <b-dialog />
 </template>
 <script src="./index.ts" lang="ts"></script>

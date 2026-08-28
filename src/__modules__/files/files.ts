@@ -1,8 +1,8 @@
+import { eventBus } from '@dn-web/core';
+import { ConfirmDialog, DialogManager } from '@dn-web/ui';
 import { Options, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
-import { Queries } from '~/core';
 import { dragAndDropLoader } from '~/helpers';
-import { Hub } from '~/plugins/hub';
 import { DeleteFileCommand, UploadFileCommand } from './commands/commands';
 import File from './file';
 import { IFile } from './models';
@@ -29,13 +29,13 @@ export default class Files extends Vue {
   created() {
     this.fetchFiles();
     this.onFileChangeHandler = this.onFileChange.bind(this);
-    Hub.$on('on-file-change', this.onFileChangeHandler);
+    eventBus.$on('on-file-change', this.onFileChangeHandler);
     this.onFileRemoveHandler = this.onFileRemove.bind(this);
-    Hub.$on('on-file-remove', this.onFileRemoveHandler);
+    eventBus.$on('on-file-remove', this.onFileRemoveHandler);
     this.onFileDownloadHandler = this.onFileDownload.bind(this);
-    Hub.$on('on-file-download', this.onFileDownloadHandler);
+    eventBus.$on('on-file-download', this.onFileDownloadHandler);
     this.onFileCheckHandler = this.onFileCheck.bind(this);
-    Hub.$on('on-file-check', this.onFileCheckHandler);
+    eventBus.$on('on-file-check', this.onFileCheckHandler);
   }
 
   mounted() {
@@ -44,9 +44,9 @@ export default class Files extends Vue {
   }
 
   beforeUnmount() {
-    Hub.$off('on-file-change', this.onFileChangeHandler);
-    Hub.$off('on-file-remove', this.onFileRemoveHandler);
-    Hub.$off('on-file-download', this.onFileDownloadHandler);
+    eventBus.$off('on-file-change', this.onFileChangeHandler);
+    eventBus.$off('on-file-remove', this.onFileRemoveHandler);
+    eventBus.$off('on-file-download', this.onFileDownloadHandler);
   }
 
   async fetchFiles() {
@@ -78,7 +78,12 @@ export default class Files extends Vue {
     if (this.checkeds.length) {
       question = `Do you realy want to remove ${this.checkeds.length} files?`;
     }
-    const isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery(question));
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Question',
+        content: question,
+      })
+    );
     if (!isConfirm) {
       return;
     }
@@ -89,7 +94,7 @@ export default class Files extends Vue {
     this.selected = null;
     this.checkeds = [];
     this.checking = false;
-    Hub.$emit('on-file-select', null);
+    eventBus.$emit('on-file-select', null);
   }
 
   async upload(formData: FormData) {
@@ -125,7 +130,7 @@ export default class Files extends Vue {
 
   onSelect(id: string) {
     this.selected = id;
-    Hub.$emit(
+    eventBus.$emit(
       'on-file-select',
       this.files.find(f => f.id === id)
     );

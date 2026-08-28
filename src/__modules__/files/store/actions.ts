@@ -1,5 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteFileCommand, UploadFileCommand } from '../commands/commands';
@@ -30,7 +31,7 @@ class Actions implements ActionTree<IFilesState, Types.IRootState> {
       store.commit('setFiles', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Files list fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Files list fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -49,7 +50,7 @@ class Actions implements ActionTree<IFilesState, Types.IRootState> {
       await $http.delete(`/files?id=${command.id}`);
       return true;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: File removing is failed');
+      eventBus.$emit('on-toasted-error', 'Error: File removing is failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -68,7 +69,7 @@ class Actions implements ActionTree<IFilesState, Types.IRootState> {
       await $http.put('/upload', command.form);
       return true;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Upload file failed');
+      eventBus.$emit('on-toasted-error', 'Error: Upload file failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

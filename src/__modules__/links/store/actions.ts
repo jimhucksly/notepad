@@ -1,5 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteLinkCommand, UpdateLinksCommand } from '../commands/commands';
@@ -30,7 +31,7 @@ class Actions implements ActionTree<ILinksState, Types.IRootState> {
       store.commit('setLinks', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Links list fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Links list fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -49,7 +50,7 @@ class Actions implements ActionTree<ILinksState, Types.IRootState> {
       await $http.put('/links', command.link);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Links list update failed');
+      eventBus.$emit('on-toasted-error', 'Error: Links list update failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -68,7 +69,7 @@ class Actions implements ActionTree<ILinksState, Types.IRootState> {
       await $http.delete(`/links/?id=${command.id}`);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Links list item remove failed');
+      eventBus.$emit('on-toasted-error', 'Error: Links list item remove failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

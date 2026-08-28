@@ -11,12 +11,7 @@
     </div>
     <div class="m-b-5 flex-center">
       <p>
-        <small>&copy; {{ author }}, {{ new Date().getFullYear() }}</small>
-      </p>
-    </div>
-    <div class="flex-center">
-      <p>
-        <small>{{ vk }}</small>
+        <small>&copy;{{ author }}, {{ new Date().getFullYear() }}</small>
       </p>
     </div>
   </div>

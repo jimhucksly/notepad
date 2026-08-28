@@ -1,6 +1,5 @@
-import { uniqueID } from '@dn-web/core';
+import { eventBus, uniqueID } from '@dn-web/core';
 import { Vue } from 'vue-class-component';
-import { Hub } from '~/plugins/hub';
 
 enum ToastType {
   Success = 1,
@@ -22,14 +21,14 @@ export default class Toasted extends Vue {
 
   created() {
     this.toastedSuccessHandler = this.toastedSuccess.bind(this);
-    Hub.$on('on-toasted-success', this.toastedSuccessHandler);
+    eventBus.$on('on-toasted-success', this.toastedSuccessHandler);
     this.toastedErrorHandler = this.toastedError.bind(this);
-    Hub.$on('on-toasted-error', this.toastedErrorHandler);
+    eventBus.$on('on-toasted-error', this.toastedErrorHandler);
   }
 
   beforeUnmount() {
-    Hub.$off('on-toasted-success', this.toastedSuccessHandler);
-    Hub.$off('on-toasted-error', this.toastedErrorHandler);
+    eventBus.$off('on-toasted-success', this.toastedSuccessHandler);
+    eventBus.$off('on-toasted-error', this.toastedErrorHandler);
   }
 
   toastedSuccess(subject: string) {

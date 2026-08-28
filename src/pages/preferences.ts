@@ -1,10 +1,10 @@
+import { ConfirmDialog, DialogManager } from '@dn-web/ui';
 import AutoLaunch from 'auto-launch';
 import { Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands';
 import { IResponse, IUser, IValidate } from '~/domain/models';
-import { ConfirmWindowQuery } from '~/domain/queries/confirmWindow.query';
 import pkg from '../../package.json';
 
 export default class Preferences extends Vue {
@@ -126,8 +126,11 @@ export default class Preferences extends Vue {
   // }
 
   async revoke() {
-    const isConfirm = await this.$app.$queryBus.exec(
-      new ConfirmWindowQuery('Do you want to revoke the Yandex.Disk connection?')
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirm',
+        content: 'Do you want to revoke the Yandex.Disk connection?',
+      })
     );
     if (!isConfirm) {
       return;

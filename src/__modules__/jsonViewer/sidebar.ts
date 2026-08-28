@@ -1,6 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import Electron from 'electron';
 import { Vue } from 'vue-class-component';
-import { Plugins } from '~/core';
 
 export default class JsonViewerBtns extends Vue {
   open() {
@@ -31,7 +31,7 @@ export default class JsonViewerBtns extends Vue {
       if (filePath.files && filePath.files[0]) {
         reader.onload = (e: ProgressEvent<FileReader>) => {
           output = e.target.result as string;
-          Plugins.Hub.$emit('json-viewer-set', output);
+          eventBus.$emit('json-viewer-set', output);
         };
         reader.readAsText(filePath.files[0]);
       } else {
@@ -49,13 +49,13 @@ export default class JsonViewerBtns extends Vue {
       'save-dialog-file-selected',
       (e: Electron.IpcRendererEvent, file: { filePath: string }) => {
         if (file && file.filePath) {
-          Plugins.Hub.$emit('json-viewer-save', file.filePath);
+          eventBus.$emit('json-viewer-save', file.filePath);
         }
       }
     );
   }
 
   clear() {
-    Plugins.Hub.$emit('json-viewer-clear');
+    eventBus.$emit('json-viewer-clear');
   }
 }

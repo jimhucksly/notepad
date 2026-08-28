@@ -1,5 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteEventCommand, UpdateEventCommand } from '../commands/commands';
@@ -30,7 +31,7 @@ class Actions implements ActionTree<IEventsState, Types.IRootState> {
       store.commit('setEvents', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Events list fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Events list fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -55,7 +56,7 @@ class Actions implements ActionTree<IEventsState, Types.IRootState> {
       }
       return null;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Event update failed');
+      eventBus.$emit('on-toasted-error', 'Error: Event update failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -77,7 +78,7 @@ class Actions implements ActionTree<IEventsState, Types.IRootState> {
       store.commit('setEvents', buff);
       return true;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Event remove failed');
+      eventBus.$emit('on-toasted-error', 'Error: Event remove failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

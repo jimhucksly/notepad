@@ -33,9 +33,6 @@ let States: IStates = {
   Yandex: Symbol.for('Yandex'),
   Account: Symbol.for('Account'),
   Preferences: Symbol.for('Preferences'),
-  CreateEdit: Symbol.for('CreateEdit'),
-  InfoWindow: Symbol.for('InfoWindow'),
-  ConfirmWindow: Symbol.for('ConfirmWindow'),
 };
 
 export interface IApplication {

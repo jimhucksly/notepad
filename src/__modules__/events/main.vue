@@ -14,7 +14,7 @@
       <div class="events__search">
         <form ref="search-form">
           <div class="items-center blue--text">
-            <svg-icon icon="searchIcon" width="28" height="20" />
+            <b-icon>search</b-icon>
             <input v-model="search" type="text" :readonly="bCalendarFormShow" />
           </div>
           <div v-if="itemsFiltered.length" ref="search-results" class="events__search-dropdown">

@@ -1,9 +1,8 @@
 .notepad_cont {
   flex-basis: 100%;
   flex-grow: 1;
-  padding: 6px;
-  background-color: var(--primary-l-4);
-  border-bottom: 2px solid var(--primary);
+  padding: 6px 6px 0 6px;
+  background-color: var(--primary-l-6);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -14,7 +13,7 @@
   flex-basis: 40%;
   flex-grow: 0;
   padding: 6px;
-  background-color: var(--primary-l-3);
+  background-color: var(--primary-l-6);
 
   &-wrapper {
     flex-basis: 100%;

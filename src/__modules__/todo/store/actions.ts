@@ -1,5 +1,6 @@
+import { eventBus } from '@dn-web/core';
 import { ActionContext, ActionTree } from 'vuex';
-import { Commandable, Plugins, Queryable, Types } from '~/core';
+import { Commandable, Queryable, Types } from '~/core';
 import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteTodoCommand, TodoOrderCommand, UpdateTodoCommand } from '../commands/commands';
@@ -30,7 +31,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
       store.commit('setTodo', data);
       return data;
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Todo list fetch failed');
+      eventBus.$emit('on-toasted-error', 'Error: Todo list fetch failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -49,7 +50,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
       await $http.put('/todo', command.item);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Todo list item update failed');
+      eventBus.$emit('on-toasted-error', 'Error: Todo list item update failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -68,7 +69,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
       await $http.delete(`/todo/?id=${command.id}`);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Todo list item remove failed');
+      eventBus.$emit('on-toasted-error', 'Error: Todo list item remove failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);
@@ -87,7 +88,7 @@ class Actions implements ActionTree<ITodoState, Types.IRootState> {
       await $http.post('/todo/order', command.result);
       return Promise.resolve(true);
     } catch (e) {
-      Plugins.Hub.$emit('on-toasted-error', 'Error: Todo list sorting failed');
+      eventBus.$emit('on-toasted-error', 'Error: Todo list sorting failed');
       return Promise.reject(e);
     } finally {
       setProcess(store, null);

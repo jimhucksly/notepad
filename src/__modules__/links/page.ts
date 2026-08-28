@@ -1,6 +1,6 @@
+import { ConfirmDialog, CreateEditDialog, DialogManager } from '@dn-web/ui';
 import { Vue } from 'vue-class-component';
 import { Getter } from 'vuex-class';
-import { Queries, Types } from '~/core';
 import { DeleteLinkCommand, UpdateLinksCommand } from './commands/commands';
 import { ILink } from './models';
 import { LinksQuery } from './queries/queries';
@@ -24,21 +24,21 @@ export default class LinksPage extends Vue {
   async edit(id: string) {
     const found = this.links.find(link => link.id === id);
     if (found) {
-      const query = new Queries.CreateEditQuery<ILink>({
-        component: 'Links-Modal-createEdit',
-        componentProps: {
-          item: {
-            id,
-            url: found.url,
-            name: found.name,
-          },
-        },
-        modal: {
+      const result: ILink = await DialogManager.exec(
+        new CreateEditDialog({
           title: 'Edit link',
+          component: 'Links-Modal-createEdit',
+          componentProps: {
+            model: null,
+            item: {
+              id,
+              url: found.url,
+              name: found.name,
+            },
+          },
           width: '30%',
-        },
-      });
-      const result = await this.$app.$queryBus.exec<Types.IPopupWindowQuery<ILink>, ILink>(query);
+        })
+      );
       if (!result) {
         return;
       }
@@ -48,7 +48,12 @@ export default class LinksPage extends Vue {
   }
 
   async remove(id: string) {
-    const isConfirm = await this.$app.$queryBus.exec(new Queries.ConfirmWindowQuery('Do you want to remove link?'));
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirm',
+        content: 'Do you want to remove link?',
+      })
+    );
     if (!isConfirm) {
       return;
     }

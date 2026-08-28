@@ -1,6 +1,7 @@
+import { eventBus } from '@dn-web/core';
 import { debounce } from 'lodash';
 import { Options, Vue } from 'vue-class-component';
-import { Libs, Plugins, Types } from '~/core';
+import { Libs, Types } from '~/core';
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 require('brace/mode/javascript');
@@ -15,9 +16,9 @@ const fs = require('fs');
     editor: Libs.Editor,
   },
   beforeUnmount() {
-    Plugins.Hub.$off('json-viewer-src-set', this.onJsonHandler);
-    Plugins.Hub.$off('json-viewer-save', this.onJsonSaveHandler);
-    Plugins.Hub.$off('json-viewer-clear', this.onJsonClearHandler);
+    eventBus.$off('json-viewer-src-set', this.onJsonHandler);
+    eventBus.$off('json-viewer-save', this.onJsonSaveHandler);
+    eventBus.$off('json-viewer-clear', this.onJsonClearHandler);
   },
 })
 export default class JsonViewer extends Vue {
@@ -118,11 +119,11 @@ export default class JsonViewer extends Vue {
 
   mounted() {
     this.onJsonHandler = this.onJson.bind(this);
-    Plugins.Hub.$on('json-viewer-set', this.onJsonHandler);
+    eventBus.$on('json-viewer-set', this.onJsonHandler);
     this.onJsonSaveHandler = this.onJsonSave.bind(this);
-    Plugins.Hub.$on('json-viewer-save', this.onJsonSaveHandler);
+    eventBus.$on('json-viewer-save', this.onJsonSaveHandler);
     this.onJsonClearHandler = this.onJsonClear.bind(this);
-    Plugins.Hub.$on('json-viewer-clear', this.onJsonClearHandler);
+    eventBus.$on('json-viewer-clear', this.onJsonClearHandler);
     if (window.localStorage) {
       const value = localStorage.getItem('json_viewer');
       let json: Record<string, unknown> = null;
