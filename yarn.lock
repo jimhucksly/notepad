@@ -1915,10 +1915,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dn-web/ui@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@dn-web/ui@npm:1.0.4"
-  checksum: 10/75c9acd2e50774a0b946c5d846ff90963ec6790c2f245e7e52bd4fa0968d2e1ebaa7c9142d050255babc7cb80ce36c5b1c5bb76ce770b060dd014dd083393ddc
+"@dn-web/ui@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@dn-web/ui@npm:1.0.5"
+  checksum: 10/f04c3e5e7a758e4f23d40f90cb2538e2f378d3e5aaa3a3245c01746e95368c0bcb52a712195a0c525dca0c206eb07e211ed67a4c3b996d379b2edb514127f556
   languageName: node
   linkType: hard
 
@@ -16886,7 +16886,7 @@ __metadata:
     "@babel/runtime": "npm:7.8.4"
     "@dn-web/core": "npm:1.0.4"
     "@dn-web/datatable": "npm:1.0.0"
-    "@dn-web/ui": "npm:1.0.4"
+    "@dn-web/ui": "npm:1.0.5"
     "@ljharb/eslint-config": "npm:17.2.0"
     "@stylistic/eslint-plugin": "npm:5.10.0"
     "@types/auto-launch": "npm:5.0.1"

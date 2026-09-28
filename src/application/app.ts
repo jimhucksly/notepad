@@ -122,7 +122,7 @@ export default class Application implements IApplication {
   }
 
   get homeState() {
-    return States.Projects;
+    return States.Library;
   }
 
   get fsm() {

@@ -1,6 +1,6 @@
 <template>
   <div ref="projects" class="projects">
-    <div class="projects_inner scroll-s scroll-transparent">
+    <div class="projects_inner sidebar-scroll">
       <div
         v-for="item in json"
         :key="item.key"

@@ -3,8 +3,6 @@ import { Options, Vue } from 'vue-class-component';
 @Options({
   template: `
     <router-view></router-view>
-    <popup />
-    <toasted />
   `,
 })
 export default class AppComponent extends Vue {

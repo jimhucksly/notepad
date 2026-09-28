@@ -12,6 +12,11 @@ import { UpdateLibraryCommand } from './commands/commands';
 import { ILibraryFile, ITreeItem } from './models';
 import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries';
 
+enum TabState {
+  Preview = 1,
+  Text = 2,
+}
+
 @Options({
   components: {
     'md-editor': MdEditor,
@@ -26,7 +31,7 @@ export default class LibraryPage extends Vue {
   @Getter('Library/getLibraryFileId') currentId: string;
 
   isNewFile = false;
-  isPreview = true;
+  preview = TabState.Preview;
   ready = false;
   template = '';
   value = '';
@@ -45,7 +50,7 @@ export default class LibraryPage extends Vue {
       if (this.isPreview) {
         this.previewRender();
       } else {
-        this.toggle(true);
+        this.toggle();
       }
     } catch (e) {
       /* eslint-disable no-console */
@@ -158,11 +163,8 @@ export default class LibraryPage extends Vue {
       });
   }
 
-  toggle(state: boolean) {
-    if (state === this.isPreview) {
-      return;
-    }
-    this.isPreview = state;
+  toggle() {
+    this.preview = this.isPreview ? TabState.Text : TabState.Preview;
     if (this.isPreview) {
       this.previewRender();
     }
@@ -205,6 +207,10 @@ export default class LibraryPage extends Vue {
         }
       }
     }
+  }
+
+  get isPreview(): boolean {
+    return this.preview === TabState.Preview;
   }
 
   get toolbars() {

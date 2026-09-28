@@ -7,12 +7,12 @@
       <p @click.prevent="openLink($event)" v-html="message"></p>
     </div>
     <div class="notepad_item_btns">
-      <button @click.prevent="edit">
-        <svg-icon icon="editIcon" />
-      </button>
-      <button @click.prevent="remove">
-        <svg-icon icon="removeIcon" />
-      </button>
+      <b-button icon variant="tonal" @click.prevent="edit">
+        <b-icon>pencil</b-icon>
+      </b-button>
+      <b-button icon variant="tonal" @click.prevent="remove">
+        <b-icon>delete</b-icon>
+      </b-button>
     </div>
   </div>
 </template>

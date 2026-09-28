@@ -21,6 +21,7 @@
   &:hover {
     .notepad_item_btns {
       display: flex;
+      gap: 4px;
     }
   }
 }
@@ -41,24 +42,6 @@
 .notepad_item_btns {
   display: none;
   position: absolute;
-  top: 0;
-  right: 10px;
-
-  button {
-    display: block;
-    width: 45px;
-    height: 30px;
-    border: none;
-    background: var(--blue-gray_light);
-    opacity: 0.3;
-    border: 1px solid var(--blue-gray);
-
-    svg {
-      max-width: 65%;
-    }
-
-    &:hover {
-      opacity: 1;
-    }
-  }
+  top: 4px;
+  right: 12px;
 }
