@@ -16,7 +16,7 @@
 
   .projects_item {
     position: relative;
-    padding: 3px 0;
+    height: var(--button-s);
     cursor: pointer;
     white-space: nowrap;
     transition: 0.2s;

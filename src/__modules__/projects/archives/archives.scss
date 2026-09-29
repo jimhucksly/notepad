@@ -6,7 +6,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  padding-left: 15px;
   background-color: var(--grey-d-6);
   z-index: 8;
   transition: 0.3s;
@@ -14,6 +13,13 @@
   &.expanded {
     transform: translateX(100%);
   }
+}
+.projects_archives_title {
+  display: flex;
+  align-items: center;
+  flex-basis: 54px;
+  flex-shrink: 0;
+  padding-left: 16px;
 }
 .projects_archives_inner {
   flex-basis: 100%;
@@ -25,9 +31,10 @@
     li {
       position: relative;
       display: flex;
-      flex-direction: column;
-      padding: 9px 35px 9px 0px;
-      color: var(--yellow_light);
+      align-items: center;
+      height: var(--button-s);
+      padding: 0 4px 0 16px;
+      color: var(--secondary);
       cursor: default;
       transition: 0.2s;
 
@@ -35,38 +42,30 @@
         padding-top: 0;
       }
 
-      &:hover {
-        .icon {
-          display: block;
-        }
+      [aria-role="controls"] {
+        display: none;
+        justify-content: flex-end;
+        gap: 4px;
       }
 
       small {
         display: block;
         margin-top: 4px;
-        color: var(--blue-gray);
+        color: var(--secondary-d-2);
+      }
+
+      &:hover {
+        background-color: var(--grey-d-5);
+        color: var(--secondary-l-3);
+
+        small {
+          color: var(--secondary-d-1);
+        }
+
+        [aria-role="controls"] {
+          display: flex;
+        }
       }
     }
   }
-
-  .icon {
-    position: absolute;
-    top: 9px;
-    display: none;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-
-  .icon-restore {
-    right: 36px;
-  }
-  .icon-remove {
-    right: 15px;
-  }
-}
-.projects_archives_title {
-  display: flex;
-  align-items: center;
-  flex-basis: 54px;
-  flex-shrink: 0;
 }

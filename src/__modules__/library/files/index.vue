@@ -5,7 +5,7 @@
       <ul v-if="libraryFiles">
         <li v-for="file in libraryFiles" :key="file.id" :class="{ active: file.id === currentId }">
           <span>{{ file.name }}</span>
-          <div>
+          <div aria-role="controls">
             <b-button icon text variant="text" @click="openFile(file)">
               <b-icon>book-open-page-variant</b-icon>
             </b-button>
@@ -15,9 +15,9 @@
           </div>
         </li>
       </ul>
-      <button @click="add">
-        <svg-icon icon="btnAdd" width="32" height="23" />
-      </button>
+      <b-button icon variant="flat" color="primary" class="ma-4" @click="add">
+        <b-icon>plus</b-icon>
+      </b-button>
     </div>
   </div>
 </template>
