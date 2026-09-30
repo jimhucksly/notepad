@@ -11,11 +11,10 @@ ul {
       white-space: nowrap;
       padding: 6px 15px 6px 35px;
       cursor: pointer;
-      color: var(--blue-gray);
+      color: var(--primary-l-4);
 
       &:hover {
-        background-color: var(--dark_darken-1);
-        color: var(--blue-gray_light);
+        color: var(--primary-l-5);
         &.tree_item_plus,
         &.tree_item_minus:not(.tree_item_empty) {
           &:before {
@@ -34,8 +33,7 @@ ul {
           justify-content: center;
           width: 12px;
           height: 12px;
-          color: var(--yellow_light);
-          border: 1px solid var(--yellow_light);
+          color: var(--primary-l-4);
           line-height: 8px;
           opacity: 0.7;
         }
@@ -56,15 +54,12 @@ ul {
         }
         &:not(.tree_item_node):not(.tree_item_empty) {
           &:before {
-            color: var(--yellow_light);
-            border: 1px solid var(--yellow_light);
+            color: var(--primary-l-4);
           }
         }
         &:not(.tree_item_node).tree_item_empty {
           &:before {
-            color: var(--red_light);
-            border: 1px solid var(--red_light);
-            opacity: 0.4;
+            color: transparent;
           }
         }
       }

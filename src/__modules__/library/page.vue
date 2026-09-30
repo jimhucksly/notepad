@@ -4,7 +4,7 @@
       <b-tab index="1" heading="Preview" eager>
         <div class="editor_content" v-html="template"></div>
       </b-tab>
-      <b-tab index="2" heading="Tex" eager>
+      <b-tab index="2" heading="Text" eager>
         <md-editor
           ref="editor"
           v-model="value"

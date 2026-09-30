@@ -36,11 +36,10 @@
       }
     }
 
-    :deep() {
-      .b-checkbox {
-        input[type='checkbox']:not(:checked) + .b-checkbox-icon {
-          background-color: transparent !important;
-        }
+    :deep(.b-checkbox) {
+      position: relative;
+      input[type='checkbox']:not(:checked) + .b-checkbox-icon {
+        background-color: transparent !important;
       }
     }
 

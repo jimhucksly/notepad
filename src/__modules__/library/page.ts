@@ -155,7 +155,7 @@ export default class LibraryPage extends Vue {
     const promise = this.$app.$commandBus.do<UpdateLibraryCommand, void>(new UpdateLibraryCommand(id, body));
     Promise.all([promise])
       .then(() => {
-        this.setFileId(id);
+        this.onCurrentIdChanged(id);
       })
       .catch(e => {
         /* eslint-disable no-console */

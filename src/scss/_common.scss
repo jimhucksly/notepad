@@ -92,13 +92,3 @@ a[href] {
   font-weight: bold;
 }
 
-// scrollbar styling
-
-.scroll-transparent::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-.scroll-transparent::-webkit-scrollbar-track:hover {
-  background-color: transparent;
-  transition: 0.2s;
-}

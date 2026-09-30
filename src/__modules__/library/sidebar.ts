@@ -20,7 +20,7 @@ export default class Library extends Vue {
 
   isFilesExpanded = false;
 
-  @Watch('items') onItemsChanged() {
+  @Watch('items', { deep: true }) onItemsChanged() {
     if (this.items && this.items.length) {
       this.tree = this.items;
     } else {
