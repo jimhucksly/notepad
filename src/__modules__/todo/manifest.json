@@ -2,7 +2,7 @@
 	"components": {
 		"main": "page",
 		"aside": "sidebar",
-		"modals": []
+		"modals": ["edit"]
 	},
 	"store": "store"
 }

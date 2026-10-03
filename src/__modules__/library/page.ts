@@ -8,6 +8,7 @@ import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { translit } from '~/helpers';
+import { awaiting } from '~/utils/awaiting';
 import { UpdateLibraryCommand } from './commands/commands';
 import { ILibraryFile, ITreeItem } from './models';
 import { LibraryFileQuery, LibraryFilesQuery } from './queries/queries';
@@ -48,6 +49,7 @@ export default class LibraryPage extends Vue {
       await this.$app.$queryBus.exec<LibraryFileQuery, string>(new LibraryFileQuery(id));
       this.value = this.initialValue;
       if (this.isPreview) {
+        awaiting(() => Boolean(LibraryPage.md));
         this.previewRender();
       } else {
         this.toggle();

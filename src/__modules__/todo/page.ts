@@ -1,5 +1,7 @@
 import { eventBus } from '@dn-web/core';
-import { cloneDeep, isEqual } from 'lodash';
+import { ConfirmDialog, CreateEditDialog, DialogManager } from '@dn-web/ui';
+import { isEqual } from 'lodash';
+import cloneDeep from 'lodash-es/cloneDeep';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
@@ -20,12 +22,8 @@ export default class Todo extends Vue {
 
   items: Array<ITodoItem> = [];
   order: Array<string> = [];
-  isPopupShow = false;
-  itemSelected: ITodoItem | null = null;
   isDrag = false;
   loading = false;
-
-  addTodoHandler: () => void;
 
   @Watch('json') onJsonChanged() {
     this.setItems();
@@ -37,12 +35,15 @@ export default class Todo extends Vue {
       this.loading = true;
       await this.$app.$queryBus.exec<TodoQuery, Array<ITodo>>(new TodoQuery());
       this.loading = false;
-      this.addTodoHandler = this.addTodo.bind(this);
-      eventBus.$on('todo-add', this.addTodoHandler);
+      eventBus.$on('todo-add', this.addTodo);
     } catch (e) {
       /* eslint-disable no-console */
       console.log(e);
     }
+  }
+
+  beforeUnmount() {
+    eventBus.$off('todo-add', this.addTodo);
   }
 
   onMouseDown(event: MouseEvent, id: string) {
@@ -50,6 +51,12 @@ export default class Todo extends Vue {
       /**
        * если клик правой кнопкой мыши
        */
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    const isButton = Boolean(target.closest('.v-btn'));
+    if (isButton) {
       return;
     }
 
@@ -249,55 +256,53 @@ export default class Todo extends Vue {
     this.$app.$commandBus.do<TodoOrderCommand, void>(new TodoOrderCommand(result));
   }
 
-  edit(id: string) {
+  async edit(id: string) {
     if (this.isDrag) {
       return;
     }
     document.onmousemove = null;
     document.onmouseup = null;
     const o = this.items.find((item: ITodoItem) => item.id === id);
-    this.itemSelected = o ? cloneDeep(o) : null;
-    if (this.itemSelected) {
-      this.isPopupShow = true;
-      this.$nextTick(() => {
-        const textarea = this.$refs.textarea as HTMLElement;
-        textarea.focus();
-        textarea.addEventListener('keydown', (e: KeyboardEvent) => {
-          if ((e.code === 'KeyS' || e.key === 's' || e.key === 'ы') && e.ctrlKey) {
-            e.preventDefault();
-            this.save();
-          }
-        });
-      });
+    const result = await DialogManager.exec<ITodoItem>(
+      new CreateEditDialog({
+        title: 'Edit todo item',
+        component: 'Todo-Modal-edit',
+        componentProps: {
+          model: cloneDeep(o),
+        },
+        height: '60%',
+        size: 'm',
+      })
+    );
+    if (!result) {
+      return;
+    }
+    this.save(result);
+  }
+
+  save(item: ITodoItem) {
+    const id = item.id;
+    const o: ITodoItem | null = this.items.find((i: ITodoItem) => i.id === id) ?? null;
+    if (o) {
+      o.text = item.text;
+      this.items = [...this.items];
+      this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o));
     }
   }
 
-  save() {
-    if (this.itemSelected) {
-      const id = this.itemSelected.id;
-      const o: ITodoItem | null = this.items.find((item: ITodoItem) => item.id === id) ?? null;
-      if (o) {
-        o.text = this.itemSelected.text;
-        this.items = [...this.items];
-        this.cancel();
-        this.$app.$commandBus.do<UpdateTodoCommand, void>(new UpdateTodoCommand(o));
-      }
+  async remove(item: ITodoItem) {
+    const isConfirm = await DialogManager.exec(
+      new ConfirmDialog({
+        title: 'Confirmation',
+        content: 'Do you really want to delete this item from the todo list?',
+      })
+    );
+    if (!isConfirm) {
+      return;
     }
-  }
-
-  cancel() {
-    this.isPopupShow = false;
-    this.itemSelected = null;
-  }
-
-  async remove() {
-    if (this.itemSelected) {
-      const id = this.itemSelected.id;
-      this.items = this.items.filter((item: ITodoItem) => item.id !== id);
-      this.cancel();
-      await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(id));
-      this.reorder();
-    }
+    this.items = this.items.filter((i: ITodoItem) => item.id !== i.id);
+    await this.$app.$commandBus.do<DeleteTodoCommand, void>(new DeleteTodoCommand(item.id));
+    this.reorder();
   }
 
   addTodo() {
