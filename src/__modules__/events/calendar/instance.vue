@@ -50,7 +50,7 @@
                 <p>{{ getContent(d.date) }}</p>
               </template>
             </div>
-            <svg-icon icon="loader" width="30px" height="30px" />
+            <b-loader></b-loader>
           </template>
           <template v-else>
             <span>{{ d.num }}</span>

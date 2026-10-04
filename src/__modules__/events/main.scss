@@ -1,0 +1,48 @@
+.events {
+  .events__search {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-grow: 2;
+    // .events__search-dropdown {
+    //   position: absolute;
+    //   top: 100%;
+    //   left: 0;
+    //   width: 100%;
+    //   margin-top: -1px;
+    //   border: 1px solid var(--blue-gray);
+    //   background-color: #fff;
+    //   z-index: 999;
+
+    //   ul {
+    //     li {
+    //       cursor: pointer;
+    //       font-size: 0.9rem;
+    //       padding: 8px 4px;
+    //       border-bottom: 1px solid var(--blue-gray);
+
+    //       &:last-child {
+    //         border-bottom-color: transparent;
+    //       }
+
+    //       &:hover {
+    //         background-color: var(--blue-gray_light);
+    //       }
+
+    //       &.not-clickable {
+    //         cursor: default;
+    //         &:hover {
+    //           background-color: #fff;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+  }
+  .events__calendar {
+    position: relative;
+    flex-basis: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
