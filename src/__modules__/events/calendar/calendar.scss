@@ -99,7 +99,7 @@
 
       span {
         font-size: 0.8rem;
-        color: #ccc;
+        color: var(--grey-d-1);
       }
 
       &.b-calendar__today {
@@ -122,7 +122,7 @@
     }
 
     .b-calendar__week:last-child > div {
-      border-bottom-color: #ccc;
+      border-bottom-color: var(--grey-l-5);
     }
   }
 }
@@ -142,9 +142,6 @@
   vertical-align: middle;
   overflow: visible;
   white-space: nowrap;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  -o-appearance: none;
   background: none;
   outline: 0;
   border: none;
@@ -161,9 +158,7 @@
 .b-calendar-wrap .b-calendar__nav {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-align: center;
   align-items: center;
-  -ms-flex-pack: center;
   justify-content: center;
   width: 100%;
   height: 35px;
@@ -248,8 +243,8 @@
 .b-calendar-wrap .b-calendar__body .b-calendar__week > div {
   position: relative;
   background-color: #fff;
-  color: #333;
-  border: 1px solid #ccc;
+  color: var(--grey);
+  border: 1px solid var(--grey-l-5);
   border-bottom-color: transparent;
   width: 14.28%;
   padding: 4px 0px;
@@ -270,8 +265,8 @@
 }
 
 .b-calendar-wrap .b-calendar__body div[disabled="disabled"]:not(.b-calendar__today) {
-  background-color: #ccc !important;
-  color: #eee !important;
+  background-color: var(--grey-l-5) !important;
+  color: var(--grey-l-6) !important;
   cursor: default; }
 
 .b-calendar-wrap .b-calendar__body .b-calendar__week > div:last-child {
@@ -280,14 +275,14 @@
 .b-calendar-wrap .b-calendar__body .b-calendar__week {
   & > div:not(.b-calendar__today):not(.b-calendar__prev-month):not(.b-calendar__next-month):not(.b-calendar__range-start):not(.b-calendar__range-end):not(.b-calendar__in-range):not(.b-calendar__range-hover) {
     &:hover {
-      background-color: #eee;
+      background-color: var(--grey-l-6);
     }
   }
 }
 
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__prev-month,
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__next-month {
-  color: #a6a4a4;
+  color: var(--grey-l-6);
 }
 
 .b-calendar-wrap .b-calendar__body div.b-calendar__today {
@@ -296,9 +291,7 @@
 }
 
 .b-calendar .b-calendar__footer {
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-pack: justify;
   justify-content: space-between;
   height: 35px;
   flex-shrink: 0;
@@ -324,7 +317,7 @@
 
 .b-calendar-wrap .b-calendar__year:not(.b-calendar__today):hover,
 .b-calendar-wrap .b-calendar__month:not(.b-calendar__today):hover {
-  background-color: #eee;
+  background-color: var(--grey-l-6);
 }
 
 .b-calendar-wrap .b-calendar__year:nth-child(3n),
@@ -353,7 +346,7 @@
   left: 0;
   font-size: 13px;
   color: #fff;
-  background: #191919;
+  background: var(--grey);
   border: 1px solid #fff;
   border-radius: 10px;
   white-space: nowrap;
@@ -369,7 +362,7 @@
   left: -3px;
   width: 15px;
   height: 10px;
-  background: #191919;
+  background: var(--grey);
   border: 1px solid #fff;
   border-bottom-right-radius: 15px;
   transform: skew(-45deg);
@@ -383,7 +376,7 @@
   left: 1px;
   width: 20px;
   height: 8px;
-  background: #191919;
+  background: var(--grey);
   border-radius: 10px;
   z-index: 15;
 }
@@ -394,81 +387,10 @@
   color: #fff;
 }
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__in-range {
-  background-color: var(--dark_light);
+  background-color: var(--primary-d-2);
   color: #fff;
 }
 .b-calendar-wrap .b-calendar__body .b-calendar__week .b-calendar__range-hover {
-  background-color: var(--dark_light_lighten);
+  background-color: var(--primary-d-1);
   color: #fff;
-}
-
-.b-calendar-wrap .b-calendar-form-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #fff;
-  width: 100%;
-  height: 100%;
-  z-index: 998;
-  opacity: 0.8;
-}
-
-.b-calendar-wrap .b-calendar-form {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  bottom: 10px;
-  width: 50%;
-  background: #fff;
-  border: 1px solid #ccc;
-  padding-top: 25px;
-  z-index: 999;
-
-  .b-calendar-form-close {
-    position: absolute;
-    top: 13px;
-    right: 12px;
-    width: 13px;
-    height: 13px;
-    cursor: pointer;
-
-    &:after,
-    &:before {
-      content: '';
-      position: absolute;
-      top: 5px;
-      left: -1px;
-      width: 13px;
-      height: 2px;
-      background-color: var(--dark);
-    }
-
-    &:after {
-      transform: rotate(45deg);
-    }
-    &:before {
-      transform: rotate(-45deg);
-    }
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 10px;
-
-    input {
-      flex-shrink: 0;
-      margin-bottom: 15px;
-    }
-
-    textarea {
-      margin-bottom: 15px;
-      flex-grow: 2;
-    }
-
-    button {
-      flex-shrink: 0;
-    }
-  }
 }

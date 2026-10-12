@@ -1,4 +1,3 @@
-import { debounce } from 'lodash';
 import { Options, Vue } from 'vue-class-component';
 import { Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
@@ -47,7 +46,6 @@ export default class Events extends Vue {
       content: 'content',
     },
   };
-  bCalendarFormShow = false;
 
   headerText = '';
   search = '';
@@ -66,67 +64,20 @@ export default class Events extends Vue {
     }
   }
 
-  private readonly debounced = debounce((v: string, context: Events): void => {
-    context.itemsFiltered = [];
-    if (!v) {
-      return;
-    }
-    if (!context?.items) {
-      context.itemsFiltered.push({
-        key: '0',
-        title: 'Nothing to show',
-      });
-      return;
-    }
-    Object.keys(context.items).forEach((key: string) => {
-      const title = context.items[key].title.toLowerCase();
-      const content = context.items[key].content.toLowerCase();
-      if (title.indexOf(v) > -1 || content.indexOf(v) > -1) {
-        context.itemsFiltered.push({
-          key,
-          title: context.items[key].title,
-        });
-      }
-    });
-    if (context.itemsFiltered.length === 0) {
-      context.itemsFiltered.push({
-        key: '0',
-        title: 'Nothing to show',
-      });
-    }
-    document.onkeydown = e => {
-      if (e.code === 'Escape') {
-        context.itemsFiltered = [];
-        context.search = '';
-        document.onclick = null;
-        document.onkeydown = null;
-      }
-    };
-    document.onclick = e => {
-      e.preventDefault();
-      const el = e.target as HTMLElement;
-      if (el.closest('.events__search > form') === null) {
-        context.itemsFiltered = [];
-        context.search = '';
-      }
-    };
-  }, 600);
-
-  @Watch('search') onSearchChanged(val: string) {
-    if (!val) {
-      return;
-    }
-    this.debounced(val.toLowerCase(), this);
+  mounted() {
+    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery());
   }
 
   prev() {
     const elem = this.$refs.calendar as IBCalendar;
     elem.prevMonth();
   }
+
   next() {
     const elem = this.$refs.calendar as IBCalendar;
     elem.nextMonth();
   }
+
   today() {
     const elem = this.$refs.calendar as IBCalendar;
     elem.setToday();
@@ -165,7 +116,21 @@ export default class Events extends Vue {
     }
   }
 
-  mounted() {
-    this.$app.$queryBus.exec<EventsQuery, Array<IEvent>>(new EventsQuery());
+  fetchData(searchTerm: string = ''): Array<{ key: string; title: string }> {
+    if (!searchTerm) {
+      return [];
+    }
+    const result: Array<{ key: string; title: string }> = [];
+    Object.keys(this.items).forEach((key: string) => {
+      const title = this.items[key].title.toLowerCase();
+      const content = this.items[key].content.toLowerCase();
+      if (title.indexOf(searchTerm) > -1 || content.indexOf(searchTerm) > -1) {
+        result.push({
+          key,
+          title: this.items[key].title,
+        });
+      }
+    });
+    return result;
   }
 }

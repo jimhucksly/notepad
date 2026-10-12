@@ -1,6 +1,8 @@
 import './calendar.scss';
+import { CreateEditDialog, DialogManager } from '@dn-web/ui';
 import { Options, Vue } from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
+import { IEvent } from '../models';
 import { IOptions } from './calendar.model';
 import CalendarInstance from './instance';
 import { getNativeDate, isDate } from './utils';
@@ -75,12 +77,6 @@ export default class BCalendarComponent extends Vue {
   op: IOptions = { ...defaults };
   range: string[] = [];
   active = '';
-  formShow = false;
-  event: Record<string, string> = {
-    date: '',
-    title: '',
-    content: '',
-  };
 
   created() {
     this.op = { ...defaults, ...this.options };
@@ -167,13 +163,7 @@ export default class BCalendarComponent extends Vue {
         }
       }
     } else if (this.op.eventsMode) {
-      this.formShow = true;
-      this.event.date = date;
-      this.$emit('form-toggle', this.formShow);
-      if (this.op.items && this.op.items[date]) {
-        this.event.title = (this.op.items[date] as Record<string, string>)[this.op.modelType.title];
-        this.event.content = (this.op.items[date] as Record<string, string>)[this.op.modelType.content];
-      }
+      this.createEditRecord(date);
     } else {
       this.$emit('day-selected', getNativeDate(date));
     }
@@ -244,29 +234,44 @@ export default class BCalendarComponent extends Vue {
     return this.hasItems && `${date}` in this.op.items;
   }
 
-  formClear() {
-    this.event = { date: '', title: '', content: '' };
-    this.formShow = false;
-    this.$emit('form-toggle', this.formShow);
-  }
-
-  formSave() {
-    if (this.event.title && this.event.content) {
-      this.$emit('save', this.event);
-      this.formClear();
-    }
-  }
-
-  formRemove() {
-    this.$emit('remove', this.event.date);
-    this.formClear();
-  }
-
   private emit() {
     const r1 = getNativeDate(this.range[0]);
     const r2 = getNativeDate(this.range[1]);
     if (r1 && r2) {
       this.$emit('range-selected', [r1.toString(), r2.toString()]);
+    }
+  }
+
+  private async createEditRecord(date: string) {
+    const model: IEvent = {
+      date,
+      title: null,
+      content: null,
+    };
+    if (this.op.items && this.op.items[date]) {
+      const item = this.op.items[date] as IEvent;
+      model.date = date;
+      model.title = item.title;
+      model.content = item.content;
+    }
+    const result = await DialogManager.exec<IEvent>(
+      new CreateEditDialog({
+        title: 'Edit item',
+        component: 'Events-Modal-createRecord',
+        componentProps: {
+          model,
+        },
+        size: 'm',
+        height: '85%',
+      })
+    );
+    if (!result) {
+      return;
+    }
+    if (!result.title && !result.content) {
+      this.$emit('remove', date);
+    } else {
+      this.$emit('save', result);
     }
   }
 

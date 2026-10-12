@@ -18,11 +18,11 @@
             </b-button>
           </v-col>
           <v-col cols="6">
-            <b-edit-text v-model="search" :readonly="bCalendarFormShow" hide-details>
+            <b-combobox chips :fetch-data="fetchData" item-title="title" item-value="key">
               <template #prepend-inner>
                 <b-icon>search</b-icon>
               </template>
-            </b-edit-text>
+            </b-combobox>
           </v-col>
         </v-row>
       </v-container>
@@ -35,7 +35,6 @@
           @set-header="setHeader($event)"
           @save="save"
           @remove="remove"
-          @form-toggle="bCalendarFormShow = $event"
         />
       </div>
     </v-card-text>

@@ -161,6 +161,29 @@ app.on('before-quit', () => {
   mainWindow.close()
 })
 
+app.on('web-contents-created', (_event, contents) => {
+  contents.on('devtools-opened', () => {
+    const injectScript = () => {
+      contents.devToolsWebContents?.executeJavaScript(`
+        (() => {
+            const origErr = console.error;
+            console.error = function (...args) {
+              const s = String(args[0] ?? "");
+              if (s.includes("Autofill.enable") || s.includes("Autofill.setAddresses")) return;
+              return origErr.apply(console, args);
+            };
+        })()
+      `).catch(() => {
+        //
+      });
+    };
+    injectScript();
+    setTimeout(injectScript, 100);
+    setTimeout(injectScript, 500);
+    setTimeout(injectScript, 1000);
+  });
+});
+
 ipcMain.on('minimize', (event) => {
   mainWindow.minimize()
 })
