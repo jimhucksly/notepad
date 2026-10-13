@@ -63,12 +63,12 @@
     padding-right: 15px;
     margin-bottom: 15px;
     &_label {
-      color: var(--blue-gray);
+      color: var(--primary-l-2);
       margin-bottom: 5px;
     }
     &_name {
       font-size: 12px;
-      color: var(--editor-yellow);
+      color: var(--secondary);
       white-space: pre-line;
       word-wrap: break-word;
     }

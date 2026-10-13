@@ -1,0 +1,44 @@
+.links_cont {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex-grow: 1;
+  padding: 6px;
+  padding-right: 0;
+  overflow: hidden;
+
+  .v-list {
+    .v-list-item {
+      font-family: var(--font-gotham);
+      color: var(--primary-d-4);
+      padding: 12px 0 12px 12px;
+    }
+  }
+
+  .links_area {
+
+
+
+    ul {
+      li {
+        display: flex;
+        align-items: center;
+        padding-left: 6px;
+        transition: all 0.2s;
+        a {
+          display: block;
+          flex-basis: 100%;
+          font-size: 1.1rem;
+          padding: 6px 0;
+          color: var(--primary-d-4);
+          text-decoration: none;
+          transition: all 0.2s;
+
+          &:hover {
+            color: var(--primary);
+          }
+        }
+      }
+    }
+  }
+}

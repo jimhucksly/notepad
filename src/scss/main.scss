@@ -141,10 +141,10 @@ main {
 
   .signup {
     cursor: pointer;
-    color: var(--blue);
+    color: var(--primary);
 
     &:hover {
-      color: var(--blue_light);
+      color: var(--primary-l-1);
     }
   }
 }
@@ -158,7 +158,7 @@ main {
   background-color: var(--grey);
 
   &_title {
-    color: var(--blue);
+    color: var(--primary);
     font-weight: bold;
     margin-bottom: 30px;
   }
@@ -257,7 +257,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--blue_light);
+    color: var(--primary-l-1);
     font-size: 11px;
     margin-bottom: 5px;
   }
@@ -267,6 +267,6 @@ main {
     width: 33%;
     height: 8px;
     border-radius: 4px;
-    background-color: var(--blue);
+    background-color: var(--primary);
   }
 }

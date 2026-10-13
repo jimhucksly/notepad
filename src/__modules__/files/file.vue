@@ -44,7 +44,7 @@
 
   &.selected {
     border: 1px solid var(--black_light);
-    background-color: var(--blue_light-op-02);
+    background-color: var(--primary-l-2);
   }
   &.checking {
     .file_icon,
@@ -64,7 +64,7 @@
     .file_check {
       span {
         background-color: rgba(255, 255, 255, 1);
-        border-color: var(--editor_green_darken-10);
+        border-color: var(--success-d-1);
         box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.2);
         svg {
           display: block;
@@ -95,7 +95,7 @@
   .file_name {
     display: inline-block;
     font-size: 11px;
-    color: var(--blue);
+    color: var(--primary);
     text-align: center;
     padding: 3px 0;
     width: 100%;
@@ -109,7 +109,7 @@
     display: none;
     position: relative;
     height: 13px;
-    background-color: var(--blue);
+    background-color: var(--primary);
     margin-left: 15px;
 
     span {
@@ -120,7 +120,7 @@
       top: 0;
       right: -18px;
       font-size: 11px;
-      color: var(--dark);
+      color: var(--primary-d-4);
       white-space: nowrap;
 
       &.error {
@@ -147,7 +147,7 @@
       justify-content: center;
       width: 23px;
       height: 23px;
-      border: 1px solid var(--dark);
+      border: 1px solid var(--primary-d-4);
       border-radius: 4px;
       cursor: pointer;
       background-color: rgba(255, 255, 255, 0.8);

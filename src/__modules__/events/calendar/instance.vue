@@ -2,9 +2,13 @@
   <div class="b-calendar" :class="{ 'b-calendar--events': op.eventsMode }">
     <!-- nav -->
     <div v-if="!op.eventsMode" class="b-calendar__nav">
-      <button class="b-calendar__back" @click="btnPrevHandler"></button>
+      <b-button icon color="grey" @click="btnPrevHandler">
+        <b-icon>chevron-left</b-icon>
+      </b-button>
       <div class="b-calendar__header">{{ header }}</div>
-      <button class="b-calendar__forward" @click="btnNextHandler"></button>
+      <b-button icon color="grey" @click="btnNextHandler">
+        <b-icon>chevron-right</b-icon>
+      </b-button>
     </div>
     <!-- body -->
     <div ref="bofy" class="b-calendar__body">
@@ -87,11 +91,11 @@
       </template>
     </div>
     <!-- footer -->
-    <div v-if="!op.eventsMode" class="b-calendar__footer">
+    <!-- <div v-if="!op.eventsMode" class="b-calendar__footer">
       <button class="b-calendar__month-btn" @click="btnMonthHandler">Month</button>
       <button class="b-calendar__today-btn" @click="btnTodayHandler">Today</button>
       <button class="b-calendar__year-btn" @click="btnYearHandler">Year</button>
-    </div>
+    </div> -->
   </div>
 </template>
 <script src="./instance.ts" lang="ts"></script>

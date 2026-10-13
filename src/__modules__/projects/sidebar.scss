@@ -110,7 +110,7 @@
 
     &.checked {
       &:not(.active) {
-        background-color: var(--dark_darken-2);
+        background-color: var(--primary-d-5);
       }
 
       .projects_item_check {
@@ -125,14 +125,14 @@
           width: 9px;
           height: 9px;
           border-radius: 2px;
-          background-color: var(--yellow);
+          background-color: var(--secondary);
         }
       }
     }
 
     &:hover {
-      background-color: var(--dark_darken-1);
-      color: var(--yellow);
+      background-color: var(--primary-d-4);
+      color: var(--secondary);
 
       .projects_item_check {
         display: block;
