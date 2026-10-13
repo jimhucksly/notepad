@@ -18,11 +18,6 @@ interface IBCalendarOptions {
   };
 }
 
-interface ISelected {
-  key: string;
-  title: string;
-}
-
 interface IFilteredItem {
   key: string;
   title: string;
@@ -48,7 +43,7 @@ export default class Events extends Vue {
   };
 
   headerText = '';
-  search = '';
+  selected = '';
   itemsFiltered: Array<IFilteredItem> = [];
 
   @Watch('items') onItemsReceived(o: IEvent) {
@@ -61,6 +56,15 @@ export default class Events extends Vue {
       elems.forEach(el => {
         el.classList.remove('processing');
       });
+    }
+  }
+
+  @Watch('selected') onSelectedChanged(value: string) {
+    if (value) {
+      this.bCalendarOptions = {
+        ...this.bCalendarOptions,
+        setDate: value,
+      };
     }
   }
 
@@ -101,19 +105,6 @@ export default class Events extends Vue {
       elem.classList.add('processing');
     }
     await this.$app.$commandBus.do<DeleteEventCommand, void>(new DeleteEventCommand(date));
-  }
-
-  itemSelected(item: ISelected): void {
-    if (item.key === '0') {
-      //
-    } else {
-      this.bCalendarOptions = {
-        ...this.bCalendarOptions,
-        setDate: item.key,
-      };
-      this.itemsFiltered = [];
-      this.search = '';
-    }
   }
 
   fetchData(searchTerm: string = ''): Array<{ key: string; title: string }> {

@@ -3,7 +3,7 @@
     <v-card-title class="d-flex align-center">
       <v-container class="pa-0">
         <v-row no-gutters>
-          <v-col cols="6" class="d-flex gap-2">
+          <v-col cols="6" class="d-flex align-center gap-2">
             <b-button icon variant="outlined" @click="prev">
               <b-icon>chevron-left</b-icon>
             </b-button>
@@ -17,8 +17,8 @@
               Today
             </b-button>
           </v-col>
-          <v-col cols="6">
-            <b-combobox chips :fetch-data="fetchData" item-title="title" item-value="key">
+          <v-col cols="6" class="d-flex align-center">
+            <b-combobox v-model="selected" chips :fetch-data="fetchData" item-title="title" item-value="key" hide-details>
               <template #prepend-inner>
                 <b-icon>search</b-icon>
               </template>
@@ -39,32 +39,6 @@
       </div>
     </v-card-text>
   </v-card>
-  <!-- <div id="events_cont" class="events">
-    <div class="events__top">
-      <div class="events__btns">
-
-      </div>
-      <div class="events__search">
-        <form ref="search-form">
-
-          <div v-if="itemsFiltered.length" ref="search-results" class="events__search-dropdown">
-            <ul>
-              <li
-                v-for="item in itemsFiltered"
-                :key="item.key"
-                :data-current="item.key"
-                :class="{ 'not-clickable': item.key === '0' }"
-                @click="itemSelected(item)"
-              >
-                {{ item.title }}
-              </li>
-            </ul>
-          </div>
-        </form>
-      </div>
-    </div>
-
-  </div> -->
 </template>
 <script src="./main.ts" lang="ts"></script>
 <style src="./main.scss" lang="scss" scoped></style>
