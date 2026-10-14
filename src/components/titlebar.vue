@@ -1,39 +1,43 @@
 <template>
-  <div id="titlebar" class="title-bar">
-    <template v-if="isAuth && yandexDiskAccessToken">
-      <div class="menu-button-container">
-        <button @click="toPreferences">Preferences</button>
-      </div>
-      <div v-if="isAuth" class="menu-button-container button--reload">
-        <button @click="reload">Reload</button>
-      </div>
-      <div v-if="isAuth" class="menu-button-container button--about">
-        <button @click="toAbout">About</button>
-      </div>
-    </template>
-    <div class="app-name-container">
-      <span class="titlebar-logo">
-        <img src="assets/images/icons/24x24.png" alt="" />
-      </span>
-      <p>{{ title }}</p>
-    </div>
-    <div v-if="process" class="menu-button-container process">
-      <b-loader small :full="false" /> <span class="p-l-5">{{ process.name }}</span>
-    </div>
-    <div v-if="isAuth && yandexDiskAccessToken" class="menu-button-container button--logout" @click="toAccount">
-      <b-icon path="assets/images" width="29" height="29">user</b-icon>
-    </div>
-    <div class="window-controls-container">
-      <button class="minimize-button" @click="$electron.ipcRenderer.send('minimize')"></button>
-      <button
-        class="min-max-button"
-        :class="{
-          'is-maximized': isMaximized,
-        }"
-        @click="$electron.ipcRenderer.send('min-max')"
-      ></button>
-      <button class="close-button" @click="$electron.ipcRenderer.send('hide')"></button>
-    </div>
-  </div>
+  <v-container id="titlebar" class="title-bar pa-0">
+    <v-row no-gutters>
+      <v-col v-if="isAuth && yandexDiskAccessToken" class="d-flex align-center">
+        <b-button variant="text" text @click="toPreferences">
+          <span style="color: var(--primary-l-4)">Preferences</span>
+        </b-button>
+        <b-button v-if="isAuth" variant="text" text @click="reload">
+          <span style="color: var(--primary-l-4)">Reload</span>
+        </b-button>
+        <b-button v-if="isAuth" variant="text" text @click="toAbout">
+          <span style="color: var(--primary-l-4)">About</span>
+        </b-button>
+      </v-col>
+      <v-col class="d-flex align-center justify-center" style="flex-basis: 50%; position: relative;">
+        <span class="titlebar-logo">
+          <img src="assets/images/icons/24x24.png" alt="" />
+        </span>
+        <p>{{ title }}</p>
+        <div v-if="process" class="title-bar__process">
+          <b-loader small :full="false" /> <span class="p-l-5">{{ process.name }}</span>
+        </div>
+        <div class="title-bar__account">
+          <b-button v-if="isAuth && yandexDiskAccessToken" variant="text" text icon size="m" @click="toAccount">
+            <b-icon path="assets/images" width="29" height="29">user</b-icon>
+          </b-button>
+        </div>
+      </v-col>
+      <v-col class="d-flex align-center justify-end">
+        <button class="minimize-button" @click="$electron.ipcRenderer.send('minimize')"></button>
+        <button
+          class="min-max-button"
+          :class="{
+            'is-maximized': isMaximized,
+          }"
+          @click="$electron.ipcRenderer.send('min-max')"
+        ></button>
+        <button class="close-button" @click="$electron.ipcRenderer.send('hide')"></button>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script src="./titlebar.ts" lang="ts"></script>

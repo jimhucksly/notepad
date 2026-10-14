@@ -4,102 +4,32 @@
   margin: 0;
   display: flex;
   flex-grow: 0;
-  flex-basis: 30px;
+  flex-basis: var(--button-xs);
   background-color: var(--grey-d-6);
   width: 100%;
-  height: 30px;
-  min-height: 30px;
+  min-height: var(--button-xs);
   color: var(--white);
   font-family: var(--regular);
-}
 
-.menu-button-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-  z-index: 10;
+  &__process {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
 
-  button {
-    -webkit-app-region: no-drag;
-    background-color: transparent;
+  &__account {
+    display: flex;
+    align-items: center;
     height: 100%;
-    color: var(--primary);
-    border: 1px solid transparent;
-    font-size: 12px;
-
-    &:hover {
-      background-color: var(--grey-d-5);
-    }
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 10;
   }
 
-  &.button--reload {
-    left: 82px;
-  }
-  &.button--about {
-    left: 137px;
-  }
-  &.button--logout {
-    left: unset;
-    right: 200px;
-
-    & svg {
-      -webkit-app-region: no-drag;
-      margin-right: 100px;
-      cursor: pointer;
-      opacity: 0.8;
-      transition: 0.2s;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
-  &.process {
+  .v-btn {
     -webkit-app-region: no-drag;
-    width: 300px;
-    left: unset;
-    right: 14vw;
-
-    span {
-      font-size: 11.5px;
-    }
   }
-}
-
-.app-name-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  font-size: 13px;
-  z-index: 1;
-
-  .titlebar-logo {
-    width: 20px;
-    height: 20px;
-    margin-right: 5px;
-
-    img {
-      object-fit: contain;
-    }
-  }
-}
-
-.window-controls-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  width: 200px;
-  height: 100%;
-  z-index: 10;
 }
 
 .minimize-button {
