@@ -1,9 +1,10 @@
-import { Vue } from 'vue-property-decorator';
+import { mixins } from 'vue-class-component';
 import { Getter } from 'vuex-class';
 import { IResponse, IValidate } from '~/domain/models';
 import { AuthQuery } from '~/domain/queries';
+import ValidationMixin from '~/mixins/validation.mixin';
 
-export default class Auth extends Vue {
+export default class Auth extends mixins(ValidationMixin) {
   @Getter('getEndpoint') endpoint: string;
   @Getter('getYandexToken') yandexAccessToken: string;
 

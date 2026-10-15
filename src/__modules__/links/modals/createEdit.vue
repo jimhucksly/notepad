@@ -1,7 +1,14 @@
 <template>
-  <form>
+  <v-container class="pa-0">
+    <v-row no-gutters>
+      <v-col>
+        <b-edit-text v-model="item.url" placeholder="URL" required />
+      </v-col>
+    </v-row>
+  </v-container>
+  <!-- <form>
     <div class="m-b-15">
-      <input v-model="url" type="text" name="url" required placeholder="URL" :class="{ error: v?.url?.isInvalid }" />
+      <input  type="text" name="url"   :class="{ error: v?.url?.isInvalid }" />
       <span v-show="isSubmitted && v?.url?.isInvalid" class="form-label-error"> Url is incorrect </span>
     </div>
     <div class="m-b-15">
@@ -15,6 +22,6 @@
       />
       <span v-show="isSubmitted && v?.name?.isInvalid" class="form-label-error"> Name is incorrect </span>
     </div>
-  </form>
+  </form> -->
 </template>
 <script src="./createEdit.ts" lang="ts"></script>

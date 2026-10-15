@@ -1,9 +1,10 @@
-import { Vue } from 'vue-class-component';
+import { mixins } from 'vue-class-component';
 import { Getter } from 'vuex-class';
 import { RegistrationCommand } from '~/domain/commands';
 import { IUser, IValidate } from '~/domain/models';
+import ValidationMixin from '~/mixins/validation.mixin';
 
-export default class Reg extends Vue {
+export default class Reg extends mixins(ValidationMixin) {
   login = '';
   pass = '';
   passRepeat = '';

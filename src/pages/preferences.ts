@@ -1,13 +1,13 @@
 import { ConfirmDialog, DialogManager } from '@dn-web/ui';
 import AutoLaunch from 'auto-launch';
-import { Vue } from 'vue-class-component';
-import { Watch } from 'vue-property-decorator';
+import { mixins, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { RevokeYandexTokenCommand, UpdatePasswordCommand } from '~/domain/commands';
 import { IResponse, IUser, IValidate } from '~/domain/models';
+import ValidationMixin from '~/mixins/validation.mixin';
 import pkg from '../../package.json';
 
-export default class Preferences extends Vue {
+export default class Preferences extends mixins(ValidationMixin) {
   @Mutation('setYandexApiToken') setYandexApiToken: (value: string) => void;
 
   @Getter('getUserDataPath') userDataPath: string;

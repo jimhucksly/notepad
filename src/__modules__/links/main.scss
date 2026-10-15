@@ -1,4 +1,4 @@
-.links_cont {
+.links {
   display: flex;
   flex-direction: column;
   flex-basis: 100%;
@@ -10,34 +10,34 @@
   .v-list {
     .v-list-item {
       font-family: var(--font-gotham);
-      color: var(--primary-d-4);
-      padding: 12px 0 12px 12px;
+      color: var(--text);
+      padding: 0;
     }
   }
 
-  .links_area {
+  &__list-item {
+    display: flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: var(--border-radius);
+    transition: all 0.2s;
 
+    .v-btn {
+      visibility: hidden;
+      opacity: 0;
+      user-select: none;
+      pointer-events: none;
+      transition: all 0.1s;
+    }
 
+    &:hover {
+      background-color: var(--grey-l-6);
 
-    ul {
-      li {
-        display: flex;
-        align-items: center;
-        padding-left: 6px;
-        transition: all 0.2s;
-        a {
-          display: block;
-          flex-basis: 100%;
-          font-size: 1.1rem;
-          padding: 6px 0;
-          color: var(--primary-d-4);
-          text-decoration: none;
-          transition: all 0.2s;
-
-          &:hover {
-            color: var(--primary);
-          }
-        }
+      .v-btn {
+        visibility: visible;
+        opacity: 1;
+        user-select: all;
+        pointer-events: all;
       }
     }
   }

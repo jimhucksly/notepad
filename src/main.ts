@@ -12,7 +12,6 @@ import AnimePlugin from '~/plugins/anime';
 import AppPlugin from '~/plugins/app';
 import ElectronPlugin from '~/plugins/electron';
 import SocketPlugin from '~/plugins/socket';
-import Validate from '~/plugins/validate';
 import root from './app';
 import Application from './application/app';
 import { buildContainer } from './domain/container';
@@ -78,7 +77,6 @@ async function init() {
     app.use(ElectronPlugin);
     app.use(AnimePlugin);
     app.use(SocketPlugin, { store });
-    app.use(Validate);
 
     createInterceptors(store);
 

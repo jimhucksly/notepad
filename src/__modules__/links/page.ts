@@ -65,8 +65,4 @@ export default class LinksPage extends Vue {
       console.error(e);
     }
   }
-
-  getName(item: ILink, index: number) {
-    return `${index + 1}. ${item.name}`;
-  }
 }

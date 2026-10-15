@@ -1,7 +1,8 @@
-import { Vue } from 'vue-class-component';
+import { ValidateMixin } from '@dn-web/ui';
+import { mixins } from 'vue-class-component';
 import { Types } from '~/core';
 
-export default class CreateEditLibraryFileComponent extends Vue {
+export default class CreateEditLibraryFileComponent extends mixins(ValidateMixin) {
   name = '';
 
   v: Types.IValidate = {};
@@ -10,15 +11,6 @@ export default class CreateEditLibraryFileComponent extends Vue {
 
   created() {
     this.$emit('popup-component-created', this);
-  }
-
-  mounted() {
-    this.$validate(this);
-  }
-
-  async validate(): Promise<boolean> {
-    await this.v.touch();
-    return this.v.valid();
   }
 
   async save() {

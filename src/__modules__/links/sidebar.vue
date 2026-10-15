@@ -1,9 +1,8 @@
 <template>
-  <div class="links">
-    <button @click="addLink">
-      <svg-icon icon="btnAdd" width="32" height="23" />
-    </button>
+  <div class="pa-4">
+    <b-button @click="addLink">
+      <b-icon>plus</b-icon>
+    </b-button>
   </div>
 </template>
 <script src="./sidebar.ts" lang="ts"></script>
-<style src="./sidebar.scss" lang="scss" scoped></style>

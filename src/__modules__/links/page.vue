@@ -1,5 +1,5 @@
 <template>
-  <v-container class="links_cont">
+  <v-container class="links">
     <v-row v-if="isEmpty">
       <v-col class="empty_cont">
         No elements found
@@ -7,15 +7,22 @@
     </v-row>
     <v-row v-if="links">
       <v-col class="h-100 overflow-hidden">
-        <v-list class="h-100 overflow-y-auto">
+        <v-list class="h-100 overflow-y-auto" variant="plain">
           <v-list-item v-for="(item, index) in links" :key="index" @click.prevent="open(item.url)">
-            <span class="text-body-s">{{ getName(item, index) }}</span>
-            <button @click="edit(item.id)">
-              <svg-icon icon="linkIcon" width="16px" height="16px" />
-            </button>
-            <button @click="remove(item.id)">
-              <svg-icon icon="removeIcon" />
-            </button>
+            <div class="links__list-item">
+              <div class="d-flex align-center basis-100 gap-1">
+                <span class="font-weight-bold text-body-s" style="color: var(--primary-d-4)">{{ index + 1 }}.</span>
+                <span class="text-body-m">{{ item.name }}</span>
+              </div>
+              <div class="d-flex align-center justify-end gap-2">
+                <b-button variant="text" icon color="primary" @click.stop="edit(item.id)">
+                  <b-icon>link</b-icon>
+                </b-button>
+                <b-button variant="text" icon color="error" @click.stop="remove(item.id)">
+                  <b-icon>delete</b-icon>
+                </b-button>
+              </div>
+            </div>
           </v-list-item>
         </v-list>
       </v-col>

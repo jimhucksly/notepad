@@ -1,13 +1,14 @@
 import { mount, VueWrapper } from '@vue/test-utils';
 import { defineComponent } from 'vue';
 import { Vue } from 'vue-class-component';
-import Validate from '~/plugins/validate';
+import ValidationMixin from '~/mixins/validation.mixin';
 
 let wrapper: VueWrapper<Vue> = null;
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 let component: any = null;
 
 const App = defineComponent({
+  mixin: [ValidationMixin],
   data() {
     return {
       v: {},
@@ -61,11 +62,7 @@ const App = defineComponent({
 });
 
 async function setupTest() {
-  wrapper = mount(App, {
-    global: {
-      plugins: [Validate],
-    },
-  });
+  wrapper = mount(App);
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   component = wrapper.vm as any;
   await component.$nextTick();
