@@ -8,7 +8,9 @@ export default class Titlebar extends Vue {
 
   mounted() {
     this.title = process.env.WINDOW_TITLE;
-    this.isMaximized = Boolean(Number(process.env.IS_MAXIMAZED));
+    this.$electron.ipcRenderer.on('set-is-maximized', (e: Electron.IpcRendererEvent, value: boolean) => {
+      this.isMaximized = value;
+    });
   }
 
   toPreferences() {

@@ -2,15 +2,15 @@
   <v-container id="titlebar" class="title-bar pa-0">
     <v-row no-gutters>
       <v-col v-if="isAuth && yandexDiskAccessToken" class="d-flex align-center">
-        <b-button variant="text" text @click="toPreferences">
+        <button class="title-bar__button" @click="toPreferences">
           <span style="color: var(--primary-l-4)">Preferences</span>
-        </b-button>
-        <b-button v-if="isAuth" variant="text" text @click="reload">
+        </button>
+        <button class="title-bar__button" @click="reload">
           <span style="color: var(--primary-l-4)">Reload</span>
-        </b-button>
-        <b-button v-if="isAuth" variant="text" text @click="toAbout">
+        </button>
+        <button class="title-bar__button" @click="toAbout">
           <span style="color: var(--primary-l-4)">About</span>
-        </b-button>
+        </button>
       </v-col>
       <v-col class="d-flex align-center justify-center" style="flex-basis: 50%; position: relative;">
         <span class="titlebar-logo">
@@ -27,12 +27,10 @@
         </div>
       </v-col>
       <v-col class="d-flex align-center justify-end">
-        <button class="minimize-button" @click="$electron.ipcRenderer.send('minimize')"></button>
+        <button class="title-bar__button title-bar__button--minimize" @click="$electron.ipcRenderer.send('minimize')"></button>
         <button
-          class="min-max-button"
-          :class="{
-            'is-maximized': isMaximized,
-          }"
+          class="title-bar__button title-bar__button--min-max"
+          :class="[isMaximized ? 'title-bar__button--to-min' : 'title-bar__button--to-max']"
           @click="$electron.ipcRenderer.send('min-max')"
         ></button>
         <button class="close-button" @click="$electron.ipcRenderer.send('hide')"></button>

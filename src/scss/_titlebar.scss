@@ -11,6 +11,80 @@
   color: var(--white);
   font-family: var(--regular);
 
+  &__button {
+    -webkit-app-region: no-drag;
+    height: 100%;
+    position: relative;
+    padding: 0 8px;
+
+    &:hover {
+      background-color: var(--grey-d-5);
+    }
+
+    &--minimize {
+      width: 45px;
+      cursor: default;
+
+       &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 15px;
+        left: 17px;
+        width: 11px;
+        height: 1px;
+        background-color: var(--primary-l-4);
+      }
+    }
+
+    &--min-max {
+      width: 45px;
+      cursor: default;
+
+      &:hover {
+        background-color: var(--grey-d-5);
+
+        &:after {
+          background-color: var(--grey-d-5);
+        }
+      }
+    }
+
+    &--to-min {
+      &:before,
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 8px;
+        left: 18px;
+        width: 10px;
+        height: 10px;
+        border: 1px solid var(--primary-l-4);
+        transition:.3s;
+      }
+
+      &:after {
+        top: 11px;
+        left: 15px;
+      }
+    }
+
+    &--to-max {
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        border: 1px solid var(--primary-l-4);
+        top: 9px;
+        left: 17px;
+        width: 11px;
+        height: 11px;
+        transition:.3s;
+      }
+    }
+  }
+
   &__process {
     position: absolute;
     top: 0;
@@ -29,77 +103,5 @@
 
   .v-btn {
     -webkit-app-region: no-drag;
-  }
-}
-
-.minimize-button {
-  -webkit-app-region: no-drag;
-  position: relative;
-  background-color: var(--grey-d-6);
-  width: 45px;
-  height: 100%;
-  cursor: default;
-
-  &:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 15px;
-    left: 17px;
-    width: 11px;
-    height: 1px;
-    background-color: var(--primary-l-4);
-  }
-
-  &:hover {
-    background-color: var(--grey-d-5);
-  }
-}
-
-.min-max-button {
-  -webkit-app-region: no-drag;
-  position: relative;
-  background-color: var(--grey-d-6);
-  width: 45px;
-  height: 100%;
-  cursor: default;
-
-  &:not(.is-maximized) {
-    &:before {
-      display: none;
-    }
-    &:after {
-      top: 9px;
-      left: 17px;
-      width: 11px;
-      height: 11px;
-    }
-  }
-
-  &:before,
-  &:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 8px;
-    left: 18px;
-    width: 10px;
-    height: 10px;
-    border: 1px solid var(--primary-l-4);
-    transition:.3s;
-  }
-
-  &:after {
-    background-color: var(--black);
-    top: 11px;
-    left: 15px;
-  }
-
-  &:hover {
-    background-color: var(--grey-d-5);
-
-    &:after {
-      background-color: var(--grey-d-5);
-    }
   }
 }

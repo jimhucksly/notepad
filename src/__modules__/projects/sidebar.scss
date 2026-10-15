@@ -51,6 +51,8 @@
       white-space: nowrap;
       position: relative;
       cursor: pointer;
+      font-size: var(--text-body-s);
+      line-height: calc(var(--text-body-s) + 1px);
       color: var(--primary-l-4);
       user-select: none;
       z-index: 10;
@@ -112,31 +114,11 @@
       &:not(.active) {
         background-color: var(--primary-d-5);
       }
-
-      .projects_item_check {
-        display: block;
-
-        &:after {
-          content: '';
-          display: block;
-          position: absolute;
-          top: 1px;
-          left: 1px;
-          width: 9px;
-          height: 9px;
-          border-radius: 2px;
-          background-color: var(--secondary);
-        }
-      }
     }
 
     &:hover {
-      background-color: var(--primary-d-4);
+      background-color: var(--grey-d-4);
       color: var(--secondary);
-
-      .projects_item_check {
-        display: block;
-      }
     }
   }
 }
