@@ -7,10 +7,10 @@
       <p @click.prevent="openLink($event)" v-html="message"></p>
     </div>
     <div class="notepad_item_btns">
-      <b-button icon variant="tonal" @click.prevent="edit">
+      <b-button icon variant="text" color="primary" @click.prevent="edit">
         <b-icon>pencil</b-icon>
       </b-button>
-      <b-button icon variant="tonal" @click.prevent="remove">
+      <b-button icon variant="text" color="error" @click.prevent="remove">
         <b-icon>delete</b-icon>
       </b-button>
     </div>

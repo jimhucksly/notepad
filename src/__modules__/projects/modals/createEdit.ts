@@ -10,10 +10,6 @@ export default class CreateEditProject extends Vue {
   editor: EditorView = null;
   onKeydownHander: (e: KeyboardEvent) => void;
 
-  created() {
-    this.$emit('popup-component-created', this);
-  }
-
   mounted() {
     this.onKeydownHander = this.onKeydown.bind(this);
     document.addEventListener('keydown', this.onKeydownHander);

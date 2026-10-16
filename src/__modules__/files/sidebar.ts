@@ -1,5 +1,6 @@
 import { eventBus } from '@dn-web/core';
 import { Vue } from 'vue-class-component';
+import { uploadFile } from '~/utils/uploadFile';
 import { IFile } from './models';
 
 export default class FilesSidebar extends Vue {
@@ -17,24 +18,29 @@ export default class FilesSidebar extends Vue {
     eventBus.$off('on-file-select', this.onFileSelectHandler);
   }
 
+  async add() {
+    const event = await uploadFile();
+    eventBus.$emit('on-file-change', event);
+  }
+
   onFileSelect(file: IFile) {
     this.fileSelected = file;
   }
 
-  onFileChange(e: InputEvent) {
-    eventBus.$emit('on-file-change', e);
-  }
+  // onFileChange(e: InputEvent) {
+  //   eventBus.$emit('on-file-change', e);
+  // }
 
-  onFileRemove() {
-    eventBus.$emit('on-file-remove');
-  }
+  // onFileRemove() {
+  //   eventBus.$emit('on-file-remove');
+  // }
 
-  onFileCheck() {
-    this.filesCheck = !this.filesCheck;
-    eventBus.$emit('on-file-check', this.filesCheck);
-  }
+  // onFileCheck() {
+  //   this.filesCheck = !this.filesCheck;
+  //   eventBus.$emit('on-file-check', this.filesCheck);
+  // }
 
-  onFileDownload() {
-    eventBus.$emit('on-file-download');
-  }
+  // onFileDownload() {
+  //   eventBus.$emit('on-file-download');
+  // }
 }

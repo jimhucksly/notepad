@@ -10,7 +10,7 @@ export default class CreateEditLibraryFileComponent extends mixins(ValidateMixin
   isSubmitted = false;
 
   created() {
-    this.$emit('popup-component-created', this);
+    this.$emit('external-component-created', this);
   }
 
   async save() {

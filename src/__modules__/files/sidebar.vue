@@ -1,5 +1,14 @@
 <template>
-  <div class="files g-column">
+  <v-container class="pa-4">
+    <v-row>
+      <v-col>
+        <b-button @click="add">
+          <b-icon>plus</b-icon>
+        </b-button>
+      </v-col>
+    </v-row>
+  </v-container>
+  <!-- <div class="files g-column">
     <div class="g-row m-b-35">
       <label class="button">
         <svg-icon icon="btnAdd" width="32" height="23" />
@@ -28,50 +37,8 @@
         <small class="file-info_label">File size:</small>
         <span class="file-info_name">{{ fileSelected.size }}</span>
       </div>
-    </template>
-  </div>
+    </template> -->
+  <!-- </div> -->
 </template>
 <script src="./sidebar.ts" lang="ts"></script>
-<style lang="scss" scoped>
-.files {
-  display: flex;
-  padding-top: 15px;
-  padding-left: 15px;
-  padding-top: 5px;
-  button {
-    width: 32px;
-    height: 25px;
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.85;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    &:active {
-      opacity: 1;
-      transform: scale(0.85);
-    }
-  }
-  .file-info {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding-right: 15px;
-    margin-bottom: 15px;
-    &_label {
-      color: var(--primary-l-2);
-      margin-bottom: 5px;
-    }
-    &_name {
-      font-size: 12px;
-      color: var(--secondary);
-      white-space: pre-line;
-      word-wrap: break-word;
-    }
-  }
-}
-</style>
+<style src="./sidebar.scss" lang="scss" scoped></style>

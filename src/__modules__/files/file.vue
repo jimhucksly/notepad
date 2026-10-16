@@ -20,7 +20,8 @@
       <label>
         <input v-model="isChecked" type="checkbox" />
         <span>
-          <svg-icon icon="checkIcon" width="14" height="10" style="color: var(--editor_green_darken-10)" />
+          <b-icon>check</b-icon>
+          <!-- <svg-icon icon="checkIcon" width="14" height="10" style="color: var(--editor_green_darken-10)" /> -->
         </span>
       </label>
     </div>
