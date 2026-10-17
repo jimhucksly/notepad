@@ -201,11 +201,16 @@ function dateFormat(date: string | Date, format: string): string {
   }
 }
 
-function getFileExtension(filename: string) {
+function getFileExtension(filename: string): string {
+  if (!filename) {
+    return '';
+  }
   if (/d\.ts$/.test(filename)) {
     return filename.replace(/(.+)\.d\.([\w]{2,})$/, 'd.$2');
   }
-  return filename.replace(/(.+)\.([\w]{2,})$/, '$2');
+  // eslint-disable-next-line no-bitwise
+  const ext = filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+  return ext.toLowerCase();
 }
 
 function getFileSize(bytes: string | number, decimals: number = 2) {
