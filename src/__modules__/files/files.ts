@@ -18,8 +18,8 @@ export default class Files extends Vue {
 
   selected: string = null;
   uploading = false;
-  checking = false;
-  checkeds: Array<string> = [];
+
+  rows: Record<number, number> = { 0: 0 };
 
   onFileChangeHandler: (e: InputEvent) => void;
   onFileRemoveHandler: () => void;
@@ -34,8 +34,6 @@ export default class Files extends Vue {
     eventBus.$on('on-file-remove', this.onFileRemoveHandler);
     this.onFileDownloadHandler = this.onFileDownload.bind(this);
     eventBus.$on('on-file-download', this.onFileDownloadHandler);
-    this.onFileCheckHandler = this.onFileCheck.bind(this);
-    eventBus.$on('on-file-check', this.onFileCheckHandler);
   }
 
   mounted() {
@@ -71,29 +69,23 @@ export default class Files extends Vue {
   }
 
   async onFileRemove() {
-    if (!this.selected && !this.checkeds?.length) {
+    if (!this.selected?.length) {
       return;
-    }
-    let question = 'Do you realy want to remove this file?';
-    if (this.checkeds.length) {
-      question = `Do you realy want to remove ${this.checkeds.length} files?`;
     }
     const isConfirm = await DialogManager.exec(
       new ConfirmDialog({
-        title: 'Question',
-        content: question,
+        title: 'Confirmation',
+        content: 'Do you realy want to remove this file?',
       })
     );
     if (!isConfirm) {
       return;
     }
-    for (const id of this.selected ? [this.selected] : this.checkeds) {
+    for (const id of [this.selected]) {
       await this.$app.$commandBus.do(new DeleteFileCommand(id));
     }
     await this.fetchFiles();
     this.selected = null;
-    this.checkeds = [];
-    this.checking = false;
     eventBus.$emit('on-file-select', null);
   }
 
@@ -136,22 +128,11 @@ export default class Files extends Vue {
     );
   }
 
-  onFileCheck(value: boolean) {
-    if (!this.files.length) {
+  onUpdateRow(row: number, h: number) {
+    if (this.rows[row] && h > this.rows[row]) {
+      this.rows[row] = h;
       return;
     }
-    this.checking = value;
-    this.selected = null;
-    if (!value) {
-      this.checkeds = [];
-    }
-  }
-
-  onCheck(id: string) {
-    if (this.checkeds.includes(id)) {
-      this.checkeds = this.checkeds.filter(el => el !== id);
-    } else {
-      this.checkeds.push(id);
-    }
+    this.rows[row] = h;
   }
 }

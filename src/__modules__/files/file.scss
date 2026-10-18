@@ -1,41 +1,19 @@
 .file {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
+  width: 65px;
   padding: 3px;
-  height: 65px;
+  min-height: 65px;
+  max-height: 110px;
   border: 1px solid transparent;
   cursor: pointer;
   user-select: none;
 
   &.selected {
-    border: 1px solid var(--primary-d-4);
-  }
-  &.checking {
-    .file_icon,
-    .file_name {
-      opacity: 0.6;
-    }
-    .file_check {
-      display: block;
-    }
-  }
-
-  &.checked {
-    .file_icon,
-    .file_name {
-      opacity: 0.8;
-    }
-    .file_check {
-      span {
-        background-color: rgba(255, 255, 255, 1);
-        border-color: var(--success-d-1);
-        box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.2);
-        svg {
-          display: block;
-        }
-      }
-    }
+    border: 1px solid var(--primary-d-2);
   }
 
   .file_icon {
@@ -59,7 +37,7 @@
 
   .file_name {
     display: inline-block;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--primary);
     text-align: center;
     padding: 3px 0;
@@ -89,36 +67,7 @@
       white-space: nowrap;
 
       &.error {
-        color: var(--red);
-      }
-    }
-  }
-  .file_check {
-    display: none;
-    position: absolute;
-    top: 13px;
-    left: 50%;
-    transform: translateX(-50%);
-    cursor: pointer;
-    z-index: 10;
-
-    input[type='checkbox'] {
-      display: none;
-    }
-
-    span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 23px;
-      height: 23px;
-      border: 1px solid var(--primary-d-4);
-      border-radius: 4px;
-      cursor: pointer;
-      background-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0px 0px 10px 8px rgba(0, 0, 0, 0.1);
-      svg {
-        display: none;
+        color: var(--error);
       }
     }
   }
