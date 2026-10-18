@@ -1,6 +1,34 @@
 import { Vue } from 'vue-class-component';
-import { Emit, Prop } from 'vue-property-decorator';
+import { Emit, Prop, Watch } from 'vue-property-decorator';
 import { IFile } from './models';
+
+enum FileType {
+  Unknown = 'default',
+  JPEG = 'jpg',
+  PNG = 'png',
+  Image = 'image',
+  HTML = 'html',
+  JS = 'js',
+  DTS = 'dts',
+  TS = 'ts',
+  JSON = 'json',
+  VUE = 'vue',
+  SASS = 'sass',
+  CSS = 'css',
+  SVG = 'svg',
+  Document = 'doc',
+  PDF = 'pdf',
+  Text = 'txt',
+  ZIP = 'zip',
+  RAR = 'rar',
+  MD = 'md',
+  '7z' = '7z',
+  Excel = 'xls',
+  EXE = 'exe',
+  MSI = 'msi',
+  Certificate = 'cer',
+  PFX = 'pfx',
+}
 
 export default class File extends Vue {
   @Prop() item: IFile;
@@ -26,9 +54,9 @@ export default class File extends Vue {
     //
   }
 
-  // @Watch('index') onIndexChanged() {
-  //   this.setPosition();
-  // }
+  @Watch('index') onIndexChanged() {
+    this.setPosition();
+  }
 
   mounted() {
     this.setPosition();
@@ -88,31 +116,31 @@ export default class File extends Vue {
     return Math.max(...topLevelElems.map(el => el.clientHeight));
   }
 
-  private getFileType(name: string): string {
-    if (/jpe?g$/.test(name)) return 'jpg';
-    if (/png$/.test(name)) return 'png';
-    if (/gif$/.test(name)) return 'image';
-    if (/html?$/.test(name)) return 'html';
-    if (/js$/.test(name)) return 'js';
-    if (/d.ts$/.test(name)) return 'dts';
-    if (/ts$/.test(name)) return 'ts';
-    if (/json$/.test(name)) return 'json';
-    if (/vue$/.test(name)) return 'vue';
-    if (/(sass|scss)$/.test(name)) return 'sass';
-    if (/css$/.test(name)) return 'css';
-    if (/svg$/.test(name)) return 'svg';
-    if (/docx?$/.test(name)) return 'doc';
-    if (/pdf$/.test(name)) return 'pdf';
-    if (/txt$/.test(name)) return 'txt';
-    if (/zip$/.test(name)) return 'zip';
-    if (/rar$/.test(name)) return 'rar';
-    if (/md$/.test(name)) return 'md';
-    if (/7z$/.test(name)) return '7z';
-    if (/xlsx?$/.test(name)) return 'xls';
-    if (/exe?$/.test(name)) return 'exe';
-    if (/msi?$/.test(name)) return 'msi';
-    if (/(cer|crt)?$/.test(name)) return 'cer';
-    if (/pfx?$/.test(name)) return 'pfx';
-    return 'default';
+  private getFileType(ext: string): FileType {
+    if (/jpe?g$/.test(ext)) return FileType.JPEG;
+    if (/png$/.test(ext)) return FileType.PNG;
+    if (/gif$/.test(ext)) return FileType.Image;
+    if (/html?$/.test(ext)) return FileType.HTML;
+    if (/js$/.test(ext)) return FileType.JS;
+    if (/d.ts$/.test(ext)) return FileType.DTS;
+    if (/ts$/.test(ext)) return FileType.TS;
+    if (/json$/.test(ext)) return FileType.JSON;
+    if (/vue$/.test(ext)) return FileType.VUE;
+    if (/(sass|scss)$/.test(ext)) return FileType.SASS;
+    if (/css$/.test(ext)) return FileType.CSS;
+    if (/svg$/.test(ext)) return FileType.SVG;
+    if (/docx?$/.test(ext)) return FileType.Document;
+    if (/pdf$/.test(ext)) return FileType.PDF;
+    if (/txt$/.test(ext)) return FileType.Text;
+    if (/zip$/.test(ext)) return FileType.ZIP;
+    if (/rar$/.test(ext)) return FileType.RAR;
+    if (/md$/.test(ext)) return FileType.MD;
+    if (/7z$/.test(ext)) return FileType['7z'];
+    if (/xlsx?$/.test(ext)) return FileType.Excel;
+    if (/exe?$/.test(ext)) return FileType.EXE;
+    if (/msi?$/.test(ext)) return FileType.MSI;
+    if (/(cer|crt)$/.test(ext)) return FileType.Certificate;
+    if (/pfx?$/.test(ext)) return FileType.PFX;
+    return FileType.Unknown;
   }
 }

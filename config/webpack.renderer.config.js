@@ -10,7 +10,9 @@ const ESLintPlugin = require('eslint-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const { VuetifyPlugin } = require('webpack-plugin-vuetify')
 const { minimizer } = require('./minimizer.js');
-const { endpoint, port } = require('./endpoint.json')
+const config = require('./endpoint.json')
+
+const endpoint = config[config.default];
 
 const isProduction = process.env.NODE_ENV === 'production'
 const isDevelopment = !isProduction
@@ -173,7 +175,6 @@ let rendererConfig = {
       '__VUE_PROD_DEVTOOLS__': false,
       "$DEV": isDevelopment,
       '$ENDPOINT': `"${endpoint}"`,
-      "$PORT": `"${port}"`
     }),
   ],
   output: {

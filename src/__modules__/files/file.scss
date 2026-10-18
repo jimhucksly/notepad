@@ -7,13 +7,13 @@
   width: 65px;
   padding: 3px;
   min-height: 65px;
-  max-height: 110px;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
   cursor: pointer;
   user-select: none;
 
   &.selected {
-    border: 1px solid var(--primary-d-2);
+    border-color: var(--primary-d-2);
   }
 
   .file_icon {

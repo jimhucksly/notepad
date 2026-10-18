@@ -10,7 +10,6 @@ import electron, {
 } from 'electron'
 import path from 'path'
 import pkg from '../package.json'
-import { port } from './endpoint.json'
 
 const $DEV = process.env.NODE_ENV === 'development'
 
@@ -31,7 +30,7 @@ let mainWindow
 let appTray
 
 const winURL = $DEV
-  ? ['http://localhost', port].join(':')
+  ? ['http://localhost', 9080].join(':')
   : `file://${__dirname}/index.html`
 
 const appIconTray = path.resolve(__static, 'iconTray.ico')
