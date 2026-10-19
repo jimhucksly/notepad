@@ -9,21 +9,7 @@
     </v-row>
   </v-container>
   <!-- <div class="files g-column">
-    <div class="g-row m-b-35">
-      <label class="button">
-        <svg-icon icon="btnAdd" width="32" height="23" />
-        <input type="file" @change="onFileChange" />
-      </label>
-      <button class="m-l-5" @click="onFileDownload">
-        <svg-icon icon="btnOpen" width="32" height="23" />
-      </button>
-      <button class="m-l-5" @click="onFileCheck">
-        <svg-icon icon="btnCheck" width="32" height="23" />
-      </button>
-      <button class="m-l-35" @click="onFileRemove">
-        <svg-icon icon="btnClear" width="32" height="23" />
-      </button>
-    </div>
+
     <template v-if="fileSelected">
       <div class="file-info">
         <small class="file-info_label">File name:</small>

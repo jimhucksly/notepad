@@ -1,31 +1,31 @@
-@for $i from 1 through 10 {
-  @each $n, $name in ('m': 'margin', 'p':'padding') {
-    @each $t, $type in ('t': 'top', 'r': 'right', 'b': 'bottom', 'l': 'left') {
-      .#{$n}-#{$t}-#{$i*5} {
-        #{$name}-#{$type}: #{$i*5}px;
-      }
-      .#{$n}-#{$t}-#{$i*5}i {
-        #{$name}-#{$type}: #{$i*5}px !important;
-      }
-      @if $name == 'margin' {
-        .-#{$n}-#{$t}-#{$i*5} {
-          #{$name}-#{$type}: -#{$i*5}px;
-        }
-      }
-    }
-    .#{$n}-x-#{$i*5} {
-      #{$name}-left: #{$i*5}px;
-      #{$name}-right: #{$i*5}px;
-    }
-    .#{$n}-y-#{$i*5} {
-      #{$name}-top: #{$i*5}px;
-      #{$name}-bottom: #{$i*5}px;
-    }
-  }
-  .gap-#{$i} {
-    gap: calc($i * 4px);
-  }
-}
+// @for $i from 1 through 10 {
+//   @each $n, $name in ('m': 'margin', 'p':'padding') {
+//     @each $t, $type in ('t': 'top', 'r': 'right', 'b': 'bottom', 'l': 'left') {
+//       .#{$n}-#{$t}-#{$i*5} {
+//         #{$name}-#{$type}: #{$i*5}px;
+//       }
+//       .#{$n}-#{$t}-#{$i*5}i {
+//         #{$name}-#{$type}: #{$i*5}px !important;
+//       }
+//       @if $name == 'margin' {
+//         .-#{$n}-#{$t}-#{$i*5} {
+//           #{$name}-#{$type}: -#{$i*5}px;
+//         }
+//       }
+//     }
+//     .#{$n}-x-#{$i*5} {
+//       #{$name}-left: #{$i*5}px;
+//       #{$name}-right: #{$i*5}px;
+//     }
+//     .#{$n}-y-#{$i*5} {
+//       #{$name}-top: #{$i*5}px;
+//       #{$name}-bottom: #{$i*5}px;
+//     }
+//   }
+//   .gap-#{$i} {
+//     gap: calc($i * 4px);
+//   }
+// }
 
 .g-row {display: flex; flex-direction: row}
 .g-row-reverse{display: flex; flex-direction: row-reverse}
@@ -57,17 +57,6 @@
 .items-stretch {
   & > .row {
     min-width: 100%
-  }
-}
-
-@each $elem in (
-  'dark', 'blue', 'red', 'grey', 'white'
-) {
-  .#{$elem}--text {
-    color: var(--#{$elem});
-  }
-  .#{$elem}--bg {
-    background: var(--#{$elem});
   }
 }
 

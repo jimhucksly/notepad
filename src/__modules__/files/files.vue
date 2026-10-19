@@ -1,7 +1,28 @@
 <template>
   <v-card>
     <v-card-title>
-      fdgdgdf
+      <v-container class="pa-0 w-100">
+        <v-row>
+          <v-col class="items-center">
+            <template v-if="selected">
+              <div class="d-flex flex-column">
+                <span class="text-body grey--text font-medium">{{ selected.name }}</span>
+                <span class="text-body grey--text">{{ $dateFormat(selected.createDateTime) }} | {{ selected.size }}</span>
+              </div>
+            </template>
+          </v-col>
+          <v-col cols="auto" class="flex-end">
+            <b-button v-if="selected" variant="outlined">
+              <b-icon>download</b-icon>
+              Download
+            </b-button>
+          </v-col>
+        </v-row>
+      </v-container>
+      <div></div>
+      <div class="d-flex justify-end w-100">
+
+      </div>
     </v-card-title>
     <v-card-text id="drop-area">
       <file
@@ -9,7 +30,7 @@
         :key="item.id"
         :item="item"
         :index="i"
-        :selected="item.id === selected"
+        :selected="item.id === selectedId"
         :rows="rows"
         @on-select="onSelect"
         @set-position="onUpdateRow"

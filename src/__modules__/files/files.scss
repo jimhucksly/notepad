@@ -6,7 +6,9 @@
   overflow: hidden;
 
   .v-card-title {
-    padding: 0;
+    height: 54px;
+    padding: 8px;
+    border-bottom: 1px solid var(--primary);
   }
 
   .v-card-text {

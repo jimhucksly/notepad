@@ -16,7 +16,7 @@ import { FilesQuery } from './queries/queries';
 export default class Files extends Vue {
   @Getter('Files/getFiles') files: Array<IFile>;
 
-  selected: string = null;
+  selected: IFile = null;
   uploading = false;
 
   rows: Record<number, number> = { 0: 0 };
@@ -69,7 +69,7 @@ export default class Files extends Vue {
   }
 
   async onFileRemove() {
-    if (!this.selected?.length) {
+    if (!this.selected) {
       return;
     }
     const isConfirm = await DialogManager.exec(
@@ -81,9 +81,7 @@ export default class Files extends Vue {
     if (!isConfirm) {
       return;
     }
-    for (const id of [this.selected]) {
-      await this.$app.$commandBus.do(new DeleteFileCommand(id));
-    }
+    await this.$app.$commandBus.do(new DeleteFileCommand(this.selectedId));
     await this.fetchFiles();
     this.selected = null;
     eventBus.$emit('on-file-select', null);
@@ -106,7 +104,7 @@ export default class Files extends Vue {
     if (!this.selected) {
       return;
     }
-    const found = this.files.find(f => f.id === this.selected);
+    const found = this.files.find(f => f.id === this.selectedId);
     if (found) {
       const a = document.createElement('a');
       a.href = found.href;
@@ -121,11 +119,7 @@ export default class Files extends Vue {
   }
 
   onSelect(id: string) {
-    this.selected = id;
-    eventBus.$emit(
-      'on-file-select',
-      this.files.find(f => f.id === id)
-    );
+    this.selected = this.files.find(f => f.id === id);
   }
 
   onUpdateRow(row: number, h: number) {
@@ -134,5 +128,9 @@ export default class Files extends Vue {
       return;
     }
     this.rows[row] = h;
+  }
+
+  get selectedId(): string {
+    return this.selected.id;
   }
 }
