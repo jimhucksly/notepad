@@ -7,6 +7,7 @@ import { DeleteFileCommand, UploadFileCommand } from './commands/commands';
 import File from './file';
 import { IFile } from './models';
 import { FilesQuery } from './queries/queries';
+import { FileType, fileTypes } from './types';
 
 @Options({
   components: {
@@ -17,23 +18,18 @@ export default class Files extends Vue {
   @Getter('Files/getFiles') files: Array<IFile>;
 
   selected: IFile = null;
+  loading = false;
   uploading = false;
 
   rows: Record<number, number> = { 0: 0 };
+  filter: string = null;
 
   onFileChangeHandler: (e: InputEvent) => void;
-  onFileRemoveHandler: () => void;
-  onFileDownloadHandler: () => void;
-  onFileCheckHandler: (value: boolean) => void;
 
   created() {
     this.fetchFiles();
     this.onFileChangeHandler = this.onFileChange.bind(this);
     eventBus.$on('on-file-change', this.onFileChangeHandler);
-    this.onFileRemoveHandler = this.onFileRemove.bind(this);
-    eventBus.$on('on-file-remove', this.onFileRemoveHandler);
-    this.onFileDownloadHandler = this.onFileDownload.bind(this);
-    eventBus.$on('on-file-download', this.onFileDownloadHandler);
   }
 
   mounted() {
@@ -43,12 +39,17 @@ export default class Files extends Vue {
 
   beforeUnmount() {
     eventBus.$off('on-file-change', this.onFileChangeHandler);
-    eventBus.$off('on-file-remove', this.onFileRemoveHandler);
-    eventBus.$off('on-file-download', this.onFileDownloadHandler);
   }
 
   async fetchFiles() {
-    await this.$app.$queryBus.exec(new FilesQuery());
+    try {
+      this.loading = true;
+      await this.$app.$queryBus.exec(new FilesQuery());
+    } catch (e) {
+      //
+    } finally {
+      this.loading = false;
+    }
   }
 
   onFileChange(e: InputEvent | DragEvent) {
@@ -68,7 +69,38 @@ export default class Files extends Vue {
     this.upload(formData);
   }
 
-  async onFileRemove() {
+  async upload(formData: FormData) {
+    try {
+      this.uploading = true;
+      await this.$app.$commandBus.do(new UploadFileCommand(formData));
+      this.fetchFiles();
+    } catch (e) {
+      /* eslint-disable no-console */
+      console.error(e);
+    } finally {
+      this.uploading = false;
+    }
+  }
+
+  download() {
+    if (!this.selected) {
+      return;
+    }
+    const found = this.files.find(f => f.id === this.selectedId);
+    if (found) {
+      const a = document.createElement('a');
+      a.href = found.href;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(found.href);
+      }, 0);
+    }
+  }
+
+  async remove() {
     if (!this.selected) {
       return;
     }
@@ -87,37 +119,6 @@ export default class Files extends Vue {
     eventBus.$emit('on-file-select', null);
   }
 
-  async upload(formData: FormData) {
-    try {
-      this.uploading = true;
-      await this.$app.$commandBus.do(new UploadFileCommand(formData));
-      this.fetchFiles();
-    } catch (e) {
-      /* eslint-disable no-console */
-      console.error(e);
-    } finally {
-      this.uploading = false;
-    }
-  }
-
-  onFileDownload() {
-    if (!this.selected) {
-      return;
-    }
-    const found = this.files.find(f => f.id === this.selectedId);
-    if (found) {
-      const a = document.createElement('a');
-      a.href = found.href;
-      a.download = '';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(found.href);
-      }, 0);
-    }
-  }
-
   onSelect(id: string) {
     this.selected = this.files.find(f => f.id === id);
   }
@@ -130,7 +131,24 @@ export default class Files extends Vue {
     this.rows[row] = h;
   }
 
+  get items() {
+    return Object.keys(FileType).sort((a, b) => a.localeCompare(b));
+  }
+
   get selectedId(): string {
-    return this.selected.id;
+    return this.selected?.id;
+  }
+
+  get filtered(): Array<IFile> {
+    if (Array.isArray(this.files) && this.filter) {
+      const extensions = fileTypes
+        .get((FileType as unknown as Record<string, string>)[this.filter])
+        .extensions.reduce((acc, arr) => {
+          acc.push(...arr);
+          return acc;
+        }, []);
+      return this.files.filter(f => extensions.includes(f.extension));
+    }
+    return this.files;
   }
 }

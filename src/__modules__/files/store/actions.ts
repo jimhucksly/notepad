@@ -5,6 +5,7 @@ import { toActionTree } from '~/helpers';
 import $http from '~/http';
 import { DeleteFileCommand, UploadFileCommand } from '../commands/commands';
 import { IFile, IFilesState } from '../models';
+import { FileType, fileTypes } from '../types';
 import { bindings } from './bindings';
 
 type TStore = ActionContext<IFilesState, Types.IRootState>;
@@ -28,6 +29,17 @@ class Actions implements ActionTree<IFilesState, Types.IRootState> {
     try {
       setProcess(store, 'get files...');
       const { data } = await $http.get<Array<IFile>>('/files');
+      if (Array.isArray(data)) {
+        data.forEach(f => {
+          for (const i of fileTypes.keys()) {
+            const o = fileTypes.get(i);
+            if (o.regexp.test(f.extension)) {
+              f.type = i as FileType;
+              break;
+            }
+          }
+        });
+      }
       store.commit('setFiles', data);
       return data;
     } catch (e) {

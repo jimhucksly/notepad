@@ -1,3 +1,5 @@
+import { FileType } from './types';
+
 export interface IFile {
   id: string;
   name: string;
@@ -5,6 +7,7 @@ export interface IFile {
   createDateTime: string;
   size: number;
   href: string;
+  type: FileType;
 }
 
 export interface IFilesState {

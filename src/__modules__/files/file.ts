@@ -1,34 +1,7 @@
 import { Vue } from 'vue-class-component';
 import { Emit, Prop, Watch } from 'vue-property-decorator';
 import { IFile } from './models';
-
-enum FileType {
-  Unknown = 'default',
-  JPEG = 'jpg',
-  PNG = 'png',
-  Image = 'image',
-  HTML = 'html',
-  JS = 'js',
-  DTS = 'dts',
-  TS = 'ts',
-  JSON = 'json',
-  VUE = 'vue',
-  SASS = 'sass',
-  CSS = 'css',
-  SVG = 'svg',
-  Document = 'doc',
-  PDF = 'pdf',
-  Text = 'txt',
-  ZIP = 'zip',
-  RAR = 'rar',
-  MD = 'md',
-  '7z' = '7z',
-  Excel = 'xls',
-  EXE = 'exe',
-  MSI = 'msi',
-  Certificate = 'cer',
-  PFX = 'pfx',
-}
+import { FileType, fileTypes } from './types';
 
 export default class File extends Vue {
   @Prop() item: IFile;
@@ -116,31 +89,13 @@ export default class File extends Vue {
     return Math.max(...topLevelElems.map(el => el.clientHeight));
   }
 
-  private getFileType(ext: string): FileType {
-    if (/jpe?g$/.test(ext)) return FileType.JPEG;
-    if (/png$/.test(ext)) return FileType.PNG;
-    if (/gif$/.test(ext)) return FileType.Image;
-    if (/html?$/.test(ext)) return FileType.HTML;
-    if (/js$/.test(ext)) return FileType.JS;
-    if (/d.ts$/.test(ext)) return FileType.DTS;
-    if (/ts$/.test(ext)) return FileType.TS;
-    if (/json$/.test(ext)) return FileType.JSON;
-    if (/vue$/.test(ext)) return FileType.VUE;
-    if (/(sass|scss)$/.test(ext)) return FileType.SASS;
-    if (/css$/.test(ext)) return FileType.CSS;
-    if (/svg$/.test(ext)) return FileType.SVG;
-    if (/docx?$/.test(ext)) return FileType.Document;
-    if (/pdf$/.test(ext)) return FileType.PDF;
-    if (/txt$/.test(ext)) return FileType.Text;
-    if (/zip$/.test(ext)) return FileType.ZIP;
-    if (/rar$/.test(ext)) return FileType.RAR;
-    if (/md$/.test(ext)) return FileType.MD;
-    if (/7z$/.test(ext)) return FileType['7z'];
-    if (/xlsx?$/.test(ext)) return FileType.Excel;
-    if (/exe?$/.test(ext)) return FileType.EXE;
-    if (/msi?$/.test(ext)) return FileType.MSI;
-    if (/(cer|crt)$/.test(ext)) return FileType.Certificate;
-    if (/pfx?$/.test(ext)) return FileType.PFX;
+  private getFileType(ext: string): string {
+    for (const i of fileTypes.keys()) {
+      const o = fileTypes.get(i);
+      if (o.regexp.test(ext)) {
+        return i;
+      }
+    }
     return FileType.Unknown;
   }
 }
