@@ -1,5 +1,5 @@
 import { eventBus } from '@dn-web/core';
-import { ConfirmDialog, DialogManager } from '@dn-web/ui';
+import { ConfirmDialog, DialogManager, InfoDialog } from '@dn-web/ui';
 import { Options, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { dragAndDropLoader } from '~/helpers';
@@ -72,7 +72,17 @@ export default class Files extends Vue {
   async upload(formData: FormData) {
     try {
       this.uploading = true;
-      await this.$app.$commandBus.do(new UploadFileCommand(formData));
+      await DialogManager.exec(
+        new InfoDialog({
+          title: 'Uploading file...',
+          component: 'Files-Modal-upload',
+          componentProps: {},
+        }),
+        () => {
+          this.$app.$commandBus.do(new UploadFileCommand(formData));
+          return Promise.resolve({});
+        }
+      );
       this.fetchFiles();
     } catch (e) {
       /* eslint-disable no-console */

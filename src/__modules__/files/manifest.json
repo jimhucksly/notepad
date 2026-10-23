@@ -2,7 +2,7 @@
 	"components": {
 		"main": "files",
 		"aside": "sidebar",
-		"modals": []
+		"modals": ["upload"]
 	},
 	"store": "store"
 }

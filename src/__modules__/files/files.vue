@@ -55,13 +55,6 @@
       </div>
     </v-card-text>
   </v-card>
-  <!-- <div id="upload-download-popup" v-if="uploading">
-    <div class="label">
-      <span>Uploading file...</span>
-      <span class="percentage" ref="text"></span>
-    </div>
-    <div class="progress" ref="progress"></div>
-  </div> -->
 </template>
 <script src="./files.ts" lang="ts"></script>
 <style src="./files.scss" lang="scss" scoped></style>

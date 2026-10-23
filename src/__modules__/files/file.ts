@@ -44,7 +44,7 @@ export default class File extends Vue {
     const topLevelHeight = this.getTopLevelHeight();
     this.position = {
       x: File.DefaultGap + index * (File.DefaultGap + File.DefaultSize),
-      y: File.DefaultGap + this.row * (topLevelHeight + File.DefaultGap),
+      y: topLevelHeight + File.DefaultGap * this.row,
     };
   }
 
@@ -78,15 +78,21 @@ export default class File extends Vue {
   }
 
   private getTopLevelHeight(): number {
-    if (this.row === 0) {
+    if (this.row === 0 || !this.rows) {
       return 0;
     }
-    if (this.rows && this.$utils.isDefined(this.rows[this.row - 1])) {
-      return this.rows[this.row - 1];
+    if (this.rows) {
+      const ii = Array(this.row)
+        .fill(null)
+        .map((_, i) => i + 1);
+      let h = 0;
+      for (const i of ii) {
+        if (this.$utils.isDefined(this.rows[this.row - i])) {
+          h = h + this.rows[this.row - i];
+        }
+      }
+      return h;
     }
-    const elems = Array.from(this.parent.querySelectorAll('.file'));
-    const topLevelElems = elems.slice((this.row - 1) * this.count, this.row * this.count);
-    return Math.max(...topLevelElems.map(el => el.clientHeight));
   }
 
   private getFileType(ext: string): string {

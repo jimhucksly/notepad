@@ -1,7 +1,7 @@
+import { eventBus } from '@dn-web/core';
 import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { Store } from 'vuex';
 import { IResponse, IRootState } from '~/domain/models';
-import { uploadDownloadFile } from '~/helpers';
 
 function createInterceptors(store: Store<IRootState>) {
   axios.interceptors.request.use(
@@ -13,7 +13,7 @@ function createInterceptors(store: Store<IRootState>) {
           config.maxBodyLength = Infinity;
           config.maxContentLength = Infinity;
           config.onUploadProgress = ({ loaded, total }: AxiosProgressEvent) => {
-            uploadDownloadFile(loaded, total);
+            eventBus.$emit('upload-progress', { loaded, total });
           };
         } else {
           config.headers['Content-Type'] = 'application/json';

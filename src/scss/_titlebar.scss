@@ -86,9 +86,12 @@
   }
 
   &__process {
+    display: flex;
+    align-items: center;
+    height: 100%;
     position: absolute;
     top: 0;
-    right: 0;
+    right: 40px;
   }
 
   &__account {
